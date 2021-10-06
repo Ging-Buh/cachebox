@@ -1,5 +1,7 @@
 package de.droidcachebox.gdx;
 
+import java.util.ConcurrentModificationException;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.H_ListView;
@@ -11,8 +13,6 @@ import de.droidcachebox.menu.QuickAction;
 import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ConcurrentModificationException;
 
 public class QuickButtonList extends H_ListView {
 
@@ -170,7 +170,7 @@ public class QuickButtonList extends H_ListView {
                         counter++;
                     }
                     Config.quickButtonList.setValue(ActionsString.toString());
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                 }
             }
         }

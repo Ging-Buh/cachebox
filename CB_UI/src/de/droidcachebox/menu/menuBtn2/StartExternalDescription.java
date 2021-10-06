@@ -27,8 +27,8 @@ import de.droidcachebox.AbstractAction;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -65,7 +65,7 @@ public class StartExternalDescription extends AbstractAction {
             Cache cache = GlobalCore.getSelectedCache();
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String cachehtml = CBDB.Data.getShortDescription(cache) + CBDB.Data.getDescription(cache);
+            String cachehtml = CacheDAO.getInstance().getShortDescription(cache) + CacheDAO.getInstance().getDescription(cache);
             String html = DescriptionImageGrabber.resolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
             String header = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" /></head><body>";
             html = header + html;

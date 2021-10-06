@@ -15,22 +15,35 @@
  */
 package de;
 
+import org.mapsforge.map.model.DisplayModel;
+
+import java.awt.Button;
+import java.awt.Checkbox;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.File;
+
 import de.droidcachebox.Config;
+import de.droidcachebox.DesktopUIBaseMethods;
 import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.database.DraftsDatabase;
+import de.droidcachebox.database.SettingsDatabase;
 import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.DesktopFileFactory;
 import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.CB_SLF4J;
 import de.droidcachebox.utils.log.LogLevel;
-import org.mapsforge.map.model.DisplayModel;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 class DCB {
 
@@ -39,8 +52,21 @@ class DCB {
         DisplayModel.setDeviceScaleFactor(1f);
 
         new DesktopFileFactory();
+        File forWorkPathTest = new File("C:/Daten/_WCB");
+        if (!forWorkPathTest.exists())
+            forWorkPathTest = new File("");
+        String workPath = forWorkPathTest.getAbsolutePath();
+        new Config(workPath);
+        if (!FileIO.createDirectory(Config.workPath + "/User"))
+            return;
+        // todo set firstSDCard and secondSDCard somehow
+        GlobalCore.firstSDCard = "C:/";
+        GlobalCore.secondSDCard = "D:/";
 
-        DesktopMain.InitialConfig();
+        PlatformUIBase.setMethods(new DesktopUIBaseMethods());
+        SettingsDatabase.getInstance().startUp(Config.workPath + "/User/Config.db3");
+        DraftsDatabase.getInstance().startUp(Config.workPath + "/User/FieldNotes.db3");
+
         Config.settings.ReadFromDB();
 
         CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
@@ -60,10 +86,10 @@ class DCB {
         if (files.length > 0 && Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
             Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
             Config.newInstall.setValue(true);
-            Config.AcceptChanges();
+            Config.acceptChanges();
         } else {
             Config.newInstall.setValue(false);
-            Config.AcceptChanges();
+            Config.acceptChanges();
         }
 
         if (files.length > 0 && !files[0].contains("src")) {

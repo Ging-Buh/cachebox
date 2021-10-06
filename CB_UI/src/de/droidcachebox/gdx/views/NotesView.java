@@ -20,8 +20,8 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
@@ -79,7 +79,7 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
         getSolverButton.setClickHandler((v, x, y, pointer, button) -> {
             String solver;
             if (currentCache != null) {
-                solver = CBDB.Data.getSolver(currentCache);
+                solver = CacheDAO.getInstance().getSolver(currentCache);
             } else solver = null;
             solver = solver != null ? "<Solver>\r\n" + solver + "\r\n</Solver>" : "";
             String text = notes.getText();
@@ -144,7 +144,7 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
     private void loadNotes(Cache newCache) {
         if (currentCache != newCache) {
             currentCache = newCache;
-            notesText = currentCache != null ? CBDB.Data.getNote(currentCache.generatedId) : "";
+            notesText = currentCache != null ? CacheDAO.getInstance().getNote(currentCache.generatedId) : "";
             if (notesText == null)
                 notesText = "";
             notes.setText(notesText);
@@ -161,7 +161,7 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
             if (text != null) {
                 try {
                     if (currentCache != null && !currentCache.isDisposed())
-                        CBDB.Data.setNote(currentCache, text);
+                        CacheDAO.getInstance().setNote(currentCache, text);
                 } catch (Exception e) {
                     Log.err("NotesView", "Write note to database", e);
                 }

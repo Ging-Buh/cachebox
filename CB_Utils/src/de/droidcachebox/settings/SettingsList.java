@@ -1,7 +1,8 @@
 package de.droidcachebox.settings;
 
-import de.droidcachebox.database.Database_Core;
-import de.droidcachebox.utils.log.Log;
+import static de.droidcachebox.settings.SettingStoreType.Global;
+import static de.droidcachebox.settings.SettingStoreType.Local;
+import static de.droidcachebox.settings.SettingStoreType.Platform;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -9,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static de.droidcachebox.settings.SettingStoreType.*;
+import de.droidcachebox.database.Database_Core;
+import de.droidcachebox.utils.log.Log;
 
 public abstract class SettingsList extends ArrayList<SettingBase<?>> {
     private static final String log = "SettingsList";
@@ -68,17 +70,16 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
      *
      * @return
      */
-    public boolean WriteToDB() {
+    public boolean writeToDatabases() {
         // Write into DB
+        getSettingsDB().getSql().beginTransaction();
         SettingsDAO dao = createSettingsDAO();
-        getSettingsDB().sql.beginTransaction();
+        // if used from Splash, DataDB is not possible = Data == null
         Database_Core Data = getDataDB();
-
         try {
             if (Data != null)
-                Data.sql.beginTransaction();
+                Data.getSql().beginTransaction();
         } catch (Exception ex) {
-            // do not change Data now!
             Data = null;
         }
 
@@ -107,14 +108,14 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
             }
             if (Data != null)
-                Data.sql.setTransactionSuccessful();
-            getSettingsDB().sql.setTransactionSuccessful();
+                Data.getSql().setTransactionSuccessful();
+            getSettingsDB().getSql().setTransactionSuccessful();
 
             return needRestart;
         } finally {
-            getSettingsDB().sql.endTransaction();
+            getSettingsDB().getSql().endTransaction();
             if (Data != null)
-                Data.sql.endTransaction();
+                Data.getSql().endTransaction();
         }
 
     }

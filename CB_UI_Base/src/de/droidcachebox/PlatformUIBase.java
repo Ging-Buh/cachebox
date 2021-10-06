@@ -212,6 +212,10 @@ public class PlatformUIBase {
         PlatformUIBase.clipBoard = clipBoard;
     }
 
+    public static int getCacheCountInDB(String absolutePath) {
+        return methods.getCacheCountInDB(absolutePath);
+    }
+
     public interface IShowViewListener {
         void showView(ViewID viewID, int left, int top, int right, int bottom);
 
@@ -274,6 +278,8 @@ public class PlatformUIBase {
         void startRecordTrack();
 
         boolean request_getLocationIfInBackground();
+
+        int getCacheCountInDB(String absolutePath);
     }
 
 }

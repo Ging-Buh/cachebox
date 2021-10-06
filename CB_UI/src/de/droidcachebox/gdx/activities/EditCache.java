@@ -161,7 +161,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues = new Cache(true);
         newValues.copyFrom(updateCache);
         newValues.setShortDescription("");
-        newValues.setLongDescription(CBDB.Data.getDescription(updateCache));
+        newValues.setLongDescription(CacheDAO.getInstance().getDescription(updateCache));
         updateCache.setLongDescription(newValues.getLongDescription());
         cache = updateCache;
         doShow();
@@ -182,7 +182,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         do {
             count++;
             newValues.setGeoCacheCode(prefix + String.format(Locale.US, "%04d", count));
-        } while (CBDB.Data.cacheList.getCacheByIdFromCacheList(Cache.generateCacheId(newValues.getGeoCacheCode())) != null);
+        } while (CBDB.getInstance().cacheList.getCacheByIdFromCacheList(Cache.generateCacheId(newValues.getGeoCacheCode())) != null);
         newValues.setGeoCacheName(newValues.getGeoCacheCode());
         newValues.setOwner("Unbekannt");
         newValues.setState("");
@@ -230,11 +230,11 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private void btnOKClickHandler() {
         btnOK.setClickHandler((v, x, y, pointer, button) -> {
             boolean update = false;
-            CacheDAO cacheDAO = new CacheDAO();
+            CacheDAO cacheDAO = CacheDAO.getInstance();
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
             cache.generatedId = Cache.generateCacheId(gcc);
 
-            Cache cl = CBDB.Data.cacheList.getCacheByIdFromCacheList(cache.generatedId);
+            Cache cl = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(cache.generatedId);
 
             if (cl != null) {
                 update = true;
@@ -260,7 +260,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
                 cacheDAO.UpdateDatabase(cache);
                 CacheListChangedListeners.getInstance().cacheListChanged();
             } else {
-                CBDB.Data.cacheList.add(cache);
+                CBDB.getInstance().cacheList.add(cache);
                 cacheDAO.WriteToDatabase(cache);
                 GlobalCore.setSelectedCache(cache);
                 CacheListChangedListeners.getInstance().cacheListChanged();

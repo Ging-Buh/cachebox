@@ -174,8 +174,12 @@ public class SQLiteClass implements SQLiteInterface {
 
     @Override
     public void close() {
-        if (myDB != null)
-            myDB.close();
+        try {
+            if (myDB != null)
+                myDB.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         myDB = null;
     }
 

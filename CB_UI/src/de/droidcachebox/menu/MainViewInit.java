@@ -34,6 +34,7 @@ import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.Categories;
 import de.droidcachebox.database.DraftsDatabase;
@@ -246,13 +247,13 @@ public class MainViewInit extends MainViewBase {
             if (altValue.contains(Config.workPath)) {
                 String newValue = altValue.replace(Config.workPath + "/", "");
                 Config.Sel_LanguagePath.setValue(newValue);
-                Config.AcceptChanges();
+                Config.acceptChanges();
             }
 
             if (altValue.startsWith("/")) {
                 String newValue = altValue.substring(1);
                 Config.Sel_LanguagePath.setValue(newValue);
-                Config.AcceptChanges();
+                Config.acceptChanges();
             }
 
             Translation trans = new Translation(Config.workPath);
@@ -343,7 +344,7 @@ public class MainViewInit extends MainViewBase {
     private void ini_CacheDB() {
         Log.info(log, "ini_CacheDB");
 
-        CBDB.Data.startUp(Config.workPath + "/" + Config.DatabaseName.getValue());
+        CBDB.getInstance().startUp(Config.workPath + "/" + Config.DatabaseName.getValue());
 
         Config.settings.ReadFromDB();
 
@@ -351,15 +352,15 @@ public class MainViewInit extends MainViewBase {
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 
         CoreData.categories = new Categories();
-        CBDB.Data.updateCacheCountForGPXFilenames();
+        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
-        synchronized (CBDB.Data.cacheList) {
+        synchronized (CBDB.getInstance().cacheList) {
             CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
         }
 
         CacheListChangedListeners.getInstance().cacheListChanged();
 
-        DraftsDatabase.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
+        DraftsDatabase.getInstance().startUp(Config.workPath + "/User/FieldNotes.db3");
 
     }
 
@@ -382,12 +383,11 @@ public class MainViewInit extends MainViewBase {
         GL.that.switchToMainView();
 
         if (GlobalCore.restartCache != null) {
-            synchronized (CBDB.Data.cacheList) {
-                Cache c = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList(GlobalCore.restartCache);
+            synchronized (CBDB.getInstance().cacheList) {
+                Cache c = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(GlobalCore.restartCache);
                 if (c != null) {
                     if (GlobalCore.restartWayPoint != null) {
-                        WaypointDAO dao = new WaypointDAO();
-                        CB_List<Waypoint> waypoints = dao.getWaypointsFromCacheID(c.generatedId, true);
+                        CB_List<Waypoint> waypoints = WaypointDAO.getInstance().getWaypointsFromCacheID(c.generatedId, true);
                         if (waypoints != null) {
                             Waypoint w = null;
 

@@ -181,7 +181,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                                 String Text = Translation.get("FoundsSetTo", String.valueOf(result));
                                                 MsgBox.show(Text, Translation.get("LoadFinds!"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);
                                                 Config.FoundOffset.setValue(result);
-                                                Config.AcceptChanges();
+                                                Config.acceptChanges();
                                                 AboutView.this.refreshText();
                                             }
                                         }
@@ -198,7 +198,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                         @Override
                                         public void returnValue(int value) {
                                             Config.FoundOffset.setValue(value);
-                                            Config.AcceptChanges();
+                                            Config.acceptChanges();
                                             AboutView.this.refreshText();
                                         }
 

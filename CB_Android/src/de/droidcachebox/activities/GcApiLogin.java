@@ -1,14 +1,29 @@
 package de.droidcachebox.activities;
 
+import static de.droidcachebox.core.CB_Core_Settings.GcLogin;
+import static de.droidcachebox.core.GroundspeakAPI.fetchMyUserInfos;
+import static de.droidcachebox.core.GroundspeakAPI.setAuthorization;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.os.*;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
-import android.webkit.*;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.Main;
@@ -17,10 +32,6 @@ import de.droidcachebox.core.CB_Api;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.log.Log;
-
-import static de.droidcachebox.core.CB_Core_Settings.GcLogin;
-import static de.droidcachebox.core.GroundspeakAPI.fetchMyUserInfos;
-import static de.droidcachebox.core.GroundspeakAPI.setAuthorization;
 
 
 public class GcApiLogin extends Activity {
@@ -254,7 +265,7 @@ public class GcApiLogin extends Activity {
                     String userNameOfAuthorization = fetchMyUserInfos().username;
                     Log.debug(sKlasse, "userNameOfAuthorization: " + userNameOfAuthorization);
                     GcLogin.setValue(userNameOfAuthorization);
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }
             };

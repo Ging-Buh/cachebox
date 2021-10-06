@@ -47,7 +47,6 @@ import java.util.TreeMap;
 
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.database.Attribute;
-import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Draft;
 import de.droidcachebox.database.GeoCacheSize;
@@ -55,6 +54,7 @@ import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.ImageEntry;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogType;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.TBList;
 import de.droidcachebox.database.Trackable;
 import de.droidcachebox.database.Waypoint;
@@ -553,7 +553,7 @@ public class GroundspeakAPI {
                 long cacheId = Cache.generateCacheId(draft.gcCode);
                 // Cache cache = new CacheDAO().getFromDbByCacheId(cacheId);
                 LogEntry logEntry = createLog(geocacheLog, cacheId);
-                CBDB.Data.WriteLogEntry(logEntry);
+                LogsTableDAO.getInstance().WriteLogEntry(logEntry);
                 // logReferenceCode is return value
                 logReferenceCode = geocacheLog.optString("referenceCode", ""); // as return value
             } else {

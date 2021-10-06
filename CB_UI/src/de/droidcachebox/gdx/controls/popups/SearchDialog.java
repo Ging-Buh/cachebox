@@ -41,6 +41,7 @@ import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.database.ImageDAO;
 import de.droidcachebox.database.ImageEntry;
 import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.gdx.GL;
@@ -364,7 +365,7 @@ public class SearchDialog extends PopUp_Base {
 
             boolean criterionMatches = false;
 
-            synchronized (CBDB.Data.cacheList) {
+            synchronized (CBDB.getInstance().cacheList) {
 
                 if (!mSearchAktive) {
                     mSearchAktive = true;
@@ -372,8 +373,8 @@ public class SearchDialog extends PopUp_Base {
 
                 Cache tmp = null;
                 if (beginnSearchIndex < 0) beginnSearchIndex = 0;
-                for (int i = beginnSearchIndex, n = CBDB.Data.cacheList.size(); i < n; i++) {
-                    tmp = CBDB.Data.cacheList.get(i);
+                for (int i = beginnSearchIndex, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
+                    tmp = CBDB.getInstance().cacheList.get(i);
 
                     switch (mSearchState) {
                         case Title:
@@ -523,26 +524,26 @@ public class SearchDialog extends PopUp_Base {
 
                 if (geoCacheRelateds.size() > 0) {
 
-                    CBDB.Data.sql.beginTransaction();
+                    CBDB.getInstance().getSql().beginTransaction();
 
-                    CacheDAO cacheDAO = new CacheDAO();
+                    CacheDAO cacheDAO = CacheDAO.getInstance();
                     ImageDAO imageDAO = new ImageDAO();
-                    WaypointDAO waypointDAO = new WaypointDAO();
+                    WaypointDAO waypointDAO = WaypointDAO.getInstance();
 
                     int counter = 0;
 
-                    synchronized (CBDB.Data.cacheList) {
+                    synchronized (CBDB.getInstance().cacheList) {
                         for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
                             Cache cache = geoCacheRelated.cache;
                             counter++;
-                            if (CBDB.Data.cacheList.getCacheByIdFromCacheList(cache.generatedId) == null) {
-                                CBDB.Data.cacheList.add(cache);
+                            if (CBDB.getInstance().cacheList.getCacheByIdFromCacheList(cache.generatedId) == null) {
+                                CBDB.getInstance().cacheList.add(cache);
                                 if (cache.getGPXFilename_ID() == 0) {
                                     cache.setGPXFilename_ID(gpxFilename.Id);
                                 }
                                 cacheDAO.WriteToDatabase(cache);
                                 for (LogEntry log : geoCacheRelated.logs) {
-                                    CBDB.Data.WriteLogEntry(log);
+                                    LogsTableDAO.getInstance().WriteLogEntry(log);
                                 }
                                 for (ImageEntry image : geoCacheRelated.images) {
                                     imageDAO.writeToDatabase(image, false);
@@ -555,16 +556,16 @@ public class SearchDialog extends PopUp_Base {
                         }
                     }
 
-                    CBDB.Data.sql.setTransactionSuccessful();
-                    CBDB.Data.sql.endTransaction();
+                    CBDB.getInstance().getSql().setTransactionSuccessful();
+                    CBDB.getInstance().getSql().endTransaction();
 
-                    CBDB.Data.updateCacheCountForGPXFilenames();
+                    CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
                     CacheListChangedListeners.getInstance().cacheListChanged();
 
                     if (counter == 1) {
                         // select this Cache
-                        Cache cache = CBDB.Data.cacheList.getCacheByIdFromCacheList(geoCacheRelateds.get(0).cache.generatedId);
+                        Cache cache = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(geoCacheRelateds.get(0).cache.generatedId);
                         GlobalCore.setSelectedCache(cache);
                     }
 

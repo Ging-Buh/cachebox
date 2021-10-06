@@ -19,12 +19,16 @@ public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_
 
     @Override
     protected Database_Core getSettingsDB() {
-        return SettingsDatabase.Settings;
+        return SettingsDatabase.getInstance();
     }
 
     @Override
     protected Database_Core getDataDB() {
-        return CBDB.Data;
+        // if used from Splash, DataDB is not possible
+        if (PlatformUIBase.canUsePlatformSettings())
+            return CBDB.getInstance();
+        else
+            return null;
     }
 
     @Override

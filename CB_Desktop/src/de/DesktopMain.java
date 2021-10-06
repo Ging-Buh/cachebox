@@ -5,23 +5,13 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import java.awt.Frame;
-import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.PlatformUIBase.Methods;
-import de.droidcachebox.TrackRecorder;
-import de.droidcachebox.database.CacheboxDB;
-import de.droidcachebox.database.DraftsDB;
-import de.droidcachebox.database.SQLiteClass;
-import de.droidcachebox.database.SQLiteInterface;
-import de.droidcachebox.database.SettingsDB;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Listener_Interface;
@@ -37,21 +27,14 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
 import de.droidcachebox.menu.MainViewInit;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.settings.SettingBase;
-import de.droidcachebox.settings.SettingBool;
-import de.droidcachebox.settings.SettingInt;
-import de.droidcachebox.settings.SettingString;
-import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.Plattform;
-import de.droidcachebox.utils.log.Log;
 
 //import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 
 public class DesktopMain {
-    private static final String log = "DesktopMain";
+    private static final String sClass = "DesktopMain";
     static float compassheading = -1;
     // Retrieve the user preference node for the package com.mycompany
-    static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
     private static GL CB_UI;
     private static String OS = System.getProperty("os.name").toLowerCase();
 
@@ -68,7 +51,7 @@ public class DesktopMain {
 
         frame.setVisible(false);
 
-        // Initial Desctop TexturePacker
+        // Initial Desktop TexturePacker
         new DesktopTexturePacker();
 
         // has been done by launcher
@@ -85,10 +68,10 @@ public class DesktopMain {
 
             Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
             Config.newInstall.setValue(true);
-            Config.AcceptChanges();
+            Config.acceptChanges();
         } else {
             Config.newInstall.setValue(false);
-            Config.AcceptChanges();
+            Config.acceptChanges();
         }
 
         int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
@@ -165,177 +148,6 @@ public class DesktopMain {
         };
         timer.schedule(task, 600);
         PlatformUIBase.setClipboard(new DesktopClipboard());
-
-        PlatformUIBase.setMethods(new Methods() {
-
-            private boolean torchOn = false;
-
-            @Override
-            public void writePlatformSetting(SettingBase<?> setting) {
-
-                if (setting instanceof SettingBool) {
-                    prefs.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
-                } else if (setting instanceof SettingString) {
-                    prefs.put(setting.getName(), ((SettingString) setting).getValue());
-                } else if (setting instanceof SettingInt) {
-                    prefs.putInt(setting.getName(), ((SettingInt) setting).getValue());
-                }
-
-                // Commit the edits!
-                try {
-                    prefs.flush();
-                } catch (BackingStoreException e) {
-
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
-                if (setting instanceof SettingString) {
-                    String value = prefs.get(setting.getName(), ((SettingString) setting).getDefaultValue());
-                    ((SettingString) setting).setValue(value);
-                } else if (setting instanceof SettingBool) {
-                    boolean value = prefs.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
-                    ((SettingBool) setting).setValue(value);
-                } else if (setting instanceof SettingInt) {
-                    int value = prefs.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
-                    ((SettingInt) setting).setValue(value);
-                }
-                setting.clearDirty();
-                return setting;
-            }
-
-            @Override
-            public boolean isOnline() {
-                return true;
-            }
-
-            @Override
-            public boolean isGPSon() {
-                return true;
-            }
-
-            @Override
-            public void vibrate() {
-
-            }
-
-            @Override
-            public boolean isTorchAvailable() {
-                return true; // Simulate
-            }
-
-            @Override
-            public boolean isTorchOn() {
-                return torchOn;
-            }
-
-            @Override
-            public void switchTorch() {
-                System.out.print("Switch Torch to => " + (torchOn ? "on" : "off"));
-                torchOn = !torchOn;
-            }
-
-            @Override
-            public void switchToGpsMeasure() {
-            }
-
-            @Override
-            public void switchToGpsDefault() {
-            }
-
-            @Override
-            public void callUrl(String url) {
-                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
-
-                if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
-
-                    System.err.println("Desktop doesn't support the browse action (fatal)");
-                    System.exit(1);
-                }
-
-                try {
-                    java.net.URI uri = null;
-                    if (url.startsWith("file://")) {
-                        File f = new File(url.replace("file://", ""));
-                        uri = f.toURI();
-                    } else {
-                        uri = new java.net.URI(url);
-                    }
-
-                    desktop.browse(uri);
-
-                } catch (Exception e) {
-
-                    System.err.println(e.getMessage());
-                }
-            }
-
-            @Override
-            public void startPictureApp(String file) {
-            }
-
-            @Override
-            public SQLiteInterface getSQLInstance() {
-                return new SQLiteClass();
-            }
-
-            @Override
-            public void freeSQLInstance(SQLiteInterface sqlInstance) {
-                sqlInstance = null;
-            }
-
-            @Override
-            public void getApiKey() {
-                // Android : GetApiAuth();
-                (new GcApiLogin()).RunRequest();
-            }
-
-            @Override
-            public void quit() {
-                if (GlobalCore.isSetSelectedCache()) {
-                    // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-                    Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-                    Config.AcceptChanges();
-                    Log.debug(log, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
-                }
-                System.exit(0);
-            }
-
-            @Override
-            public void handleExternalRequest() {
-
-            }
-
-            @Override
-            public String removeHtmlEntyties(String text) {
-                // todo Jsoup.parse(s).text();
-                return text.replaceAll("\\<[^>]*>", "");
-            }
-
-            @Override
-            public String getFileProviderContentUrl(String localFile) {
-                return localFile;
-            }
-
-            @Override
-            public void getDirectoryAccess(String _DirectoryToAccess) {
-
-            }
-
-            @Override
-            public void startRecordTrack() {
-                TrackRecorder.startRecording();
-            }
-
-            @Override
-            public boolean request_getLocationIfInBackground() {
-                return true;
-            }
-
-        });
         LocatorBasePlatFormMethods.setMethods(new DesktopLocatorBaseMethods());
 
     }
@@ -375,27 +187,6 @@ public class DesktopMain {
     }
 
      */
-
-    /**
-     * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
-     */
-    public static void InitialConfig() {
-        File forWorkPathTest = new File("C:/Daten/_WCB");
-        if (!forWorkPathTest.exists())
-            forWorkPathTest = new File("");
-        String workPath = forWorkPathTest.getAbsolutePath();
-        new Config(workPath);
-        if (!FileIO.createDirectory(Config.workPath + "/User"))
-            return;
-        // todo set firstSDCard and secondSDCard somehow
-        GlobalCore.firstSDCard = "C:/";
-        GlobalCore.secondSDCard = "D:/";
-        new SettingsDB();
-        SettingsDB.Settings.startUp(Config.workPath + "/User/Config.db3");
-        new CacheboxDB();
-        new DraftsDB();
-        DraftsDB.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
-    }
 
     /**
      * Initial all Locator functions

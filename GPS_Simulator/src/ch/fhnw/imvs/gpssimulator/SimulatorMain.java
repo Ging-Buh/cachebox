@@ -248,6 +248,11 @@ public class SimulatorMain {
                 return true;
             }
 
+            @Override
+            public int getCacheCountInDB(String absolutePath) {
+                return 0;
+            }
+
         });
 
         return f;

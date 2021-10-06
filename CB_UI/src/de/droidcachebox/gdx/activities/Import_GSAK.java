@@ -20,6 +20,7 @@ import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Attribute;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.Category;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.GeoCacheSize;
@@ -28,6 +29,7 @@ import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.database.ImageEntry;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogType;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WriteIntoDB;
@@ -57,9 +59,13 @@ public class Import_GSAK extends ActivityBase {
     private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote,UserFlag";
     private static final String memofields = "LongDescription,ShortDescription,Hints,UserNote";
     private EditTextField edtCategory, edtDBName, edtImagesDBName, edtImagesPath;
-    private CB_Button bOK, bCancel, btnSelectDB, btnSelectImagesDB, btnSelectImagesPath;
+    private final CB_Button bOK;
+    private final CB_Button bCancel;
+    private CB_Button btnSelectDB;
+    private CB_Button btnSelectImagesDB;
+    private CB_Button btnSelectImagesPath;
     private CB_CheckBox chkLogImages;
-    private ProgressBar progressBar;
+    private final ProgressBar progressBar;
     private String mDatabasePath, mImageDatabasePath, mImagesPath;
     private String mDatabaseName, mImageDatabaseName;
     private SQLiteInterface sql;
@@ -258,8 +264,8 @@ public class Import_GSAK extends ActivityBase {
                 Config.GSAKLastUsedDatabasePath.setValue(mDatabasePath);
                 Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
                 Config.withLogImages.setValue(chkLogImages.isChecked());
-                Config.AcceptChanges();
-                CBDB.Data.sql.beginTransaction();
+                Config.acceptChanges();
+                CBDB.getInstance().getSql().beginTransaction();
 
                 int count = 0;
                 CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
@@ -291,11 +297,11 @@ public class Import_GSAK extends ActivityBase {
 
                 writeLogs();
 
-                CBDB.Data.sql.setTransactionSuccessful();
+                CBDB.getInstance().getSql().setTransactionSuccessful();
             }
             PlatformUIBase.freeSQLInstance(sql);
-            CBDB.Data.sql.endTransaction();
-            CBDB.Data.updateCacheCountForGPXFilenames();
+            CBDB.getInstance().getSql().endTransaction();
+            CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
             if (mImageDatabaseName.length() > 0) {
                 doImportImages("CacheImages");
@@ -318,7 +324,7 @@ public class Import_GSAK extends ActivityBase {
                 Config.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
                 Config.GSAKLastUsedImageDatabaseName.setValue(mImageDatabaseName);
                 Config.GSAKLastUsedImagesPath.setValue(mImagesPath);
-                Config.AcceptChanges();
+                Config.acceptChanges();
             }
             CoreCursor c = sql.rawQuery("select count(*) from " + tableName, null);
             c.moveToFirst();
@@ -421,7 +427,7 @@ public class Import_GSAK extends ActivityBase {
             logEntry.logType = LogType.parseString(LogsReader.getString("lType"));
             logEntry.logId = LogsReader.getInt("lLogId");
 
-            CBDB.Data.WriteLogEntry(logEntry);
+            LogsTableDAO.getInstance().WriteLogEntry(logEntry);
 
             LogsReader.moveToNext();
         }

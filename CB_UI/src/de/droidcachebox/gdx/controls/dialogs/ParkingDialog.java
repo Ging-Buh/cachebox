@@ -90,8 +90,8 @@ public class ParkingDialog extends ButtonDialog {
         this.addChild(layout);
 
         // chk disable select and delete Button
-        synchronized (CBDB.Data.cacheList) {
-            Cache cache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
+        synchronized (CBDB.getInstance().cacheList) {
+            Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
             if (cache == null) {
                 btSelectWP.disable();
                 btDeleteP.disable();
@@ -108,7 +108,7 @@ public class ParkingDialog extends ButtonDialog {
 
                 Config.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
                 Config.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
-                Config.AcceptChanges();
+                Config.acceptChanges();
                 CacheListChangedListeners.getInstance().cacheListChanged();
 
                 close();
@@ -120,8 +120,8 @@ public class ParkingDialog extends ButtonDialog {
 
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                synchronized (CBDB.Data.cacheList) {
-                    Cache cache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
+                synchronized (CBDB.getInstance().cacheList) {
+                    Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
                     if (cache != null)
                         GlobalCore.setSelectedCache(cache);
                 }
@@ -136,7 +136,7 @@ public class ParkingDialog extends ButtonDialog {
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 Config.ParkingLatitude.setValue(0.0);
                 Config.ParkingLongitude.setValue(0.0);
-                Config.AcceptChanges();
+                Config.acceptChanges();
                 CacheListChangedListeners.getInstance().cacheListChanged();
                 close();
                 return true;

@@ -102,9 +102,9 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
             try {
                 if (!initialResortAfterFirstFixCompleted) {
-                    if (!CBDB.Data.cacheList.resortAtWork) {
-                        synchronized (CBDB.Data.cacheList) {
-                            CacheWithWP ret = CBDB.Data.cacheList.resort(Locator.getInstance().getValidPosition(null));
+                    if (!CBDB.getInstance().cacheList.resortAtWork) {
+                        synchronized (CBDB.getInstance().cacheList) {
+                            CacheWithWP ret = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(null));
                             if (ret != null && ret.getCache() != null) {
                                 GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                 GlobalCore.setNearestCache(ret.getCache());
@@ -121,7 +121,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                 // schau die 50 nächsten Caches durch, wenn einer davon näher ist
                 // als der aktuell nächste -> umsortieren und raus
                 // only when showing Map or cacheList
-                if (!CBDB.Data.cacheList.resortAtWork) {
+                if (!CBDB.getInstance().cacheList.resortAtWork) {
                     if (GlobalCore.getAutoResort()) {
                         if ((GlobalCore.getNearestCache() == null)) {
                             GlobalCore.setNearestCache(GlobalCore.getSelectedCache());
@@ -137,8 +137,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                 }
                                 float nearestDistance = GlobalCore.getNearestCache().recalculateAndGetDistance(CalculationType.FAST, true, Locator.getInstance().getMyPosition());
 
-                                for (int i = 0, n = CBDB.Data.cacheList.size(); i < n; i++) {
-                                    Cache cache = CBDB.Data.cacheList.get(i);
+                                for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
+                                    Cache cache = CBDB.getInstance().cacheList.get(i);
                                     z++;
                                     if (z >= 50) {
                                         return;
@@ -160,8 +160,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                                 }
                             }
                             if (resort || z == 0) {
-                                if (!CBDB.Data.cacheList.resortAtWork) {
-                                    CacheWithWP ret = CBDB.Data.cacheList.resort(Locator.getInstance().getValidPosition(null));
+                                if (!CBDB.getInstance().cacheList.resortAtWork) {
+                                    CacheWithWP ret = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(null));
                                     if (ret != null && ret.getCache() != null) {
                                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                         GlobalCore.setNearestCache(ret.getCache());

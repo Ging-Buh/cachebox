@@ -62,8 +62,7 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.Main;
 import de.droidcachebox.R;
 import de.droidcachebox.components.CopyAssetFolder;
-import de.droidcachebox.database.CacheboxDB;
-import de.droidcachebox.database.SettingsDB;
+import de.droidcachebox.database.SQLiteClass;
 import de.droidcachebox.database.SettingsDatabase;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.Handler;
@@ -155,7 +154,7 @@ public class Splash extends Activity {
     }
 
     private void startMain() {
-        saveSDCardPath();
+        saveSDCardPathsToGlobalCore();
         GlobalCore.RunFromSplash = true;
         Intent mainIntent;
         if (main == null) {
@@ -171,15 +170,17 @@ public class Splash extends Activity {
         if (width == 0 || height == 0)
             delaytime = 1000;
         else
-            delaytime=0;
+            delaytime = 0;
         new Handler().postDelayed(() -> {
             // could bundle utils too, but the (static) classes are initialized directly
             initializeSomeUiSettings(); // don't know, if it must be done here : frame is the space, where everything is shown
-            if (SettingsDatabase.Settings.isDbNew()) {
+            if (SettingsDatabase.getInstance().isDatabaseNew()) {
                 Config.mapViewDPIFaktor.setValue(displayDensity);
             }
             Global.Paints.init(this);
             mainIntent.putExtras(bundledData); // the prepared Data
+            Config.acceptChanges(); // saving to SettingsDatabase
+            SettingsDatabase.getInstance().close();
             startActivity(mainIntent);
             setResult(RESULT_OK); // for the calling App (setResult(resultCode, dataIntent));
             finish(); // this activity can be closed and back to the calling activity in onActivityResult
@@ -363,6 +364,7 @@ public class Splash extends Activity {
         Gdx.files = new DefaultAndroidFiles(this.getAssets(), this, true); // will be set automatically to this values in init of gdx's AndroidApplication
         String languagePath = androidSetting.getString("Sel_LanguagePath", ""); // ""
         if (languagePath.length() == 0) {
+            // very  first start
             String locale = Locale.getDefault().getLanguage(); // en
             if (locale.equalsIgnoreCase("en")) {
                 locale = "en-GB";
@@ -373,7 +375,6 @@ public class Splash extends Activity {
         }
 
         try {
-            // todo localeID at first start
             new Translation(workPath).loadTranslation(languagePath);
         } catch (Exception ignored) {
         }
@@ -383,12 +384,11 @@ public class Splash extends Activity {
             askForWorkPath();
         else {
             boolean hasWritePermission = FileIO.createDirectory(workPath + "/dummy");
-            if (hasWritePermission) FileIO.deleteDirectory(FileFactory.createFile(workPath + "/dummy"));
-            if (!hasWritePermission || FileIO.fileExists(workPath + "/askAgain.txt"))
-            {
+            if (hasWritePermission)
+                FileIO.deleteDirectory(FileFactory.createFile(workPath + "/dummy"));
+            if (!hasWritePermission || FileIO.fileExists(workPath + "/askAgain.txt")) {
                 askForWorkPath();
-            }
-            else {
+            } else {
                 initializationStep3();
             }
         }
@@ -401,8 +401,7 @@ public class Splash extends Activity {
             java.io.File[] dirs = getExternalFilesDirs(null);
             if (dirs.length > 1) {
                 setSelectExternalSDButton(dialog);
-            }
-            else {
+            } else {
                 Button btnExternalSandbox = dialog.findViewById(R.id.btnExternalSandbox);
                 btnExternalSandbox.setVisibility(Button.INVISIBLE);
             }
@@ -493,8 +492,7 @@ public class Splash extends Activity {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAndRemoveTask();
-        }
-        else {
+        } else {
             this.finishAffinity();
         }
     }
@@ -504,8 +502,7 @@ public class Splash extends Activity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 finishAndRemoveTask();
-            }
-            else {
+            } else {
                 this.finishAffinity();
             }
         }
@@ -584,14 +581,13 @@ public class Splash extends Activity {
             this.finishAffinity();
             return;
         }
-        new SettingsDB(this);
-        new CacheboxDB(this);
 
-        SettingsDB.Settings.startUp(workPath + "/User/Config.db3");
+        SettingsDatabase.getInstance().setSQL(new SQLiteClass(this));
+        SettingsDatabase.getInstance().startUp(workPath + "/User/Config.db3");
         // Wenn die Settings DB neu erstellt wurde, müssen die Default Werte geschrieben werden.
-        if (SettingsDatabase.Settings.isDbNew()) {
+        if (SettingsDatabase.getInstance().isDatabaseNew()) {
             Config.settings.LoadAllDefaultValues();
-            Config.settings.WriteToDB();
+            Config.settings.writeToDatabases();
             Log.info(log, "Default Settings written to new configDB.");
         } else {
             Config.settings.ReadFromDB();
@@ -626,8 +622,6 @@ public class Splash extends Activity {
         }
 
         Log.info(log, GlobalCore.getInstance().getVersionString());
-
-        Config.AcceptChanges();
 
         if (pleaseWaitDialog != null) {
             pleaseWaitDialog.dismiss();
@@ -686,7 +680,7 @@ public class Splash extends Activity {
         }
     }
 
-    private void saveSDCardPath() {
+    private void saveSDCardPathsToGlobalCore() {
         java.io.File[] dirs = getExternalFilesDirs(null);
         String firstSDCard, secondSDCard;
         if (dirs.length > 0) {

@@ -15,7 +15,17 @@
  */
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
+import static de.droidcachebox.core.GroundspeakAPI.Query;
+import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCache;
+import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCaches;
+import static de.droidcachebox.core.GroundspeakAPI.searchGeoCaches;
+import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
@@ -29,9 +39,16 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.EditTextField.TextFieldListener;
+import de.droidcachebox.gdx.controls.Image;
+import de.droidcachebox.gdx.controls.ImportAnimation;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
+import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -40,11 +57,6 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
 public class SearchOverNameOwnerGcCode extends ActivityBase {
     private static final String log = "SearchOverNameOwnerGcCode";
@@ -250,7 +262,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         Config.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
         Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
 
-        Config.AcceptChanges();
+        Config.acceptChanges();
 
         btnImport.disable();
 

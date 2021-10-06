@@ -19,8 +19,8 @@ import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WaypointListChangedEventList;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
@@ -91,7 +91,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
             // Store Solver Content into Database after editing one line
             if (GlobalCore.isSetSelectedCache())
-                CBDB.Data.setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+                CacheDAO.getInstance().setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
         };
     }
 
@@ -121,7 +121,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
             solver = new Solver("", GlobalCore.getInstance());
         } else {
             currentCache = GlobalCore.getSelectedCache();
-            String s = CBDB.Data.getSolver(currentCache);
+            String s = CacheDAO.getInstance().getSolver(currentCache);
             if (s == null)
                 s = "";
             solver = new Solver(s, GlobalCore.getInstance());
@@ -172,7 +172,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
         Log.debug(log, "onHide()");
         CacheSelectionChangedListeners.getInstance().remove(this);
         if (GlobalCore.isSetSelectedCache())
-            CBDB.Data.setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+            CacheDAO.getInstance().setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
     }
 
     @Override
@@ -211,7 +211,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
             return; // Cache hat sich nicht geändert!
         // Solver speichern
         if (currentCache != null)
-            CBDB.Data.setSolver(currentCache, solver.getSolverString());
+            CacheDAO.getInstance().setSolver(currentCache, solver.getSolverString());
         // nächsten Cache laden
         currentCache = selectedCache;
         intiList();
@@ -240,7 +240,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
                 // Store Solver Content into Database after editing one line
                 if (GlobalCore.isSetSelectedCache())
-                    CBDB.Data.setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+                    CacheDAO.getInstance().setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 
                 reloadList();
                 return true;
@@ -291,7 +291,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
             wp.setTitle("Final");
             wp.isUserWaypoint = true;
             try {
-                wp.setWaypointCode(CBDB.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode()));
+                wp.setWaypointCode(WaypointDAO.getInstance().createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode()));
             } catch (Exception e) {
                 return;
             }
@@ -299,8 +299,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
                 if (waypoint != null) {
                     // Waypoint in der DB speichern
                     GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
-                    WaypointDAO waypointDAO = new WaypointDAO();
-                    waypointDAO.WriteToDatabase(waypoint);
+                    WaypointDAO.getInstance().WriteToDatabase(waypoint);
                     WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
                     GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
                 }

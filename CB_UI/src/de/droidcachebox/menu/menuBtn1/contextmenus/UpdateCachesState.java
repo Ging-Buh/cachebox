@@ -47,12 +47,12 @@ public class UpdateCachesState extends AbstractAction {
             isCanceled = false;
             ArrayList<Cache> chkList = new ArrayList<>();
 
-            synchronized (CBDB.Data.cacheList) {
-                if (CBDB.Data.cacheList == null || CBDB.Data.cacheList.size() == 0)
+            synchronized (CBDB.getInstance().cacheList) {
+                if (CBDB.getInstance().cacheList == null || CBDB.getInstance().cacheList.size() == 0)
                     return;
                 ChangedCount = 0;
-                for (int i = 0, n = CBDB.Data.cacheList.size(); i < n; i++) {
-                    chkList.add(CBDB.Data.cacheList.get(i));
+                for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
+                    chkList.add(CBDB.getInstance().cacheList.get(i));
                 }
 
             }
@@ -69,7 +69,7 @@ public class UpdateCachesState extends AbstractAction {
 
             float progress = 0;
 
-            CacheDAO dao = new CacheDAO();
+            CacheDAO dao = CacheDAO.getInstance();
             do {
                 /*
                 try {
@@ -96,13 +96,13 @@ public class UpdateCachesState extends AbstractAction {
                     skip += BlockSize;
 
                     /* */
-                    CBDB.Data.sql.beginTransaction();
+                    CBDB.getInstance().getSql().beginTransaction();
                     for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
                         if (dao.updateDatabaseCacheState(ci.cache))
                             ChangedCount++;
                     }
-                    CBDB.Data.sql.setTransactionSuccessful();
-                    CBDB.Data.sql.endTransaction();
+                    CBDB.getInstance().getSql().setTransactionSuccessful();
+                    CBDB.getInstance().getSql().endTransaction();
                     /* */
 
                     /*
@@ -169,13 +169,13 @@ public class UpdateCachesState extends AbstractAction {
             String sCanceld = canceled ? Translation.get("isCanceld") + br : "";
             if (result != -1) {
                 // Reload result from DB
-                synchronized (CBDB.Data.cacheList) {
+                synchronized (CBDB.getInstance().cacheList) {
                     String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                     CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
-                synchronized (CBDB.Data.cacheList) {
-                    MsgBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + CBDB.Data.cacheList.size(),
+                synchronized (CBDB.getInstance().cacheList) {
+                    MsgBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + CBDB.getInstance().cacheList.size(),
                             Translation.get("chkState"),
                             MsgBoxIcon.None);
                 }

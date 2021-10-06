@@ -1,14 +1,19 @@
 package de.droidcachebox.database;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.LogLevel;
-
-import java.io.IOException;
-import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SQLiteClass implements SQLiteInterface {
     private static final String log = "SQLiteClass";
@@ -119,8 +124,7 @@ public class SQLiteClass implements SQLiteInterface {
 
             rowcount = Integer.parseInt(rs2.getString(1));
             statement2.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ignored) {
         } finally {
             try {
                 if (statement2 != null)
@@ -476,12 +480,11 @@ public class SQLiteClass implements SQLiteInterface {
     @Override
     public void close() {
         try {
-            Log.trace(log, "close DB:");
             myDB.close();
-            myDB = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        myDB = null;
     }
 
 }

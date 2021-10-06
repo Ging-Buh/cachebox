@@ -37,7 +37,7 @@ public class TrackableListDAO {
      * Deleate all TBs
      */
     public static void clearDB() {
-        DraftsDatabase.Drafts.sql.delete("Trackable", "", null);
+        DraftsDatabase.getInstance().sql.delete("Trackable", "", null);
     }
 
 }

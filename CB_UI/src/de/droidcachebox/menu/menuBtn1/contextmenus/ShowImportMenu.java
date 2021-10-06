@@ -136,7 +136,7 @@ public class ShowImportMenu extends AbstractShowAction {
 
         AbstractFile exportAbstractFile = FileFactory.createFile(exportPath);
         Config.gpxExportFileName.setValue(exportAbstractFile.getPath());
-        Config.AcceptChanges();
+        Config.acceptChanges();
 
         // Delete File if exist
         if (exportAbstractFile.exists())
@@ -147,7 +147,7 @@ public class ShowImportMenu extends AbstractShowAction {
             }
 
         // Export all Caches from DB
-        final ArrayList<String> allGeocodesForExport = CBDB.Data.cacheList.getGcCodes();
+        final ArrayList<String> allGeocodesForExport = CBDB.getInstance().cacheList.getGcCodes();
 
         final int count = allGeocodesForExport.size();
         actExportedCount = 0;

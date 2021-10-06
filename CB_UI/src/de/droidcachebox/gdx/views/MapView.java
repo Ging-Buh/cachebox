@@ -105,7 +105,7 @@ import de.droidcachebox.utils.log.Log;
 
 public class MapView extends MapViewBase implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
     private static final String sKlasse = "MapView";
-    private CB_RectF targetArrow = new CB_RectF();
+    private final CB_RectF targetArrow = new CB_RectF();
     private TreeMap<Integer, Integer> distanceZoomLevel;
     private final MapMode mapMode;
     private final LiveButton liveButton;
@@ -196,7 +196,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
         setClickHandler((v, x, y, pointer, button) -> {
             WayPointRenderInfo minWpi = null;
-            if (targetArrow != null && targetArrow.contains(x, y)) {
+            if (targetArrow.contains(x, y)) {
                 if (GlobalCore.isSetSelectedCache()) {
                     if (GlobalCore.getSelectedWayPoint() != null) {
                         Coordinate tmp = GlobalCore.getSelectedWayPoint().getCoordinate();
@@ -290,7 +290,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
         if (Config.mapViewDPIFaktor.getValue() == 1) {
             Config.mapViewDPIFaktor.setValue(displayDensity);
-            Config.AcceptChanges();
+            Config.acceptChanges();
         }
         iconFactor = Config.mapViewDPIFaktor.getValue();
 
@@ -371,12 +371,12 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         }
 
                         // Reload result from DB
-                        synchronized (CBDB.Data.cacheList) {
+                        synchronized (CBDB.getInstance().cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                             CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                         }
 
-                        Cache selCache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode);
+                        Cache selCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(GCCode);
                         GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
                         CacheListChangedListeners.getInstance().cacheListChanged();
@@ -698,7 +698,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
             rating.setOrigin(wpUnderlay.getWidth() / 2, wpUnderlay.getHeight48() / 2);
             rating.setRotation(0);
             rating.draw(batch);
-            nameYMovement += wpUnderlay.getHeight48();
+            nameYMovement = nameYMovement + wpUnderlay.getHeight48();
         }
 
         // Show D/T-Rating
@@ -818,7 +818,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     public void createWaypointAtCenter() {
         String newGcCode;
         try {
-            newGcCode = CBDB.Data.createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
+            newGcCode = WaypointDAO.getInstance().createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
         } catch (Exception e) {
             return;
         }
@@ -839,11 +839,9 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                     // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
                     // definiert
                     // ist!!!
-                    WaypointDAO wpd = new WaypointDAO();
-                    wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
+                    WaypointDAO.getInstance().ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
                 }
-                WaypointDAO waypointDAO = new WaypointDAO();
-                waypointDAO.WriteToDatabase(waypoint);
+                WaypointDAO.getInstance().WriteToDatabase(waypoint);
 
                 // informiere WaypointListView über Änderung
                 WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
@@ -1012,7 +1010,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         // Log.debug(sKlasse, "setMapState :" + state);
 
         Config.lastMapToggleBtnState.setValue(state.ordinal());
-        Config.AcceptChanges();
+        Config.acceptChanges();
 
         boolean wasCarMode = isCarMode;
 
@@ -1168,7 +1166,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
                 if (Config.mapViewDPIFaktor.getValue() == 1) {
                     Config.mapViewDPIFaktor.setValue(displayDensity);
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                 }
                 iconFactor = Config.mapViewDPIFaktor.getValue();
 
@@ -1233,26 +1231,21 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     protected void setInitialLocation() {
         // Log.debug(sKlasse, "setInitialLocation");
         try {
-            if (CBDB.Data != null) {
-                if (CBDB.Data.cacheList != null) {
-                    synchronized (CBDB.Data.cacheList) {
-                        if (CBDB.Data.cacheList.size() > 0) {
-                            // Koordinaten des ersten Caches der Datenbank
-                            // nehmen
-                            setCenter(new CoordinateGPS(CBDB.Data.cacheList.get(0).getCoordinate().getLatitude(), CBDB.Data.cacheList.get(0).getCoordinate().getLongitude()));
-                            positionInitialized = true;
-                            // setLockPosition(0);
-                        } else {
-                            // Wenns auch den nicht gibt...)
-                            setCenter(new CoordinateGPS(48.0, 12.0));
-                        }
+            if (CBDB.getInstance().cacheList != null) {
+                synchronized (CBDB.getInstance().cacheList) {
+                    if (CBDB.getInstance().cacheList.size() > 0) {
+                        // Koordinaten des ersten Caches der Datenbank
+                        // nehmen
+                        setCenter(new CoordinateGPS(CBDB.getInstance().cacheList.get(0).getCoordinate().getLatitude(), CBDB.getInstance().cacheList.get(0).getCoordinate().getLongitude()));
+                        positionInitialized = true;
+                        // setLockPosition(0);
+                    } else {
+                        // Wenns auch den nicht gibt...)
+                        setCenter(new CoordinateGPS(48.0, 12.0));
                     }
-                } else {
-                    // Wenn cacheList == null
-                    setCenter(new CoordinateGPS(48.0, 12.0));
                 }
             } else {
-                // Wenn Data == null
+                // Wenn cacheList == null
                 setCenter(new CoordinateGPS(48.0, 12.0));
             }
         } catch (Exception e) {

@@ -22,11 +22,13 @@ import java.util.TimerTask;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
+import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.Categories;
 import de.droidcachebox.database.DraftsDatabase;
@@ -88,8 +90,8 @@ public class SelectDB extends ActivityBase {
 
                 String database = Config.workPath + "/" + NewDB_Name + ".db3";
                 Config.DatabaseName.setValue(NewDB_Name + ".db3");
-                CBDB.Data.sql.close();
-                CBDB.Data.startUp(database);
+                CBDB.getInstance().close();
+                CBDB.getInstance().startUp(database);
 
                 // OwnRepository?
                 if (data != null && !(Boolean) data) {
@@ -99,7 +101,7 @@ public class SelectDB extends ActivityBase {
                     Config.MapPackFolderLocal.setValue(folder + "Maps");
                     Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
                     Config.tileCacheFolderLocal.setValue(folder + "Cache");
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                     Log.debug(log,
                             NewDB_Name + " has own Repository:\n" + //
                                     Config.DescriptionImageFolderLocal.getValue() + ", \n" + //
@@ -123,21 +125,21 @@ public class SelectDB extends ActivityBase {
                         );
                 }
 
-                Config.AcceptChanges();
+                Config.acceptChanges();
 
                 CoreData.categories = new Categories();
-                CBDB.Data.updateCacheCountForGPXFilenames();
+                CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
-                synchronized (CBDB.Data.cacheList) {
+                synchronized (CBDB.getInstance().cacheList) {
                     CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
 
                 if (!FileIO.createDirectory(Config.workPath + "/User"))
                     return true;
-                DraftsDatabase.Drafts.startUp(Config.workPath + "/User/FieldNotes.db3");
+                DraftsDatabase.getInstance().startUp(Config.workPath + "/User/FieldNotes.db3");
 
-                Config.AcceptChanges();
+                Config.acceptChanges();
                 currentDBFile = FileFactory.createFile(database);
                 selectDB();
 
@@ -355,7 +357,7 @@ public class SelectDB extends ActivityBase {
         Config.MultiDBAsk.setValue(autoStartTime >= 0);
 
         Config.DatabaseName.setValue(currentDBFile.getName());
-        Config.AcceptChanges();
+        Config.acceptChanges();
 
         LayerManager.getInstance().initLayers();
 
@@ -505,11 +507,14 @@ public class SelectDB extends ActivityBase {
             lblInfo.setVAlignment(CB_Label.VAlignment.BOTTOM);
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
-            lblInfo.setText(CBDB.Data.getCacheCountInDB(theFileToShow.getAbsolutePath())
+
+            lblInfo.setText(PlatformUIBase.getCacheCountInDB(theFileToShow.getAbsolutePath())
                     + " Caches  "
                     + theFileToShow.length() / (1024 * 1024) + "MB"
                     + "    last use "
                     + sdf.format(theFileToShow.lastModified()));
+
+
             addChild(lblInfo);
 
             setClickHandler((v1, x, y, pointer, button) -> {

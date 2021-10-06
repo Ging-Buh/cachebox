@@ -18,8 +18,12 @@ package de.droidcachebox.gdx.utils;
 
 import com.badlogic.gdx.utils.Clipboard;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
+import java.awt.Toolkit;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 /**
@@ -28,6 +32,11 @@ import java.io.IOException;
  * @author mzechner
  */
 public class DesktopClipboard implements Clipboard, ClipboardOwner {
+    @Override
+    public boolean hasContents() {
+        return Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null) != null;
+    }
+
     @Override
     public String getContents() {
         String result = "";

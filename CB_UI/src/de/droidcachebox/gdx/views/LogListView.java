@@ -21,9 +21,9 @@ import java.util.Collections;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
@@ -109,7 +109,7 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
             setAdapter(null);
             logs = new CB_List<>();
             setEmptyMsgItem(Translation.get("EmptyLogList"));
-            for (LogEntry logEntry : CBDB.Data.getLogs(currentCache)) {
+            for (LogEntry logEntry : LogsTableDAO.getInstance().getLogs(currentCache)) {
                 if (GlobalCore.filterLogsOfFriends) {
                     if (!friendList.contains(logEntry.finder)) {
                         continue;

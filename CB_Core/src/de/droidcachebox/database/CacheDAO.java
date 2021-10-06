@@ -18,13 +18,13 @@ package de.droidcachebox.database;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.utils.DLong;
+import de.droidcachebox.utils.SDBM_Hash;
 import de.droidcachebox.utils.log.Log;
 
 public class CacheDAO {
@@ -35,7 +35,18 @@ public class CacheDAO {
     static final String SQL_GET_DETAIL_FROM_ID = "select " + SQL_DETAILS + SQL_BY_ID;
     static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
     static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates, FavPoints ";
-    private static final String log = "CacheDAO";
+    private static final String sClass = "CacheDAO";
+    private static CacheDAO cacheDAO;
+    private SQLiteInterface sql;
+
+    private CacheDAO() {
+        sql = CBDB.getInstance().sql;
+    }
+
+    public static CacheDAO getInstance() {
+        if (cacheDAO == null) cacheDAO = new CacheDAO();
+        return cacheDAO;
+    }
 
     Cache readFromCursor(CoreCursor reader, boolean fullDetails, boolean withDescription) {
         try {
@@ -66,7 +77,7 @@ public class CacheDAO {
             }
             return cache;
         } catch (Exception exc) {
-            Log.err(log, "Read Cache", "", exc);
+            Log.err(sClass, "Read Cache", "", exc);
             return null;
         }
     }
@@ -76,7 +87,7 @@ public class CacheDAO {
             return true;
         cache.setGeoCacheDetail(new CacheDetail());
 
-        CoreCursor reader = CBDB.Data.sql.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.generatedId)});
+        CoreCursor reader = sql.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.generatedId)});
 
         try {
             if (reader != null && reader.getCount() > 0) {
@@ -218,9 +229,9 @@ public class CacheDAO {
             args.put("Hint", cache.getHint());
         }
         try {
-            CBDB.Data.sql.insert("Caches", args);
+            sql.insert("Caches", args);
         } catch (Exception exc) {
-            Log.err(log, "Write Cache", "", exc);
+            Log.err(sClass, "Write Cache", "", exc);
         }
     }
 
@@ -228,10 +239,10 @@ public class CacheDAO {
         Parameters args = new Parameters();
         args.put("found", cache.isFound());
         try {
-            CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
+            sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
             Replication.FoundChanged(cache.generatedId, cache.isFound());
         } catch (Exception exc) {
-            Log.err(log, "Write Cache Found", "", exc);
+            Log.err(sClass, "Write Cache Found", "", exc);
         }
     }
 
@@ -300,10 +311,10 @@ public class CacheDAO {
         args.put("TourName", cache.getTourName());
         args.put("FavPoints", cache.favPoints);
         try {
-            long ret = CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
+            long ret = sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
             return ret > 0;
         } catch (Exception exc) {
-            Log.err(log, "Update Cache", "", exc);
+            Log.err(sClass, "Update Cache", "", exc);
             return false;
         }
     }
@@ -315,7 +326,7 @@ public class CacheDAO {
      *         or null if not in table
      */
     public Cache getFromDbByCacheId(long CacheID) {
-        CoreCursor reader = CBDB.Data.sql.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = sql.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
         try {
             if (reader != null && reader.getCount() > 0) {
                 reader.moveToFirst();
@@ -341,7 +352,7 @@ public class CacheDAO {
     {
         String where = SQL_GET_CACHE + (withDetail ? ", " + SQL_DETAILS : "") + SQL_BY_GC_CODE;
 
-        CoreCursor reader = CBDB.Data.sql.rawQuery(where, new String[]{GcCode});
+        CoreCursor reader = sql.rawQuery(where, new String[]{GcCode});
 
         try {
             if (reader != null && reader.getCount() > 0) {
@@ -366,7 +377,7 @@ public class CacheDAO {
 
     public boolean cacheExists(long CacheID) {
 
-        CoreCursor reader = CBDB.Data.sql.rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = sql.rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
 
         boolean exists = (reader.getCount() > 0);
 
@@ -423,9 +434,9 @@ public class CacheDAO {
         if (changed) {
 
             try {
-                CBDB.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.generatedId)});
+                sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.generatedId)});
             } catch (Exception exc) {
-                Log.err(log, "Update Cache", "", exc);
+                Log.err(sClass, "Update Cache", "", exc);
 
             }
         }
@@ -433,46 +444,155 @@ public class CacheDAO {
         return changed;
     }
 
-    /* This seems to be no longer necessary */
-    // public void WriteImports(Iterator<Cache> Caches, int CacheCount, ImporterProgress ip)
-    // {
-    //
-    // // Indexing DB
-    // CacheList IndexDB = new CacheList();
-    // CacheListDAO cacheListDAO = new CacheListDAO();
-    // IndexDB = cacheListDAO.readCacheList(IndexDB, "", true, true);
-    //
-    // ip.setJobMax("IndexingDB", IndexDB.size());
-    // ArrayList<String> index = new ArrayList<String>();
-    // for (int i = 0, n = IndexDB.size(); i < n; i++)
-    // {
-    // Cache c = IndexDB.get(i);
-    // ip.ProgressInkrement("IndexingDB", "index- " + c.getGcCode(), false);
-    // index.add(c.getGcCode());
-    // }
-    //
-    // ip.setJobMax("WriteCachesToDB", CacheCount);
-    // while (Caches.hasNext())
-    // {
-    // Cache cache = Caches.next();
-    //
-    // if (index.contains(cache.getGcCode()))
-    // {
-    // ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.getGcCode(), false);
-    // updateDatabase(cache);
-    // }
-    // else
-    // {
-    // ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.getGcCode(), false);
-    // writeToDatabase(cache);
-    // }
-    //
-    // // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-    // cache.setLongDescription("");
-    //
-    // }
-    // }
+    public void updateCacheCountForGPXFilenames() {
+        // welche GPXFilenamen sind in der DB erfasst
+        sql.beginTransaction();
+        try {
+            CoreCursor reader = sql.rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
+            reader.moveToFirst();
 
+            while (!reader.isAfterLast()) {
+                long GPXFilename_ID = reader.getLong(0);
+                long CacheCount = reader.getLong(1);
+
+                Parameters val = new Parameters();
+                val.put("CacheCount", CacheCount);
+                sql.update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
+
+                reader.moveToNext();
+            }
+
+            sql.delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
+            sql.delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
+            reader.close();
+            sql.setTransactionSuccessful();
+        } catch (Exception ignored) {
+        } finally {
+            sql.endTransaction();
+        }
+
+        CategoryDAO.getInstance().loadCategoriesFromDatabase();
+    }
+
+    public String getNote(Cache cache) {
+        String resultString = "";
+        CoreCursor c = sql.rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(cache.generatedId)});
+        c.moveToFirst();
+        if (!c.isAfterLast()) {
+            resultString = c.getString(0);
+        }
+        cache.setNoteChecksum((int) SDBM_Hash.sdbm(resultString));
+        return resultString;
+    }
+
+    public String getNote(long generatedId) {
+        String resultString = "";
+        CoreCursor c = sql.rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(generatedId)});
+        c.moveToFirst();
+        if (!c.isAfterLast()) {
+            resultString = c.getString(0);
+        }
+        return resultString;
+    }
+
+    /**
+     * geänderte Note nur in die DB schreiben
+     *
+     * @param cacheId ?
+     * @param value   ?
+     */
+    public void setNote(long cacheId, String value) {
+        Parameters args = new Parameters();
+        args.put("Notes", value);
+        args.put("HasUserData", true);
+
+        sql.update("Caches", args, "id=" + cacheId, null);
+    }
+
+    public void setNote(Cache cache, String value) {
+        int newNoteCheckSum = (int) SDBM_Hash.sdbm(value);
+
+        Replication.NoteChanged(cache.generatedId, cache.getNoteChecksum(), newNoteCheckSum);
+        if (newNoteCheckSum != cache.getNoteChecksum()) {
+            setNote(cache.generatedId, value);
+            cache.setNoteChecksum(newNoteCheckSum);
+        }
+    }
+
+    public String getSolver(Cache cache) {
+        String resultString = getSolver(cache.generatedId);
+        cache.setSolverChecksum((int) SDBM_Hash.sdbm(resultString));
+        return resultString;
+    }
+
+    public String getSolver(long cacheId) {
+        try {
+            String resultString = "";
+            CoreCursor c = sql.rawQuery("select Solver from Caches where Id=?", new String[]{String.valueOf(cacheId)});
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                resultString = c.getString(0);
+            }
+            return resultString;
+        } catch (Exception ex) {
+            return "";
+        }
+    }
+
+    /**
+     * geänderten Solver nur in die DB schreiben
+     */
+    private void setSolver(long cacheId, String value) {
+        Parameters args = new Parameters();
+        args.put("Solver", value);
+        args.put("HasUserData", true);
+
+        sql.update("Caches", args, "id=" + cacheId, null);
+    }
+
+    public void setSolver(Cache cache, String value) {
+        int newSolverCheckSum = (int) SDBM_Hash.sdbm(value);
+
+        Replication.SolverChanged(cache.generatedId, cache.getSolverChecksum(), newSolverCheckSum);
+        if (newSolverCheckSum != cache.getSolverChecksum()) {
+            setSolver(cache.generatedId, value);
+            cache.setSolverChecksum(newSolverCheckSum);
+        }
+    }
+
+    public String getDescription(Cache cache) {
+        String description = "";
+        CoreCursor reader = sql.rawQuery("select Description from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
+        if (reader == null)
+            return "";
+        reader.moveToFirst();
+        while (!reader.isAfterLast()) {
+            if (reader.getString(0) != null)
+                description = reader.getString(0);
+            reader.moveToNext();
+        }
+        reader.close();
+
+        return description;
+    }
+
+    public String getShortDescription(Cache cache) {
+        String description = "";
+        CoreCursor reader = sql.rawQuery("select ShortDescription from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
+        if (reader == null)
+            return "";
+        reader.moveToFirst();
+        while (!reader.isAfterLast()) {
+            if (reader.getString(0) != null)
+                description = reader.getString(0);
+            reader.moveToNext();
+        }
+        reader.close();
+
+        return description;
+    }
+
+    /*
     public ArrayList<String> getGcCodesFromMustLoadImages() {
 
         ArrayList<String> GcCodes = new ArrayList<String>();
@@ -491,6 +611,9 @@ public class CacheDAO {
         return GcCodes;
     }
 
+     */
+
+    /*
     public boolean loadBooleanValue(String gcCode, String key) {
         CoreCursor reader = CBDB.Data.sql.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
         try {
@@ -509,5 +632,7 @@ public class CacheDAO {
 
         return false;
     }
+
+     */
 
 }

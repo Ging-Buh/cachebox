@@ -131,10 +131,10 @@ public class LiveMapQue {
                     } else {
                         if (geoCachesToRemove.size > 0) {
                             new Thread(() -> {
-                                synchronized (CBDB.Data.cacheList) {
+                                synchronized (CBDB.getInstance().cacheList) {
                                     // todo reuse removeAll
                                     for (Cache geoCache : geoCachesToRemove) {
-                                        CBDB.Data.cacheList.remove(geoCache);
+                                        CBDB.getInstance().cacheList.remove(geoCache);
                                     }
                                 }
                             }).start();

@@ -50,32 +50,32 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
         if (Energy.isDisplayOff())
             return;
 
-        synchronized (CBDB.Data.cacheList) {
+        synchronized (CBDB.getInstance().cacheList) {
 
             // remove Parking Cache
-            Cache cache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark");
+            Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
             if (cache != null)
-                CBDB.Data.cacheList.remove(cache);
+                CBDB.getInstance().cacheList.remove(cache);
             // add Parking Cache from saved Config (ParkingLatitude, ParkingLongitude)
             if (CB_Core_Settings.ParkingLatitude.getValue() != 0) {
                 cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", GeoCacheType.MyParking, "CBPark");
-                CBDB.Data.cacheList.add(0, cache);
+                CBDB.getInstance().cacheList.add(0, cache);
             }
 
             for (Array<Cache> geoCacheList : LiveMapQue.getInstance().getAllCacheLists()) {
                 for (Cache geoCache : geoCacheList) {
                     if (geoCache != null) {
                         if (FilterInstances.isLastFilterSet()) {
-                            if (!CBDB.Data.cacheList.contains(geoCache)) {
+                            if (!CBDB.getInstance().cacheList.contains(geoCache)) {
                                 if (FilterInstances.getLastFilter().passed(geoCache)) {
                                     geoCache.setLive(true);
-                                    CBDB.Data.cacheList.add(geoCache);
+                                    CBDB.getInstance().cacheList.add(geoCache);
                                 }
                             }
                         } else {
-                            if (!CBDB.Data.cacheList.contains(geoCache)) {
+                            if (!CBDB.getInstance().cacheList.contains(geoCache)) {
                                 geoCache.setLive(true);
-                                CBDB.Data.cacheList.add(geoCache);
+                                CBDB.getInstance().cacheList.add(geoCache);
                             }
                         }
                     }

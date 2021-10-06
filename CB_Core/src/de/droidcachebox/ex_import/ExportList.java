@@ -35,7 +35,7 @@ public class ExportList extends ArrayList<ExportEntry> {
 
         CoreCursor reader = null;
         try {
-            reader = CBDB.Data.sql.rawQuery(sql, null);
+            reader = CBDB.getInstance().getSql().rawQuery(sql, null);
         } catch (Exception exc) {
             Log.err(log, "ExportList", "LoadExportList", exc);
         }

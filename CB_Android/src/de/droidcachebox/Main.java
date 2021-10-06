@@ -59,10 +59,7 @@ import de.droidcachebox.controls.HorizontalListView;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.CacheboxDB;
-import de.droidcachebox.database.DraftsDB;
 import de.droidcachebox.database.DraftsDatabase;
-import de.droidcachebox.database.SettingsDB;
 import de.droidcachebox.database.SettingsDatabase;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.DisplayType;
@@ -201,6 +198,10 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Plattform.used = Plattform.Android;
+        PlatformUIBase.AndroidVersion = Build.VERSION.SDK_INT;
+
         if (GlobalCore.RunFromSplash) {
             if (savedInstanceState != null) {
                 GlobalCore.restartAfterKill = true;
@@ -214,9 +215,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     new Config(savedInstanceState.getString("WorkPath"));
                     if (!FileIO.createDirectory(Config.workPath + "/User"))
                         return;
-                    new SettingsDB(this);
-                    SettingsDB.Settings.startUp(Config.workPath + "/User/Config.db3");
-                    new CacheboxDB(this);
+                    SettingsDatabase.getInstance().startUp(Config.workPath + "/User/Config.db3");
 
                     Resources res = getResources();
                     DevicesSizes ui = new DevicesSizes();
@@ -236,39 +235,10 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 GlobalCore.restartAfterKill = false;
             }
 
-            new DraftsDB(this);
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            setContentView(R.layout.main);
-            quickButtonListView = findViewById(R.id.quickButtonListView);
-            layoutTop = findViewById(R.id.layoutTop);
-
-            // initialize GL the gdx ApplicationListener (Window Size, load Sprites, ...)
-            int width = UiSizes.getInstance().getWindowWidth();
-            int height = UiSizes.getInstance().getWindowHeight();
-            CB_RectF rec = new CB_RectF(0, 0, width, height);
-            new GL(width, height, new MainViewInit(rec), new ViewManager(rec));
-            GL.that.setTextInput(new Android_TextInput(this));
-
-            // registerReceiver receiver for screen switched on/off
-            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-            intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-            registerReceiver(screenBroadcastReceiver, intentFilter);
-
-            ActivityUtils.onActivityCreateSetTheme(this);
-
-            Config.SuppressPowerSaving.addSettingChangedListener(handleSuppressPowerSavingConfigChanged);
-            Config.ImperialUnits.addSettingChangedListener(handleImperialUnitsConfigChanged);
-
-            Log.debug(sKlasse, "initLocatorBase");
-            initLocatorBase();
-
-            Plattform.used = Plattform.Android;
-            PlatformUIBase.AndroidVersion = Build.VERSION.SDK_INT;
-            showViewListener = new ShowViewListener(this);
-            PlatformUIBase.setShowViewListener(showViewListener);
             androidUIBaseMethods = new AndroidUIBaseMethods(this);
             PlatformUIBase.setMethods(androidUIBaseMethods);
+            SettingsDatabase.getInstance().startUp(Config.workPath + "/User/Config.db3");
+
             Object clipboardService = getSystemService(CLIPBOARD_SERVICE);
             if (clipboardService != null) {
                 if (clipboardService instanceof android.content.ClipboardManager) {
@@ -283,6 +253,35 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 }
                 */
             }
+
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            setContentView(R.layout.main);
+            quickButtonListView = findViewById(R.id.quickButtonListView);
+            layoutTop = findViewById(R.id.layoutTop);
+
+            // initialize GL the gdx ApplicationListener (Window Size, load Sprites, ...)
+            int width = UiSizes.getInstance().getWindowWidth();
+            int height = UiSizes.getInstance().getWindowHeight();
+            CB_RectF rec = new CB_RectF(0, 0, width, height);
+            new GL(width, height, new MainViewInit(rec), new ViewManager(rec));
+            GL.that.setTextInput(new Android_TextInput(this));
+
+            showViewListener = new ShowViewListener(this);
+            PlatformUIBase.setShowViewListener(showViewListener);
+
+            // registerReceiver receiver for screen switched on/off
+            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+            intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+            registerReceiver(screenBroadcastReceiver, intentFilter);
+
+            ActivityUtils.onActivityCreateSetTheme(this);
+
+            Config.SuppressPowerSaving.addSettingChangedListener(handleSuppressPowerSavingConfigChanged);
+            Config.ImperialUnits.addSettingChangedListener(handleImperialUnitsConfigChanged);
+
+            Log.debug(sKlasse, "initLocatorBase");
+            initLocatorBase();
 
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -496,7 +495,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             if (isFinishing()) {
                 Log.info(sKlasse, "isFinishing");
                 if (GlobalCore.RunFromSplash) {
-                    Config.settings.WriteToDB();
+                    Config.settings.writeToDatabases();
 
                     if (wakeLock != null) {
                         wakeLock.release();
@@ -509,14 +508,14 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     CacheListChangedListeners.getInstance().clear();
                     showViewListener.onDestroyWithFinishing();
 
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
 
-                    CBDB.Data.sql.close();
-                    DraftsDatabase.Drafts.sql.close();
+                    CBDB.getInstance().close();
+                    DraftsDatabase.getInstance().close();
 
                     Sprites.destroyCache();
 
-                    SettingsDatabase.Settings.sql.close();
+                    SettingsDatabase.getInstance().close();
 
                 }
 
@@ -527,9 +526,9 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 Log.info(sKlasse, "isFinishing==false");
                 showViewListener.onDestroyWithoutFinishing();
 
-                SettingsDatabase.Settings.sql.close();
-                CBDB.Data.sql.close();
-                DraftsDatabase.Drafts.sql.close();
+                SettingsDatabase.getInstance().close();
+                CBDB.getInstance().close();
+                DraftsDatabase.getInstance().close();
 
                 super.onDestroy();
             }

@@ -16,7 +16,6 @@
 package de.droidcachebox.gdx.views;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
-import static de.droidcachebox.database.CBDB.Data;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -37,6 +36,7 @@ import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GroundspeakAPI;
+import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheList;
@@ -167,19 +167,19 @@ public class DraftsView extends V_ListView {
                     // Found it! -> Cache als gefunden markieren
                     if (!GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(true);
-                        CacheDAO cacheDAO = new CacheDAO();
+                        CacheDAO cacheDAO = CacheDAO.getInstance();
                         cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                         Config.FoundOffset.setValue(draft.foundNumber);
-                        Config.AcceptChanges();
+                        Config.acceptChanges();
                     }
 
                 } else if (draft.type == LogType.didnt_find) { // DidNotFound -> Cache als nicht gefunden markieren
                     if (GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(false);
-                        CacheDAO cacheDAO = new CacheDAO();
+                        CacheDAO cacheDAO = CacheDAO.getInstance();
                         cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                         Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
-                        Config.AcceptChanges();
+                        Config.acceptChanges();
                     } // und eine evtl. vorhandene Draft FoundIt löschen
                     drafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.found);
                 }
@@ -234,7 +234,7 @@ public class DraftsView extends V_ListView {
                 // Found it! -> fremden Cache als gefunden markieren
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
-                    CacheDAO cacheDAO = new CacheDAO();
+                    CacheDAO cacheDAO = CacheDAO.getInstance();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                     new QuickDraftFeedbackPopUp(true).show(PopUp_Base.SHOW_TIME_SHORT);
                     PlatformUIBase.vibrate();
@@ -243,7 +243,7 @@ public class DraftsView extends V_ListView {
                 // DidNotFound -> fremden Cache als nicht gefunden markieren
                 if (GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(false);
-                    CacheDAO cacheDAO = new CacheDAO();
+                    CacheDAO cacheDAO = CacheDAO.getInstance();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                     new QuickDraftFeedbackPopUp(false).show(PopUp_Base.SHOW_TIME_SHORT);
                     PlatformUIBase.vibrate();
@@ -339,10 +339,10 @@ public class DraftsView extends V_ListView {
                 // Found it! -> Cache als gefunden markieren
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
-                    CacheDAO cacheDAO = new CacheDAO();
+                    CacheDAO cacheDAO = CacheDAO.getInstance();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                     Config.FoundOffset.setValue(currentDraft.foundNumber);
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                 }
                 // und eine evtl. vorhandene Draft DNF löschen
                 tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.didnt_find);
@@ -350,10 +350,10 @@ public class DraftsView extends V_ListView {
                 // DidNotFound -> Cache als nicht gefunden markieren
                 if (GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(false);
-                    CacheDAO cacheDAO = new CacheDAO();
+                    CacheDAO cacheDAO = CacheDAO.getInstance();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                     Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                 }
                 // und eine evtl. vorhandene Draft FoundIt löschen
                 tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.found);
@@ -598,7 +598,7 @@ public class DraftsView extends V_ListView {
                 public void callBack(String description) {
                     GL.that.postAsync(() -> {
                         Config.ImageUploadLastUsedPath.setValue(abstractFile.getParent());
-                        Config.AcceptChanges();
+                        Config.acceptChanges();
                         try {
                             String image = Base64.encodeBytes(WebbUtils.readBytes(abstractFile.getFileInputStream()));
                             GroundspeakAPI.uploadLogImage(currentDraft.gcLogReference, image, description);
@@ -697,11 +697,11 @@ public class DraftsView extends V_ListView {
                 return;
             }
 
-            synchronized (Data.cacheList) {
-                cache = Data.cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
+            synchronized (CBDB.getInstance().cacheList) {
+                cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
                 if (cache == null) {
-                    Data.cacheList.add(tmpCache);
-                    cache = Data.cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
+                    CBDB.getInstance().cacheList.add(tmpCache);
+                    cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
                 }
             }
 
@@ -720,7 +720,7 @@ public class DraftsView extends V_ListView {
             if (currentDraft == null)
                 return;
             // final Cache cache =
-            // Database.Data.cacheList.GetCacheByGcCode(aktDraft.gcCode);
+            // Database.getInstance().cacheList.GetCacheByGcCode(aktDraft.gcCode);
 
             Cache tmpCache = null;
             // suche den Cache aus der DB.
@@ -752,14 +752,14 @@ public class DraftsView extends V_ListView {
                     if (cache != null) {
                         if (cache.isFound()) {
                             cache.setFound(false);
-                            CacheDAO cacheDAO = new CacheDAO();
+                            CacheDAO cacheDAO = CacheDAO.getInstance();
                             cacheDAO.WriteToDatabase_Found(cache);
                             Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
-                            Config.AcceptChanges();
+                            Config.acceptChanges();
                             // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
                             // damit das Smiley Symbol aus der Map und der CacheList verschwindet
-                            synchronized (Data.cacheList) {
-                                Cache tc = Data.cacheList.getCacheByIdFromCacheList(cache.generatedId);
+                            synchronized (CBDB.getInstance().cacheList) {
+                                Cache tc = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(cache.generatedId);
                                 if (tc != null) {
                                     tc.setFound(false);
                                 }

@@ -204,11 +204,10 @@ public class Cache implements Comparable<Cache>, Serializable {
      * Load Detail Information from DB
      */
     public void loadDetail() {
-        CacheDAO dao = new CacheDAO();
+        CacheDAO dao = CacheDAO.getInstance();
         dao.readDetail(this);
         // load all Waypoints with full Details
-        WaypointDAO wdao = new WaypointDAO();
-        CB_List<Waypoint> readWaypoints = wdao.getWaypointsFromCacheID(generatedId, true);
+        CB_List<Waypoint> readWaypoints = WaypointDAO.getInstance().getWaypointsFromCacheID(generatedId, true);
         if (wayPoints == null) wayPoints = new CB_List<>();
         for (int i = 0; i < readWaypoints.size(); i++) {
             Waypoint readWaypoint = readWaypoints.get(i);
@@ -900,7 +899,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getLongDescription() {
         if (geoCacheDetail != null) {
             if (geoCacheDetail.getLongDescription() == null || geoCacheDetail.getLongDescription().length() == 0) {
-                return CBDB.Data.getDescription(this);
+                return CacheDAO.getInstance().getDescription(this);
             }
             return geoCacheDetail.getLongDescription();
         } else {
@@ -918,7 +917,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getShortDescription() {
         if (geoCacheDetail != null) {
             if (geoCacheDetail.getShortDescription() == null || geoCacheDetail.getShortDescription().length() == 0) {
-                return CBDB.Data.getShortDescription(this);
+                return CacheDAO.getInstance().getShortDescription(this);
             }
             return geoCacheDetail.getShortDescription();
         } else {

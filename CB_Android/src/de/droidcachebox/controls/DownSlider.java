@@ -596,11 +596,11 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
                 if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow) {
                     QuickButtonHeight = QuickButtonMaxHeight;
                     Config.quickButtonLastShow.setValue(true);
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                 } else {
                     QuickButtonHeight = 0;
                     Config.quickButtonLastShow.setValue(false);
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                 }
 
                 main.setQuickButtonHeight(QuickButtonHeight);

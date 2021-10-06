@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Camera;
 import android.location.GnssStatus;
 import android.location.GpsSatellite;
@@ -87,7 +89,7 @@ import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
 
 public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationListener {
-    private static final String sKlasse = "PlatformListener";
+    private static final String sClass = "PlatformListener";
     private static final int REQUEST_GET_APIKEY = 987654321;
     private static final int ACTION_OPEN_DOCUMENT_TREE = 6518;
     private static final int useGNSS = Build.VERSION_CODES.N;
@@ -130,7 +132,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
             try {
                 getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime1, 1, this);
             } catch (SecurityException sex) {
-                Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
+                Log.err(sClass, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
             }
         };
         Config.gpsUpdateTime.addSettingChangedListener(handleGpsUpdateTimeConfigChanged);
@@ -175,13 +177,13 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                 @Override
                 public void onStarted() {
                     // GPS has startet
-                    Log.debug(sKlasse, "Gnss started");
+                    Log.debug(sClass, "Gnss started");
                 }
 
                 @Override
                 public void onStopped() {
                     // GPS has stopped
-                    Log.debug(sKlasse, "Gnss stopped");
+                    Log.debug(sClass, "Gnss stopped");
                 }
             };
         } else {
@@ -325,22 +327,22 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     @Override
     public void switchToGpsMeasure() {
         try {
-            Log.info(sKlasse, "switchToGpsMeasure()");
+            Log.info(sClass, "switchToGpsMeasure()");
             int updateTime = Config.gpsUpdateTime.getValue();
             getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime, 0, this);
         } catch (SecurityException ex) {
-            Log.err(sKlasse, "switchToGpsMeasure: ", ex);
+            Log.err(sClass, "switchToGpsMeasure: ", ex);
         }
     }
 
     @Override
     public void switchToGpsDefault() {
-        Log.info(sKlasse, "switchtoGpsDefault()");
+        Log.info(sClass, "switchtoGpsDefault()");
         int updateTime = Config.gpsUpdateTime.getValue();
         try {
             getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime, 1, this);
         } catch (SecurityException sex) {
-            Log.err(sKlasse, "switchtoGpsDefault: " + sex.getLocalizedMessage());
+            Log.err(sClass, "switchtoGpsDefault: " + sex.getLocalizedMessage());
         }
     }
 
@@ -353,13 +355,13 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                     androidApplication.removeAndroidEventListener(handlingGetApiAuth);
                     if (requestCode == REQUEST_GET_APIKEY) {
                         GL.that.RunIfInitial(SettingsActivity::resortList);
-                        Config.AcceptChanges();
+                        Config.acceptChanges();
                     }
                 };
             androidApplication.addAndroidEventListener(handlingGetApiAuth);
             mainActivity.startActivityForResult(intent, REQUEST_GET_APIKEY);
         } else {
-            Log.err(sKlasse, "GcApiLogin class not found");
+            Log.err(sClass, "GcApiLogin class not found");
         }
     }
 
@@ -373,23 +375,23 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
             Uri uri = Uri.parse(url);
             Intent intent = new Intent(ACTION_VIEW);
             intent.setDataAndType(uri, "text/html");
-            if (!defaultBrowserPackageName.equals("android")) {
-                intent.setPackage(defaultBrowserPackageName);
-            } else {
+            if (defaultBrowserPackageName.equals("android")) {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 // The BROWSABLE category is required to get links from web pages.
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            } else {
+                intent.setPackage(defaultBrowserPackageName);
             }
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
-                Log.info(sKlasse, "Start activity for " + uri.toString());
+                Log.info(sClass, "Start activity for " + uri.toString());
             } else {
-                Log.err(sKlasse, "Activity for " + url + " not visible. (" + defaultBrowserPackageName + "). Try startActivity(intent) anyway.");
+                Log.err(sClass, "Activity for " + url + " not visible. (" + defaultBrowserPackageName + "). Try startActivity(intent) anyway.");
                 // Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
                 // start independent from visibility ( Android 11 hides, even if invisible, a browser starts! )
             }
             mainActivity.startActivity(intent);
         } catch (Exception ex) {
-            Log.err(sKlasse, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", ex);
+            Log.err(sClass, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", ex);
         }
     }
 
@@ -417,10 +419,10 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
             // speichere selektierten Cache, da nicht alles über die
             // SelectedCacheEventList läuft
             Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Config.AcceptChanges();
-            Log.info(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
+            Config.acceptChanges();
+            Log.info(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
-        CBDB.Data.sql.close();
+        CBDB.getInstance().close();
         mainActivity.finish();
     }
 
@@ -433,7 +435,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
             if (ViewManager.that.isInitialized()) {
                 String externalRequestGCCode = extras.getString("GcCode");
                 if (externalRequestGCCode != null) {
-                    Log.info(sKlasse, "importCacheByGCCode");
+                    Log.info(sClass, "importCacheByGCCode");
                     mainActivity.getIntent().removeExtra("GcCode");
                     importCacheByGCCode(externalRequestGCCode);
                 }
@@ -445,28 +447,28 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                         AbstractFile destinationFile = FileFactory.createFile(FZKDownload.getInstance().getPathForMapFile(), sourceFile.getName());
                         boolean result = sourceFile.renameTo(destinationFile);
                         String sResult = result ? " ok!" : " no success!";
-                        Log.info(sKlasse, "Move map-file " + destinationFile.getPath() + sResult);
+                        Log.info(sClass, "Move map-file " + destinationFile.getPath() + sResult);
                         if (result) LayerManager.getInstance().initLayers();
                     } else {
-                        Log.info(sKlasse, "importGPXFile (*.gpx or *.zip)");
+                        Log.info(sClass, "importGPXFile (*.gpx or *.zip)");
                         importGPXFile(externalRequestGpxPath);
                     }
                 }
                 String externalRequestGuid = extras.getString("Guid");
                 if (externalRequestGuid != null) {
-                    Log.info(sKlasse, "importCacheByGuid");
+                    Log.info(sClass, "importCacheByGuid");
                     mainActivity.getIntent().removeExtra("Guid");
                     importCacheByGuid();
                 }
                 String externalRequestLatLon = extras.getString("LatLon");
                 if (externalRequestLatLon != null) {
-                    Log.info(sKlasse, "positionLatLon");
+                    Log.info(sClass, "positionLatLon");
                     mainActivity.getIntent().removeExtra("LatLon");
                     positionLatLon(externalRequestLatLon);
                 }
                 String externalRequestMapDownloadPath = extras.getString("MapDownloadPath");
                 if (externalRequestMapDownloadPath != null) {
-                    Log.info(sKlasse, "MapDownload");
+                    Log.info(sClass, "MapDownload");
                     mainActivity.getIntent().removeExtra("MapDownloadPath");
                     FZKDownload.getInstance().importByUrl(externalRequestMapDownloadPath);
                     GL.that.showActivity(FZKDownload.getInstance());
@@ -474,7 +476,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                 }
                 String externalRequestName = extras.getString("Name");
                 if (externalRequestName != null) {
-                    Log.info(sKlasse, "importCacheByName");
+                    Log.info(sClass, "importCacheByName");
                     mainActivity.getIntent().removeExtra("Name");
                     importCacheByName();
                 }
@@ -575,10 +577,25 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
         return true;
     }
 
+    @Override
+    public int getCacheCountInDB(String absolutePath) {
+        try {
+            SQLiteDatabase myDB = SQLiteDatabase.openDatabase(absolutePath, null, SQLiteDatabase.OPEN_READONLY);
+            Cursor c = myDB.rawQuery("select count(*) from Caches", null);
+            c.moveToFirst();
+            int count = c.getInt(0);
+            c.close();
+            myDB.close();
+            return count;
+        } catch (Exception ignored) {
+        }
+        return 0;
+    }
+
     private void positionLatLon(String externalRequestLatLon) {
         String[] s = externalRequestLatLon.split(",");
         Coordinate coordinate = new Coordinate(Double.parseDouble(s[0]), Double.parseDouble(s[1]));
-        Log.info(sKlasse, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
+        Log.info(sClass, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
         if (coordinate.isValid()) {
             ShowMap.getInstance().execute();
             ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
@@ -620,22 +637,22 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
         TimerTask gpxImportTask = new TimerTask() {
             @Override
             public void run() {
-                Log.info(sKlasse, "ImportGPXFile");
+                Log.info(sClass, "ImportGPXFile");
                 mainActivity.runOnUiThread(() -> wd = CancelWaitDialog.ShowWait(Translation.get("ImportGPX"), () -> wd.close(), new ICancelRunnable() {
                     @Override
                     public void run() {
-                        Log.info(sKlasse, "Import GPXFile from " + externalRequestGpxPath + " started");
+                        Log.info(sClass, "Import GPXFile from " + externalRequestGpxPath + " started");
                         Date ImportStart = new Date();
                         Importer importer = new Importer();
                         ImporterProgress ip = new ImporterProgress();
 
-                        CBDB.Data.sql.beginTransaction();
+                        CBDB.getInstance().getSql().beginTransaction();
                         try {
                             importer.importGpx(externalRequestGpxPath, ip);
                         } catch (Exception ignored) {
                         }
-                        CBDB.Data.sql.setTransactionSuccessful();
-                        CBDB.Data.sql.endTransaction();
+                        CBDB.getInstance().getSql().setTransactionSuccessful();
+                        CBDB.getInstance().getSql().endTransaction();
 
                         wd.close();
                         CacheListChangedListeners.getInstance().cacheListChanged();
@@ -644,7 +661,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
 
                         long ImportZeit = new Date().getTime() - ImportStart.getTime();
                         String msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
-                        Log.info(sKlasse, msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
+                        Log.info(sClass, msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
                         GL.that.toast(msg);
                     }
 
@@ -675,7 +692,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
         }
         askForLocationPermission = false;
         if (locationManager == null || forceInitialization) {
-            Log.info(sKlasse, "Initialise  location manager");
+            Log.info(sClass, "Initialise  location manager");
 
             // Get the (gps) location manager
             locationManager = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
@@ -703,7 +720,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                 }
 
             } catch (SecurityException ex) {
-                Log.err(sKlasse, "Config.gpsUpdateTime changed: ", ex);
+                Log.err(sClass, "Config.gpsUpdateTime changed: ", ex);
             }
         }
         return locationManager;

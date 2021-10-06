@@ -41,7 +41,7 @@ public class ShowCacheList extends AbstractShowAction {
     private MsgBox gL_MsgBox;
 
     private ShowCacheList() {
-        super("cacheList", "  (" + CBDB.Data.cacheList.size() + ")");
+        super("cacheList", "  (" + CBDB.getInstance().cacheList.size() + ")");
         editCache = null;
     }
 
@@ -92,10 +92,10 @@ public class ShowCacheList extends AbstractShowAction {
 
         MenuItem mi;
         cm.addMenuItem("ResortList", Sprites.getSprite(IconName.sortIcon.name()), () -> {
-            if (!CBDB.Data.cacheList.resortAtWork) {
-                synchronized (CBDB.Data.cacheList) {
+            if (!CBDB.getInstance().cacheList.resortAtWork) {
+                synchronized (CBDB.getInstance().cacheList) {
                     Log.debug("ShowCacheList", "sort CacheList by Menu ResortList");
-                    CacheWithWP nearstCacheWp = CBDB.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                    CacheWithWP nearstCacheWp = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                     if (nearstCacheWp != null && nearstCacheWp.getCache() != null) {
                         GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
                         GlobalCore.setNearestCache(nearstCacheWp.getCache());
@@ -143,12 +143,12 @@ public class ShowCacheList extends AbstractShowAction {
             gL_MsgBox = MsgBox.show(Translation.get(msgText), Translation.get("Favorites"), MsgBoxButton.OKCancel, MsgBoxIcon.Question, (which, data) -> {
                 gL_MsgBox_close();
                 if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                    CBDB.Data.sql.beginTransaction();
+                    CBDB.getInstance().getSql().beginTransaction();
                     Database_Core.Parameters args = new Database_Core.Parameters();
                     args.put("Favorit", finalchecked ? 1 : 0);
-                    CBDB.Data.sql.update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
-                    CBDB.Data.sql.setTransactionSuccessful();
-                    CBDB.Data.sql.endTransaction();
+                    CBDB.getInstance().getSql().update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
+                    CBDB.getInstance().getSql().setTransactionSuccessful();
+                    CBDB.getInstance().getSql().endTransaction();
                     ViewManager.reloadCacheList();
                     GlobalCore.checkSelectedCacheValid();
                 }
@@ -162,10 +162,10 @@ public class ShowCacheList extends AbstractShowAction {
         mi = cm.addMenuItem("AutoResort", null, () -> {
             GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
             if (GlobalCore.getAutoResort()) {
-                if (!CBDB.Data.cacheList.resortAtWork) {
-                    synchronized (CBDB.Data.cacheList) {
+                if (!CBDB.getInstance().cacheList.resortAtWork) {
+                    synchronized (CBDB.getInstance().cacheList) {
                         Log.debug("ShowCacheList", "sort CacheList by Menu AutoResort");
-                        CBDB.Data.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                        CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                     }
                 }
             }

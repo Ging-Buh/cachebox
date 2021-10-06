@@ -1,6 +1,7 @@
 package de.droidcachebox.menu.menuBtn3;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.Config;
@@ -88,7 +89,7 @@ public class ShowCompass extends AbstractShowAction {
 
     private boolean toggleSetting(SettingBool setting) {
         setting.setValue(!setting.getValue());
-        Config.AcceptChanges();
+        Config.acceptChanges();
         return true;
     }
 

@@ -38,15 +38,15 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
         boolean value = Config.nightMode.getValue();
         value = !value;
         Config.nightMode.setValue(value);
-        Config.AcceptChanges();
+        Config.acceptChanges();
     }
 
-    public static void AcceptChanges() {
-        that.acceptChanges();
+    public static void acceptChanges() {
+        that.writeToDatabase();
     }
 
-    protected void acceptChanges() {
-        if (settings.WriteToDB()) {
+    protected void writeToDatabase() {
+        if (settings.writeToDatabases()) {
             MsgBox.show(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
         }
     }

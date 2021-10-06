@@ -32,7 +32,7 @@ public class AppRater {
             @Override
             public void run() {
                 Config.AppRaterlaunchCount.setValue(launch_count);
-                Config.AcceptChanges();
+                Config.acceptChanges();
                 Log.info(log, "10 min usage, increment launch count");
             }
         };
@@ -53,7 +53,7 @@ public class AppRater {
             }
         }
 
-        Config.AcceptChanges();
+        Config.acceptChanges();
     }
 
     private static void showRateDialog() {
@@ -88,7 +88,7 @@ public class AppRater {
                         case 3:
                             // never
                             Config.AppRaterDontShowAgain.setValue(true);
-                            Config.AcceptChanges();
+                            Config.acceptChanges();
                             break;
                     }
                     return true;

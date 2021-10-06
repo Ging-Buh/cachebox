@@ -103,7 +103,7 @@ public class Drafts extends Array<Draft> {
             }
 
             try {
-                CoreCursor reader = DraftsDatabase.Drafts.sql.rawQuery(sql, null);
+                CoreCursor reader = DraftsDatabase.getInstance().sql.rawQuery(sql, null);
                 if (reader != null) {
                     reader.moveToFirst();
                     while (!reader.isAfterLast()) {

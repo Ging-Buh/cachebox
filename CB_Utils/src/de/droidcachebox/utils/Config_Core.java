@@ -1,8 +1,8 @@
 package de.droidcachebox.utils;
 
-import de.droidcachebox.utils.converter.Base64;
-
 import java.io.IOException;
+
+import de.droidcachebox.utils.converter.Base64;
 
 public abstract class Config_Core {
     public static final String br = System.getProperty("line.separator");
@@ -112,6 +112,6 @@ public abstract class Config_Core {
         }
     }
 
-    protected abstract void acceptChanges();
+    protected abstract void writeToDatabase();
 
 }

@@ -1,6 +1,7 @@
 package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -27,7 +28,7 @@ public class LiveButton extends ImageButton {
     public void setActivated(boolean newState) {
         isActivated = newState;
         Config.liveMapEnabled.setValue(newState);
-        Config.AcceptChanges();
+        Config.acceptChanges();
         switchImage();
     }
 

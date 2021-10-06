@@ -27,12 +27,12 @@ public class RememberGeoCache extends AbstractAction {
     @Override
     public void execute() {
         if (CB_Core_Settings.rememberedGeoCache.getValue().length() > 0) {
-            Cache rememberedCache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList(CB_Core_Settings.rememberedGeoCache.getValue());
+            Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(CB_Core_Settings.rememberedGeoCache.getValue());
             GlobalCore.setSelectedCache(rememberedCache);
         }
         else {
             Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Config.AcceptChanges();
+            Config.acceptChanges();
         }
     }
 
@@ -45,7 +45,7 @@ public class RememberGeoCache extends AbstractAction {
         GL_View_Base.OnClickListener onClickListener = (view, x, y, pointer, button) -> {
             // forget remembered
             Config.rememberedGeoCache.setValue("");
-            Config.AcceptChanges();
+            Config.acceptChanges();
             return true;
         };
         return onClickListener;

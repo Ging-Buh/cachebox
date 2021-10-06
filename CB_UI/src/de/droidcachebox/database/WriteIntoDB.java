@@ -7,28 +7,26 @@ import java.util.ArrayList;
 import de.droidcachebox.core.CoreData;
 
 public class WriteIntoDB {
-    static CacheDAO cacheDAO = new CacheDAO();
+    static CacheDAO cacheDAO = CacheDAO.getInstance();
     static ImageDAO imageDAO = new ImageDAO();
-    static WaypointDAO waypointDAO = new WaypointDAO();
 
     public static void writeCachesAndLogsAndImagesIntoDB(ArrayList<GeoCacheRelated> geoCacheRelateds, GpxFilename forCategory) throws InterruptedException {
 
         if (cacheDAO == null) {
-            cacheDAO = new CacheDAO();
+            cacheDAO = CacheDAO.getInstance();
             imageDAO = new ImageDAO();
-            waypointDAO = new WaypointDAO();
         }
 
-        CBDB.Data.sql.beginTransaction();
+        CBDB.getInstance().sql.beginTransaction();
 
         for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
             writeCacheAndLogsAndImagesIntoDB(geoCacheRelated, forCategory);
         }
 
-        CBDB.Data.sql.setTransactionSuccessful();
-        CBDB.Data.sql.endTransaction();
+        CBDB.getInstance().sql.setTransactionSuccessful();
+        CBDB.getInstance().sql.endTransaction();
 
-        CBDB.Data.updateCacheCountForGPXFilenames();
+        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
     }
 
@@ -108,7 +106,7 @@ public class WriteIntoDB {
             String begin = "<Import from Geocaching.com>";
             String end = "</Import from Geocaching.com>";
             if (keepOldCacheValues) {
-                String oldNote = CBDB.Data.getNote(cache);
+                String oldNote = CacheDAO.getInstance().getNote(cache);
 
                 if (oldNote != null) {
                     oldNote = oldNote.trim();
@@ -137,15 +135,15 @@ public class WriteIntoDB {
                     newNote += "\n" + end;
                 }
                 cache.setTmpNote(newNote);
-                CBDB.Data.setNote(cache, cache.getUserNote() + cache.getTmpNote());
+                CacheDAO.getInstance().setNote(cache, cache.getUserNote() + cache.getTmpNote());
             } else {
-                CBDB.Data.setNote(cache, cache.getUserNote() + "\n" + begin + "\n" + cache.getTmpNote() + "\n" + end + "\n");
+                CacheDAO.getInstance().setNote(cache, cache.getUserNote() + "\n" + begin + "\n" + cache.getTmpNote() + "\n" + end + "\n");
             }
             cache.setUserNote(""); // better is it, if cache reused, will be fetch from db in NotesView
         }
 
         for (LogEntry log : geoCacheRelated.logs) {
-            CBDB.Data.WriteLogEntry(log);
+            LogsTableDAO.getInstance().WriteLogEntry(log);
         }
 
         imageDAO.deleteImagesForCache(cache.getGeoCacheCode());
@@ -179,20 +177,20 @@ public class WriteIntoDB {
 
             if (update) {
                 // do not store replication information when importing caches with GC api
-                if (!waypointDAO.UpdateDatabase(waypoint, false)) {
-                    waypointDAO.WriteToDatabase(waypoint, false); // do not store replication information here
+                if (!WaypointDAO.getInstance().UpdateDatabase(waypoint, false)) {
+                    WaypointDAO.getInstance().WriteToDatabase(waypoint, false); // do not store replication information here
                 }
             }
 
         }
 
         if (oldCache == null) {
-            CBDB.Data.cacheList.add(cache);
+            CBDB.getInstance().cacheList.add(cache);
             // cacheDAO.writeToDatabase(cache);
         } else {
             // 2012-11-17: do not remove old instance from cacheList because of problems with cacheList and MapView
-            // Database.Data.cacheList.remove(Database.Data.cacheList.GetCacheById(cache.Id));
-            // Database.Data.cacheList.add(cache);
+            // Database.getInstance().cacheList.remove(Database.getInstance().cacheList.GetCacheById(cache.Id));
+            // Database.getInstance().cacheList.add(cache);
             oldCache.copyFrom(cache); // todo Problem Waypoints of user are no longer seen ? Solution Add to cache.waypoints
             // cacheDAO.updateDatabase(cache);
         }

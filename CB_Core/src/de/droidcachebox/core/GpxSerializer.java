@@ -28,11 +28,12 @@ import java.util.List;
 import java.util.Locale;
 
 import de.droidcachebox.database.Attribute;
-import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheList;
 import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.translation.Translation;
@@ -257,10 +258,10 @@ public final class GpxSerializer {
             }
 
             String additinalIfFound = cache.isFound() ? "|Found" : "";
-            String note = CBDB.Data.getNote(cache);
+            String note = CacheDAO.getInstance().getNote(cache);
             if (note == null)
                 note = "";
-            String solver = CBDB.Data.getSolver(cache);
+            String solver = CacheDAO.getInstance().getSolver(cache);
             if (solver == null)
                 solver = "";
 
@@ -407,7 +408,7 @@ public final class GpxSerializer {
     }
 
     private void writeLogs(final Cache cache) throws IOException {
-        CB_List<LogEntry> logEntries = CBDB.Data.getLogs(cache);
+        CB_List<LogEntry> logEntries = LogsTableDAO.getInstance().getLogs(cache);
         if (logEntries.isEmpty()) {
             return;
         }

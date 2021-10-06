@@ -16,6 +16,7 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Menu;
@@ -44,6 +45,7 @@ import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.ImageDAO;
 import de.droidcachebox.database.ImageEntry;
 import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
@@ -77,18 +79,18 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(0);
                     newCache = geoCacheRelated.cache;
 
-                    synchronized (CBDB.Data.cacheList) {
-                        CBDB.Data.sql.beginTransaction();
+                    synchronized (CBDB.getInstance().cacheList) {
+                        CBDB.getInstance().getSql().beginTransaction();
 
-                        CBDB.Data.cacheList.remove(aktCache);
-                        CBDB.Data.cacheList.add(newCache);
+                        CBDB.getInstance().cacheList.remove(aktCache);
+                        CBDB.getInstance().cacheList.add(newCache);
 
-                        new CacheDAO().UpdateDatabase(newCache);
+                        CacheDAO.getInstance().UpdateDatabase(newCache);
                         newCache.setLongDescription("");
 
-                        for (LogEntry apiLog : geoCacheRelated.logs) CBDB.Data.WriteLogEntry(apiLog);
+                        for (LogEntry apiLog : geoCacheRelated.logs) LogsTableDAO.getInstance().WriteLogEntry(apiLog);
 
-                        WaypointDAO waypointDAO = new WaypointDAO();
+                        WaypointDAO waypointDAO = WaypointDAO.getInstance();
                         for (int i = 0, n = newCache.getWayPoints().size(); i < n; i++) {
                             Waypoint waypoint = newCache.getWayPoints().get(i);
 
@@ -111,10 +113,10 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         ImageDAO imageDAO = new ImageDAO();
                         for (ImageEntry image : geoCacheRelated.images) imageDAO.writeToDatabase(image, false);
 
-                        CBDB.Data.sql.setTransactionSuccessful();
-                        CBDB.Data.sql.endTransaction();
+                        CBDB.getInstance().getSql().setTransactionSuccessful();
+                        CBDB.getInstance().getSql().endTransaction();
 
-                        CBDB.Data.updateCacheCountForGPXFilenames();
+                        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
                     }
                     aktCache = newCache;
                     setCache(newCache);
@@ -132,8 +134,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 dialog.dismiss();
         }
     };
-    private final static Handler onlineSearchReadyHandler = new Handler() {
-        @Override
+    private static Activity mainActivity;
+
+    Handler onlineSearchReadyHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1: {
@@ -158,7 +161,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             }
         }
     };
-    private static Activity mainActivity;
+
     private WebViewClient webViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -300,7 +303,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             aktCache = cache;
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String html = CBDB.Data.getShortDescription(cache) + CBDB.Data.getDescription(cache);
+            String html = CacheDAO.getInstance().getShortDescription(cache) + CacheDAO.getInstance().getDescription(cache);
             // cache.getApiStatus() == Cache.IS_FULL
             if (html.length() > 0) {
                 html = DescriptionImageGrabber.resolveImages(cache, html, false, NonLocalImages, NonLocalImagesUrl);

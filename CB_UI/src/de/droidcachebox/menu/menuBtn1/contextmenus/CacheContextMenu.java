@@ -19,7 +19,9 @@ import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -123,17 +125,17 @@ public class CacheContextMenu {
             MsgBox mb = MsgBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MsgBoxButton.AbortRetryIgnore, MsgBoxIcon.Question, null);
             mb.setPositiveClickListener((v, x, y, pointer, button) -> {
                 Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-                Config.AcceptChanges();
+                Config.acceptChanges();
                 return mb.finish();
             });
             mb.setMiddleNeutralClickListener((v, x, y, pointer, button) -> {
-                Cache rememberedCache = CBDB.Data.cacheList.getCacheByGcCodeFromCacheList(CB_Core_Settings.rememberedGeoCache.getValue());
+                Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(CB_Core_Settings.rememberedGeoCache.getValue());
                 if (rememberedCache != null) GlobalCore.setSelectedCache(rememberedCache);
                 return mb.finish();
             });
             mb.setRightNegativeClickListener((v, x, y, pointer, button) -> {
                 Config.rememberedGeoCache.setValue("");
-                Config.AcceptChanges();
+                Config.acceptChanges();
                 return mb.finish();
             });
             mb.setButtonText("rememberGeoCache", "selectGeoCache", "forgetGeoCache");
@@ -158,10 +160,10 @@ public class CacheContextMenu {
                         }
 
                         // Reload result from DB
-                        synchronized (CBDB.Data.cacheList) {
+                        synchronized (CBDB.getInstance().cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                             CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
-                            GlobalCore.setSelectedCache(CBDB.Data.cacheList.getCacheByGcCodeFromCacheList(GCCode));
+                            GlobalCore.setSelectedCache(CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(GCCode));
                             CacheListChangedListeners.getInstance().cacheListChanged();
                         }
 
@@ -203,13 +205,13 @@ public class CacheContextMenu {
 
         for (int i = 0, n = GlobalCore.getSelectedCache().getWayPoints().size(); i < n; i++) {
             Waypoint wp = GlobalCore.getSelectedCache().getWayPoints().get(i);
-            CBDB.Data.deleteFromDatabase(wp);
+            WaypointDAO.getInstance().deleteFromDatabase(wp);
         }
 
-        CBDB.Data.sql.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGeoCacheCode() + "'", null);
+        CBDB.getInstance().getSql().delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGeoCacheCode() + "'", null);
 
         // ClearOrphanedLogs(); // doit when you have more time
-        CBDB.Data.deleteLogs(GlobalCore.getSelectedCache().generatedId);
+        LogsTableDAO.getInstance().deleteLogs(GlobalCore.getSelectedCache().generatedId);
         EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
         GlobalCore.setSelectedCache(null);
@@ -225,17 +227,17 @@ public class CacheContextMenu {
                         Config.CacheContextMenuShortClickToggle.setValue(false);
                     else
                         Config.CacheContextMenuShortClickToggle.setValue(true);
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                     return true;
                 });
     }
 
     private void toggleAsFavorite() {
         GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
-        CacheDAO dao = new CacheDAO();
+        CacheDAO dao = CacheDAO.getInstance();
         dao.UpdateDatabase(GlobalCore.getSelectedCache());
         // Update cacheList
-        CBDB.Data.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());
+        CBDB.getInstance().cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());
         // Update View
         ShowDescription.getInstance().updateDescriptionView(true);
         CacheListChangedListeners.getInstance().cacheListChanged();

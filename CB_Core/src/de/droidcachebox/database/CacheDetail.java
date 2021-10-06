@@ -183,7 +183,7 @@ public class CacheDetail implements Serializable {
 
     public DLong getAttributesNegative(long Id) {
         if (this.attributesNegative == null) {
-            CoreCursor c = CBDB.Data.sql.rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
+            CoreCursor c = CBDB.getInstance().sql.rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 if (!c.isNull(0))
@@ -199,7 +199,7 @@ public class CacheDetail implements Serializable {
 
     public DLong getAttributesPositive(long Id) {
         if (this.attributesPositive == null) {
-            CoreCursor c = CBDB.Data.sql.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
+            CoreCursor c = CBDB.getInstance().sql.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
             if (c != null) {
                 c.moveToFirst();
                 if (!c.isNull(0))

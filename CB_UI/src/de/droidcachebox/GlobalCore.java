@@ -191,7 +191,7 @@ public class GlobalCore implements SolverCacheInterface {
 
     public static void checkSelectedCacheValid() {
 
-        CacheList List = CBDB.Data.cacheList;
+        CacheList List = CBDB.getInstance().cacheList;
 
         // Prüfen, ob der SelectedCache noch in der cacheList drin ist.
         if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId) == null)) {

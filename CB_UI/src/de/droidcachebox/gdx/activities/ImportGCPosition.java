@@ -15,8 +15,19 @@
  */
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
+import static de.droidcachebox.core.GroundspeakAPI.Query;
+import static de.droidcachebox.core.GroundspeakAPI.searchGeoCaches;
+import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+
 import android.text.InputType;
+
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
@@ -27,9 +38,22 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.Category;
 import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.database.WriteIntoDB;
-import de.droidcachebox.gdx.*;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.ActivityBase;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.CoordinateButton;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.Image;
+import de.droidcachebox.gdx.controls.ImportAnimation;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
+import de.droidcachebox.gdx.controls.MultiToggleButton;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
@@ -37,13 +61,6 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancel;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
-import static de.droidcachebox.core.GroundspeakAPI.*;
-import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
 public class ImportGCPosition extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private static final String log = "ImportGCPosition";
@@ -434,7 +451,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
         Config.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
         Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
-        Config.AcceptChanges();
+        Config.acceptChanges();
 
         Date tmpDate;
         try {
@@ -472,7 +489,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                                 radius = Integer.parseInt(txtRadius.getText());
                                 if (Config.ImperialUnits.getValue()) radius = UnitFormatter.getKilometer(radius);
                                 Config.lastSearchRadius.setValue(radius);
-                                Config.AcceptChanges();
+                                Config.acceptChanges();
                                 q.searchInCircle(actSearchPos, radius * 1000);
                             } catch (NumberFormatException nex) {
                                 q.searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);

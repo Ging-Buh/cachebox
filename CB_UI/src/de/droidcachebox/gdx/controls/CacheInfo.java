@@ -15,12 +15,12 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import de.droidcachebox.database.Attribute;
-import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.GeoCacheSize;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogType;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
@@ -151,7 +151,7 @@ public class CacheInfo extends CB_View_Base {
      */
 
     private String getLastFoundLogDate() {
-        CB_List<LogEntry> logEntries = CBDB.Data.getLogs(mCache);
+        CB_List<LogEntry> logEntries = LogsTableDAO.getInstance().getLogs(mCache);
         for (int i = 0; i < logEntries.size(); i++) {
             LogEntry logEntry = logEntries.get(i);
             if (logEntry.logType == LogType.found) {

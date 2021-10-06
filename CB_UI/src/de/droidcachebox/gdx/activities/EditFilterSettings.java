@@ -155,7 +155,7 @@ public class EditFilterSettings extends ActivityBase {
                     } else {
                         Config.FilterNew.setValue(filter.toString());
                     }
-                    Config.AcceptChanges();
+                    Config.acceptChanges();
                 }
             }, 300);
             return true;
@@ -268,7 +268,7 @@ public class EditFilterSettings extends ActivityBase {
 
         new Thread(() -> {
             try {
-                synchronized (CBDB.Data.cacheList) {
+                synchronized (CBDB.getInstance().cacheList) {
                     String sqlWhere = filterProperties.getSqlWhere(Config.GcLogin.getValue());
                     Log.info(log, "Main.applyFilter: " + sqlWhere);
                     CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
@@ -292,7 +292,7 @@ public class EditFilterSettings extends ActivityBase {
                 } else {
                     Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
                 }
-                Config.AcceptChanges();
+                Config.acceptChanges();
             } catch (Exception ex) {
                 Log.err(log, "applyFilter", ex);
                 pd.dismis();
@@ -415,7 +415,7 @@ public class EditFilterSettings extends ActivityBase {
 
                         userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + SettingStringList.STRINGSPLITTER;
                         Config.UserFilters.setValue(userFilters);
-                        Config.AcceptChanges();
+                        Config.acceptChanges();
                         presetView.fillPresetList();
                         presetView.notifyDataSetChanged();
                     }
@@ -519,7 +519,7 @@ public class EditFilterSettings extends ActivityBase {
                                                     newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");
                                                 else newUserEntries = userEntries.substring(0, p1);
                                                 Config.UserFilters.setValue(newUserEntries);
-                                                Config.AcceptChanges();
+                                                Config.acceptChanges();
                                                 fillPresetList();
                                                 notifyDataSetChanged();
                                             } catch (Exception ex) {

@@ -164,7 +164,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             Config.quickButtonList.setValue(ActionsString.toString());
 
             Config.settings.SaveToLastValue();
-            Config.AcceptChanges();
+            Config.acceptChanges();
 
             // Notify QuickButtonList
             QuickButtonList.that.notifyDataSetChanged();

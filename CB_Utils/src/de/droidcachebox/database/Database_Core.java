@@ -6,11 +6,18 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
+/*
+ Each database (<cachebox>, FieldNotes, Config) has its own Config table with the columns Key, Value and LongString (not for Fieldnotes),
+ with at least the Keys DatabaseSchemeVersion and DatabaseSchemeVersionWin, that have identical values.
+
+ The <cachebox> may be a copy or an extract of a master-database in Windows by WinCacheBox (, but must not necessary be one).
+ A replication table is filled with changes, to be simply re-transferred into the master-database.
+ */
 
 public abstract class Database_Core {
-    private static final String log = "Database_Core";
+    private static final String sClass = "Database_Core";
     public long MasterDatabaseId = 0;
-    public SQLiteInterface sql;
+    protected SQLiteInterface sql;
     protected long DatabaseId = 0; // for Database replication with WinCachebox
     protected int latestDatabaseChange = 0;
     private String databasePath;
@@ -19,7 +26,11 @@ public abstract class Database_Core {
     public Database_Core() {
     }
 
-    public boolean isDbNew() {
+    public SQLiteInterface getSql() {
+        return sql;
+    }
+
+    public boolean isDatabaseNew() {
         return newDB;
     }
 
@@ -28,7 +39,7 @@ public abstract class Database_Core {
     }
 
     public void startUp(String databasePath) {
-        Log.debug(log, "DB Startup : " + databasePath);
+        Log.debug(sClass, "DB Startup : " + databasePath);
 
         this.databasePath = databasePath;
 
@@ -37,15 +48,13 @@ public abstract class Database_Core {
             if (sql.open(databasePath)) {
 
             } else {
-                Log.err(log, "Error open " + databasePath);
+                Log.err(sClass, "Error open " + databasePath);
             }
-        }
-        else {
+        } else {
             if (sql.create(databasePath)) {
                 newDB = true;
-            }
-            else {
-                Log.err(log, "Error create " + databasePath);
+            } else {
+                Log.err(sClass, "Error create " + databasePath);
             }
         }
 
@@ -60,7 +69,6 @@ public abstract class Database_Core {
     protected abstract void alterDatabase(int lastDatabaseSchemeVersion);
 
     /**
-     *
      * @return -1 --> must create a new database
      */
     private int getDatabaseSchemeVersion() {
@@ -101,7 +109,7 @@ public abstract class Database_Core {
         val.put("Value", latestDatabaseChange);
         anz = sql.update("Config", val, "[Key] like 'DatabaseSchemeVersion'", null);
         if (anz <= 0) {
-            // Update not possible because Key does not exist
+            // Update not possible because Key does not exist, so insert
             val.put("Key", "DatabaseSchemeVersion");
             sql.insert("Config", val);
         }
@@ -196,6 +204,8 @@ public abstract class Database_Core {
             return 0;
         }
     }
+
+    public abstract void close();
 
     public static class Parameters extends HashMap<String, Object> {
         private static final long serialVersionUID = 6506158947781669528L;

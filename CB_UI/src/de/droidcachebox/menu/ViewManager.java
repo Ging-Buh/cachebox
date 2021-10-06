@@ -123,7 +123,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     public static void reloadCacheList() {
-        synchronized (CBDB.Data.cacheList) {
+        synchronized (CBDB.getInstance().cacheList) {
             CacheListDAO.getInstance().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()), false, false, Config.showAllWaypoints.getValue());
         }
         CacheListChangedListeners.getInstance().cacheListChanged();
@@ -227,9 +227,9 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         // set last selected Cache
         String sGc = Config.LastSelectedCache.getValue();
         if (sGc != null && sGc.length() > 0) {
-            synchronized (CBDB.Data.cacheList) {
-                for (int i = 0, n = CBDB.Data.cacheList.size(); i < n; i++) {
-                    Cache c = CBDB.Data.cacheList.get(i);
+            synchronized (CBDB.getInstance().cacheList) {
+                for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
+                    Cache c = CBDB.getInstance().cacheList.get(i);
                     if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
                         Log.debug(sKlasse, "ViewManager: Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
                         GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
@@ -426,14 +426,14 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         // ##################################
         String Name;
 
-        synchronized (CBDB.Data.cacheList) {
-            int filterCount = CBDB.Data.cacheList.size();
+        synchronized (CBDB.getInstance().cacheList) {
+            int filterCount = CBDB.getInstance().cacheList.size();
 
-            if (CBDB.Data.cacheList.getCacheByGcCodeFromCacheList("CBPark") != null) {
+            if (CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark") != null) {
                 filterCount = filterCount - 1;
             }
 
-            int DBCount = CBDB.Data.getCacheCountInDB();
+            int DBCount = CBDB.getInstance().getCacheCountInDB();
             String strFilterCount = "";
             if (filterCount != DBCount) {
                 strFilterCount = filterCount + "/";

@@ -381,9 +381,9 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
 
                         wayPointRenderInfos.clear();
                         selectedWPRenderInfo = null;
-                        synchronized (CBDB.Data.cacheList) {
-                            for (int i = 0, n = CBDB.Data.cacheList.size(); i < n; i++) {
-                                Cache cache = CBDB.Data.cacheList.get(i);
+                        synchronized (CBDB.getInstance().cacheList) {
+                            for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
+                                Cache cache = CBDB.getInstance().cacheList.get(i);
                                 // handle show option "
                                 if (hideMyFinds && cache.isFound()) continue;
                                 boolean selectedCache = false;

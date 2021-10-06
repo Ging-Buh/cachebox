@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Config;
-import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.GeoCacheSize;
 import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -230,7 +230,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                         header = header + "!!!M!";
                     }
                      */
-                    CB_List<LogEntry> logEntries = CBDB.Data.getLogs(cache);
+                    CB_List<LogEntry> logEntries = LogsTableDAO.getInstance().getLogs(cache);
                     for (int i = 0; i < 5; i++) {
                         last5Logs[i].setText(" ");
                         if (i < logEntries.size()) {
@@ -360,11 +360,11 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
         if (this.getHeight() - mSlideBox.getMaxY() >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow) {
             quickButtonHeight = QuickButtonMaxHeight;
             Config.quickButtonLastShow.setValue(true);
-            Config.AcceptChanges();
+            Config.acceptChanges();
         } else {
             quickButtonHeight = 0;
             Config.quickButtonLastShow.setValue(false);
-            Config.AcceptChanges();
+            Config.acceptChanges();
         }
 
         if (swipeUp || swipeDown) {

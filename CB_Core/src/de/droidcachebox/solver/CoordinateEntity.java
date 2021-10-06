@@ -30,7 +30,7 @@ public class CoordinateEntity extends Entity {
     }
 
     private Coordinate LoadFromDB(String sql) {
-        CoreCursor reader = CBDB.Data.sql.rawQuery(sql, null);
+        CoreCursor reader = CBDB.getInstance().getSql().rawQuery(sql, null);
         try {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -93,10 +93,10 @@ public class CoordinateEntity extends Entity {
         }
         if (!coord.isValid())
             return Translation.get("InvalidCoordinate", "SetCoordinate", sCoord);
-        WaypointDAO waypointDAO = new WaypointDAO();
-        Waypoint dbWaypoint = null;
+        WaypointDAO waypointDAO = WaypointDAO.getInstance();
+        Waypoint dbWaypoint;
         // Suchen, ob dieser Waypoint bereits vorhanden ist.
-        CoreCursor reader = CBDB.Data.sql.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
+        CoreCursor reader = CBDB.getInstance().getSql().rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
         try {
             reader.moveToFirst();
             if (reader.isAfterLast())
@@ -111,7 +111,7 @@ public class CoordinateEntity extends Entity {
                 if ((Solver.solverCacheInterface.sciGetSelectedCache() == null) || (Solver.solverCacheInterface.sciGetSelectedCache().generatedId != dbWaypoint.geoCacheId)) {
                     // Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
                     // Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
-                    CacheDAO cacheDAO = new CacheDAO();
+                    CacheDAO cacheDAO = CacheDAO.getInstance();
                     Cache cache = cacheDAO.getFromDbByCacheId(dbWaypoint.geoCacheId);
                     // String sFmt = "Change Coordinates of a waypoint which does not belong to the actual Cache?\n";
                     // sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
@@ -126,8 +126,8 @@ public class CoordinateEntity extends Entity {
 
             // evtl. bereits geladenen Waypoint aktualisieren
             Cache cacheFromCacheList;
-            synchronized (CBDB.Data.cacheList) {
-                cacheFromCacheList = CBDB.Data.cacheList.getCacheByIdFromCacheList(dbWaypoint.geoCacheId);
+            synchronized (CBDB.getInstance().cacheList) {
+                cacheFromCacheList = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(dbWaypoint.geoCacheId);
             }
             cacheFromCacheList = Solver.solverCacheInterface.sciGetSelectedCache();
             if (cacheFromCacheList != null) {
