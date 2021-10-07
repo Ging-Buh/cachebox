@@ -316,11 +316,11 @@ public class GL implements ApplicationListener {
 
         if (currentActivityIsShown) {
             drawDarknessSprite();
-            mActivity.renderChilds(mPolygonSpriteBatch, prjMatrix);
+            mActivity.renderChildren(mPolygonSpriteBatch, prjMatrix);
         }
 
         if (!currentActivityIsShown && child != null) {
-            child.renderChilds(mPolygonSpriteBatch, prjMatrix);
+            child.renderChildren(mPolygonSpriteBatch, prjMatrix);
             // reset child Matrix
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
@@ -332,17 +332,17 @@ public class GL implements ApplicationListener {
             // Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
 
             drawDarknessSprite();
-            mDialog.renderChilds(mPolygonSpriteBatch, prjMatrix);
+            mDialog.renderChildren(mPolygonSpriteBatch, prjMatrix);
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
 
         if (toastIsShown) {
-            mToastOverlay.renderChilds(mPolygonSpriteBatch, prjMatrix);
+            mToastOverlay.renderChildren(mPolygonSpriteBatch, prjMatrix);
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
 
         if (MarkerIsShown) {
-            mMarkerOverlay.renderChilds(mPolygonSpriteBatch, prjMatrix);
+            mMarkerOverlay.renderChildren(mPolygonSpriteBatch, prjMatrix);
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
 
@@ -711,7 +711,7 @@ public class GL implements ApplicationListener {
         renderOnce();
     }
 
-    Dialog getCurrentDialog() {
+    public Dialog getCurrentDialog() {
         return currentDialog;
     }
 

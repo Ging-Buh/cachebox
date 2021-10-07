@@ -10,6 +10,7 @@ import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.settings.Settings;
 
 public class RememberGeoCache extends AbstractAction {
 
@@ -29,10 +30,9 @@ public class RememberGeoCache extends AbstractAction {
         if (CB_Core_Settings.rememberedGeoCache.getValue().length() > 0) {
             Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(CB_Core_Settings.rememberedGeoCache.getValue());
             GlobalCore.setSelectedCache(rememberedCache);
-        }
-        else {
-            Config.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Config.acceptChanges();
+        } else {
+            Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
+            Config.that.acceptChanges();
         }
     }
 
@@ -42,12 +42,11 @@ public class RememberGeoCache extends AbstractAction {
     }
 
     public GL_View_Base.OnClickListener getLongClickListener() {
-        GL_View_Base.OnClickListener onClickListener = (view, x, y, pointer, button) -> {
+        return (view, x, y, pointer, button) -> {
             // forget remembered
-            Config.rememberedGeoCache.setValue("");
-            Config.acceptChanges();
+            Settings.rememberedGeoCache.setValue("");
+            Config.that.acceptChanges();
             return true;
         };
-        return onClickListener;
     }
 }

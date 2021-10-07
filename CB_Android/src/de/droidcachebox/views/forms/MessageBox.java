@@ -39,6 +39,7 @@ import de.droidcachebox.R;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
 /**
@@ -367,8 +368,8 @@ public class MessageBox {
             Resources res = context.getResources();
 
             boolean NightMode = false;
-            if (Config.settings != null)
-                NightMode = Config.nightMode.getValue();
+            if (Config.that != null)
+                NightMode = Settings.nightMode.getValue();
 
             Drawable header = res.getDrawable(NightMode ? R.drawable.night_header : R.drawable.header);
             Drawable title = res.getDrawable(NightMode ? R.drawable.night_title : R.drawable.title);

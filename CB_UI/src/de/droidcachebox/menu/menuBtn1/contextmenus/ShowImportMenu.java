@@ -31,6 +31,7 @@ import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -113,30 +114,24 @@ public class ShowImportMenu extends AbstractShowAction {
         icm.addMenuItem("GSAKMenuImport", null, () -> new Import_GSAK().show());
         icm.addDivider();
         icm.addMenuItem("GPX_EXPORT", null, this::exportGPX);
-        /*
-        // until implemented again
-        if (Config.CBS_IP.getValue().length() > 0)
-            icm.addMenuItem("ToCBServer", null, () -> new Import_CBServer().show());
-
-         */
         return icm;
     }
 
-    private void ExportgetFolderStep(final String fileName) {
-        new FileOrFolderPicker(FileIO.getDirectoryName(Config.gpxExportFileName.getValue()),
+    private void exportGetFolderStep(final String fileName) {
+        new FileOrFolderPicker(FileIO.getDirectoryName(Settings.gpxExportFileName.getValue()),
                 Translation.get("selectExportFolder"),
                 Translation.get("select"),
-                abstractFile -> GL.that.RunOnGL(() -> ShowImportMenu.this.ausgebenDatei(fileName, abstractFile))).show();
+                abstractFile -> GL.that.RunOnGL(() -> ShowImportMenu.this.outputFile(fileName, abstractFile))).show();
     }
 
-    private void ausgebenDatei(final String fileName, AbstractFile abstractFile) {
+    private void outputFile(final String fileName, AbstractFile abstractFile) {
 
         String exportPath = abstractFile.getAbsolutePath() + "/" + fileName;
         PlatformUIBase.addToMediaScannerList(exportPath);
 
         AbstractFile exportAbstractFile = FileFactory.createFile(exportPath);
-        Config.gpxExportFileName.setValue(exportAbstractFile.getPath());
-        Config.acceptChanges();
+        Settings.gpxExportFileName.setValue(exportAbstractFile.getPath());
+        Config.that.acceptChanges();
 
         // Delete File if exist
         if (exportAbstractFile.exists())
@@ -181,7 +176,7 @@ public class ShowImportMenu extends AbstractShowAction {
                 }
 
                 @Override
-                public void runnableIsReady(boolean canceld) {
+                public void runnableIsReady(boolean canceled) {
                     System.out.print("Export READY");
                     if (pD != null) {
                         pD.close();
@@ -189,7 +184,7 @@ public class ShowImportMenu extends AbstractShowAction {
                         pD = null;
                     }
 
-                    if (canceld) {
+                    if (canceled) {
                         MsgBox.show(Translation.get("exportedCanceld", String.valueOf(actExportedCount), String.valueOf(count)), Translation.get("export"), MsgBoxIcon.Stop);
                     } else {
                         MsgBox.show(Translation.get("exported", String.valueOf(actExportedCount)), Translation.get("export"), MsgBoxIcon.Information);
@@ -211,11 +206,11 @@ public class ShowImportMenu extends AbstractShowAction {
         StringInputBox.show(WrapType.SINGLELINE,
                 Translation.get("enterFileName"),
                 Translation.get("GPX_EXPORT"),
-                FileIO.getFileName(Config.gpxExportFileName.getValue()),
+                FileIO.getFileName(Settings.gpxExportFileName.getValue()),
                 (which, data) -> {
                     if (which == 1) {
                         final String FileName = StringInputBox.editText.getText();
-                        GL.that.RunOnGL(() -> ExportgetFolderStep(FileName));
+                        GL.that.RunOnGL(() -> exportGetFolderStep(FileName));
                     }
                     return true;
                 });

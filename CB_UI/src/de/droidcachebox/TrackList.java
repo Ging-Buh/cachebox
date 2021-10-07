@@ -31,11 +31,11 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.locator.map.PolylineReduction;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.menu.menuBtn3.executes.MapView;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 

@@ -25,33 +25,35 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.gdx.math.SizeF;
-import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.utils.MoveableList;
-import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.math.SizeF;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.utils.MoveableList;
+import de.droidcachebox.utils.log.Log;
+
 public class GL_View_Base extends CB_RectF {
     protected static final int MOUSE_WHEEL_POINTER_UP = -280272;
     protected static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
     private static final String log = "GL_View_Base";
+    private static final ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<>();
     public static boolean debug = false;
     public static boolean disableScissor = false;
     protected static int nDepthCounter = 0;
-    private static ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<>();
     private static boolean calling = false;
-    protected boolean isInitialized = false;
     protected final MoveableList<GL_View_Base> childs;
     private final Matrix4 rotateMatrix;
     private final ParentInfo myInfoForChild;
+    private final SkinChangedEventListener mSkinChangedEventListener;
     public boolean withoutScissor;
     public CB_RectF thisWorldRec;
     public ParentInfo myParentInfo;
+    protected boolean isInitialized = false;
     protected Pixmap debugRegPixmap;
     protected Texture debugRegTexture;
     protected Vector2 lastTouchPos;
@@ -79,7 +81,6 @@ public class GL_View_Base extends CB_RectF {
     private float mRotate = 0;
     private float mOriginX;
     private float mOriginY;
-    private SkinChangedEventListener mSkinChangedEventListener;
     private Color mColorFilter;
     private boolean forceHandleTouchEvents;
     private boolean isClickable;
@@ -438,7 +439,7 @@ public class GL_View_Base extends CB_RectF {
      * Hier wird dann zuerst die render() Methode dieser View aufgerufen.
      * Danach werden alle Childs iteriert und deren renderChilds() Methode aufgerufen, wenn die View sichtbar ist (Visibility).
      */
-    public void renderChilds(final Batch batch, ParentInfo parentInfo) {
+    public void renderChildren(final Batch batch, ParentInfo parentInfo) {
         if (myParentInfo == null)
             return;
 
@@ -460,19 +461,16 @@ public class GL_View_Base extends CB_RectF {
 
         Color savedColor = null;
 
-        boolean batchHadColor = false; // Wir benutzen hier dieses Boolean um am ende dieser Methode zu entscheiden, ob wir die alte
-        // Farbe des Batches wieder herstellen müssen. Wir verlassen uns hier nicht darauf, das
-        // mColorFilter!= null ist, da dies in der zwichenzeit passiert sein kann.
-
-        // Set Colorfilter ?
+        // batchHasColor to remember, if must reset the color at end of batch
+        // mColorFilter != null may be changed in the meantime
+        boolean batchHasColor = false;
         if (mColorFilter != null) {
             savedColor = new Color(batch.getColor());
-            batchHadColor = true;
+            batchHasColor = true;
             batch.setColor(mColorFilter);
         }
 
         // first Draw Background?
-
         if (drawableBackground != null) {
             drawableBackground.draw(batch, 0, 0, getWidth(), getHeight());
         }
@@ -497,7 +495,7 @@ public class GL_View_Base extends CB_RectF {
         } catch (IllegalStateException e) {
             Log.err(log, "renderChilds", e);
             // reset Colorfilter ?
-            if (batchHadColor) {
+            if (batchHasColor) {
                 // alte abgespeicherte Farbe des Batches wieder herstellen!
                 batch.setColor(savedColor);
             }
@@ -507,9 +505,6 @@ public class GL_View_Base extends CB_RectF {
         // reverse rotation
         if (isRotated) {
             rotateMatrix.idt();
-            // rotateMatrix.rotate(0, 0, 1, 0);
-            // rotateMatrix.scale(1, 1, 1);
-
             batch.setTransformMatrix(rotateMatrix);
         }
 
@@ -541,7 +536,7 @@ public class GL_View_Base extends CB_RectF {
                                 batch.setProjectionMatrix(getMyInfoForChild().Matrix());
                                 nDepthCounter++;
                                 if (!view.isDisposed())
-                                    view.renderChilds(batch, getMyInfoForChild());
+                                    view.renderChildren(batch, getMyInfoForChild());
                                 nDepthCounter--;
                             }
                         } else {
@@ -573,7 +568,7 @@ public class GL_View_Base extends CB_RectF {
         }
 
         // reset Colorfilter ?
-        if (batchHadColor) {
+        if (batchHasColor) {
             // alte abgespeicherte Farbe des Batches wieder herstellen!
             batch.setColor(savedColor);
         }
@@ -947,7 +942,8 @@ public class GL_View_Base extends CB_RectF {
         return behandelt;
     }
 
-    public void onLongClick(int x, int y, int pointer, int button) {}
+    public void onLongClick(int x, int y, int pointer, int button) {
+    }
 
     public boolean onTouchDown(int x, int y, int pointer, int button) {
         return false;

@@ -1,4 +1,4 @@
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn1.executes;
 
 import static de.droidcachebox.core.GroundspeakAPI.APIError;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
@@ -8,7 +8,6 @@ import static de.droidcachebox.core.GroundspeakAPI.uploadTrackableLog;
 
 import java.util.Date;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
@@ -34,7 +33,9 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.gdx.views.TrackableListViewItem;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
@@ -42,8 +43,8 @@ import de.droidcachebox.utils.log.Log;
 public class TrackableListView extends V_ListView {
     private static final String log = "TrackableListView";
     public static TrackableListView that;
-    private TrackableListViewAdapter trackableListViewAdapter;
-    private TBList trackableList;
+    private final TrackableListViewAdapter trackableListViewAdapter;
+    private final TBList trackableList;
     private CancelWaitDialog wd;
 
     private TrackableListView() {
@@ -97,7 +98,7 @@ public class TrackableListView extends V_ListView {
         if (TBCode.length() > 0) {
             wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(),
                     () -> {
-                        // IcancelListener
+                        // ICancelListener
                     },
                     new ICancelRunnable() {
                         @Override
@@ -124,11 +125,11 @@ public class TrackableListView extends V_ListView {
         return true;
     }
 
-    // Inventar neu laden
+    // reload inventory
     public void refreshTbList() {
         wd = CancelWaitDialog.ShowWait(Translation.get("RefreshInventory"), DownloadAnimation.GetINSTANCE(),
                 () -> {
-                    // IcancelListener
+                    // ICancelListener
                 },
                 new ICancelRunnable() {
                     @Override
@@ -188,17 +189,17 @@ public class TrackableListView extends V_ListView {
         cm.addMenuItem("RefreshInventory", null, this::refreshTbList);
         cm.addMenuItem("all_note", "", Sprites.getSprite(IconName.TBNOTE.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.note), TemplateFormatter.ReplaceTemplate(Settings.AddNoteTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_visit", "", Sprites.getSprite(IconName.TBVISIT.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.visited), TemplateFormatter.ReplaceTemplate(Settings.VisitedTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_dropped", "", Sprites.getSprite(IconName.TBDROP.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.dropped_off), TemplateFormatter.ReplaceTemplate(Settings.DroppedTemplate.getValue(), new Date()));
             refreshTbList();
             return true;
         });

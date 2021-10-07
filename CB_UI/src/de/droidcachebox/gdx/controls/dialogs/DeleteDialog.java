@@ -1,6 +1,5 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.FilterInstances;
@@ -10,19 +9,18 @@ import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.ImageButton;
-import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog.IcancelListener;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 
@@ -98,79 +96,63 @@ public class DeleteDialog extends ButtonDialog {
             return true;
         });
 
-        btDelArchived.setClickHandler(new OnClickListener() {
+        btDelArchived.setClickHandler((view, x, y, pointer, button) -> {
+            close();
 
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                close();
+            wd = CancelWaitDialog.ShowWait(Translation.get("DelArchived"), () -> {
 
-                wd = CancelWaitDialog.ShowWait(Translation.get("DelArchived"), new IcancelListener() {
+            }, new ICancelRunnable() {
 
-                    @Override
-                    public void isCanceled() {
+                @Override
+                public void run() {
+                    long nun = CacheListDAO.getInstance().deleteArchived(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
 
-                    }
-                }, new ICancelRunnable() {
+                    cleanupLogs();
+                    cleanupWaypoints();
+                    wd.close();
 
-                    @Override
-                    public void run() {
-                        long nun = CacheListDAO.getInstance().deleteArchived(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
+                    EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
-                        cleanupLogs();
-                        cleanupWaypoints();
-                        wd.close();
+                    String msg = Translation.get("DeletedCaches", String.valueOf(nun));
+                    GL.that.toast(msg);
+                }
 
-                        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
-
-                        String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                        GL.that.toast(msg);
-                    }
-
-                    @Override
-                    public boolean doCancel() {
-                        // Handle Cancel
-                        return false;
-                    }
-                });
-                return true;
-            }
+                @Override
+                public boolean doCancel() {
+                    // Handle Cancel
+                    return false;
+                }
+            });
+            return true;
         });
 
-        btDelFounds.setClickHandler(new OnClickListener() {
+        btDelFounds.setClickHandler((view, x, y, pointer, button) -> {
+            close();
 
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                close();
+            wd = CancelWaitDialog.ShowWait(Translation.get("DelFound"), () -> {
 
-                wd = CancelWaitDialog.ShowWait(Translation.get("DelFound"), new IcancelListener() {
+            }, new ICancelRunnable() {
 
-                    @Override
-                    public void isCanceled() {
+                @Override
+                public void run() {
+                    long nun = CacheListDAO.getInstance().deleteFinds(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
+                    cleanupLogs();
+                    cleanupWaypoints();
+                    wd.close();
 
-                    }
-                }, new ICancelRunnable() {
+                    EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
-                    @Override
-                    public void run() {
-                        long nun = CacheListDAO.getInstance().deleteFinds(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
-                        cleanupLogs();
-                        cleanupWaypoints();
-                        wd.close();
+                    String msg = Translation.get("DeletedCaches", String.valueOf(nun));
+                    GL.that.toast(msg);
+                }
 
-                        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
-
-                        String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                        GL.that.toast(msg);
-                    }
-
-                    @Override
-                    public boolean doCancel() {
-                        // Handle Cancel
-                        return false;
-                    }
-                });
-                return true;
-            }
+                @Override
+                public boolean doCancel() {
+                    // Handle Cancel
+                    return false;
+                }
+            });
+            return true;
         });
 
     }

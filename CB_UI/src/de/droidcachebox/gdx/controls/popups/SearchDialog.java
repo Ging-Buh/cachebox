@@ -25,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CB_Core_Settings;
@@ -63,10 +62,11 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.gdx.views.GeoCacheListListView;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
@@ -85,49 +85,48 @@ public class SearchDialog extends PopUp_Base {
             setY(GeoCacheListListView.getInstance().getMaxY() - that.getHeight());
         }
     };
-
+    /**
+     * Option Title, der drei Optionen Title/GC-Code/Owner
+     */
+    private final MultiToggleButton mTglBtnTitle;
+    /**
+     * Option GC-Code, der drei Optionen Title/GC-Code/Owner
+     */
+    private final MultiToggleButton mTglBtnGc;
+    /**
+     * Option Owner, der drei Optionen Title/GC-Code/Owner
+     */
+    private final MultiToggleButton mTglBtnOwner;
+    /**
+     * Option Online Suche On/Off
+     */
+    private final MultiToggleButton mTglBtnOnline;
+    /**
+     * Button, welcher eine Suchanfrage als Filter verwendet
+     */
+    private final ImageButton mBtnFilter;
+    /**
+     * Button, der eine Suche Startet
+     */
+    private final CB_Button mBtnSearch;
+    /**
+     * Button, der den nächsten Treffer einer gestarteten Suche findet
+     */
+    private final CB_Button mBtnNext;
+    /**
+     * Button, der den Search Dialog schliesst
+     */
+    private final CB_Button mBtnCancel;
+    /**
+     * Such Eingabe Feld
+     */
+    private final EditTextField mEingabe;
     private CancelWaitDialog wd = null;
     private MsgBox msgBox;
     /**
      * True, wenn eine Suche läuft und der Iterator mit Next weiter durchlaufen werden kann.
      */
     private boolean mSearchAktive = false;
-    /**
-     * Option Title, der drei Optionen Title/GC-Code/Owner
-     */
-    private MultiToggleButton mTglBtnTitle;
-    /**
-     * Option GC-Code, der drei Optionen Title/GC-Code/Owner
-     */
-    private MultiToggleButton mTglBtnGc;
-    /**
-     * Option Owner, der drei Optionen Title/GC-Code/Owner
-     */
-    private MultiToggleButton mTglBtnOwner;
-    /**
-     * Option Online Suche On/Off
-     */
-    private MultiToggleButton mTglBtnOnline;
-    /**
-     * Button, welcher eine Suchanfrage als Filter verwendet
-     */
-    private ImageButton mBtnFilter;
-    /**
-     * Button, der eine Suche Startet
-     */
-    private CB_Button mBtnSearch;
-    /**
-     * Button, der den nächsten Treffer einer gestarteten Suche findet
-     */
-    private CB_Button mBtnNext;
-    /**
-     * Button, der den Search Dialog schliesst
-     */
-    private CB_Button mBtnCancel;
-    /**
-     * Such Eingabe Feld
-     */
-    private EditTextField mEingabe;
     /**
      * Enthält den Aktuellen Such Modus <br/>
      * 0 = Title <br/>
@@ -495,9 +494,9 @@ public class SearchDialog extends PopUp_Base {
                     q.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
                 }
 
-                if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
-                if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
-                if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
+                if (Settings.SearchWithoutFounds.getValue()) q.excludeFinds();
+                if (Settings.SearchWithoutOwns.getValue()) q.excludeOwn();
+                if (Settings.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
 
                 String searchPattern = mEingabe.getText();
                 ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds;
@@ -612,7 +611,7 @@ public class SearchDialog extends PopUp_Base {
                         mTglBtnOnline.setState(1);
                         GL.that.RunOnGL(() -> {
                             setFilterBtnState();
-                            GL.that.RunOnGL(() -> mBtnSearch.performClick());
+                            GL.that.RunOnGL(mBtnSearch::performClick);
                         });
                     });
                 });

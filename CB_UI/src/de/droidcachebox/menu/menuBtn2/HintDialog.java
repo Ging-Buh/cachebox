@@ -68,6 +68,6 @@ public class HintDialog extends AbstractAction {
         Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
         Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
 
-        new de.droidcachebox.gdx.controls.dialogs.HintDialog(decodedSize.height > encodedSize.height ? decodedSize : encodedSize, hintTextEncoded).show();
+        new de.droidcachebox.menu.menuBtn2.executes.HintDialog(decodedSize.height > encodedSize.height ? decodedSize : encodedSize, hintTextEncoded).show();
     }
 }

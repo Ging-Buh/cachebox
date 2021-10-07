@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn3.executes;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
@@ -83,6 +83,7 @@ import de.droidcachebox.gdx.math.Line;
 import de.droidcachebox.gdx.math.Quadrangle;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.gdx.views.MapViewCacheList;
 import de.droidcachebox.gdx.views.MapViewCacheList.MapViewCacheListUpdateData;
 import de.droidcachebox.gdx.views.MapViewCacheList.WayPointRenderInfo;
 import de.droidcachebox.locator.Coordinate;
@@ -96,6 +97,7 @@ import de.droidcachebox.locator.map.MapTileLoader;
 import de.droidcachebox.locator.map.MapViewBase;
 import de.droidcachebox.locator.map.ZoomScale;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.MathUtils;
@@ -104,7 +106,7 @@ import de.droidcachebox.utils.PointL;
 import de.droidcachebox.utils.log.Log;
 
 public class MapView extends MapViewBase implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
-    private static final String sKlasse = "MapView";
+    private static final String sClass = "MapView";
     private final CB_RectF targetArrow = new CB_RectF();
     private TreeMap<Integer, Integer> distanceZoomLevel;
     private final MapMode mapMode;
@@ -134,7 +136,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         super(cb_RectF, mapMode.name());
         lastScreenCenter = new PointL(0, 0);
         this.mapMode = mapMode;
-        Log.info(sKlasse, "creating Mapview for " + mapMode + " map");
+        Log.info(sClass, "creating Mapview for " + mapMode + " map");
         mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
 
         if (mapMode != MapMode.Normal) {
@@ -148,16 +150,16 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
             });
         }
 
-        Config.mapsForgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.mapsForgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.mapsForgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
-        Config.mapsForgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Settings.mapsForgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Settings.mapsForgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Settings.mapsForgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Settings.mapsForgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
 
         registerSkinChangedEvent();
 
         setBackground(ListBack);
 
-        mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, getHalfWidth(), GL_UISizes.zoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
+        mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, getHalfWidth(), GL_UISizes.zoomBtn.getHalfWidth() / 4), "mapScale", this, Settings.ImperialUnits.getValue());
         if (mapMode == MapMode.Normal) {
             addChild(mapScale);
         } else {
@@ -198,13 +200,13 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
             WayPointRenderInfo minWpi = null;
             if (targetArrow.contains(x, y)) {
                 if (GlobalCore.isSetSelectedCache()) {
+                    Coordinate tmp;
                     if (GlobalCore.getSelectedWayPoint() != null) {
-                        Coordinate tmp = GlobalCore.getSelectedWayPoint().getCoordinate();
-                        setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
+                        tmp = GlobalCore.getSelectedWayPoint().getCoordinate();
                     } else {
-                        Coordinate tmp = GlobalCore.getSelectedCache().getCoordinate();
-                        setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
+                        tmp = GlobalCore.getSelectedCache().getCoordinate();
                     }
+                    setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
                     btnMapState.setState(MapState.WP.ordinal());
                 }
                 return false;
@@ -276,9 +278,9 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         midVector2 = new Vector2((float) getMapIntWidth() / 2f, (float) getMapIntHeight() / 2f);
 
         if (MapTileLoader.getInstance().getCurrentLayer() == null) {
-            MapTileLoader.getInstance().setCurrentLayer(LayerManager.getInstance().getLayer(Config.currentMapLayer.getValue()), isCarMode);
+            MapTileLoader.getInstance().setCurrentLayer(LayerManager.getInstance().getLayer(Settings.currentMapLayer.getValue()), isCarMode);
         }
-        String[] currentOverlayLayerName = new String[]{Config.CurrentMapOverlayLayerName.getValue()};
+        String[] currentOverlayLayerName = new String[]{Settings.CurrentMapOverlayLayerName.getValue()};
         if (MapTileLoader.getInstance().getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
             MapTileLoader.getInstance().setCurrentOverlayLayer(LayerManager.getInstance().getOverlayLayer(currentOverlayLayerName));
         initializeMap();
@@ -288,15 +290,15 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
         // from create
 
-        if (Config.mapViewDPIFaktor.getValue() == 1) {
-            Config.mapViewDPIFaktor.setValue(displayDensity);
-            Config.acceptChanges();
+        if (Settings.mapViewDPIFaktor.getValue() == 1) {
+            Settings.mapViewDPIFaktor.setValue(displayDensity);
+            Config.that.acceptChanges();
         }
-        iconFactor = Config.mapViewDPIFaktor.getValue();
+        iconFactor = Settings.mapViewDPIFaktor.getValue();
 
         liveButton = new LiveButton();
-        liveButton.setActivated(Config.liveMapEnabled.getDefaultValue());
-        Config.disableLiveMap.addSettingChangedListener(this::requestLayout);
+        liveButton.setActivated(Settings.liveMapEnabled.getDefaultValue());
+        Settings.disableLiveMap.addSettingChangedListener(this::requestLayout);
 
         btnMapState = new MultiToggleButton(GL_UISizes.toggle, "toggle");
 
@@ -306,7 +308,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         btnMapState.addState("Lock", new HSV_Color(Color.RED));
         btnMapState.addState("Car", new HSV_Color(Color.YELLOW));
         btnMapState.setLastStateWithLongClick(true);
-        MapState lastUsedMapState = MapState.values()[Config.lastMapToggleBtnState.getValue()];
+        MapState lastUsedMapState = MapState.values()[Settings.lastMapToggleBtnState.getValue()];
         btnMapState.setState(lastUsedMapState.ordinal());
         btnMapState.setOnStateChangedListener((v, state) -> setMapState(MapState.values()[state]));
         btnMapState.registerSkinChangedEvent();
@@ -317,7 +319,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                 break;
             case Normal:
                 setMapState(lastUsedMapState);
-                switch (Config.lastMapToggleBtnState.getValue()) {
+                switch (Settings.lastMapToggleBtnState.getValue()) {
                     case 0:
                         mapInfoPanel.setCoordType(CoordType.Map);
                         break;
@@ -332,7 +334,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                 }
                 addChild(btnMapState);
 
-                if (Config.disableLiveMap.getValue()) {
+                if (Settings.disableLiveMap.getValue()) {
                     liveButton.setActivated(false);
                 }
                 addChild(liveButton);
@@ -362,7 +364,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                             try {
                                 WriteIntoDB.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                             } catch (InterruptedException ex) {
-                                Log.err(sKlasse, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
+                                Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
                             }
                         } else {
                             if (GroundspeakAPI.APIError != OK) {
@@ -372,8 +374,8 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
                         // Reload result from DB
                         synchronized (CBDB.getInstance().cacheList) {
-                            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+                            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
+                            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         }
 
                         Cache selCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(GCCode);
@@ -398,9 +400,9 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                 });
             } else {
                 if (infoBubble.getWaypoint() == null) {
-                    // Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
+                    // if cache has a Final waypoint: activate
                     Waypoint waypoint = infoBubble.getCache().getCorrectedFinal();
-                    // wenn ein Cache keine Final hat, aber einen StartWaypointm, dann wird dieser gleich selektiert
+                    // if not (null) , but has a startWaypoint: activate this
                     if (waypoint == null)
                         waypoint = infoBubble.getCache().getStartWaypoint();
                     GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
@@ -418,16 +420,16 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         resize(getWidth(), getHeight());
 
         try {
-            center = new CoordinateGPS(Config.mapInitLatitude.getValue(), Config.mapInitLongitude.getValue());
+            center = new CoordinateGPS(Settings.mapInitLatitude.getValue(), Settings.mapInitLongitude.getValue());
         } catch (Exception ex) {
-            Log.err(sKlasse, "MapView/CoordinateGPS", ex);
+            Log.err(sClass, "MapView/CoordinateGPS", ex);
         }
 
-        // Info aktualisieren
+        // update Info
         if (mapMode == MapMode.Normal)
             mapInfoPanel.setCoord(center);
 
-        zoomBtn.setZoom(Config.lastZoomLevel.getValue());
+        zoomBtn.setZoom(Settings.lastZoomLevel.getValue());
         calcPixelsPerMeter();
         mapScale.zoomChanged();
 
@@ -438,11 +440,11 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
         // Initial SettingsChanged Events
         setNightMode();
-        Config.nightMode.addSettingChangedListener(this::setNightMode);
+        Settings.nightMode.addSettingChangedListener(this::setNightMode);
 
-        isNorthOriented = Config.isMapNorthOriented.getValue();
-        Config.isMapNorthOriented.addSettingChangedListener(() -> {
-            isNorthOriented = Config.isMapNorthOriented.getValue();
+        isNorthOriented = Settings.isMapNorthOriented.getValue();
+        Settings.isMapNorthOriented.addSettingChangedListener(() -> {
+            isNorthOriented = Settings.isMapNorthOriented.getValue();
             positionChanged();
         });
         // to force generation of tiles in loadTiles();
@@ -460,7 +462,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     }
 
     @Override
-    protected void renderSynchronOverlay(Batch batch) {
+    protected void renderSynchronousOverlay(Batch batch) {
         batch.setProjectionMatrix(myParentInfo.Matrix());
 
         // calculate icon size
@@ -479,7 +481,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     }
 
     @Override
-    protected void renderNonSynchronOverlay(Batch batch) {
+    protected void renderNonSynchronousOverlay(Batch batch) {
         renderUI(batch);
     }
 
@@ -523,13 +525,13 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         if (GlobalCore.getSelectedCache() == null)
             return;
 
-        Coordinate coord = (GlobalCore.getSelectedWayPoint() != null) ? GlobalCore.getSelectedWayPoint().getCoordinate() : GlobalCore.getSelectedCache().getCoordinate();
+        Coordinate coordinate = (GlobalCore.getSelectedWayPoint() != null) ? GlobalCore.getSelectedWayPoint().getCoordinate() : GlobalCore.getSelectedCache().getCoordinate();
 
-        if (coord == null) {
+        if (coordinate == null) {
             return;
         }
-        float x = (float) (256.0 * Descriptor.longitudeToTileX(MAX_MAP_ZOOM, coord.getLongitude()));
-        float y = (float) (-256.0 * Descriptor.latitudeToTileY(MAX_MAP_ZOOM, coord.getLatitude()));
+        float x = (float) (256.0 * Descriptor.longitudeToTileX(MAX_MAP_ZOOM, coordinate.getLongitude()));
+        float y = (float) (-256.0 * Descriptor.latitudeToTileY(MAX_MAP_ZOOM, coordinate.getLatitude()));
 
         float halfHeight = getMapIntHeight() / 2.0f - ySpeedVersatz;
         float halfWidth = getMapIntWidth() / 2.0f;
@@ -555,7 +557,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
             Vector2 newTarget = targetArrowScreenRec.getIntersection(ScreenCenter, target);
 
-            // Rotation berechnen
+            // calculate Rotation
             if (newTarget != null) {
 
                 float direction = get_angle(ScreenCenter.x, ScreenCenter.y, newTarget.x, newTarget.y);
@@ -691,7 +693,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
             wayPointRenderInfo.overlayIcon.draw(batch);
         }
 
-        // Rating des Caches darstellen
+        // show cache rating
         if (wayPointRenderInfo.cache != null && showRating && (!drawAsWaypoint) && (wayPointRenderInfo.cache.gcVoteRating > 0) && (currentZoom >= 15)) {
             Sprite rating = MapStars.get((int) Math.min(wayPointRenderInfo.cache.gcVoteRating * 2, 5 * 2));
             rating.setBounds(screen.x - wpUnderlay.getHalfWidth(), screen.y - wpUnderlay.getHalfHeight() - wpUnderlay.getHeight48(), wpUnderlay.getWidth(), wpUnderlay.getHeight48());
@@ -783,12 +785,12 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         if (mapInfoPanel != null) {
             mapInfoPanel.setSpeed(Locator.getInstance().SpeedString());
 
-            if (mapState == MapState.CAR && Config.dynamicZoom.getValue()) {
+            if (mapState == MapState.CAR && Settings.dynamicZoom.getValue()) {
                 // calculate dynamic Zoom
 
-                double maxSpeed = Config.MoveMapCenterMaxSpeed.getValue();
-                int maxZoom = Config.dynamicZoomLevelMax.getValue();
-                int minZoom = Config.dynamicZoomLevelMin.getValue();
+                double maxSpeed = Settings.MoveMapCenterMaxSpeed.getValue();
+                int maxZoom = Settings.dynamicZoomLevelMax.getValue();
+                int minZoom = Settings.dynamicZoomLevelMin.getValue();
 
                 double percent = Locator.getInstance().speedOverGround() / maxSpeed;
 
@@ -949,7 +951,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     @Override
     public void initializeMap() {
         // Log.debug(sKlasse, "initializeMap");
-        zoomCross = Config.ZoomCross.getValue();
+        zoomCross = Settings.ZoomCross.getValue();
         super.initializeMap();
     }
 
@@ -980,12 +982,12 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         float infoHeight = 0;
         if (mapMode == MapMode.Normal) {
             mapInfoPanel.setPos(margin, getMapIntHeight() - margin - mapInfoPanel.getHeight());
-            mapInfoPanel.setVisible(Config.showInfo.getValue());
+            mapInfoPanel.setVisible(Settings.showInfo.getValue());
             infoHeight = mapInfoPanel.getHeight();
         }
         btnMapState.setPos(getMapIntWidth() - margin - btnMapState.getWidth(), getMapIntHeight() - margin - btnMapState.getHeight());
 
-        if (Config.disableLiveMap.getValue()) {
+        if (Settings.disableLiveMap.getValue()) {
             liveButton.setInvisible();
         } else {
             liveButton.setVisible();
@@ -1009,8 +1011,8 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
             return;
         // Log.debug(sKlasse, "setMapState :" + state);
 
-        Config.lastMapToggleBtnState.setValue(state.ordinal());
-        Config.acceptChanges();
+        Settings.lastMapToggleBtnState.setValue(state.ordinal());
+        Config.that.acceptChanges();
 
         boolean wasCarMode = isCarMode;
 
@@ -1131,7 +1133,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         // Log.debug(sKlasse, "onShow");
         super.onShow();
         CacheSelectionChangedListeners.getInstance().addListener(this);
-        isNorthOriented = mapMode == MapMode.Normal ? Config.isMapNorthOriented.getValue() : false;
+        isNorthOriented = mapMode == MapMode.Normal ? Settings.isMapNorthOriented.getValue() : false;
         setSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
     }
 
@@ -1140,19 +1142,20 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
      */
     @Override
     public void setNewSettings(int InitialFlags) {
-        // Log.debug(sKlasse, "setNewSettings");
         if ((InitialFlags & INITIAL_SETTINGS) != 0) {
-            showRating = mapMode == MapMode.Compass ? false : Config.showRating.getValue();
-            showDT = mapMode == MapMode.Compass ? false : Config.showDifficultyTerrain.getValue();
-            showTitles = mapMode == MapMode.Compass ? false : Config.showTitles.getValue();
-            hideMyFinds = Config.hideMyFinds.getValue();
-            showDirectLine = mapMode == MapMode.Compass ? false : Config.showDirectLine.getValue();
-            showAllWaypoints = mapMode == MapMode.Compass ? false : Config.showAllWaypoints.getValue();
-            showAccuracyCircle = mapMode == MapMode.Compass ? false : Config.showAccuracyCircle.getValue();
-            showMapCenterCross = mapMode == MapMode.Compass ? false : Config.showMapCenterCross.getValue();
-            showAtOriginalPosition = mapMode == MapMode.Compass ? false : Config.showAtOriginalPosition.getValue();
-            showDistanceCircle = mapMode == MapMode.Compass ? false : Config.showDistanceCircle.getValue();
-            showDistanceToCenter = mapMode == MapMode.Compass ? false : Config.showDistanceToCenter.getValue();
+            hideMyFinds = Settings.hideMyFinds.getValue();
+            if (mapMode != MapMode.Compass) {
+                showRating = Settings.showRating.getValue();
+                showDT = Settings.showDifficultyTerrain.getValue();
+                showTitles = Settings.showTitles.getValue();
+                showDirectLine = Settings.showDirectLine.getValue();
+                showAllWaypoints = Settings.showAllWaypoints.getValue();
+                showAccuracyCircle = Settings.showAccuracyCircle.getValue();
+                showMapCenterCross = Settings.showMapCenterCross.getValue();
+                showAtOriginalPosition = Settings.showAtOriginalPosition.getValue();
+                showDistanceCircle = Settings.showDistanceCircle.getValue();
+                showDistanceToCenter = Settings.showDistanceToCenter.getValue();
+            }
 
             if (mapMode == MapMode.Track) {
                 showMapCenterCross = true;
@@ -1160,22 +1163,22 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
             }
 
             if (mapInfoPanel != null)
-                mapInfoPanel.setVisible(mapMode == MapMode.Compass ? false : Config.showInfo.getValue());
+                mapInfoPanel.setVisible(mapMode != MapMode.Compass && Settings.showInfo.getValue());
 
             if (InitialFlags == INITIAL_ALL) {
 
-                if (Config.mapViewDPIFaktor.getValue() == 1) {
-                    Config.mapViewDPIFaktor.setValue(displayDensity);
-                    Config.acceptChanges();
+                if (Settings.mapViewDPIFaktor.getValue() == 1) {
+                    Settings.mapViewDPIFaktor.setValue(displayDensity);
+                    Config.that.acceptChanges();
                 }
-                iconFactor = Config.mapViewDPIFaktor.getValue();
+                iconFactor = Settings.mapViewDPIFaktor.getValue();
 
-                int setMaxZoom = mapMode == MapMode.Compass ? Config.CompassMapMaxZommLevel.getValue() : Config.OsmMaxLevel.getValue();
-                int setMinZoom = mapMode == MapMode.Compass ? Config.CompassMapMinZoomLevel.getValue() : Config.OsmMinLevel.getValue();
+                int setMaxZoom = mapMode == MapMode.Compass ? Settings.CompassMapMaxZommLevel.getValue() : Settings.OsmMaxLevel.getValue();
+                int setMinZoom = mapMode == MapMode.Compass ? Settings.CompassMapMinZoomLevel.getValue() : Settings.OsmMinLevel.getValue();
 
                 zoomBtn.setMaxZoom(setMaxZoom);
                 zoomBtn.setMinZoom(setMinZoom);
-                zoomBtn.setZoom(Config.lastZoomLevel.getValue());
+                zoomBtn.setZoom(Settings.lastZoomLevel.getValue());
 
                 zoomScale.setMaxZoom(setMaxZoom);
                 zoomScale.setMinZoom(setMinZoom);
@@ -1198,7 +1201,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         if ((InitialFlags & INITIAL_THEME) != 0) {
             if (MapTileLoader.getInstance().getCurrentLayer() != null) {
                 if (MapTileLoader.getInstance().getCurrentLayer().isMapsForge()) {
-                    Log.info(sKlasse, "modify layer " + MapTileLoader.getInstance().getCurrentLayer().getName() + " for mapview " + mapMode);
+                    Log.info(sClass, "modify layer " + MapTileLoader.getInstance().getCurrentLayer().getName() + " for mapview " + mapMode);
                     MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
                     lastDescriptorOrdered = new Descriptor(0, 0, 10);
                     renderOnce("INITIAL_THEME");
@@ -1216,11 +1219,13 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         if ((InitialFlags & INITIAL_WP_LIST) != 0) {
             if (mapCacheList != null) {
                 MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), currentZoom, true);
-                hideMyFinds = Config.hideMyFinds.getValue();
+                hideMyFinds = Settings.hideMyFinds.getValue();
                 data.hideMyFinds = hideMyFinds;
-                showAllWaypoints = mapMode == MapMode.Compass ? false : Config.showAllWaypoints.getValue();
+                if (mapMode != MapMode.Compass) {
+                    showAllWaypoints = Settings.showAllWaypoints.getValue();
+                    showAtOriginalPosition = Settings.showAtOriginalPosition.getValue();
+                }
                 data.showAllWaypoints = showAllWaypoints;
-                showAtOriginalPosition = mapMode == MapMode.Compass ? false : Config.showAtOriginalPosition.getValue();
                 data.showAtOriginalPosition = showAtOriginalPosition;
                 mapCacheList.update(data);
             }
@@ -1255,27 +1260,24 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void mapStateChangedToWP() {
-        // Log.debug(sKlasse, "mapStateChangedToWP");
         if (GlobalCore.isSetSelectedCache()) {
+            Coordinate tmp;
             if (GlobalCore.getSelectedWayPoint() != null) {
-                Coordinate tmp = GlobalCore.getSelectedWayPoint().getCoordinate();
-                setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
+                tmp = GlobalCore.getSelectedWayPoint().getCoordinate();
             } else {
-                Coordinate tmp = GlobalCore.getSelectedCache().getCoordinate();
-                setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
+                tmp = GlobalCore.getSelectedCache().getCoordinate();
             }
+            setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
         }
     }
 
     @Override
     public void setAlignToCompass(boolean value) {
-        // Log.debug(sKlasse, "setAlignToCompass");
         super.setAlignToCompass(value);
-        Config.isMapNorthOriented.setValue(!value);
+        Settings.isMapNorthOriented.setValue(!value);
     }
 
     private void onResume() {
-        // Log.debug(sKlasse, "onResume");
         MapView.this.renderOnce("OnResumeListeners");
     }
 

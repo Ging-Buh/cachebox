@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn4.executes;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
@@ -30,6 +30,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.views.SelectSolverFunction;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.Solver;

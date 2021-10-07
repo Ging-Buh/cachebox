@@ -22,8 +22,15 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.LinkedHashMap;
+
 import de.droidcachebox.InvalidateTextureListeners;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.ZoomButtons;
 import de.droidcachebox.gdx.graphics.CircleDrawable;
 import de.droidcachebox.gdx.graphics.KineticPan;
@@ -32,11 +39,20 @@ import de.droidcachebox.gdx.graphics.PolygonDrawable;
 import de.droidcachebox.gdx.main.MainViewBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
-import de.droidcachebox.locator.*;
-import de.droidcachebox.utils.*;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.LocatorSettings;
+import de.droidcachebox.locator.PositionChangedEvent;
+import de.droidcachebox.locator.PositionChangedListeners;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.IChanged;
+import de.droidcachebox.utils.MathUtils;
+import de.droidcachebox.utils.Point;
+import de.droidcachebox.utils.PointD;
+import de.droidcachebox.utils.PointL;
+import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.LinkedHashMap;
 
 public abstract class MapViewBase extends CB_View_Base implements PositionChangedEvent, InvalidateTextureListeners.InvalidateTextureListener {
     public static final int MAX_MAP_ZOOM = 22;
@@ -281,16 +297,16 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             }
             camera.update();
             renderMapTiles(batch);
-            renderSynchronOverlay(batch);
-            renderNonSynchronOverlay(batch);
+            renderSynchronousOverlay(batch);
+            renderNonSynchronousOverlay(batch);
         } catch (Exception ex) {
             Log.err(sKlasse, "render", ex);
         }
     }
 
-    protected abstract void renderSynchronOverlay(Batch batch);
+    protected abstract void renderSynchronousOverlay(Batch batch);
 
-    protected abstract void renderNonSynchronOverlay(Batch batch);
+    protected abstract void renderNonSynchronousOverlay(Batch batch);
 
     protected void renderDistanceToCenter(Batch batch) {
         if (showDistanceToCenter) {

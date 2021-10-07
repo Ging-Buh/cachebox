@@ -1,7 +1,11 @@
 package de.droidcachebox.menu.menuBtn2;
 
+import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
+import static de.droidcachebox.core.GroundspeakAPI.OK;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
@@ -15,19 +19,15 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn2.executes.SpoilerView;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 
-import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
-import static de.droidcachebox.core.GroundspeakAPI.OK;
-
 public class ShowSpoiler extends AbstractShowAction {
     private static ShowSpoiler showSpoiler;
-    private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-    private Sprite SpoilerExistsIcon;
-    private Sprite NoSpoilerIcon;
+    private final Sprite SpoilerExistsIcon;
+    private final Sprite NoSpoilerIcon;
     private Menu contextMenu;
     private static CancelWaitDialog wd;
 
@@ -36,6 +36,7 @@ public class ShowSpoiler extends AbstractShowAction {
         // contextMenu = createContextMenu();
         SpoilerExistsIcon = Sprites.getSprite(IconName.imagesIcon.name());
         NoSpoilerIcon = new Sprite(Sprites.getSprite(IconName.imagesIcon.name()));
+        Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
         NoSpoilerIcon.setColor(DISABLE_COLOR);
 
     }
@@ -78,7 +79,7 @@ public class ShowSpoiler extends AbstractShowAction {
     @Override
     public Menu getContextMenu() {
         // if depends on something: call createContextMenu() again
-        // todo why are the clickhandlers of the items gone on following calls? temp solution createContextMenu() again
+        // todo why are the click_handlers of the items gone on following calls? temp solution createContextMenu() again
         // has to do with the disposing of the compoundMenu in CB_Button after the Show
         createContextMenu();
         return contextMenu;
@@ -87,29 +88,25 @@ public class ShowSpoiler extends AbstractShowAction {
     private void createContextMenu() {
         contextMenu = new Menu("SpoilerViewContextMenuTitle");
 
-        contextMenu.addMenuItem("reloadSpoiler", null, () -> {
-            ImportSpoiler(false).setReadyListener(() -> {
-                // do after import
-                if (GlobalCore.isSetSelectedCache()) {
-                    GlobalCore.getSelectedCache().loadSpoilerRessources();
-                    SpoilerView.getInstance().ForceReload();
-                    ViewManager.leftTab.showView(SpoilerView.getInstance());
-                    SpoilerView.getInstance().onShow();
-                }
-            });
-        });
+        contextMenu.addMenuItem("reloadSpoiler", null, () -> ImportSpoiler(false).setReadyListener(() -> {
+            // do after import
+            if (GlobalCore.isSetSelectedCache()) {
+                GlobalCore.getSelectedCache().loadSpoilerRessources();
+                SpoilerView.getInstance().ForceReload();
+                ViewManager.leftTab.showView(SpoilerView.getInstance());
+                SpoilerView.getInstance().onShow();
+            }
+        }));
 
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> {
-            ImportSpoiler(true).setReadyListener(() -> {
-                // do after import
-                if (GlobalCore.isSetSelectedCache()) {
-                    GlobalCore.getSelectedCache().loadSpoilerRessources();
-                    SpoilerView.getInstance().ForceReload();
-                    ViewManager.leftTab.showView(SpoilerView.getInstance());
-                    SpoilerView.getInstance().onShow();
-                }
-            });
-        });
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> ImportSpoiler(true).setReadyListener(() -> {
+            // do after import
+            if (GlobalCore.isSetSelectedCache()) {
+                GlobalCore.getSelectedCache().loadSpoilerRessources();
+                SpoilerView.getInstance().ForceReload();
+                ViewManager.leftTab.showView(SpoilerView.getInstance());
+                SpoilerView.getInstance().onShow();
+            }
+        }));
 
         contextMenu.addMenuItem("startPictureApp", Sprites.getSprite("image-export"), () -> {
             String file = SpoilerView.getInstance().getSelectedFilePath();

@@ -60,7 +60,8 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.DraftViewItem;
-import de.droidcachebox.gdx.views.DraftsView;
+import de.droidcachebox.menu.menuBtn4.executes.DraftsView;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
@@ -176,8 +177,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
             FilterSetListViewItem.FilterSetEntry gcVoteSelection = new FilterSetListViewItem.FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), NUMERIC_ITEM, 0, 5, 0, 0.5f);
             gcVoteItem = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f), 0, gcVoteSelection);
-        }
-        else gcVoteItem = null;
+        } else gcVoteItem = null;
         // == setDraft
         isNewDraft = _isNewDraft;
         draftsView = _draftsView;
@@ -371,11 +371,11 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
         CB_Button btnFromFile = new CB_Button(Translation.get("fromFile"));
         btnFromFile.setClickHandler((v, x, y, pointer, button) -> {
-            String mPath = Config.TemplateLastUsedPath.getValue();
+            String mPath = Settings.TemplateLastUsedPath.getValue();
             if (mPath.length() == 0) {
                 mPath = Config.workPath + "/User";
             }
-            mPath = mPath + "/" + Config.TemplateLastUsedName.getValue();
+            mPath = mPath + "/" + Settings.TemplateLastUsedName.getValue();
             new FileOrFolderPicker(mPath, "*.txt", Translation.get("TemplateTitleSelect"), Translation.get("TemplateButtonSelect"), abstractFile -> {
                 BufferedReader br = null;
                 String strLine;
@@ -385,9 +385,9 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                     while ((strLine = br.readLine()) != null) {
                         text.append(strLine).append("\n");
                     }
-                    Config.TemplateLastUsedPath.setValue(abstractFile.getParent());
-                    Config.TemplateLastUsedName.setValue(abstractFile.getName());
-                    Config.acceptChanges();
+                    Settings.TemplateLastUsedPath.setValue(abstractFile.getParent());
+                    Settings.TemplateLastUsedName.setValue(abstractFile.getName());
+                    Config.that.acceptChanges();
                 } catch (Exception ignored) {
                 }
                 try {

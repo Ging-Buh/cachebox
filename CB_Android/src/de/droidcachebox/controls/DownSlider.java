@@ -56,28 +56,29 @@ import de.droidcachebox.locator.GPS;
 import de.droidcachebox.locator.GpsStateChangeEvent;
 import de.droidcachebox.locator.GpsStateChangeEventList;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.UnitFormatter;
 
 public final class DownSlider extends View implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent {
-    private static final String log = "downSlider";
+    private static final String sClass = "DownSlider";
     private static boolean isInitialized = false;
     private static int QuickButtonHeight;
     private static DownSlider Me;
     private final int AnimationTime = 50;
     private final double AnimationMulti = 1.4;
     boolean mGpsStateChabgedListenerRegistred = false;
-    private LinearLayout strengthLayout = findViewById(R.id.main_strength_control);
+    private final LinearLayout strengthLayout = findViewById(R.id.main_strength_control);
     private int attCompleadHeight = 0;
     private int topCalc = -1;
     private int attLineHeight = -1;
     private int yPos = 0;
-    private Rect mBtnRec = new Rect();
-    private Rect mBackRec = new Rect();
+    private final Rect mBtnRec = new Rect();
+    private final Rect mBackRec = new Rect();
     private Paint backPaint;
-    private Handler handler = new Handler();
-    private Runnable task = () -> {
+    private final Handler handler = new Handler();
+    private final Runnable task = () -> {
     };
     /*
      * Private Member
@@ -159,6 +160,8 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
         }
     };
     private GestureDetector mGestureDetector;
+    private Main main;
+    private Activity mainActivity;
     private final OnTouchListener myTouchListener = new OnTouchListener() {
 
         @Override
@@ -206,15 +209,9 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
 
             }
 
-            if (drag) {
-                return true;
-            } else {
-                return false;
-            }
+            return drag;
         }
     };
-    private Main main;
-    private Activity mainActivity;
 
     public DownSlider(Context context) {
         super(context);
@@ -242,7 +239,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
 
     public static void ButtonShowStateChanged() {
         if (DownSlider.Me != null) {
-            if (Config.quickButtonShow.getValue()) {
+            if (Settings.quickButtonShow.getValue()) {
                 DownSlider.Me.setPos_onUI(DownSlider.Me.QuickButtonMaxHeight);
             } else {
                 DownSlider.Me.setPos_onUI(0);
@@ -256,7 +253,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
     }
 
     public static int getAktQuickButtonHeight() {
-        return Config.quickButtonShow.getValue() ? QuickButtonHeight : 0;
+        return Settings.quickButtonShow.getValue() ? QuickButtonHeight : 0;
     }
 
     public static boolean isInitialized() {
@@ -299,7 +296,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
          * Beim ersten Zeichnen, wird der Letzte Zustand abgefragt!
          */
         if (!isInitialized) {
-            if (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) {
+            if (Settings.quickButtonShow.getValue() && Settings.quickButtonLastShow.getValue()) {
                 setPos(QuickButtonMaxHeight);
             } else {
                 setPos(0);
@@ -308,17 +305,17 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
         }
 
         if (!drag && !AnimationIsRunning && !ButtonDrag) {
-            yPos = QuickButtonHeight = Config.quickButtonShow.getValue() ? ((int) QuickButtonList.that.getHeight()) : 0;
+            yPos = QuickButtonHeight = Settings.quickButtonShow.getValue() ? ((int) QuickButtonList.that.getHeight()) : 0;
         }
 
         float FSize = ((float) (UiSizes.getInstance().getScaledFontSize_big() * 1.3));
 
-        if (paint == null || Config.nightMode.getValue() != initialNight) {
+        if (paint == null || Settings.nightMode.getValue() != initialNight) {
             paint = new Paint();
             paint.setColor(Global.getColor(R.attr.TextColor));
             paint.setTextSize((float) (UiSizes.getInstance().getScaledFontSize() * 1.3));
             paint.setAntiAlias(true);
-            initialNight = Config.nightMode.getValue();
+            initialNight = Settings.nightMode.getValue();
         }
 
         final Drawable Slide = Global.BtnIcons[0];
@@ -361,7 +358,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
             canvas.drawText(mCache.getGeoCacheName(), 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
 
         // Draw only is visible
-        if (Config.quickButtonShow.getValue()) {
+        if (Settings.quickButtonShow.getValue()) {
             if (yPos <= QuickButtonMaxHeight) {
                 if (Energy.SliderIsShown())
                     Energy.resetSliderIsShown();
@@ -388,7 +385,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
         if (!Energy.SliderIsShown())
             Energy.setSliderIsShown();
 
-        if (Config.quickButtonShow.getValue()) {
+        if (Settings.quickButtonShow.getValue()) {
             canvas.clipRect(mBackRec);
         }
 
@@ -546,7 +543,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
     public void setPos(int Pos) {
         if (Pos >= 0) {
             yPos = Pos;
-            if (Config.quickButtonShow.getValue()) {
+            if (Settings.quickButtonShow.getValue()) {
                 if (Pos <= QuickButtonMaxHeight) {
                     QuickButtonHeight = Pos;
                 } else {
@@ -563,7 +560,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
         }
 
         // chk if info Visible then update info
-        int InfoBeginnAt = Config.quickButtonShow.getValue() ? QuickButtonMaxHeight : 0;
+        int InfoBeginnAt = Settings.quickButtonShow.getValue() ? QuickButtonMaxHeight : 0;
         if (yPos > InfoBeginnAt) {
             if (!isVisible)
                 startUpdateTimer();
@@ -590,18 +587,17 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
         if (mainActivity != null) {
             mainActivity.runOnUiThread(() -> {
 
-                boolean QuickButtonShow = Config.quickButtonShow.getValue();
+                boolean QuickButtonShow = Settings.quickButtonShow.getValue();
 
                 // check if QuickButtonList snap in
                 if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow) {
                     QuickButtonHeight = QuickButtonMaxHeight;
-                    Config.quickButtonLastShow.setValue(true);
-                    Config.acceptChanges();
+                    Settings.quickButtonLastShow.setValue(true);
                 } else {
                     QuickButtonHeight = 0;
-                    Config.quickButtonLastShow.setValue(false);
-                    Config.acceptChanges();
+                    Settings.quickButtonLastShow.setValue(false);
                 }
+                Config.that.acceptChanges();
 
                 main.setQuickButtonHeight(QuickButtonHeight);
 

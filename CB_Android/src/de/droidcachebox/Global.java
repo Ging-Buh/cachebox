@@ -4,15 +4,23 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+
+import java.util.Arrays;
+
 import de.CB_PlugIn.IPlugIn;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.QuickButtonItem;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.MoveableList;
-
-import java.util.Arrays;
 
 public class Global {
 
@@ -35,7 +43,7 @@ public class Global {
     /**
      * List of installed PlugIns Max count of PlugIn = 10!
      */
-    public static IPlugIn iPlugin[] = new IPlugIn[10];
+    public static IPlugIn[] iPlugin = new IPlugIn[10];
     /**
      * paint with invert Matrix
      */
@@ -238,15 +246,15 @@ public class Global {
     private static Drawable getDrawable(int ResId, int NightResId, Resources res) {
         Drawable ret = null;
 
-        if (Config.settings == null)
+        if (Config.that == null)
             return res.getDrawable(ResId);
 
         try {
-            if (NightResId == -1 || !Config.nightMode.getValue()) {
+            if (NightResId == -1 || !Settings.nightMode.getValue()) {
                 ret = res.getDrawable(ResId);
 
                 // im Nacht Mode wird das Drawable mit einem Filter belegt, um es ein wenig abzudunkeln
-                if (Config.nightMode.getValue()) {
+                if (Settings.nightMode.getValue()) {
                     ret.setColorFilter(Color.argb(255, 100, 100, 100), Mode.MULTIPLY);
                 }
 
@@ -254,7 +262,7 @@ public class Global {
                 ret = res.getDrawable(NightResId);
             }
 
-            if (!Config.nightMode.getValue()) {
+            if (!Settings.nightMode.getValue()) {
                 ret.clearColorFilter();
             }
         } catch (Exception e) {
@@ -378,8 +386,8 @@ public class Global {
 
         try {
             boolean nightMode = false;
-            if (Config.settings != null)
-                nightMode = Config.nightMode.getValue();
+            if (Config.that != null)
+                nightMode = Settings.nightMode.getValue();
 
             context.setTheme(nightMode ? R.style.Theme_night : R.style.Theme_day);
 

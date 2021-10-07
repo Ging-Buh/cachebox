@@ -15,11 +15,20 @@
  */
 package de.droidcachebox.menu;
 
+import static de.droidcachebox.menu.ViewManager.actionRecordVideo;
+import static de.droidcachebox.menu.ViewManager.actionRecordVoice;
+import static de.droidcachebox.menu.ViewManager.actionTakePicture;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.menu.menuBtn1.ShowCacheList;
 import de.droidcachebox.menu.menuBtn1.ShowParkingDialog;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
-import de.droidcachebox.menu.menuBtn2.*;
+import de.droidcachebox.menu.menuBtn2.HintDialog;
+import de.droidcachebox.menu.menuBtn2.ShowDescription;
+import de.droidcachebox.menu.menuBtn2.ShowLogs;
+import de.droidcachebox.menu.menuBtn2.ShowNotes;
+import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
+import de.droidcachebox.menu.menuBtn2.ShowWaypoints;
 import de.droidcachebox.menu.menuBtn3.ShowCompass;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.ShowTracks;
@@ -29,9 +38,12 @@ import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.menu.menuBtn4.UploadDrafts;
 import de.droidcachebox.menu.menuBtn5.SwitchDayNight;
 import de.droidcachebox.menu.menuBtn5.SwitchTorch;
-import de.droidcachebox.menu.quickBtns.*;
-
-import static de.droidcachebox.menu.ViewManager.*;
+import de.droidcachebox.menu.quickBtns.AddWayPoint;
+import de.droidcachebox.menu.quickBtns.CreateRoute;
+import de.droidcachebox.menu.quickBtns.EditFilterSettings;
+import de.droidcachebox.menu.quickBtns.RememberGeoCache;
+import de.droidcachebox.menu.quickBtns.SearchDialog;
+import de.droidcachebox.menu.quickBtns.SwitchAutoresort;
 
 /**
  * Enthält die Actions Möglichkeiten für die Quick Buttons
@@ -78,7 +90,7 @@ public enum QuickAction {
             case DescriptionView:
                 return ShowDescription.getInstance();
             case WaypointView:
-                return ShowWaypoint.getInstance();
+                return ShowWaypoints.getInstance();
             case LogView:
                 return ShowLogs.getInstance();
             case MapView:

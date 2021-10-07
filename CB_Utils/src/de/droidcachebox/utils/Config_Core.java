@@ -9,31 +9,28 @@ public abstract class Config_Core {
     static final int[] Key = {128, 56, 20, 78, 33, 225};
     public static String workPath = "";
     public static float displayDensity = 1;
-    static Config_Core that;
 
     public Config_Core(String workPath) {
-        that = this;
         Config_Core.workPath = workPath;
     }
 
     public static String decrypt(String value) {
-        int[] b = null;
+        String decrypted = "";
+        int[] b;
         try {
             b = byte2intArray(Base64.decode(value));
-        } catch (IOException e) {
 
+            RC4(b, Key);
+
+            char[] c = new char[b.length];
+            for (int x = 0; x < b.length; x++) {
+                c[x] = (char) b[x];
+            }
+
+            decrypted = String.copyValueOf(c);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-        RC4(b, Key);
-        String decrypted = "";
-
-        char[] c = new char[b.length];
-        for (int x = 0; x < b.length; x++) {
-            c[x] = (char) b[x];
-        }
-
-        decrypted = String.copyValueOf(c);
 
         return decrypted;
 
@@ -111,7 +108,5 @@ public abstract class Config_Core {
             bytes[x] = bytes[x] ^ s[t];
         }
     }
-
-    protected abstract void writeToDatabase();
 
 }

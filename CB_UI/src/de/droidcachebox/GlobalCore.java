@@ -48,6 +48,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Track;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.solver.Solver;
 import de.droidcachebox.solver.SolverCacheInterface;
 import de.droidcachebox.translation.Translation;
@@ -80,6 +81,7 @@ public class GlobalCore implements SolverCacheInterface {
     public static GlobalLocationReceiver receiver;
     public static boolean RunFromSplash = false;
     public static String firstSDCard, secondSDCard;
+    public static Uri selectedUri = null;
     private static GlobalCore globalCore;
     private static Cache selectedCache = null;
     private static boolean autoResort;
@@ -87,7 +89,6 @@ public class GlobalCore implements SolverCacheInterface {
     private static Waypoint selectedWayPoint = null;
     private static int CurrentRevision;
     private static String VersionPrefix;
-    public static Uri selectedUri = null;
 
     private GlobalCore() {
         super();
@@ -152,7 +153,7 @@ public class GlobalCore implements SolverCacheInterface {
             // remove Detail Info from old selectedCache
             if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.getGeoCacheDetail() != null)) {
                 Log.debug(log, "[GlobalCore]setSelectedWaypoint: deleteDetail " + selectedCache.getGeoCacheCode());
-                selectedCache.deleteDetail(Config.showAllWaypoints.getValue());
+                selectedCache.deleteDetail(Settings.showAllWaypoints.getValue());
             }
 
             selectedCache = cache;

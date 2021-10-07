@@ -50,11 +50,12 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.ViewConst;
 import de.droidcachebox.gdx.ViewID;
-import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn2.executes.SpoilerView;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -71,20 +72,20 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private static CBLocation recordingStartCoordinate;
     private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<>();
     private int lastLeft, lastTop, lastRight, lastBottom;
-    private AndroidApplication androidApplication;
-    private Activity mainActivity;
-    private Main mainMain;
-    private AndroidApplicationConfiguration gdxConfig;
-    private FrameLayout layoutContent;
+    private final AndroidApplication androidApplication;
+    private final Activity mainActivity;
+    private final Main mainMain;
+    private final AndroidApplicationConfiguration gdxConfig;
+    private final FrameLayout layoutContent;
     private DownSlider downSlider;
     private ViewOptionsMenu currentView;
     private ViewID aktViewId;
     private ViewOptionsMenu aktTabView;
     private ViewID aktTabViewId;
-    private CacheNameView cacheNameView;
+    private final CacheNameView cacheNameView;
     private DescriptionView descriptionView;
-    private FrameLayout layoutGlContent;
-    private LayoutInflater inflater;
+    private final FrameLayout layoutGlContent;
+    private final LayoutInflater inflater;
     private View gdxView;
     private Uri videoUri;
     private AndroidEventListener handlingRecordedVideo, handlingTakePhoto;
@@ -93,7 +94,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private String tempMediaPath;
     private MicrophoneView microphoneView;
     private ExtAudioRecorder extAudioRecorder;
-    private View.OnTouchListener onTouchListener;
+    private final View.OnTouchListener onTouchListener;
 
     ShowViewListener(Main main) {
         androidApplication = main;
@@ -130,7 +131,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             return sendMotionEvent(event);
         };
 
-        Config.RunOverLockScreen.addSettingChangedListener(this::handleRunOverLockScreenConfig);
+        Settings.RunOverLockScreen.addSettingChangedListener(this::handleRunOverLockScreenConfig);
 
         OnResumeListeners.getInstance().addListener(this::onResume);
 
@@ -510,7 +511,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 targetName = GlobalCore.getSelectedWayPoint().getWaypointCode();
             }
 
-            String selectedNavi = Config.Navis.getValue();
+            String selectedNavi = Settings.Navis.getValue();
 
             Intent intent = null;
             switch (selectedNavi) {
@@ -578,8 +579,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                             Log.err(sKlasse, "Navigation: No App for " + action + " , " + data);
                             intent = null;
-                        }
-                        else {
+                        } else {
                             // from Build.VERSION_CODES.R onwards the Activity may exist even, if not visible
                             Log.info(sKlasse, "Navigation: No visible App for " + action + " , " + data);
                         }
@@ -602,14 +602,14 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             final String[] recordAudioPermissions = {Manifest.permission.RECORD_AUDIO};
             ActivityCompat.requestPermissions(mainActivity, recordAudioPermissions, Main.Request_recordVoice);
-            return ;
+            return;
         }
 
         try {
             if (!isVoiceRecordingStarted()) // Voice Recorder starten
             {
                 // define the file-name to save voice taken by activity
-                String directory = Config.UserImageFolder.getValue();
+                String directory = Settings.UserImageFolder.getValue();
                 if (!FileIO.createDirectory(directory)) {
                     Log.err(sKlasse, "can't create " + directory);
                     return;
@@ -631,8 +631,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                 extAudioRecorder.prepare();
                 extAudioRecorder.start();
 
-                String MediaFolder = Config.UserImageFolder.getValue();
-                String TrackFolder = Config.TrackFolder.getValue();
+                String MediaFolder = Settings.UserImageFolder.getValue();
+                String TrackFolder = Settings.TrackFolder.getValue();
                 String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
                 // Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
                 TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getInstance().getLocation(CBLocation.ProviderType.GPS), getTrackDateTimeString());
@@ -681,12 +681,12 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             final String[] takePhotoPermissions = {Manifest.permission.CAMERA};
             ActivityCompat.requestPermissions(mainActivity, takePhotoPermissions, Main.Request_takePhoto);
-            return ;
+            return;
         }
         Log.info(sKlasse, "takePhoto start " + GlobalCore.getSelectedCache());
         try {
             // define the file-name to save photo taken by Camera activity
-            String directory = Config.UserImageFolder.getValue();
+            String directory = Settings.UserImageFolder.getValue();
             if (!FileIO.createDirectory(directory)) {
                 Log.err(sKlasse, "can't create " + directory);
                 return;
@@ -735,7 +735,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                     try {
                                         // move the photo from temp to UserImageFolder
                                         String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
-                                        String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
+                                        String destinationName = Settings.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
                                         if (!sourceName.equals(destinationName)) {
                                             AbstractFile source = FileFactory.createFile(sourceName);
                                             AbstractFile destination = FileFactory.createFile(destinationName);
@@ -753,8 +753,8 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                         ViewManager.that.reloadSprites(false);
 
                                         // track annotation
-                                        String TrackFolder = Config.TrackFolder.getValue();
-                                        String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
+                                        String TrackFolder = Settings.TrackFolder.getValue();
+                                        String relativPath = FileIO.getRelativePath(Settings.UserImageFolder.getValue(), TrackFolder, "/");
                                         CBLocation lastLocation = Locator.getInstance().getLastSavedFineLocation();
                                         if (lastLocation == null) {
                                             lastLocation = Locator.getInstance().getLocation(CBLocation.ProviderType.any);
@@ -789,18 +789,18 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
         if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             final String[] takePhotoPermissions = {Manifest.permission.CAMERA};
             ActivityCompat.requestPermissions(mainActivity, takePhotoPermissions, Main.Request_recordVideo);
-            return ;
+            return;
         }
         if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             final String[] recordAudioPermissions = {Manifest.permission.RECORD_AUDIO};
             ActivityCompat.requestPermissions(mainActivity, recordAudioPermissions, Main.Request_recordVideo);
-            return ;
+            return;
         }
 
         try {
             Log.info(sKlasse, "recVideo start " + GlobalCore.getSelectedCache());
             // define the file-name to save video taken by Camera activity
-            String directory = Config.UserImageFolder.getValue();
+            String directory = Settings.UserImageFolder.getValue();
             if (!FileIO.createDirectory(directory)) {
                 Log.err(sKlasse, "can't create " + directory);
                 return;
@@ -857,15 +857,15 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                             ext = FileIO.getFileExtension(recordedVideoFilePath);
 
                                             AbstractFile source = FileFactory.createFile(recordedVideoFilePath);
-                                            String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
+                                            String destinationName = Settings.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
                                             AbstractFile destination = FileFactory.createFile(destinationName);
                                             if (!source.renameTo(destination)) {
                                                 Log.err(sKlasse, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
                                             } else {
                                                 Log.info(sKlasse, "Video saved at " + destinationName);
                                                 // track annotation
-                                                String TrackFolder = Config.TrackFolder.getValue();
-                                                String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
+                                                String TrackFolder = Settings.TrackFolder.getValue();
+                                                String relativPath = FileIO.getRelativePath(Settings.UserImageFolder.getValue(), TrackFolder, "/");
                                                 TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
                                             }
                                         }
@@ -969,7 +969,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
             } else {
                 Window window = mainActivity.getWindow();
                 if (window != null) {
-                    if (Config.RunOverLockScreen.getValue()) {
+                    if (Settings.RunOverLockScreen.getValue()) {
                         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
                     } else {
                         window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);

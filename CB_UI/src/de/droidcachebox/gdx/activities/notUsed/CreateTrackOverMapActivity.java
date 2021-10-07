@@ -39,13 +39,13 @@ import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.gdx.views.MapView;
-import de.droidcachebox.gdx.views.MapView.MapMode;
 import de.droidcachebox.gdx.views.MapViewCacheList.WayPointRenderInfo;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.menu.menuBtn3.executes.MapView;
+import de.droidcachebox.menu.menuBtn3.executes.MapView.MapMode;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.MoveableList;
@@ -187,8 +187,8 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     }
 
     @Override
-    public void renderChilds(final Batch batch, ParentInfo parentInfo) {
-        super.renderChilds(batch, parentInfo);
+    public void renderChildren(final Batch batch, ParentInfo parentInfo) {
+        super.renderChildren(batch, parentInfo);
 
         // render WPs
         if (waypoints == null)

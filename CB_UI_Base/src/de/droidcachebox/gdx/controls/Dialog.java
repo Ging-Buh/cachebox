@@ -18,16 +18,21 @@ package de.droidcachebox.gdx.controls;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.CB_UI_Base_Settings;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.ParentInfo;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.DialogElement;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.CB_List;
-
-import java.util.ArrayList;
 
 public abstract class Dialog extends CB_View_Base {
     protected static float margin = -1;
@@ -110,22 +115,23 @@ public abstract class Dialog extends CB_View_Base {
 
         float MeasuredTextHeight = Fonts.measureWrapped(Text, MsgWidth).height + (margin * 4);
 
-        int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UiSizes.getInstance().getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
+        float Height = (hasIcon ? Math.max(MeasuredTextHeight, UiSizes.getInstance().getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
+
         if (hasTitle) {
             Height += getTitleHeight();
         }
         Height += calcFooterHeight(hasButtons);
         if (hasRemember)
-            Height += UiSizes.getInstance().getChkBoxSize().getHeight();
-        Height += calcHeaderHeight();
+            Height = (Height + UiSizes.getInstance().getChkBoxSize().getHeight());
+        Height = (Height + calcHeaderHeight());
 
         // min Height festlegen
-        Height = (int) Math.max(Height, UiSizes.getInstance().getButtonHeight() * 2.5f);
+        Height = Math.max(Height, UiSizes.getInstance().getButtonHeight() * 2.5f);
 
         // max Height festlegen
-        Height = (int) Math.min(Height, UiSizes.getInstance().getWindowHeight() * 0.95f);
+        Height = Math.min(Height, UiSizes.getInstance().getWindowHeight() * 0.95f);
 
-        return new Size((int) Width, Height);
+        return new Size((int) Width, (int) Height);
     }
 
     public static float getTitleHeight() {
@@ -262,7 +268,7 @@ public abstract class Dialog extends CB_View_Base {
     }
 
     @Override
-    public void renderChilds(final Batch batch, ParentInfo parentInfo) {
+    public void renderChildren(final Batch batch, ParentInfo parentInfo) {
         if (isDisposed())
             return;
         batch.flush();
@@ -297,7 +303,7 @@ public abstract class Dialog extends CB_View_Base {
         if (isDisposed())
             return;
 
-        super.renderChilds(batch, parentInfo);
+        super.renderChildren(batch, parentInfo);
 
         try {
             if (overlay != null) {
@@ -317,7 +323,7 @@ public abstract class Dialog extends CB_View_Base {
                             batch.setProjectionMatrix(getMyInfoForChild().Matrix());
                             nDepthCounter++;
 
-                            view.renderChilds(batch, getMyInfoForChild());
+                            view.renderChildren(batch, getMyInfoForChild());
                             nDepthCounter--;
                             batch.setProjectionMatrix(myParentInfo.Matrix());
                         }

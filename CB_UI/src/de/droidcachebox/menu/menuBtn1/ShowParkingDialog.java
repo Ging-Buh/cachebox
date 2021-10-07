@@ -1,10 +1,11 @@
 package de.droidcachebox.menu.menuBtn1;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.dialogs.ParkingDialog;
+import de.droidcachebox.menu.menuBtn1.executes.ParkingDialog;
 
 public class ShowParkingDialog extends AbstractAction {
 

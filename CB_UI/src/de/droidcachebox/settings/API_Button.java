@@ -16,6 +16,7 @@
 package de.droidcachebox.settings;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.gdx.Sprites;
@@ -56,7 +57,7 @@ public class API_Button extends CB_Button {
 
     public void setImage() {
         if (image != null) {
-            if (GroundspeakAPI.getSettingsAccessToken().length() > 0) {
+            if (GroundspeakAPI.hasGroundSpeakAccessToken()) {
                 image.setDrawable(new SpriteDrawable(Sprites.getSprite("chk-icon")));
             } else {
                 image.setDrawable(new SpriteDrawable(Sprites.getSprite("chk-icon-disable")));

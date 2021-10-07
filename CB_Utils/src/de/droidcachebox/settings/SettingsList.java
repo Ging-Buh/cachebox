@@ -21,10 +21,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
     public SettingsList() {
         that = this;
-
-        // add Member to list
         Member[] mbrs = this.getClass().getFields();
-
         for (Member mbr : mbrs) {
             if (mbr instanceof Field) {
                 try {
@@ -32,18 +29,11 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                     if (obj instanceof SettingBase<?>) {
                         add((SettingBase<?>) obj);
                     }
-                } catch (IllegalArgumentException e) {
-
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-
+                } catch (IllegalArgumentException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
-
         }
-
-        mbrs = null;
     }
 
     public boolean isLoaded() {
@@ -120,7 +110,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
     }
 
-    public void ReadFromDB() {
+    public void readFromDB() {
         AtomicInteger tryCount = new AtomicInteger(0);
         while (tryCount.incrementAndGet() < 10) {
             SettingsDAO dao = createSettingsDAO();
@@ -211,14 +201,14 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
         }
     }
 
-    public void SaveToLastValue() {
+    public void saveToLastValue() {
         for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
             SettingBase<?> setting = it.next();
             setting.saveToLastValue();
         }
     }
 
-    public void LoadAllDefaultValues() {
+    public void loadAllDefaultValues() {
         for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
             SettingBase<?> setting = it.next();
             setting.loadDefault();

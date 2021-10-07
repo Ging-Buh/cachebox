@@ -10,8 +10,8 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.OptionMenu;
-import de.droidcachebox.gdx.views.CompassView;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn3.executes.CompassView;
 import de.droidcachebox.settings.SettingBool;
 
 public class ShowCompass extends AbstractShowAction {
@@ -87,10 +87,9 @@ public class ShowCompass extends AbstractShowAction {
         menuCompassElements.show();
     }
 
-    private boolean toggleSetting(SettingBool setting) {
+    private void toggleSetting(SettingBool setting) {
         setting.setValue(!setting.getValue());
-        Config.acceptChanges();
-        return true;
+        Config.that.acceptChanges();
     }
 
 }

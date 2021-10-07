@@ -17,6 +17,7 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import de.droidcachebox.gdx.ParentInfo;
 import de.droidcachebox.gdx.math.CB_RectF;
 
@@ -74,7 +75,7 @@ public class ImageMultiToggleButton extends MultiToggleButton {
     }
 
     @Override
-    public void renderChilds(final Batch batch, ParentInfo parentInfo) {
-        super.renderChilds(batch, parentInfo);
+    public void renderChildren(final Batch batch, ParentInfo parentInfo) {
+        super.renderChildren(batch, parentInfo);
     }
 }

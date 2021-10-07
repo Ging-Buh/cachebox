@@ -260,7 +260,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         }
 
         @Override
-        public void renderChilds(final Batch batch, ParentInfo parentInfo) {
+        public void renderChildren(final Batch batch, ParentInfo parentInfo) {
             if (!disableScissor)
                 Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 

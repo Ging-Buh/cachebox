@@ -1,6 +1,9 @@
 package de.droidcachebox.settings;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.QuickButtonList;
@@ -22,16 +25,14 @@ import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MoveableList;
 
-import java.util.ArrayList;
-
 public class SettingsItem_QuickButton extends CB_View_Base {
 
-    static MoveableList<QuickButtonItem> tmpQuickList = null;
+    private MoveableList<QuickButtonItem> tmpQuickList;
     private ImageButton up, down, del, add;
     private V_ListView listView;
     private Box boxForListView;
 
-    SettingsItem_QuickButton(CB_RectF rec, String Name) {
+    public SettingsItem_QuickButton(CB_RectF rec, String Name) {
         super(rec, Name);
 
         setClickHandler((v, x, y, pointer, button) -> {
@@ -48,6 +49,8 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         tmpQuickList = new MoveableList<>(QuickButtonList.quickButtonList);
         reloadListViewItems();
     }
+
+
 
     private void showSelect() {
         // erstelle Menu mit allen Actions, die noch nicht in der QuickButton List enthalten sind.
@@ -228,6 +231,10 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         listView.setY(margin / 2);
         listView.setWidth(boxForListView.getWidth() - (margin * 2));
         listView.setHeight(boxForListView.getHeight() - margin);
+    }
+
+    public MoveableList<QuickButtonItem> getTmpQuickList() {
+        return tmpQuickList;
     }
 
     public class CustomAdapter implements Adapter {

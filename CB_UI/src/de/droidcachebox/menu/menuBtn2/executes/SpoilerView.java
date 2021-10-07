@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn2.executes;
+
+import java.util.ArrayList;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.database.Cache;
@@ -21,7 +23,11 @@ import de.droidcachebox.database.ImageDAO;
 import de.droidcachebox.database.ImageEntry;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.activities.ImageActivity;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.GalleryBigItem;
+import de.droidcachebox.gdx.controls.GalleryItem;
+import de.droidcachebox.gdx.controls.GalleryView;
+import de.droidcachebox.gdx.controls.Image;
+import de.droidcachebox.gdx.controls.ImageLoader;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -30,8 +36,6 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 
-import java.util.ArrayList;
-
 public class SpoilerView extends CB_View_Base {
     private final static int MAX_THUMB_WIDTH = 500;
     private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
@@ -39,10 +43,10 @@ public class SpoilerView extends CB_View_Base {
     private final CB_List<GalleryBigItem> bigItems = new CB_List<>();
     private final CB_List<GalleryItem> overviewItems = new CB_List<>();
     private Cache actCache;
-    private GalleryView gallery;
-    private GalleryView galleryOverwiew;
+    private final GalleryView gallery;
+    private final GalleryView galleryOverwiew;
     private boolean forceReload = false;
-    private ImageDAO imageDAO = new ImageDAO();
+    private final ImageDAO imageDAO = new ImageDAO();
 
     private SpoilerView() {
         super(ViewManager.leftTab.getContentRec(), "SpoilerView");

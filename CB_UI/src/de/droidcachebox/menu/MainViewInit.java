@@ -52,6 +52,7 @@ import de.droidcachebox.gdx.main.MainViewBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
@@ -85,7 +86,7 @@ public class MainViewInit extends MainViewBase {
         GL.that.restartRendering();
         switcher = !switcher;
         if (switcher && !breakForWait) {
-            // in jedem Render Vorgang einen Step ausführen
+            // one step per render cycle
             switch (step) {
                 case 0:
                     atlas = new TextureAtlas(Gdx.files.internal("skins/default/day/SplashPack.spp.atlas"));
@@ -106,7 +107,7 @@ public class MainViewInit extends MainViewBase {
                     break;
                 case 4:
                     ini_Sprites();
-                    progress.setProgress(30, "check directoiries");
+                    progress.setProgress(30, "check directories");
                     break;
                 case 5:
                     ini_Dirs();
@@ -225,12 +226,6 @@ public class MainViewInit extends MainViewBase {
      * Load Config DB3
      */
     private void ini_Config() {
-        // Log.info(log, "ini_Config");
-        // Database.Settings.startUp(Config.WorkPath + "/User/Config.db3");
-        // Config.settings.ReadFromDB();
-        // // now must reinitial UiSizes with reading settings values
-        // GL_UISizes.initial(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
-        // Config.AcceptChanges();
     }
 
     /**
@@ -243,24 +238,24 @@ public class MainViewInit extends MainViewBase {
 
             // Load from Assets changes
             // delete work path from settings value
-            String altValue = Config.Sel_LanguagePath.getValue();
+            String altValue = Settings.Sel_LanguagePath.getValue();
             if (altValue.contains(Config.workPath)) {
                 String newValue = altValue.replace(Config.workPath + "/", "");
-                Config.Sel_LanguagePath.setValue(newValue);
-                Config.acceptChanges();
+                Settings.Sel_LanguagePath.setValue(newValue);
+                Config.that.acceptChanges();
             }
 
             if (altValue.startsWith("/")) {
                 String newValue = altValue.substring(1);
-                Config.Sel_LanguagePath.setValue(newValue);
-                Config.acceptChanges();
+                Settings.Sel_LanguagePath.setValue(newValue);
+                Config.that.acceptChanges();
             }
 
             Translation trans = new Translation(Config.workPath);
             try {
-                trans.loadTranslation(Config.Sel_LanguagePath.getValue());
+                trans.loadTranslation(Settings.Sel_LanguagePath.getValue());
             } catch (Exception e) {
-                trans.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+                trans.loadTranslation(Settings.Sel_LanguagePath.getDefaultValue());
             }
         }
     }
@@ -282,17 +277,17 @@ public class MainViewInit extends MainViewBase {
      */
     private void ini_Dirs() {
         Log.info(log, "ini_Dirs");
-        ini_Dir(Config.PocketQueryFolder.getValue());
-        ini_Dir(Config.tileCacheFolder.getValue());
+        ini_Dir(Settings.PocketQueryFolder.getValue());
+        ini_Dir(Settings.tileCacheFolder.getValue());
         ini_Dir(Config.workPath + "/User");
-        ini_Dir(Config.TrackFolder.getValue());
-        ini_Dir(Config.UserImageFolder.getValue());
+        ini_Dir(Settings.TrackFolder.getValue());
+        ini_Dir(Settings.UserImageFolder.getValue());
         ini_Dir(Config.workPath + "/repository");
-        ini_Dir(Config.DescriptionImageFolder.getValue());
-        ini_Dir(Config.MapPackFolder.getValue());
-        ini_Dir(Config.SpoilerFolder.getValue());
+        ini_Dir(Settings.DescriptionImageFolder.getValue());
+        ini_Dir(Settings.MapPackFolder.getValue());
+        ini_Dir(Settings.SpoilerFolder.getValue());
 
-        // prevent mediascanner to parse all the images in the cachebox folder
+        // prevent media_scanner to parse all the images in the cachebox folder
         AbstractFile nomedia = FileFactory.createFile(Config.workPath, ".nomedia");
         if (!nomedia.exists()) {
             try {
@@ -320,10 +315,10 @@ public class MainViewInit extends MainViewBase {
         try {
             fileList = new FileList(Config.workPath, "DB3");
         } catch (Exception ex) {
-            Log.err(log, "slpash.Initial()", "search number of DB3 files", ex);
+            Log.err(log, "getting DB3 fileList", ex);
         }
         if (fileList != null) {
-            if ((fileList.size() > 1) && Config.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill) {
+            if ((fileList.size() > 1) && Settings.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill) {
                 breakForWait = true;
                 SelectDB selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
                 selectDBDialog.setReturnListener(this::returnFromSelectDB);
@@ -344,18 +339,18 @@ public class MainViewInit extends MainViewBase {
     private void ini_CacheDB() {
         Log.info(log, "ini_CacheDB");
 
-        CBDB.getInstance().startUp(Config.workPath + "/" + Config.DatabaseName.getValue());
+        CBDB.getInstance().startUp(Config.workPath + "/" + Settings.DatabaseName.getValue());
 
-        Config.settings.ReadFromDB();
+        Config.that.settings.readFromDB();
 
-        FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
-        String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
+        FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
+        String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
 
         CoreData.categories = new Categories();
         CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
         synchronized (CBDB.getInstance().cacheList) {
-            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
         }
 
         CacheListChangedListeners.getInstance().cacheListChanged();

@@ -31,7 +31,7 @@ import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.controls.Spinner;
 import de.droidcachebox.gdx.controls.Spinner.ISpinnerSelectionChanged;
 import de.droidcachebox.gdx.controls.SpinnerAdapter;
-import de.droidcachebox.gdx.views.GeoCacheListListView;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 

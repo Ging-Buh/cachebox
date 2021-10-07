@@ -1,16 +1,16 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
+import java.util.ArrayList;
+
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.solver.Solver;
 
-import java.util.ArrayList;
-
 public class SolverDialog2BuildFormula {
-    private String sForm;
-    private Solver solver;
-    private ArrayList<CB_Label> labels;
+    private final String sForm;
+    private final Solver solver;
+    private final ArrayList<CB_Label> labels;
 
     public SolverDialog2BuildFormula(String sForm) {
         this.sForm = sForm;

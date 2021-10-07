@@ -15,37 +15,31 @@
  */
 package de.droidcachebox;
 
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
-import de.droidcachebox.locator.LocatorSettings;
-import de.droidcachebox.settings.SettingsClass;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Config_Core;
 
-public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, LocatorSettings {
-    public static SettingsClass settings;
-    private static Config that;
+public class Config extends Config_Core {
+    public Settings settings;
+    public static Config that;
 
     public Config(String workPath) {
         super(workPath);
-        settings = new SettingsClass();
+        settings = new Settings();
         that = this;
     }
 
-    public static void changeDayNight() {
-        boolean value = Config.nightMode.getValue();
+    public void changeDayNight() {
+        boolean value = settings.nightMode.getValue();
         value = !value;
-        Config.nightMode.setValue(value);
-        Config.acceptChanges();
+        settings.nightMode.setValue(value);
+        acceptChanges();
     }
 
-    public static void acceptChanges() {
-        that.writeToDatabase();
-    }
-
-    protected void writeToDatabase() {
+    public void acceptChanges() {
         if (settings.writeToDatabases()) {
             MsgBox.show(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
         }

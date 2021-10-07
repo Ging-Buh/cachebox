@@ -11,6 +11,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.QuickAction;
 import de.droidcachebox.menu.QuickButtonItem;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.log.Log;
 
@@ -134,7 +135,7 @@ public class QuickButtonList extends H_ListView {
 
     private void readQuickButtonItemsList() {
         if (quickButtonList == null) {
-            String ConfigActionList = Config.quickButtonList.getValue();
+            String ConfigActionList = Settings.quickButtonList.getValue();
             String[] configList = ConfigActionList.split(",");
             quickButtonList = new MoveableList<>();
             if (configList.length > 0) {
@@ -152,10 +153,9 @@ public class QuickButtonList extends H_ListView {
                                 invalidEnumId = true;
                         }
                     }
-                } catch (Exception ex)
-                {
-                    // wenn ein Fehler auftritt, gib die bis dorthin gelesenen Items zurück
-                    Log.err("QuickbuttonList", "create from Config", ex);
+                } catch (Exception ex) {
+                    // returns items read until error occurred
+                    Log.err("QuickButtonList", "create from Config", ex);
                 }
                 if (invalidEnumId) {
                     //	    write valid id's back
@@ -169,8 +169,8 @@ public class QuickButtonList extends H_ListView {
                         }
                         counter++;
                     }
-                    Config.quickButtonList.setValue(ActionsString.toString());
-                    Config.acceptChanges();
+                    Settings.quickButtonList.setValue(ActionsString.toString());
+                    Config.that.acceptChanges();
                 }
             }
         }

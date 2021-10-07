@@ -92,7 +92,7 @@ public class GroundspeakAPI {
     public static Webb getNetz() {
         if (netz == null) {
             netz = Webb.create();
-            netz.setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getSettingsAccessToken());
+            netz.setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getOrFetchGroundSpeakAccessToken());
             Webb.setReadTimeout(CB_Core_Settings.socket_timeout.getValue());
             Webb.setConnectTimeout(CB_Core_Settings.connection_timeout.getValue());
             startTs = System.currentTimeMillis();
@@ -117,7 +117,7 @@ public class GroundspeakAPI {
     // API 1.0 see https://api.groundspeak.com/documentation and https://api.groundspeak.com/api-docs/index
 
     public static void setAuthorization() {
-        getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getSettingsAccessToken());
+        getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getOrFetchGroundSpeakAccessToken());
         me = null;
         Log.debug(sKlasse, "Activate AccessToken");
     }
@@ -790,7 +790,7 @@ public class GroundspeakAPI {
         } catch (Exception ex) {
             LastAPIError += ex.getLocalizedMessage();
             LastAPIError += "\n for " + getUrl(1, "trackablelogs");
-            LastAPIError += "\n APIKey: " + getSettingsAccessToken();
+            LastAPIError += "\n APIKey: " + getOrFetchGroundSpeakAccessToken();
             LastAPIError += "\n trackingNumber: " + TrackingNummer;
             LastAPIError += "\n trackableCode: " + TBCode;
             LastAPIError += "\n geocacheCode: " + cacheCode;
@@ -1087,26 +1087,33 @@ public class GroundspeakAPI {
         while (true);
     }
 
-    public static String getSettingsAccessToken() {
-        /* */
+    public static String getAccessTokenFromSettings() {
         String act;
         if (CB_Core_Settings.UseTestUrl.getValue()) {
             act = CB_Core_Settings.AccessTokenForTest.getValue();
         } else {
             act = CB_Core_Settings.AccessToken.getValue();
         }
-
         // for ACB we added an additional A in settings
         if ((act.startsWith("A"))) {
             // Log.debug(log, "Access Token = " + act.substring(1, act.length()));
             return act.substring(1);
-        } else {
+        } else
+        return "";
+    }
+
+    public static boolean hasGroundSpeakAccessToken() {
+        return getAccessTokenFromSettings().length() != 0;
+    }
+
+    public static String getOrFetchGroundSpeakAccessToken() {
+        String act = getAccessTokenFromSettings();
+        if (act.length() == 0) {
             Log.err(sKlasse, "no Access Token");
-            // todo Message to try again ?
             // get the AccessToken
             API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.NO);
-            return "";
         }
+        return act;
     }
 
     public static String getUrl(int version, String command) {

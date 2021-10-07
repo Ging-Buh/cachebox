@@ -1,4 +1,4 @@
-package de.droidcachebox.settings;
+package de.droidcachebox.menu.menuBtn5.executes;
 
 import static de.droidcachebox.utils.Config_Core.br;
 
@@ -39,10 +39,42 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.gdx.views.MapView;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.menu.menuBtn3.executes.MapView;
+import de.droidcachebox.settings.API_Button;
+import de.droidcachebox.settings.Audio;
+import de.droidcachebox.settings.SettingBase;
+import de.droidcachebox.settings.SettingBool;
+import de.droidcachebox.settings.SettingCategory;
+import de.droidcachebox.settings.SettingColor;
+import de.droidcachebox.settings.SettingDouble;
+import de.droidcachebox.settings.SettingEnum;
+import de.droidcachebox.settings.SettingFile;
+import de.droidcachebox.settings.SettingFloat;
+import de.droidcachebox.settings.SettingFolder;
+import de.droidcachebox.settings.SettingInt;
+import de.droidcachebox.settings.SettingIntArray;
+import de.droidcachebox.settings.SettingLongString;
+import de.droidcachebox.settings.SettingModus;
+import de.droidcachebox.settings.SettingStoreType;
+import de.droidcachebox.settings.SettingString;
+import de.droidcachebox.settings.SettingStringArray;
+import de.droidcachebox.settings.SettingTime;
+import de.droidcachebox.settings.SettingUsage;
+import de.droidcachebox.settings.Settings;
+import de.droidcachebox.settings.SettingsAudio;
+import de.droidcachebox.settings.SettingsItemBase;
+import de.droidcachebox.settings.SettingsItemEnum;
+import de.droidcachebox.settings.SettingsItem_Audio;
+import de.droidcachebox.settings.SettingsItem_Bool;
+import de.droidcachebox.settings.SettingsItem_Color;
+import de.droidcachebox.settings.SettingsItem_QuickButton;
+import de.droidcachebox.settings.SettingsListButtonLangSpinner;
+import de.droidcachebox.settings.SettingsListButtonSkinSpinner;
+import de.droidcachebox.settings.SettingsListCategoryButton;
+import de.droidcachebox.settings.SettingsListGetApiButton;
 import de.droidcachebox.translation.Lang;
 import de.droidcachebox.translation.SelectedLangChangedEvent;
 import de.droidcachebox.translation.SelectedLangChangedEventList;
@@ -58,7 +90,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private static SettingsActivity that;
     private ArrayList<SettingsItem_Audio> audioSettingsList;
     private ArrayList<Lang> Sprachen;
-    private OnMsgBoxClickListener msgBoxReturnListener = (which, data) -> {
+    private final OnMsgBoxClickListener msgBoxReturnListener = (which, data) -> {
         show();
         return true;
     };
@@ -68,6 +100,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private CB_RectF ButtonRec, itemRec;
     private API_Button apiBtn;
     private Linearlayout LinearLayout;
+    private SettingsItem_QuickButton settingsItem_QuickButton;
 
     public SettingsActivity() {
         super("Settings");
@@ -91,7 +124,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     private void initial() {
         setLongClickable(true);
-        Config.settings.SaveToLastValue();
+        Config.that.settings.saveToLastValue();
         ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight());
 
         itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UiSizes.getInstance().getButtonHeight());
@@ -127,18 +160,18 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         btnMenu.setClickHandler((v, x, y, pointer, button) -> {
             Menu icm = new Menu("SettingsLevelTitle");
 
-            if (Config.isDeveloper.getValue())
-                Config.isExpert.setValue(false);
+            if (Settings.isDeveloper.getValue())
+                Settings.isExpert.setValue(false);
 
-            icm.addCheckableMenuItem("Settings_Expert", Config.isExpert.getValue(), () -> {
-                Config.isExpert.setValue(!Config.isExpert.getValue());
-                Config.isDeveloper.setValue(false);
+            icm.addCheckableMenuItem("Settings_Expert", Settings.isExpert.getValue(), () -> {
+                Settings.isExpert.setValue(!Settings.isExpert.getValue());
+                Settings.isDeveloper.setValue(false);
                 resortList();
             });
 
-            icm.addCheckableMenuItem("Settings_All", Config.isDeveloper.getValue(), () -> {
-                Config.isDeveloper.setValue(!Config.isDeveloper.getValue());
-                Config.isExpert.setValue(false);
+            icm.addCheckableMenuItem("Settings_All", Settings.isDeveloper.getValue(), () -> {
+                Settings.isDeveloper.setValue(!Settings.isDeveloper.getValue());
+                Settings.isExpert.setValue(false);
                 resortList();
             });
 
@@ -153,18 +186,18 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             StringBuilder ActionsString = new StringBuilder();
             int counter = 0;
-            for (int i = 0, n = SettingsItem_QuickButton.tmpQuickList.size(); i < n; i++) {
-                QuickButtonItem tmp = SettingsItem_QuickButton.tmpQuickList.get(i);
+            for (int i = 0, n = settingsItem_QuickButton.getTmpQuickList().size(); i < n; i++) {
+                QuickButtonItem tmp = settingsItem_QuickButton.getTmpQuickList().get(i);
                 ActionsString.append(tmp.getQuickAction().ordinal());
-                if (counter < SettingsItem_QuickButton.tmpQuickList.size() - 1) {
+                if (counter < settingsItem_QuickButton.getTmpQuickList().size() - 1) {
                     ActionsString.append(",");
                 }
                 counter++;
             }
-            Config.quickButtonList.setValue(ActionsString.toString());
+            Settings.quickButtonList.setValue(ActionsString.toString());
 
-            Config.settings.SaveToLastValue();
-            Config.acceptChanges();
+            Config.that.settings.saveToLastValue();
+            Config.that.acceptChanges();
 
             // Notify QuickButtonList
             QuickButtonList.that.notifyDataSetChanged();
@@ -177,7 +210,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         addChild(btnCancel);
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
-            Config.settings.LoadFromLastValue();
+            Config.that.settings.LoadFromLastValue();
 
             finish();
             return true;
@@ -204,10 +237,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         addControlToLinearLayout(langView, margin);
 
         ArrayList<SettingBase<?>> AllSettingList = new ArrayList<>();// Config.settings.values().toArray();
-        for (SettingBase<?> settingItem : Config.settings) {
+        for (SettingBase<?> settingItem : Config.that.settings) {
             if (settingItem.getUsage() == SettingUsage.ACB || settingItem.getUsage() == SettingUsage.ALL)
                 // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
-                if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Config.isExpert.getValue()) || Config.isDeveloper.getValue())
+                if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Settings.isExpert.getValue()) || Settings.isDeveloper.getValue())
                         && (settingItem.getModus() != SettingModus.NEVER)) {
                     AllSettingList.add(settingItem);
                 }
@@ -248,7 +281,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     entryCount++;
                     break;
                 case QuickList:
-                    lay.addChild(new SettingsItem_QuickButton(itemRec, "QuickButtonEditor"));
+                    lay.addChild(settingsItem_QuickButton = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor"));
                     entryCount++;
                     break;
                 case Debug:
@@ -297,7 +330,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 final CB_View_Base view = getView(settingItem, position++);
                 if (view != null) {
 
-                    if (Config.DraftsLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("DraftsLoadLength")) {
+                    if (Settings.DraftsLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("DraftsLoadLength")) {
                         ((SettingsItemBase) view).disable();
                     }
 
@@ -307,8 +340,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
                     lay.addChild(view);
                     entryCount++;
-                    Config.settings.indexOf(settingItem);
-                    if (Config.settings.indexOf(settingItem) == EditKey) {
+                    Config.that.settings.indexOf(settingItem);
+                    if (Config.that.settings.indexOf(settingItem) == EditKey) {
                         expandLayout = true;
                     }
                 }
@@ -332,7 +365,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
         }
 
-        setVolumeState(Config.globalVolume.getValue().Mute);
+        setVolumeState(Settings.globalVolume.getValue().Mute);
         apiBtn.setImage();
 
     }
@@ -413,14 +446,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.settings.indexOf(SB);
+            EditKey = Config.that.settings.indexOf(SB);
 
             GL.that.RunOnGLWithThreadCheck(() -> {
                 ColorPicker clrPick = new ColorPicker(SB.getValue(), color -> {
                     if (color == null)
                         return; // nothing changed
 
-                    SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
+                    SettingColor SetValue = (SettingColor) Config.that.settings.get(EditKey);
                     if (SetValue != null)
                         SetValue.setValue(color);
                     resortList();
@@ -458,7 +491,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(toShow + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.settings.indexOf(SB);
+            EditKey = Config.that.settings.indexOf(SB);
 
             WrapType type;
 
@@ -468,7 +501,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     (which, data) -> {
                         String text = StringInputBox.editText.getText();
                         if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                            SettingString value = (SettingString) Config.settings.get(EditKey);
+                            SettingString value = (SettingString) Config.that.settings.get(EditKey);
 
                             // api ohne lineBreak
                             if (value.getName().equalsIgnoreCase("AccessToken")) {
@@ -649,13 +682,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.settings.indexOf(SB);
+            EditKey = Config.that.settings.indexOf(SB);
 
             // Show NumPad Int Edit
             NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListener() {
                 @Override
                 public void returnValue(int value) {
-                    SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
+                    SettingInt SetValue = (SettingInt) Config.that.settings.get(EditKey);
                     if (SetValue != null)
                         SetValue.setValue(value);
                     resortList();
@@ -691,13 +724,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.settings.indexOf(SB);
+            EditKey = Config.that.settings.indexOf(SB);
 
             // Show NumPad Int Edit
             NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
-                    SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
+                    SettingDouble SetValue = (SettingDouble) Config.that.settings.get(EditKey);
                     if (SetValue != null)
                         SetValue.setValue(value);
                     resortList();
@@ -733,13 +766,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.settings.indexOf(SB);
+            EditKey = Config.that.settings.indexOf(SB);
 
             // Show NumPad Int Edit
             NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
-                    SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
+                    SettingFloat SetValue = (SettingFloat) Config.that.settings.get(EditKey);
                     if (SetValue != null)
                         SetValue.setValue((float) value);
                     resortList();
@@ -781,7 +814,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         }
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.settings.indexOf(settingFolder);
+            EditKey = Config.that.settings.indexOf(settingFolder);
             AbstractFile abstractFile = FileFactory.createFile(settingFolder.getValue());
             final String absolutePath = (abstractFile != null) ? abstractFile.getAbsolutePath() : "";
             Menu icm = new Menu("SelectPathTitle");
@@ -820,7 +853,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(settingFile.getValue() + "\n\n" + Translation.get("Desc_" + settingFile.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.settings.indexOf(settingFile);
+            EditKey = Config.that.settings.indexOf(settingFile);
             AbstractFile abstractFile = FileFactory.createFile(settingFile.getValue());
 
             final String Path = (abstractFile.getParent() != null) ? abstractFile.getParent() : "";
@@ -975,7 +1008,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(intToTime(SB.getValue()) + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.settings.indexOf(SB);
+            EditKey = Config.that.settings.indexOf(SB);
 
             String Value = intToTime(SB.getValue());
             String[] s = Value.split(":");
@@ -987,7 +1020,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             NumericInputBox.Show("default: " + br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
                 @Override
                 public void returnValue(int min, int sec) {
-                    SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);
+                    SettingTime SetValue = (SettingTime) Config.that.settings.get(EditKey);
                     int value = (min * 60 * 1000) + (sec * 1000);
                     if (SetValue != null)
                         SetValue.setValue(value);
@@ -1026,7 +1059,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private CB_View_Base getLangSpinnerView() {
-        Sprachen = Translation.that.getLangs(Config.languagePath.getValue());
+        Sprachen = Translation.that.getLangs(Settings.languagePath.getValue());
 
         if (Sprachen == null || Sprachen.size() == 0)
             return null;
@@ -1035,7 +1068,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         int index = 0;
         int selection = -1;
 
-        AbstractFile abstractFile1 = FileFactory.createFile(Config.Sel_LanguagePath.getValue());
+        AbstractFile abstractFile1 = FileFactory.createFile(Settings.Sel_LanguagePath.getValue());
 
         for (Lang tmp : Sprachen) {
             AbstractFile abstractFile2 = FileFactory.createFile(tmp.Path);
@@ -1068,11 +1101,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     String selected = items[index1];
                     for (Lang tmp : Sprachen) {
                         if (selected.equals(tmp.Name)) {
-                            Config.Sel_LanguagePath.setValue(tmp.Path);
+                            Settings.Sel_LanguagePath.setValue(tmp.Path);
                             try {
                                 Translation.that.loadTranslation(tmp.Path);
                             } catch (Exception e) {
-                                Translation.that.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+                                Translation.that.loadTranslation(Settings.Sel_LanguagePath.getDefaultValue());
                             }
                             break;
                         }
@@ -1104,12 +1137,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         items[1] = "small";
         int index = 2;
         int selection = -1;
-        if (Config.skinFolder.getValue().equals("default"))
+        if (Settings.skinFolder.getValue().equals("default"))
             selection = 0;
-        if (Config.skinFolder.getValue().equals("small"))
+        if (Settings.skinFolder.getValue().equals("small"))
             selection = 1;
         for (String tmp : skinFolders) {
-            if (Config.skinFolder.getValue().endsWith(tmp))
+            if (Settings.skinFolder.getValue().endsWith(tmp))
                 selection = index;
             items[index++] = tmp;
         }
@@ -1134,11 +1167,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         final Spinner spinner = new Spinner(itemRec, "SelectSkin", adapter, index1 -> {
             String selected = items[index1];
             if (selected.equals("default")) {
-                Config.skinFolder.setValue("default");
+                Settings.skinFolder.setValue("default");
             } else if (selected.equals("small")) {
-                Config.skinFolder.setValue("small");
+                Settings.skinFolder.setValue("small");
             } else {
-                Config.skinFolder.setValue(Config_Core.workPath + "/skins/" + selected);
+                Settings.skinFolder.setValue(Config_Core.workPath + "/skins/" + selected);
             }
         });
 
@@ -1223,7 +1256,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         super.dispose();
     }
 
-    static class SettingsOrder implements Comparator<SettingBase> {
+    static class SettingsOrder implements Comparator<SettingBase<?>> {
         public int compare(SettingBase a, SettingBase b) {
             return a.compareTo(b);
         }

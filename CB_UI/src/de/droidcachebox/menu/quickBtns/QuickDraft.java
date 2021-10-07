@@ -16,6 +16,7 @@
 package de.droidcachebox.menu.quickBtns;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
@@ -28,7 +29,7 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.popups.PopUp_Base;
 import de.droidcachebox.gdx.controls.popups.QuickDraftFeedbackPopUp;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.views.DraftsView;
+import de.droidcachebox.menu.menuBtn4.executes.DraftsView;
 
 public class QuickDraft extends AbstractAction {
 

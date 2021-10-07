@@ -27,13 +27,14 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.CBLocation.ProviderType;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.Locator.CompassType;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -64,7 +65,7 @@ public class TrackRecorder {
 
     public static void startRecording() {
 
-        distanceForNextTrackpoint = Config.TrackDistance.getValue();
+        distanceForNextTrackpoint = Settings.TrackDistance.getValue();
 
         GlobalCore.currentRoute = new Track(Translation.get("actualTrack"));
         GlobalCore.currentRoute.setColor(Color.BLUE);

@@ -9,6 +9,7 @@ import de.droidcachebox.core.LiveMapQue;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.settings.Settings;
 
 public class LiveButton extends ImageButton {
 
@@ -27,8 +28,8 @@ public class LiveButton extends ImageButton {
 
     public void setActivated(boolean newState) {
         isActivated = newState;
-        Config.liveMapEnabled.setValue(newState);
-        Config.acceptChanges();
+        Settings.liveMapEnabled.setValue(newState);
+        Config.that.acceptChanges();
         switchImage();
     }
 
@@ -72,8 +73,7 @@ public class LiveButton extends ImageButton {
         setActivated(!isActivated);
         if (isActivated) {
             LiveMapQue.getInstance().quePosition(ShowMap.getInstance().normalMapView.center);
-        }
-        else {
+        } else {
             LiveMapQue.getInstance().clearDescriptorStack();
         }
         return true;

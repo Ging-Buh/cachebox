@@ -7,6 +7,7 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.log.Log;
@@ -22,28 +23,28 @@ public class AppRater {
     private static MsgBox msgBox;
 
     public static void app_launched() {
-        if (Config.AppRaterDontShowAgain.getValue())
+        if (Settings.AppRaterDontShowAgain.getValue())
             return;
 
         // Increment launch counter
-        final int launch_count = Config.AppRaterlaunchCount.getValue() + 1;
+        final int launch_count = Settings.AppRaterlaunchCount.getValue() + 1;
         Timer t = new Timer();
         TimerTask ta = new TimerTask() {
             @Override
             public void run() {
-                Config.AppRaterlaunchCount.setValue(launch_count);
-                Config.acceptChanges();
+                Settings.AppRaterlaunchCount.setValue(launch_count);
+                Config.that.acceptChanges();
                 Log.info(log, "10 min usage, increment launch count");
             }
         };
         t.schedule(ta, MINIMUM_RUN);
 
         // Get date of first launch
-        String dateString = Config.AppRaterFirstLunch.getValue();
+        String dateString = Settings.AppRaterFirstLunch.getValue();
         long date_firstLaunch = Long.parseLong(dateString);
         if (date_firstLaunch == 0) {
             date_firstLaunch = System.currentTimeMillis();
-            Config.AppRaterFirstLunch.setValue(Long.toString(date_firstLaunch));
+            Settings.AppRaterFirstLunch.setValue(Long.toString(date_firstLaunch));
         }
 
         // Wait at least n days before opening
@@ -53,7 +54,7 @@ public class AppRater {
             }
         }
 
-        Config.acceptChanges();
+        Config.that.acceptChanges();
     }
 
     private static void showRateDialog() {
@@ -87,8 +88,8 @@ public class AppRater {
                             break;
                         case 3:
                             // never
-                            Config.AppRaterDontShowAgain.setValue(true);
-                            Config.acceptChanges();
+                            Settings.AppRaterDontShowAgain.setValue(true);
+                            Config.that.acceptChanges();
                             break;
                     }
                     return true;

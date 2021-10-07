@@ -15,13 +15,14 @@
  */
 package de.droidcachebox.locator;
 
+import org.mapsforge.core.model.LatLong;
+
+import java.io.Serializable;
+
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.converter.UTMConvert;
-import org.mapsforge.core.model.LatLong;
-
-import java.io.Serializable;
 
 public class Coordinate extends LatLong implements Serializable {
     static final String br = System.getProperty("line.separator");
@@ -174,8 +175,6 @@ public class Coordinate extends LatLong implements Serializable {
         text = text.replace("\r", "");
         text = text.replace("\n", "");
         text = text.replace("/", "");
-        // NumberFormatInfo ni = new NumberFormatInfo();
-        // text = text.Replace(".", Global.DecimalSeparator);
         text = text.replace(",", ".");
         double lat;
         double lon;
@@ -331,18 +330,6 @@ public class Coordinate extends LatLong implements Serializable {
      */
     public float bearingTo(Coordinate dest, CalculationType type) {
         synchronized (mResults) {
-            // See if we already have the result
-            // if (getLatitude() != mLat1 || getLongitude() != mLon1 || dest.getLatitude() != mLat2 || dest.getLongitude() != mLon2)
-            // {
-            // MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
-            // mLat1 = getLatitude();
-            // mLon1 = getLongitude();
-            // mLat2 = dest.getLatitude();
-            // mLon2 = dest.getLongitude();
-            // mInitialBearing = mResults[1];
-            // }
-            // return mInitialBearing;
-
             synchronized (mResults) {
                 MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
                 return mResults[1];

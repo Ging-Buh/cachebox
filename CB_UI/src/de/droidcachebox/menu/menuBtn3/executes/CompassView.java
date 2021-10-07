@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn3.executes;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import de.droidcachebox.*;
+
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import de.droidcachebox.CacheSelectionChangedListeners;
+import de.droidcachebox.GlobalCore;
+import de.droidcachebox.InvalidateTextureListeners;
+import de.droidcachebox.SunMoonCalculator;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;
@@ -26,25 +34,31 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
+import de.droidcachebox.gdx.controls.CacheInfo;
+import de.droidcachebox.gdx.controls.Image;
+import de.droidcachebox.gdx.controls.SatBarChart;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.SizeF;
-import de.droidcachebox.gdx.views.MapView.MapMode;
-import de.droidcachebox.locator.*;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.PositionChangedEvent;
+import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn3.executes.MapView.MapMode;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class CompassView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent, InvalidateTextureListeners.InvalidateTextureListener, CacheListChangedListeners.CacheListChangedListener {
     private static final String log = "CompassView";
@@ -60,14 +74,14 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
     private Box topContentBox, leftBox, rightBox, rightBoxMask, distanceBack;
     private ScrollBox topBox;
     private SatBarChart chart;
-    private CB_Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblOwnCoords, lblBearing;
+    private CB_Label lblDistance, lbl_Name, lblGcCode, lblCoordinate, lblDesc, lblAlt, lblAccuracy, lblOwnCoordinate, lblBearing;
     private CacheInfo cacheInfo;
     private Cache currentGeoCache;
     private Waypoint currentWaypoint;
     private float margin;
     private float descHeight;
     private float lblHeight;
-    private boolean initDone, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon, showAnyContent, showTargetDirection, showSDT, showLastFound;
+    private boolean initDone, showMap, showName, showIcon, showAtt, showGcCode, showCoordinate, showWpDesc, showSatInformation, showSunMoon, showAnyContent, showTargetDirection, showSDT, showLastFound;
     private boolean lastUsedCompass = Locator.getInstance().UseMagneticCompass();
     private MapView mCompassMapView;
     private IChanged settingChangedListener = () -> {
@@ -133,35 +147,35 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
     }
 
     private void registerSettingsChangedListeners() {
-        Config.CompassShowMap.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowWP_Name.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowWP_Icon.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowAttributes.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowGcCode.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowCoords.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowWpDesc.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowSatInfos.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowSunMoon.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowTargetDirection.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowSDT.addSettingChangedListener(settingChangedListener);
-        Config.CompassShowLastFound.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowMap.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowWP_Name.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowWP_Icon.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowAttributes.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowGcCode.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowCoords.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowWpDesc.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowSatInfos.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowSunMoon.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowTargetDirection.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowSDT.addSettingChangedListener(settingChangedListener);
+        Settings.CompassShowLastFound.addSettingChangedListener(settingChangedListener);
     }
 
     private void readSettings() {
-        showMap = Config.CompassShowMap.getValue();
-        showName = Config.CompassShowWP_Name.getValue();
-        showIcon = Config.CompassShowWP_Icon.getValue();
-        showAtt = Config.CompassShowAttributes.getValue();
-        showGcCode = Config.CompassShowGcCode.getValue();
-        showCoords = Config.CompassShowCoords.getValue();
-        showWpDesc = Config.CompassShowWpDesc.getValue();
-        showSatInfos = Config.CompassShowSatInfos.getValue();
-        showSunMoon = Config.CompassShowSunMoon.getValue();
-        showTargetDirection = Config.CompassShowTargetDirection.getValue();
-        showSDT = Config.CompassShowSDT.getValue();
-        showLastFound = Config.CompassShowLastFound.getValue();
+        showMap = Settings.CompassShowMap.getValue();
+        showName = Settings.CompassShowWP_Name.getValue();
+        showIcon = Settings.CompassShowWP_Icon.getValue();
+        showAtt = Settings.CompassShowAttributes.getValue();
+        showGcCode = Settings.CompassShowGcCode.getValue();
+        showCoordinate = Settings.CompassShowCoords.getValue();
+        showWpDesc = Settings.CompassShowWpDesc.getValue();
+        showSatInformation = Settings.CompassShowSatInfos.getValue();
+        showSunMoon = Settings.CompassShowSunMoon.getValue();
+        showTargetDirection = Settings.CompassShowTargetDirection.getValue();
+        showSDT = Settings.CompassShowSDT.getValue();
+        showLastFound = Settings.CompassShowLastFound.getValue();
 
-        showAnyContent = showMap || showName || showIcon || showAtt || showGcCode || showCoords || showWpDesc || showSatInfos || showSunMoon || showTargetDirection || showSDT || showLastFound;
+        showAnyContent = showMap || showName || showIcon || showAtt || showGcCode || showCoordinate || showWpDesc || showSatInformation || showSunMoon || showTargetDirection || showSDT || showLastFound;
     }
 
     private void setCache() {
@@ -223,11 +237,11 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
                     lblGcCode.setText(currentGeoCache.getGeoCacheCode());
                 }
 
-                if (showCoords && lblCoords != null) {
+                if (showCoordinate && lblCoordinate != null) {
                     if (currentWaypoint == null) {
-                        lblCoords.setText(currentGeoCache.getCoordinate().formatCoordinate());
+                        lblCoordinate.setText(currentGeoCache.getCoordinate().formatCoordinate());
                     } else {
-                        lblCoords.setText(currentWaypoint.getCoordinate().formatCoordinate());
+                        lblCoordinate.setText(currentWaypoint.getCoordinate().formatCoordinate());
                     }
                 }
 
@@ -256,7 +270,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
     private void Layout() {
         Log.debug(log, "layout");
 
-        // Die Größe des Kompasses nach rest Platz berechnen
+        // calculate the size of compass (depends on still available place)
 
         float compassHeight = Math.min(leftBox.getHeight(), this.getWidth()) - margin - margin;
 
@@ -296,7 +310,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
 
         if (showSunMoon)
             setMoonSunPos();
-        if (showSatInfos && showCoords && !showGcCode) {
+        if (showSatInformation && showCoordinate && !showGcCode) {
             chart.setHeight((lblHeight + margin) * 2.3f + (lblHeight + margin));
         }
 
@@ -329,7 +343,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
             contentHeight += (showIcon ? attHeight : lblHeight) + margin;
         if (showAtt)
             contentHeight += attHeight + margin + attHeight + margin;// two Att Lines
-        if (showGcCode || showCoords)
+        if (showGcCode || showCoordinate)
             contentHeight += lblHeight + margin;
         if (showWpDesc) {
             if (currentWaypoint != null) {
@@ -339,7 +353,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
                 }
             }
         }
-        if (showSatInfos)
+        if (showSatInformation)
             contentHeight += attHeight + attHeight + margin;
         if (showTargetDirection)
             contentHeight += lblHeight + margin;
@@ -474,17 +488,17 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
             topContentBox.addLast(lblDesc);
         }
 
-        // add GC-Code and Coord line
-        float mesuredCoorWidth = Fonts.Measure("52° 27.130N / 13° 33.117E").width + margin;
-        if (showGcCode || showCoords) {
-            if (showCoords) {
-                lblCoords = new CB_Label("");
-                lblCoords.setHeight(lblHeight);
-                lblCoords.setWidth(mesuredCoorWidth);
+        // add GC-Code and Coordinate line
+        float measuredCoordinateWidth = Fonts.Measure("52° 27.130N / 13° 33.117E").width + margin;
+        if (showGcCode || showCoordinate) {
+            if (showCoordinate) {
+                lblCoordinate = new CB_Label("");
+                lblCoordinate.setHeight(lblHeight);
+                lblCoordinate.setWidth(measuredCoordinateWidth);
                 if (showGcCode) {
-                    topContentBox.addNext(lblCoords, FIXED);
+                    topContentBox.addNext(lblCoordinate, FIXED);
                 } else {
-                    topContentBox.addLast(lblCoords, FIXED);
+                    topContentBox.addLast(lblCoordinate, FIXED);
                 }
             }
             if (showGcCode) {
@@ -494,8 +508,8 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
             }
         }
 
-        // add sat infos
-        if (showSatInfos) {
+        // add sat information
+        if (showSatInformation) {
             if (showMap)//
             {
                 lblAlt = new CB_Label("");
@@ -515,15 +529,15 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
             chart = new SatBarChart(attRec, "");
             chart.setHeight((lblHeight + margin) * 2.3f);
 
-            float chartWidth = topContentBox.getInnerWidth() - mesuredCoorWidth - margin;
+            float chartWidth = topContentBox.getInnerWidth() - measuredCoordinateWidth - margin;
             chart.setWidth(chartWidth);
             topContentBox.addLast(chart, FIXED);
 
-            lblOwnCoords = new CB_Label("");
-            lblOwnCoords.setHeight(lblHeight);
-            lblOwnCoords.setWidth(chart.getX() - margin);
-            lblOwnCoords.setPos(0, lblAlt.getMaxY() + margin);
-            topContentBox.addChild(lblOwnCoords);
+            lblOwnCoordinate = new CB_Label("");
+            lblOwnCoordinate.setHeight(lblHeight);
+            lblOwnCoordinate.setWidth(chart.getX() - margin);
+            lblOwnCoordinate.setPos(0, lblAlt.getMaxY() + margin);
+            topContentBox.addChild(lblOwnCoordinate);
 
         }
 
@@ -633,8 +647,8 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
 
         double heading = Locator.getInstance().getHeading();
 
-        if (lblOwnCoords != null)
-            lblOwnCoords.setText(position.formatCoordinate());
+        if (lblOwnCoordinate != null)
+            lblOwnCoordinate.setText(position.formatCoordinate());
 
         Coordinate dest = currentWaypoint != null ? currentWaypoint.getCoordinate() : currentGeoCache.getCoordinate();
 
@@ -657,7 +671,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
             else
                 directionToTarget = bearing;
 
-            String sBearing = Translation.get("directionToTarget") + " : " + String.format(Locale.US,"%.0f", directionToTarget) + "°";
+            String sBearing = Translation.get("directionToTarget") + " : " + String.format(Locale.US, "%.0f", directionToTarget) + "°";
             lblBearing.setText(sBearing);
         }
 
@@ -685,7 +699,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
             lblAccuracy.setText("  +/- " + UnitFormatter.distanceString(position.getAccuracy()));
         }
 
-        if (showSatInfos && lblAlt != null && !lblAlt.isDisposed()) {
+        if (showSatInformation && lblAlt != null && !lblAlt.isDisposed()) {
             lblAlt.setText(Translation.get("alt") + Locator.getInstance().getAltString());
         }
 
@@ -737,7 +751,6 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
 
     private void setMoonSunPos() {
 
-        // chk instanzes
         if (Sun == null || Moon == null)
             return;
 
@@ -859,9 +872,9 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
         if (lblGcCode != null)
             lblGcCode.dispose();
         lblGcCode = null;
-        if (lblCoords != null)
-            lblCoords.dispose();
-        lblCoords = null;
+        if (lblCoordinate != null)
+            lblCoordinate.dispose();
+        lblCoordinate = null;
         if (lblDesc != null)
             lblDesc.dispose();
         lblDesc = null;
@@ -871,9 +884,9 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
         if (lblAccuracy != null)
             lblAccuracy.dispose();
         lblAccuracy = null;
-        if (lblOwnCoords != null)
-            lblOwnCoords.dispose();
-        lblOwnCoords = null;
+        if (lblOwnCoordinate != null)
+            lblOwnCoordinate.dispose();
+        lblOwnCoordinate = null;
         if (lblBearing != null)
             lblBearing.dispose();
         lblBearing = null;
@@ -893,18 +906,18 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
         }
 
         // release all EventHandler
-        Config.CompassShowMap.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowWP_Name.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowWP_Icon.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowAttributes.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowGcCode.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowCoords.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowWpDesc.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowSatInfos.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowSunMoon.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowTargetDirection.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowSDT.removeSettingChangedListener(settingChangedListener);
-        Config.CompassShowLastFound.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowMap.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowWP_Name.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowWP_Icon.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowAttributes.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowGcCode.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowCoords.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowWpDesc.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowSatInfos.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowSunMoon.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowTargetDirection.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowSDT.removeSettingChangedListener(settingChangedListener);
+        Settings.CompassShowLastFound.removeSettingChangedListener(settingChangedListener);
 
         settingChangedListener = null;
         CacheSelectionChangedListeners.getInstance().remove(this);

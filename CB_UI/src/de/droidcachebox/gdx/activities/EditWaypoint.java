@@ -1,7 +1,10 @@
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
@@ -10,18 +13,23 @@ import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
+import de.droidcachebox.gdx.controls.CoordinateButton;
+import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.EditTextField.TextFieldListener;
+import de.droidcachebox.gdx.controls.ScrollBox;
+import de.droidcachebox.gdx.controls.Spinner;
+import de.droidcachebox.gdx.controls.SpinnerAdapter;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.menu.menuBtn2.ShowWaypoint;
+import de.droidcachebox.menu.menuBtn2.ShowWaypoints;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
-
-import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 
 public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
 
@@ -335,7 +343,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
             // Show WP View?
             if (showWaypointListAfterFinish) {
-                ShowWaypoint.getInstance().execute();
+                ShowWaypoints.getInstance().execute();
             }
 
             return true;

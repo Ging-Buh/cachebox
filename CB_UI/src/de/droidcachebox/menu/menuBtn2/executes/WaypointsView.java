@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn2.executes;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
@@ -37,6 +37,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.gdx.views.WaypointViewItem;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
@@ -45,23 +46,23 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 
-public class WaypointView extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener, WaypointListChangedEvent {
-    private static final String sClass = "WaypointView";
-    private static WaypointView waypointView;
+public class WaypointsView extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener, WaypointListChangedEvent {
+    private static final String sClass = "WaypointsView";
+    private static WaypointsView waypointsView;
     private Waypoint currentWaypoint = null;
     private Cache currentCache = null;
     private WayPointListViewAdapter wayPointListViewAdapter;
     private boolean createNewWaypoint = false;
 
-    private WaypointView() {
+    private WaypointsView() {
         super(ViewManager.leftTab.getContentRec(), "WaypointView");
         setBackground(Sprites.ListBack);
         setDisposeFlag(false);
     }
 
-    public static WaypointView getInstance() {
-        if (waypointView == null) waypointView = new WaypointView();
-        return waypointView;
+    public static WaypointsView getInstance() {
+        if (waypointsView == null) waypointsView = new WaypointsView();
+        return waypointsView;
     }
 
     @Override
@@ -249,7 +250,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
 
                         GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
                         wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                        waypointView.setAdapter(wayPointListViewAdapter);
+                        waypointsView.setAdapter(wayPointListViewAdapter);
                         currentWaypoint = waypoint;
                         GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
                         if (waypoint.isStartWaypoint) {
@@ -281,7 +282,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                         WaypointDAO.getInstance().UpdateDatabase(currentWaypoint);
 
                         wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                        waypointView.setAdapter(wayPointListViewAdapter);
+                        waypointsView.setAdapter(wayPointListViewAdapter);
                     }
                 }
             }, showCoordinateDialog, false);
@@ -302,8 +303,8 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                         GlobalCore.getSelectedCache().getWayPoints().remove(currentWaypoint);
                         currentWaypoint = null;
                         GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
-                        waypointView.notifyDataSetChanged();
-                        waypointView.scrollToItem(0);
+                        waypointsView.notifyDataSetChanged();
+                        waypointsView.scrollToItem(0);
                     } catch (Exception ex) {
                         Log.err(sClass, ex);
                     }
@@ -354,7 +355,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                 Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Entered Manually", targetCoordinate.getLatitude(), targetCoordinate.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
                 GlobalCore.getSelectedCache().getWayPoints().add(newWP);
                 wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                waypointView.setAdapter(wayPointListViewAdapter);
+                waypointsView.setAdapter(wayPointListViewAdapter);
                 currentWaypoint = newWP;
                 GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
                 WaypointDAO.getInstance().WriteToDatabase(newWP);
@@ -407,7 +408,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
             wayPointListViewAdapter = null;
             currentWaypoint = null;
             currentCache = null;
-            waypointView = null;
+            waypointsView = null;
 
             // release all EventHandler
             CacheSelectionChangedListeners.getInstance().remove(this);
@@ -497,7 +498,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                             });
                             waypointViewItem.addListener(() -> {
                                 // relayout items
-                                WaypointView.this.calculateItemPosition();
+                                WaypointsView.this.calculateItemPosition();
                                 mMustSetPos = true;
                                 GL.that.renderOnce(true);
                             });
@@ -543,7 +544,7 @@ public class WaypointView extends V_ListView implements CacheSelectionChangedLis
                             });
                             waypointViewItem.addListener(() -> {
                                 // relayout items
-                                WaypointView.this.calculateItemPosition();
+                                WaypointsView.this.calculateItemPosition();
                                 mMustSetPos = true;
                                 GL.that.renderOnce(true);
                             });

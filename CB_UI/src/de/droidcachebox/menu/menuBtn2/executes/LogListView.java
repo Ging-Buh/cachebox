@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn2.executes;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.LogEntry;
@@ -33,7 +32,9 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.gdx.views.LogListViewItem;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 
@@ -52,22 +53,22 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
         setBackground(Sprites.ListBack);
 
         createFriendList();
-        Config.friends.addSettingChangedListener(this::createFriendList);
+        Settings.friends.addSettingChangedListener(this::createFriendList);
 
         setDisposeFlag(false);
         setCache(GlobalCore.getSelectedCache());
 
     }
 
-    private void createFriendList() {
-        String friends = Config.friends.getValue().replace(", ", "|").replace(",", "|");
-        friendList = new ArrayList<>();
-        Collections.addAll(friendList, friends.split("\\|"));
-    }
-
     public static LogListView getInstance() {
         if (logListView == null) logListView = new LogListView();
         return logListView;
+    }
+
+    private void createFriendList() {
+        String friends = Settings.friends.getValue().replace(", ", "|").replace(",", "|");
+        friendList = new ArrayList<>();
+        Collections.addAll(friendList, friends.split("\\|"));
     }
 
     @Override
@@ -115,7 +116,7 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
                         continue;
                     }
                 }
-                // else height of logitem is not sufficient
+                // else height of logItem is not sufficient
                 if (!logEntry.logText.endsWith("\n"))
                     logEntry.logText = logEntry.logText + "\n";
                 logs.add(logEntry);

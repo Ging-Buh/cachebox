@@ -88,8 +88,8 @@ public class MsgBox extends Dialog {
     public static MsgBox show(String msg, String title, MsgBoxButton buttons, OnMsgBoxClickListener Listener, SettingBool remember) {
 
         if (remember != null && remember.getValue()) {
-            // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
-            // Wir liefern nur ein On Click auf den OK Button zur�ck!
+            // because of remember-function we don't show the MsgBox.
+            // but we call the OnMsgBoxClickListener.onClick for positive Button
             if (Listener != null) {
                 Listener.onClick(BTN_LEFT_POSITIVE, null);
             }
@@ -123,8 +123,8 @@ public class MsgBox extends Dialog {
     public static MsgBox show(String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember) {
 
         if (remember != null && remember.getValue()) {
-            // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
-            // Wir liefern nur ein On Click auf den OK Button zurück!
+            // because of remember-function we don't show the MsgBox.
+            // but we call the OnMsgBoxClickListener.onClick for positive Button
             if (Listener != null) {
                 Listener.onClick(BTN_LEFT_POSITIVE, null);
             }

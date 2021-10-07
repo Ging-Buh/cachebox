@@ -20,8 +20,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.Sprites;
@@ -31,19 +31,20 @@ import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.menu.quickBtns.RememberGeoCache;
+import de.droidcachebox.settings.Settings;
 
 /**
- * Stellt ein Item der Quick Button List dar
+ * represents one Item of Quick Button List
  *
  * @author Longri
  */
 public class QuickButtonItem extends ListViewItemBase {
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
-    private AbstractAction mAction;
-    private Image mButtonIcon;
-    private CB_Button mButton;
-    private QuickAction quickAction;
+    private final AbstractAction mAction;
+    private final Image mButtonIcon;
+    private final CB_Button mButton;
+    private final QuickAction quickAction;
     private int state;
 
     public QuickButtonItem(CB_RectF rec, int Index, QuickAction type) {
@@ -134,10 +135,9 @@ public class QuickButtonItem extends ListViewItemBase {
                 setOnLongClickListener(RememberGeoCache.getInstance().getLongClickListener());
                 setLongClickable(true);
             }
-            if (Config.rememberedGeoCache.getValue().length() > 0) {
+            if (Settings.rememberedGeoCache.getValue().length() > 0) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(Sprites.IconName.lockIcon.name())));
-            }
-            else {
+            } else {
                 Sprite sprite = new Sprite(Sprites.getSprite(IconName.lockIcon.name()));
                 sprite.setColor(DISABLE_COLOR);
                 mButtonIcon.setDrawable(new SpriteDrawable(sprite));

@@ -75,6 +75,7 @@ public interface CB_UI_Settings {
     Integer[] trackDistanceArray = new Integer[]{1, 3, 5, 10, 20};
     String[] navis = new String[]{"Google", "OsmAnd", "OsmAnd2", "Waze", "Orux", "Sygic", "Navigon"};
 
+    SettingBool RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", Login, NORMAL, false, Global, ACB);
     SettingString OverrideUrl = new SettingString("OverrideUrl", Login, DEVELOPER, "", Global, ACB);
 
     SettingBool quickButtonShow = new SettingBool("quickButtonShow", QuickList, NORMAL, true, Global, ACB);
@@ -183,7 +184,6 @@ public interface CB_UI_Settings {
     SettingInt dynamicZoomLevelMin = new SettingInt("dynamicZoomLevelMin", CarMode, NORMAL, 15, Global, ACB);
 
     SettingBool AppRaterDontShowAgain = new SettingBool("AppRaterDontShowAgain", RememberAsk, NEVER, true, Global, ACB);
-    SettingBool RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", RememberAsk, NORMAL, true, Global, ACB);
     SettingBool RememberAsk_RenderThemePathWritable = new SettingBool("RememberAsk_RenderThemePathWritable", RememberAsk, NORMAL, false, Global, ACB);
 
 }

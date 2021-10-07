@@ -56,8 +56,6 @@ import de.droidcachebox.gdx.main.MainViewBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.gdx.views.CompassView;
-import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
@@ -69,22 +67,25 @@ import de.droidcachebox.menu.menuBtn2.ShowDescription;
 import de.droidcachebox.menu.menuBtn2.ShowLogs;
 import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
-import de.droidcachebox.menu.menuBtn2.ShowWaypoint;
+import de.droidcachebox.menu.menuBtn2.ShowWaypoints;
 import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
 import de.droidcachebox.menu.menuBtn3.MapDownload;
 import de.droidcachebox.menu.menuBtn3.ShowCompass;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.ShowTracks;
+import de.droidcachebox.menu.menuBtn3.executes.CompassView;
+import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
 import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.menu.menuBtn5.HelpOnline;
-import de.droidcachebox.menu.menuBtn5.Settings;
+import de.droidcachebox.menu.menuBtn5.SettingsAction;
 import de.droidcachebox.menu.menuBtn5.ShowAbout;
 import de.droidcachebox.menu.menuBtn5.ShowCredits;
 import de.droidcachebox.menu.menuBtn5.ShowQuit;
 import de.droidcachebox.menu.menuBtn5.SwitchDayNight;
 import de.droidcachebox.menu.menuBtn5.SwitchTorch;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -102,14 +103,14 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class ViewManager extends MainViewBase implements PositionChangedEvent {
-    private static final String sKlasse = "ViewManager";
+    private static final String sClass = "ViewManager";
     public static ViewManager that;
     public static CB_TabView leftTab; // the only one (has been left and right for Tablet)
 
     static PlatformAction actionTakePicture, actionRecordVideo, actionRecordVoice, actionShare;
 
     private GestureButton mainBtn1; // default: show CacheList
-    private GestureButton mainBtn2; // default: show CacheDecription on Phone ( and Waypoints on Tablet )
+    private GestureButton mainBtn2; // default: show CacheDescription on Phone ( and Waypoints on Tablet )
     private GestureButton mainBtn3; // default: show map on phone ( and show Compass on Tablet )
     private GestureButton mainBtn4; // default: show ToolsMenu or Drafts or Drafts Context menu (depends on config)
     private GestureButton mainBtn5; // default: show About View
@@ -124,21 +125,21 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
     public static void reloadCacheList() {
         synchronized (CBDB.getInstance().cacheList) {
-            CacheListDAO.getInstance().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()), false, false, Config.showAllWaypoints.getValue());
+            CacheListDAO.getInstance().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), false, false, Settings.showAllWaypoints.getValue());
         }
         CacheListChangedListeners.getInstance().cacheListChanged();
     }
 
     @Override
     protected void initialize() {
-        Log.debug(sKlasse, "initialize ViewManager");
+        Log.debug(sClass, "initialize ViewManager");
 
         GlobalCore.receiver = new GlobalLocationReceiver();
 
-        UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
-        Config.ImperialUnits.addSettingChangedListener(() -> UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue()));
+        UnitFormatter.setUseImperialUnits(Settings.ImperialUnits.getValue());
+        Settings.ImperialUnits.addSettingChangedListener(() -> UnitFormatter.setUseImperialUnits(Settings.ImperialUnits.getValue()));
 
-        Config.showAllWaypoints.addSettingChangedListener(() -> {
+        Settings.showAllWaypoints.addSettingChangedListener(() -> {
             reloadCacheList();
             // must reload MapViewCacheList: do this over MapView.INITIAL_WP_LIST
             ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
@@ -200,7 +201,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                                     if (which == MsgBox.BTN_LEFT_POSITIVE)
                                         PlatformUIBase.getApiKey();
                                     return true;
-                                }, Config.RememberAsk_Get_API_Key);
+                                }, Settings.RememberAsk_Get_API_Key);
                     }
                 };
                 t.schedule(tt, 1500);
@@ -213,25 +214,25 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         Slider slider = new Slider(this, "Slider");
         addChild(slider);
 
-        Log.debug(sKlasse, "Ende ViewManager-Initial");
+        Log.debug(sClass, "End of ViewManager-Initialization");
 
         autoLoadTrack();
 
-        if (Config.TrackRecorderStartup.getValue()) {
+        if (Settings.TrackRecorderStartup.getValue()) {
             if (PlatformUIBase.isGPSon()) {
                 PlatformUIBase.startRecordTrack();
             }
         }
-        Config.TrackDistance.addSettingChangedListener(() -> TrackRecorder.distanceForNextTrackpoint = Config.TrackDistance.getValue());
+        Settings.TrackDistance.addSettingChangedListener(() -> TrackRecorder.distanceForNextTrackpoint = Settings.TrackDistance.getValue());
 
         // set last selected Cache
-        String sGc = Config.LastSelectedCache.getValue();
+        String sGc = Settings.LastSelectedCache.getValue();
         if (sGc != null && sGc.length() > 0) {
             synchronized (CBDB.getInstance().cacheList) {
                 for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
                     Cache c = CBDB.getInstance().cacheList.get(i);
                     if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
-                        Log.debug(sKlasse, "ViewManager: Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
+                        Log.debug(sClass, "ViewManager: Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
                         GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
                         break;
                     }
@@ -239,7 +240,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             }
         }
 
-        GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
+        GlobalCore.setAutoResort(Settings.StartWithAutoSelect.getValue());
         filterSetChanged();
         GL.that.removeRenderView(this);
 
@@ -252,23 +253,23 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     private void addPhoneTab() {
-        // nur ein Tab  mit fünf Buttons
+        // only one Tab with 5 Buttons
 
         CB_RectF rec = new CB_RectF(0, 0, GL_UISizes.uiLeft.getWidth(), getHeight() - UiSizes.getInstance().getInfoSliderHeight());
         leftTab = new CB_TabView(rec, "leftTab");
 
-        if (Config.useDescriptiveCB_Buttons.getValue()) {
-            mainBtn1 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "CacheList");
-            mainBtn2 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Cache");
-            mainBtn3 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Nav");
-            mainBtn4 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Tool");
-            mainBtn5 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Misc");
+        if (Settings.useDescriptiveCB_Buttons.getValue()) {
+            mainBtn1 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "CacheList");
+            mainBtn2 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Cache");
+            mainBtn3 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Nav");
+            mainBtn4 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Tool");
+            mainBtn5 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Misc");
         } else {
-            mainBtn1 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
-            mainBtn2 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Cache", Sprites.Cache);
-            mainBtn3 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Nav", Sprites.Nav);
-            mainBtn4 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Tool", Sprites.Tool);
-            mainBtn5 = new GestureButton(mainButtonSize, Config.rememberLastAction.getValue(), "Misc", Sprites.Misc);
+            mainBtn1 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
+            mainBtn2 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Cache", Sprites.Cache);
+            mainBtn3 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Nav", Sprites.Nav);
+            mainBtn4 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Tool", Sprites.Tool);
+            mainBtn5 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Misc", Sprites.Misc);
         }
 
         leftTab.addMainButton(mainBtn1);
@@ -279,7 +280,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         leftTab.setButtonList();
         addChild(leftTab);
 
-        // Actions den Buttons zuweisen
         mainBtn1.addAction(ShowCacheList.getInstance(), true, GestureDirection.Up);
         mainBtn1.addAction(ShowParkingDialog.getInstance(), false, GestureDirection.Down);
         mainBtn1.addAction(ShowTrackableList.getInstance(), false, GestureDirection.Right);
@@ -287,14 +287,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn1.addAction(actionShare, false, GestureDirection.Left);
 
         mainBtn2.addAction(ShowDescription.getInstance(), true, GestureDirection.Up);
-        mainBtn2.addAction(ShowWaypoint.getInstance(), false, GestureDirection.Right);
+        mainBtn2.addAction(ShowWaypoints.getInstance(), false, GestureDirection.Right);
         mainBtn2.addAction(HintDialog.getInstance(), false);
         mainBtn2.addAction(ShowSpoiler.getInstance(), false);
         mainBtn2.addAction(ShowLogs.getInstance(), false, GestureDirection.Down);
         mainBtn2.addAction(ShowNotes.getInstance(), false, GestureDirection.Left);
-        // mainBtn2.addAction(ShowTrackableList.getInstance(),false);
-        // mainBtn2.addAction(ShowSolver1.getInstance(),false);
-        // mainBtn2.addAction(ShowSolver2.getInstance(),false);
         mainBtn2.addAction(StartExternalDescription.getInstance(), false);
 
         mainBtn3.addAction(ShowMap.getInstance(), true, GestureDirection.Up);
@@ -304,7 +301,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn3.addAction(ShowTracks.getInstance(), false, GestureDirection.Left);
         mainBtn3.addAction(MapDownload.getInstance(), false);
 
-        mainBtn4.addAction(ShowDrafts.getInstance(), Config.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
+        mainBtn4.addAction(ShowDrafts.getInstance(), Settings.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
         mainBtn4.addAction(ShowSolver1.getInstance(), false, GestureDirection.Left);
         mainBtn4.addAction(ShowSolver2.getInstance(), false, GestureDirection.Right);
         actionTakePicture = new PlatformAction("TakePhoto", ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
@@ -315,7 +312,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn4.addAction(actionRecordVoice, false);
 
         mainBtn5.addAction(ShowCredits.getInstance(), false, GestureDirection.Up);
-        mainBtn5.addAction(Settings.getInstance(), false, GestureDirection.Left);
+        mainBtn5.addAction(SettingsAction.getInstance(), false, GestureDirection.Left);
         mainBtn5.addAction(ShowParkingDialog.getInstance(), false, GestureDirection.Right);
         mainBtn5.addAction(SwitchDayNight.getInstance(), false);
         mainBtn5.addAction(HelpOnline.getInstance(), false);
@@ -323,12 +320,12 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn5.addAction(ShowAbout.getInstance(), true);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
 
-        Log.info(sKlasse, "jetzt gehts los (about view)");
+        Log.info(sClass, "start with 'about view'");
         ShowAbout.getInstance().execute(); // activated as first view
     }
 
     private void autoLoadTrack() {
-        String trackPath = Config.TrackFolder.getValue() + "/Autoload";
+        String trackPath = Settings.TrackFolder.getValue() + "/Autoload";
         if (FileIO.createDirectory(trackPath)) {
             AbstractFile dir = FileFactory.createFile(trackPath);
             String[] files = dir.list();
@@ -365,7 +362,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         try {
             GL.that.stopRendering();
             if (switchDayNight)
-                Config.changeDayNight();
+                Config.that.changeDayNight();
             GL.that.onStop();
             Sprites.loadSprites(true);
             ShowMap.getInstance().normalMapView.invalidateTexture();
@@ -382,7 +379,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             addChild(slider);
             slider.handleCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 
-            String state = Config.nightMode.getValue() ? "Night" : "Day";
+            String state = Settings.nightMode.getValue() ? "Night" : "Day";
 
             GL.that.toast("Switch to " + state);
 
@@ -398,7 +395,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             }
             InvalidateTextureListeners.getInstance().invalidateTexture();
         } catch (Exception ex) {
-            Log.err(sKlasse, "reloadSprites", ex);
+            Log.err(sClass, "reloadSprites", ex);
         }
         GL.that.restartRendering();
     }
@@ -413,7 +410,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn1.isFiltered(isFiltered);
         mainBtn3.isFiltered(isFiltered);
 
-        if (!Config.useDescriptiveCB_Buttons.getValue()) {
+        if (!Settings.useDescriptiveCB_Buttons.getValue()) {
             if (isFiltered) {
                 mainBtn1.setButtonSprites(Sprites.CacheListFilter);
             } else {
@@ -445,8 +442,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     @Override
-    public void renderChilds(final Batch batch, ParentInfo parentInfo) {
-        super.renderChilds(batch, parentInfo);
+    public void renderChildren(final Batch batch, ParentInfo parentInfo) {
+        super.renderChildren(batch, parentInfo);
     }
 
     @Override
@@ -454,7 +451,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         try {
             TrackRecorder.recordPosition();
         } catch (Exception ex) {
-            Log.err(sKlasse, "PositionChanged()", "TrackRecorder.recordPosition()", ex);
+            Log.err(sClass, "PositionChanged()", "TrackRecorder.recordPosition()", ex);
         }
 
         if (GlobalCore.isSetSelectedCache()) {
@@ -463,7 +460,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                 distance = GlobalCore.getSelectedWayPoint().getDistance();
             }
 
-            if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Config.SoundApproachDistance.getValue())) {
+            if (Settings.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Settings.SoundApproachDistance.getValue())) {
                 if (CompassView.getInstance().isVisible())
                     return;// don't show if showing compass
                 if (ShowMap.getInstance().normalMapView.isVisible() && ShowMap.getInstance().normalMapView.isCarMode())

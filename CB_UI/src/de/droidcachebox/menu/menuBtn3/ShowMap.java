@@ -63,10 +63,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.main.OptionMenu;
-import de.droidcachebox.gdx.views.MapView;
-import de.droidcachebox.gdx.views.MapView.MapMode;
-import de.droidcachebox.gdx.views.TrackCreation;
-import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
@@ -80,7 +76,12 @@ import de.droidcachebox.locator.map.MapsForgeLayer;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.maps.Router;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn3.executes.MapView;
+import de.droidcachebox.menu.menuBtn3.executes.MapView.MapMode;
+import de.droidcachebox.menu.menuBtn3.executes.TrackCreation;
+import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
 import de.droidcachebox.settings.SettingBool;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -96,11 +97,11 @@ public class ShowMap extends AbstractShowAction {
     private static final String log = "ShowMap";
     private static ShowMap showMap;
     private static Router router;
+    private final Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
     public MapView normalMapView;
     private HashMap<String, String> RenderThemes;
     private String themesPath;
     private FZKThemesInfo fzkThemesInfo;
-    private Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
     private ThemeIsFor whichCase;
     private Menu availableFZKThemesMenu;
     private SearchCoordinates searchCoordinates;
@@ -109,7 +110,7 @@ public class ShowMap extends AbstractShowAction {
     private ShowMap() {
         super("Map");
         normalMapView = new MapView(ViewManager.leftTab.getContentRec(), MapMode.Normal);
-        normalMapView.SetZoom(Config.lastZoomLevel.getValue());
+        normalMapView.SetZoom(Settings.lastZoomLevel.getValue());
     }
 
     public static ShowMap getInstance() {
@@ -153,7 +154,7 @@ public class ShowMap extends AbstractShowAction {
     public Menu getContextMenu() {
         Menu icm = new Menu("MapViewContextMenuTitle");
         icm.addMenuItem("Layer", null, this::showMapLayerMenu);
-        MenuItem mi = icm.addMenuItem("Renderthemes", null, this::showModusSelectionMenu);
+        MenuItem mi = icm.addMenuItem("Renderthemes", null, this::showModeSelectionMenu);
         if (LocatorSettings.RenderThemesFolder.getValue().length() == 0) {
             mi.setEnabled(false);
         }
@@ -181,7 +182,7 @@ public class ShowMap extends AbstractShowAction {
     private void showMapLayerMenu() {
         Menu icm = new Menu("MapViewLayerMenuTitle");
 
-        String[] curentLayerNames = MapTileLoader.getInstance().getCurrentLayer().getAllLayerNames();
+        String[] currentLayerNames = MapTileLoader.getInstance().getCurrentLayer().getAllLayerNames();
         for (Layer layer : LayerManager.getInstance().getLayers()) {
             //set icon (Online, Mapsforge or Freizeitkarte)
             Sprite sprite = null;
@@ -207,10 +208,10 @@ public class ShowMap extends AbstractShowAction {
                         selectLayer(layer);
                         showLanguageSelectionMenu(layer);
                         return true;
-                    }); // == friendlyName == FileName !!! ohne Translation
+                    }); // == friendlyName == FileName !!! without translation
             mi.setData(layer);
             mi.setCheckable(true);
-            for (String str : curentLayerNames) {
+            for (String str : currentLayerNames) {
                 if (str.equals(layer.getName())) {
                     mi.setChecked(true);
                     break;
@@ -236,11 +237,11 @@ public class ShowMap extends AbstractShowAction {
                             Layer layer1 = (Layer) data;
                             switch (which) {
                                 case MsgBox.BTN_LEFT_POSITIVE:
-                                    // add the selected map to the curent layer
+                                    // add the selected map to the current layer
                                     normalMapView.addAdditionalLayer(layer1);
                                     break;
                                 case MsgBox.BTN_MIDDLE_NEUTRAL:
-                                    // switch curent layer to selected
+                                    // switch current layer to selected
                                     normalMapView.setCurrentLayer(layer1);
                                     break;
                                 default:
@@ -268,8 +269,8 @@ public class ShowMap extends AbstractShowAction {
                         lsm.addMenuItem("", lang, null, (v, x, y, pointer, button) -> {
                             lsm.close();
                             String selectedLanguage = ((MenuItem) v).getTitle();
-                            Config.preferredMapLanguage.setValue(selectedLanguage);
-                            Config.acceptChanges();
+                            Settings.preferredMapLanguage.setValue(selectedLanguage);
+                            Config.that.acceptChanges();
                             return true;
                         });
                     }
@@ -304,31 +305,31 @@ public class ShowMap extends AbstractShowAction {
 
     private void showMapViewLayerMenu() {
         OptionMenu menuMapElements = new OptionMenu("MapViewLayerMenuTitle");
-        menuMapElements.addCheckableMenuItem("ShowLiveMap", !Config.disableLiveMap.getValue(), () -> toggleSetting(Config.disableLiveMap));
-        menuMapElements.addCheckableMenuItem("ShowAtOriginalPosition", Config.showAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Config.showAtOriginalPosition));
-        menuMapElements.addCheckableMenuItem("HideFinds", Config.hideMyFinds.getValue(), () -> toggleSettingWithReload(Config.hideMyFinds));
-        menuMapElements.addCheckableMenuItem("MapShowInfoBar", Config.showInfo.getValue(), () -> toggleSetting(Config.showInfo));
-        menuMapElements.addCheckableMenuItem("ShowAllWaypoints", Config.showAllWaypoints.getValue(), () -> toggleSetting(Config.showAllWaypoints));
-        menuMapElements.addCheckableMenuItem("ShowRatings", Config.showRating.getValue(), () -> toggleSetting(Config.showRating));
-        menuMapElements.addCheckableMenuItem("ShowDT", Config.showDifficultyTerrain.getValue(), () -> toggleSetting(Config.showDifficultyTerrain));
-        menuMapElements.addCheckableMenuItem("ShowTitle", Config.showTitles.getValue(), () -> toggleSetting(Config.showTitles));
-        menuMapElements.addCheckableMenuItem("ShowDirectLine", Config.showDirectLine.getValue(), () -> toggleSetting(Config.showDirectLine));
-        menuMapElements.addCheckableMenuItem("MenuTextShowAccuracyCircle", Config.showAccuracyCircle.getValue(), () -> toggleSetting(Config.showAccuracyCircle));
-        menuMapElements.addCheckableMenuItem("ShowCenterCross", Config.showMapCenterCross.getValue(), () -> toggleSetting(Config.showMapCenterCross));
-        menuMapElements.addCheckableMenuItem("ShowDistanceToCenter", Config.showDistanceToCenter.getValue(), () -> toggleSetting(Config.showDistanceToCenter));
-        menuMapElements.addCheckableMenuItem("ShowDistanceCircle", Config.showDistanceCircle.getValue(), () -> toggleSetting(Config.showDistanceCircle));
+        menuMapElements.addCheckableMenuItem("ShowLiveMap", !Settings.disableLiveMap.getValue(), () -> toggleSetting(Settings.disableLiveMap));
+        menuMapElements.addCheckableMenuItem("ShowAtOriginalPosition", Settings.showAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Settings.showAtOriginalPosition));
+        menuMapElements.addCheckableMenuItem("HideFinds", Settings.hideMyFinds.getValue(), () -> toggleSettingWithReload(Settings.hideMyFinds));
+        menuMapElements.addCheckableMenuItem("MapShowInfoBar", Settings.showInfo.getValue(), () -> toggleSetting(Settings.showInfo));
+        menuMapElements.addCheckableMenuItem("ShowAllWaypoints", Settings.showAllWaypoints.getValue(), () -> toggleSetting(Settings.showAllWaypoints));
+        menuMapElements.addCheckableMenuItem("ShowRatings", Settings.showRating.getValue(), () -> toggleSetting(Settings.showRating));
+        menuMapElements.addCheckableMenuItem("ShowDT", Settings.showDifficultyTerrain.getValue(), () -> toggleSetting(Settings.showDifficultyTerrain));
+        menuMapElements.addCheckableMenuItem("ShowTitle", Settings.showTitles.getValue(), () -> toggleSetting(Settings.showTitles));
+        menuMapElements.addCheckableMenuItem("ShowDirectLine", Settings.showDirectLine.getValue(), () -> toggleSetting(Settings.showDirectLine));
+        menuMapElements.addCheckableMenuItem("MenuTextShowAccuracyCircle", Settings.showAccuracyCircle.getValue(), () -> toggleSetting(Settings.showAccuracyCircle));
+        menuMapElements.addCheckableMenuItem("ShowCenterCross", Settings.showMapCenterCross.getValue(), () -> toggleSetting(Settings.showMapCenterCross));
+        menuMapElements.addCheckableMenuItem("ShowDistanceToCenter", Settings.showDistanceToCenter.getValue(), () -> toggleSetting(Settings.showDistanceToCenter));
+        menuMapElements.addCheckableMenuItem("ShowDistanceCircle", Settings.showDistanceCircle.getValue(), () -> toggleSetting(Settings.showDistanceCircle));
         menuMapElements.show();
     }
 
     private void toggleSetting(SettingBool setting) {
         setting.setValue(!setting.getValue());
-        Config.acceptChanges();
+        Config.that.acceptChanges();
         normalMapView.setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
     }
 
     private void toggleSettingWithReload(SettingBool setting) {
         setting.setValue(!setting.getValue());
-        Config.acceptChanges();
+        Config.that.acceptChanges();
         normalMapView.setNewSettings(INITIAL_WP_LIST);
     }
 
@@ -342,10 +343,10 @@ public class ShowMap extends AbstractShowAction {
                     routeProfileIcons[1] = new SpriteDrawable(Sprites.getSprite("bicycle"));
                     routeProfileIcons[2] = new SpriteDrawable(Sprites.getSprite("car"));
                 }
-                MenuItem mi = cm2.addMenuItem("generateRoute", "", routeProfileIcons[Config.routeProfile.getValue()], (v, x, y, pointer, button) -> {
+                MenuItem mi = cm2.addMenuItem("generateRoute", "", routeProfileIcons[Settings.routeProfile.getValue()], (v, x, y, pointer, button) -> {
                     if (((MenuItem) v).isIconClicked(x)) {
-                        Config.routeProfile.setValue(((Config.routeProfile.getValue() + 1) % 3));
-                        ((MenuItem) v).setIcon(routeProfileIcons[Config.routeProfile.getValue()]);
+                        Settings.routeProfile.setValue(((Settings.routeProfile.getValue() + 1) % 3));
+                        ((MenuItem) v).setIcon(routeProfileIcons[Settings.routeProfile.getValue()]);
                     } else {
                         cm2.close();
                         boolean checked = ((MenuItem) v).isChecked();
@@ -360,37 +361,30 @@ public class ShowMap extends AbstractShowAction {
                     }
                     return true;
                 });
-                if (TrackList.getInstance().existsRoutingTrack()) mi.setCheckable(true);
-                else mi.setCheckable(false);
+                mi.setCheckable(TrackList.getInstance().existsRoutingTrack());
                 mi.setChecked(true);
             } else {
                 cm2.addMenuItem("InstallRoutingApp", Sprites.getSprite("openrouteservice_logo"),
                         () -> PlatformUIBase.callUrl("https://play.google.com/store/apps/details?id=btools.routingapp&hl=de"));
             }
         }
-        /*
-        else {
-            // router not implemented / created
-        }
-         */
+
         cm2.addDivider();
         cm2.addMenuItem("TrackDistance", null, () -> {
             OptionMenu tdMenu = new OptionMenu("TrackDistance");
             tdMenu.mMsgBoxClickListener = (btnNumber, data) -> {
                 int newValue = (Integer) data;
-                Config.TrackDistance.setValue(newValue);
-                Config.acceptChanges();
+                Settings.TrackDistance.setValue(newValue);
+                Config.that.acceptChanges();
                 showMenuTrackFunctions();
                 return true;
             };
             tdMenu.setSingleSelection();
-            for (int i : Config.trackDistanceArray) {
+            for (int i : Settings.trackDistanceArray) {
                 final int selected = i;
                 MenuItem mi = tdMenu.addMenuItem("", "" + i, null, () -> tdMenu.setData(selected));
                 mi.setCheckable(true);
-                if (i == Config.TrackDistance.getValue())
-                    mi.setChecked(true);
-                else mi.setChecked(false);
+                mi.setChecked(i == Settings.TrackDistance.getValue());
             }
             tdMenu.show();
         });
@@ -409,7 +403,7 @@ public class ShowMap extends AbstractShowAction {
     }
 
     public Sprite getRouterIcon() {
-        switch (Config.routeProfile.getValue()) {
+        switch (Settings.routeProfile.getValue()) {
             case 0:
                 return Sprites.getSprite("pedestrian");
             case 1:
@@ -434,14 +428,16 @@ public class ShowMap extends AbstractShowAction {
         }
         Coordinate destination = GlobalCore.getSelectedCoordinate();
         if (destination != null) {
-            if (start.isValid()) {
-                Track track = router.getTrack(start, destination);
-                if (track != null && track.getTrackPoints().size() > 0) {
-                    track.setVisible(true);
-                    track.setName("Route");
-                    TrackList.getInstance().setRoutingTrack(track);
-                } else {
-                    Log.err(log, "no route generated");
+            if (start != null) {
+                if (start.isValid()) {
+                    Track track = router.getTrack(start, destination);
+                    if (track != null && track.getTrackPoints().size() > 0) {
+                        track.setVisible(true);
+                        track.setName("Route");
+                        TrackList.getInstance().setRoutingTrack(track);
+                    } else {
+                        Log.err(log, "no route generated");
+                    }
                 }
             }
         }
@@ -476,7 +472,7 @@ public class ShowMap extends AbstractShowAction {
         return files;
     }
 
-    private void showModusSelectionMenu() {
+    private void showModeSelectionMenu() {
         OptionMenu mapViewThemeMenu = new OptionMenu("MapViewThemeMenuTitle");
         mapViewThemeMenu.addMenuItem("RenderThemesDay", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.day));
         mapViewThemeMenu.addMenuItem("RenderThemesNight", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.night));
@@ -514,18 +510,18 @@ public class ShowMap extends AbstractShowAction {
                 mapViewThemeMenu.addMenuItem("Download", "\n Freizeitkarte", Sprites.getSprite(IconName.freizeit.name()), this::showFZKThemesDownloadMenu);
             }
         } else {
-            if (!Config.RememberAsk_RenderThemePathWritable.getValue()) {
+            if (!Settings.RememberAsk_RenderThemePathWritable.getValue()) {
                 mapViewThemeMenu.addDivider();
                 mapViewThemeMenu.addMenuItem("Download", null, () -> {
                     // MakeRenderThemePathWritable
                     MsgBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MsgBoxButton.YesNo, MsgBoxIcon.Hand,
                             (btnNumber, data) -> {
                                 if (btnNumber == 1) { // change path
-                                    Config.RenderThemesFolder.setValue(Config.RenderThemesFolder.getDefaultValue());
-                                    Config.acceptChanges();
+                                    Settings.RenderThemesFolder.setValue(Settings.RenderThemesFolder.getDefaultValue());
+                                    Config.that.acceptChanges();
                                 }
                                 return true;
-                            }, Config.RememberAsk_RenderThemePathWritable);
+                            }, Settings.RememberAsk_RenderThemePathWritable);
                 });
             }
         }
@@ -545,7 +541,7 @@ public class ShowMap extends AbstractShowAction {
         if (fzkThemesInfoList.size == 0) {
             String repository_freizeitkarte_android = Webb.create()
                     .get("http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml")
-                    .readTimeout(Config.socket_timeout.getValue())
+                    .readTimeout(Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asString()
                     .getBody();
@@ -589,7 +585,7 @@ public class ShowMap extends AbstractShowAction {
             }
         });
 
-        if (Config.Sel_LanguagePath.getValue().contains("/de/")) {
+        if (Settings.Sel_LanguagePath.getValue().contains("/de/")) {
             ruleList.add(new DefaultRule<java.util.Map<String, String>>(IRule.Type.CHARACTER, "/Freizeitkarte/Theme/DescriptionGerman") {
                 @Override
                 public void handleParsedCharacters(XMLParser<java.util.Map<String, String>> parser, String text, java.util.Map<String, String> values) {
@@ -667,20 +663,20 @@ public class ShowMap extends AbstractShowAction {
                     themeMenu.close();
                     showMapStyleSelection(RenderThemes.get(((MenuItem) v).getTitle()));
                     return true;
-                }); // ohne Translation
+                }); // without translation
         mi.setCheckable(true);
         switch (whichCase) {
             case day:
-                mi.setChecked(Config.mapsForgeDayTheme.getValue().equals(themePaN));
+                mi.setChecked(Settings.mapsForgeDayTheme.getValue().equals(themePaN));
                 break;
             case night:
-                mi.setChecked(Config.mapsForgeNightTheme.getValue().equals(themePaN));
+                mi.setChecked(Settings.mapsForgeNightTheme.getValue().equals(themePaN));
                 break;
             case carday:
-                mi.setChecked(Config.mapsForgeCarDayTheme.getValue().equals(themePaN));
+                mi.setChecked(Settings.mapsForgeCarDayTheme.getValue().equals(themePaN));
                 break;
             case carnight:
-                mi.setChecked(Config.mapsForgeCarNightTheme.getValue().equals(themePaN));
+                mi.setChecked(Settings.mapsForgeCarNightTheme.getValue().equals(themePaN));
                 break;
         }
     }
@@ -708,7 +704,7 @@ public class ShowMap extends AbstractShowAction {
             }
             menuMapStyle.show();
         } else if (mapStyles.size() == 1) {
-            // ex.: fzk --> no need to show the mapstyle selection
+            // ex.: fzk --> no need to show the map_style selection
             for (String mapStyle : mapStyles.keySet()) {
                 String mapStyleValue = mapStyles.get(mapStyle);
                 HashMap<String, String> StyleOverlays = getStyleOverlays(selectedThemePaN, mapStyleValue);
@@ -719,7 +715,7 @@ public class ShowMap extends AbstractShowAction {
             // p.ex.: internal Theme -> there is no style
             // style of Config will be ignored while setting of Theme
             setConfig(selectedThemePaN, "");
-            Config.acceptChanges();
+            Config.that.acceptChanges();
         }
     }
 
@@ -750,7 +746,7 @@ public class ShowMap extends AbstractShowAction {
                     mapStyleValues.append("\t").append("-").append(mi.getData());
             }
             setConfig(selectedThemePaN, mapStyleValues.toString());
-            Config.acceptChanges();
+            Config.that.acceptChanges();
             return true;
         };
 
@@ -759,7 +755,7 @@ public class ShowMap extends AbstractShowAction {
         } else {
             // save the values, there is perhaps no overlay
             setConfig(selectedThemePaN, mapStyleId);
-            Config.acceptChanges();
+            Config.that.acceptChanges();
         }
     }
 
@@ -767,16 +763,16 @@ public class ShowMap extends AbstractShowAction {
         String configStyle;
         switch (whichCase) {
             case day:
-                configStyle = Config.mapsForgeDayStyle.getValue();
+                configStyle = Settings.mapsForgeDayStyle.getValue();
                 break;
             case night:
-                configStyle = Config.mapsForgeNightStyle.getValue();
+                configStyle = Settings.mapsForgeNightStyle.getValue();
                 break;
             case carday:
-                configStyle = Config.mapsForgeCarDayStyle.getValue();
+                configStyle = Settings.mapsForgeCarDayStyle.getValue();
                 break;
             default:
-                configStyle = Config.mapsForgeCarNightStyle.getValue();
+                configStyle = Settings.mapsForgeCarNightStyle.getValue();
         }
         if (configStyle.startsWith(mapStyleId)) {
             return configStyle;
@@ -789,20 +785,20 @@ public class ShowMap extends AbstractShowAction {
     private void setConfig(String selectedThemePaN, String mapStyleValue) {
         switch (whichCase) {
             case day:
-                Config.mapsForgeDayStyle.setValue(mapStyleValue);
-                Config.mapsForgeDayTheme.setValue(selectedThemePaN);
+                Settings.mapsForgeDayStyle.setValue(mapStyleValue);
+                Settings.mapsForgeDayTheme.setValue(selectedThemePaN);
                 break;
             case night:
-                Config.mapsForgeNightStyle.setValue(mapStyleValue);
-                Config.mapsForgeNightTheme.setValue(selectedThemePaN);
+                Settings.mapsForgeNightStyle.setValue(mapStyleValue);
+                Settings.mapsForgeNightTheme.setValue(selectedThemePaN);
                 break;
             case carday:
-                Config.mapsForgeCarDayStyle.setValue(mapStyleValue);
-                Config.mapsForgeCarDayTheme.setValue(selectedThemePaN);
+                Settings.mapsForgeCarDayStyle.setValue(mapStyleValue);
+                Settings.mapsForgeCarDayTheme.setValue(selectedThemePaN);
                 break;
             case carnight:
-                Config.mapsForgeCarNightStyle.setValue(mapStyleValue);
-                Config.mapsForgeCarNightTheme.setValue(selectedThemePaN);
+                Settings.mapsForgeCarNightStyle.setValue(mapStyleValue);
+                Settings.mapsForgeCarNightTheme.setValue(selectedThemePaN);
                 break;
         }
     }

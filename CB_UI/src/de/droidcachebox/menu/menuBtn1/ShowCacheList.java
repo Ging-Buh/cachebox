@@ -5,7 +5,6 @@ import static de.droidcachebox.gdx.activities.EditFilterSettings.applyFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractShowAction;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.CB_Core_Settings;
@@ -25,13 +24,14 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
-import de.droidcachebox.gdx.views.GeoCacheListListView;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.SelectDBDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowDeleteDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
@@ -82,7 +82,7 @@ public class ShowCacheList extends AbstractShowAction {
     public Menu getContextMenu() {
         Menu cm = new Menu("CacheListViewTitle");
 
-        String DBName = Config.DatabaseName.getValue();
+        String DBName = Settings.DatabaseName.getValue();
         try {
             int Pos = DBName.lastIndexOf(".");
             DBName = DBName.substring(0, Pos);
@@ -95,10 +95,10 @@ public class ShowCacheList extends AbstractShowAction {
             if (!CBDB.getInstance().cacheList.resortAtWork) {
                 synchronized (CBDB.getInstance().cacheList) {
                     Log.debug("ShowCacheList", "sort CacheList by Menu ResortList");
-                    CacheWithWP nearstCacheWp = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
-                    if (nearstCacheWp != null && nearstCacheWp.getCache() != null) {
-                        GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
-                        GlobalCore.setNearestCache(nearstCacheWp.getCache());
+                    CacheWithWP nearestCacheWp = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                    if (nearestCacheWp != null && nearestCacheWp.getCache() != null) {
+                        GlobalCore.setSelectedWaypoint(nearestCacheWp.getCache(), nearestCacheWp.getWaypoint());
+                        GlobalCore.setNearestCache(nearestCacheWp.getCache());
                     }
                     GeoCacheListListView.getInstance().setSelectedCacheVisible();
                 }
@@ -139,13 +139,13 @@ public class ShowCacheList extends AbstractShowAction {
             } else {
                 msgText = "askResetFavorites";
             }
-            final boolean finalchecked = checked;
+            final boolean finalChecked = checked;
             gL_MsgBox = MsgBox.show(Translation.get(msgText), Translation.get("Favorites"), MsgBoxButton.OKCancel, MsgBoxIcon.Question, (which, data) -> {
                 gL_MsgBox_close();
                 if (which == MsgBox.BTN_LEFT_POSITIVE) {
                     CBDB.getInstance().getSql().beginTransaction();
                     Database_Core.Parameters args = new Database_Core.Parameters();
-                    args.put("Favorit", finalchecked ? 1 : 0);
+                    args.put("Favorit", finalChecked ? 1 : 0);
                     CBDB.getInstance().getSql().update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
                     CBDB.getInstance().getSql().setTransactionSuccessful();
                     CBDB.getInstance().getSql().endTransaction();
@@ -178,7 +178,7 @@ public class ShowCacheList extends AbstractShowAction {
             editCache.create();
         });
         cm.addMenuItem("DeleteCaches", Sprites.getSprite(IconName.DELETE.name()), () -> ShowDeleteDialog.getInstance().execute());
-        cm.addMenuItem("ClearHistory",  Sprites.getSprite("HISTORY"), this::clearHistory);
+        cm.addMenuItem("ClearHistory", Sprites.getSprite("HISTORY"), this::clearHistory);
 
         return cm;
     }

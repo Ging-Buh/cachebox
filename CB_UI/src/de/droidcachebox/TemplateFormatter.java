@@ -1,11 +1,12 @@
 package de.droidcachebox;
 
-import de.droidcachebox.database.Draft;
-import de.droidcachebox.database.Trackable;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import de.droidcachebox.database.Draft;
+import de.droidcachebox.database.Trackable;
+import de.droidcachebox.settings.Settings;
 
 public class TemplateFormatter {
     public static String ReplaceTemplate(String template, Draft draft) {
@@ -24,7 +25,7 @@ public class TemplateFormatter {
             template = template.replace("##owner##", "????????");
         }
 
-        template = template.replace("##gcusername##", Config.GcLogin.getValue());
+        template = template.replace("##gcusername##", Settings.GcLogin.getValue());
 
         return template;
     }
@@ -49,7 +50,7 @@ public class TemplateFormatter {
             template = template.replace("##owner##", "????????");
         }
 
-        template = template.replace("##gcusername##", Config.GcLogin.getValue());
+        template = template.replace("##gcusername##", Settings.GcLogin.getValue());
 
         return template;
     }

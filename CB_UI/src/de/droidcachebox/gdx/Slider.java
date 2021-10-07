@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.CacheSelectionChangedListeners;
-import de.droidcachebox.Config;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.GeoCacheSize;
 import de.droidcachebox.database.LogEntry;
@@ -24,6 +23,7 @@ import de.droidcachebox.gdx.math.SizeChangedEvent;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.WaypointViewItem;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
@@ -43,6 +43,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
     private final int QuickButtonMaxHeight;
     private final Handler handler = new Handler();
     private final ArrayList<YPositionChanged> eventList = new ArrayList<>();
+    private final AtomicInteger animationCounter = new AtomicInteger(0);
     private WaypointViewItem cacheDesc;
     private WaypointViewItem waypointDesc;
     private final SizeChangedEvent onItemSizeChanged = () -> {
@@ -56,12 +57,9 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
     private boolean animationIsRunning = false;
     private int animationDirection = -1;
     private int AnimationTarget = 0;
-    private boolean isKinetigPan = false;
+    private boolean isKineticPan = false;
     private float yPos = 0;
-    private float touchYoffset = 0;
-    private boolean oneTouchUP = false;
-    private AtomicInteger animationCounter = new AtomicInteger(0);
-    private Runnable AnimationTask = new Runnable() {
+    private final Runnable AnimationTask = new Runnable() {
 
         @Override
         public void run() {
@@ -69,7 +67,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
             GL.that.renderOnce(true);
 
             if (!animationIsRunning)
-                return; // Animation wurde abgebrochen
+                return; // Animation was canceled
 
             if (animationCounter.incrementAndGet() > MAX_ANIMATION_COUNT) {
                 //break a never ending animation
@@ -83,7 +81,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
             double animationMulti = 1.4;
             if (animationDirection == -1) {
                 float tmp = yPos - AnimationTarget;
-                if (tmp <= 0)// Div 0 vehindern
+                if (tmp <= 0)// Div 0 avoid
                 {
                     setPos_onUI(AnimationTarget);
                     animationIsRunning = false;
@@ -99,7 +97,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                 }
             } else {
                 float tmp = AnimationTarget - yPos;
-                if (tmp <= 0)// Div 0 vehindern
+                if (tmp <= 0)// Div 0 avoid
                 {
                     setPos_onUI(AnimationTarget);
                     animationIsRunning = false;
@@ -116,6 +114,8 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
             }
         }
     };
+    private float touchYOffset = 0;
+    private boolean oneTouchUP = false;
 
     public Slider(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -196,7 +196,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
     @Override
     protected void initialize() {
         float initialPos;
-        if (Config.quickButtonShow.getValue()) {
+        if (Settings.quickButtonShow.getValue()) {
             initialPos = this.getHeight() - mSlideBox.getHeight() - QuickButtonMaxHeight;
         } else {
             initialPos = this.getHeight() - mSlideBox.getHeight();
@@ -225,11 +225,6 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                 fillCacheWpInfo();
                 String header = "";
                 if (mLblCacheName != null) {
-                    /*
-                    if (cacheDesc.getCacheInfo().needsMaintenance()) {
-                        header = header + "!!!M!";
-                    }
-                     */
                     CB_List<LogEntry> logEntries = LogsTableDAO.getInstance().getLogs(cache);
                     for (int i = 0; i < 5; i++) {
                         last5Logs[i].setText(" ");
@@ -256,8 +251,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                     geoCacheType.setBackground(new SpriteDrawable(Sprites.getSprite("map" + cache.getGeoCacheType().name()))); // GeoCacheType.toShortString(cache) +
                     header = header + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + GeoCacheSize.toShortString(cache) + " " + cache.getGeoCacheName();
                     mLblCacheName.setText(header);
-                }
-                else {
+                } else {
                     Log.err("Slider", "mLblCacheName in setSelectedCache = null! cache is " + cache.getGeoCacheCode());
                 }
             } else {
@@ -295,19 +289,16 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
     }
 
     private void setQuickButtonListHeight() {
-        if (Config.quickButtonShow.getValue()) {
+        if (Settings.quickButtonShow.getValue()) {
             if (this.getHeight() - mSlideBox.getMaxY() < QuickButtonMaxHeight) {
                 quickButtonList.setHeight(this.getHeight() - mSlideBox.getMaxY());
-                quickButtonList.setY(this.getHeight() - quickButtonList.getHeight());
             } else {
                 quickButtonList.setHeight(QuickButtonMaxHeight);
-                quickButtonList.setY(this.getHeight() - quickButtonList.getHeight());
             }
-
+            quickButtonList.setY(this.getHeight() - quickButtonList.getHeight());
         } else {
             quickButtonList.setHeight(0);
         }
-
         ViewManager.that.setContentMaxY(this.getHeight() - quickButtonList.getHeight() - mSlideBox.getHeight());
     }
 
@@ -315,22 +306,22 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
     public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
         if (KineticPan) {
             GL_Input.that.StopKinetic(x, y, pointer, true);
-            isKinetigPan = true;
+            isKineticPan = true;
             return onTouchUp(x, y, pointer, 0);
         }
 
-        float newY = y - mSlideBox.getHeight() - touchYoffset;
+        float newY = y - mSlideBox.getHeight() - touchYOffset;
         setSliderPos(newY);
         return true;
     }
 
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
-        isKinetigPan = false;
+        isKineticPan = false;
         oneTouchUP = false;
         animationIsRunning = false;
         if (mSlideBox.contains(x, y)) {
-            touchYoffset = y - mSlideBox.getMaxY();
+            touchYOffset = y - mSlideBox.getMaxY();
             return true;
         }
 
@@ -341,7 +332,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
 
     @Override
     public boolean onTouchUp(int x, int y, int pointer, int button) {
-        if (isKinetigPan) {
+        if (isKineticPan) {
             if (oneTouchUP)
                 return true;
             oneTouchUP = true;
@@ -351,20 +342,18 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
         return true;
     }
 
-    private void ActionUp() // Slider zurück scrollen lassen
+    private void ActionUp() // let Slider scroll back
     {
-        boolean QuickButtonShow = Config.quickButtonShow.getValue();
+        boolean QuickButtonShow = Settings.quickButtonShow.getValue();
 
         // check if QuickButtonList snap in
         int quickButtonHeight;
         if (this.getHeight() - mSlideBox.getMaxY() >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow) {
             quickButtonHeight = QuickButtonMaxHeight;
-            Config.quickButtonLastShow.setValue(true);
-            Config.acceptChanges();
+            Settings.quickButtonLastShow.setValue(true);
         } else {
             quickButtonHeight = 0;
-            Config.quickButtonLastShow.setValue(false);
-            Config.acceptChanges();
+            Settings.quickButtonLastShow.setValue(false);
         }
 
         if (swipeUp || swipeDown) {
@@ -387,7 +376,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
 
     private void startAnimationTo(int newYPos) {
         if (yPos == newYPos)
-            return; // wir brauchen nichts Animieren
+            return; // animation not necessary
 
         animationIsRunning = true;
         animationCounter.set(0);

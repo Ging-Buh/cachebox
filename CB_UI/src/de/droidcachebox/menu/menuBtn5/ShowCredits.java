@@ -1,12 +1,13 @@
 package de.droidcachebox.menu.menuBtn5;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.views.CreditsView;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn5.executes.CreditsView;
 
 public class ShowCredits extends AbstractShowAction {
     private static ShowCredits that;

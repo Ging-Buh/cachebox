@@ -85,6 +85,7 @@ import de.droidcachebox.maps.BRouter;
 import de.droidcachebox.menu.MainViewInit;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.FileIO;
@@ -175,8 +176,8 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             }
         };
 
-        handleImperialUnitsConfigChanged = () -> Locator.getInstance().setUseImperialUnits(Config.ImperialUnits.getValue());
-        handleSuppressPowerSavingConfigChanged = () -> setWakeLock(Config.SuppressPowerSaving.getValue());
+        handleImperialUnitsConfigChanged = () -> Locator.getInstance().setUseImperialUnits(Settings.ImperialUnits.getValue());
+        handleSuppressPowerSavingConfigChanged = () -> setWakeLock(Settings.SuppressPowerSaving.getValue());
 
         ShowMap.setRouter(new BRouter(this));
 
@@ -277,8 +278,8 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
             ActivityUtils.onActivityCreateSetTheme(this);
 
-            Config.SuppressPowerSaving.addSettingChangedListener(handleSuppressPowerSavingConfigChanged);
-            Config.ImperialUnits.addSettingChangedListener(handleImperialUnitsConfigChanged);
+            Settings.SuppressPowerSaving.addSettingChangedListener(handleSuppressPowerSavingConfigChanged);
+            Settings.ImperialUnits.addSettingChangedListener(handleImperialUnitsConfigChanged);
 
             Log.debug(sKlasse, "initLocatorBase");
             initLocatorBase();
@@ -295,7 +296,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
             GL.that.onStart();
 
-            int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;
+            int sollHeight = (Settings.quickButtonShow.getValue() && Settings.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;
             setQuickButtonHeight(sollHeight);
 
             CacheSelectionChangedListeners.getInstance().addListener(this);
@@ -389,20 +390,20 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 mSensorManager.registerListener(mSensorEventListener, magnetometer, SensorManager.SENSOR_DELAY_UI);
         }
 
-        int lQuickButtonHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;
+        int lQuickButtonHeight = (Settings.quickButtonShow.getValue() && Settings.quickButtonLastShow.getValue()) ? UiSizes.getInstance().getQuickButtonListHeight() : 0;
         setQuickButtonHeight(lQuickButtonHeight);
 
-        setWakeLock(Config.SuppressPowerSaving.getValue());
+        setWakeLock(Settings.SuppressPowerSaving.getValue());
 
         Log.info(sKlasse, "onResume <=");
         lastState = LastState.onResume;
-        // having a protokoll of the program start: but now reset to Config.AktLogLevel but >= LogLevel.ERROR
-        if (Config.AktLogLevel.getEnumValue() == LogLevel.OFF)
-            Config.AktLogLevel.setEnumValue(LogLevel.ERROR);
-        CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+        // having a protokoll of the program start: but now reset to SettingsClass.AktLogLevel but >= LogLevel.ERROR
+        if (Settings.AktLogLevel.getEnumValue() == LogLevel.OFF)
+            Settings.AktLogLevel.setEnumValue(LogLevel.ERROR);
+        CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue());
 
         boolean ret = ((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(GPS_PROVIDER);
-        if (!ret && Config.Ask_Switch_GPS_ON.getValue()) {
+        if (!ret && Settings.Ask_Switch_GPS_ON.getValue()) {
             runOnUiThread(() -> {
                 // can't use GL MsgBox here, cause Fonts ara not loaded yet
                 MessageBox.show(this,
@@ -427,19 +428,16 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         if (androidUIBaseMethods.askForLocationPermission()) {
             androidUIBaseMethods.resetAskForLocationPermission();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                runOnUiThread(() -> {
-                    MessageBox.show(this, Translation.get("GPSDisclosureText"), Translation.get("GPSDisclosureTitle"), MsgBoxButton.YesNo, MsgBoxIcon.Information, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (which == Dialog.BUTTON_POSITIVE) {
-                                final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-                                ActivityCompat.requestPermissions(Main.this, locationPermissions, Request_ForLocationManager);
-                            }
+                runOnUiThread(() -> MessageBox.show(this, Translation.get("GPSDisclosureText"), Translation.get("GPSDisclosureTitle"), MsgBoxButton.YesNo, MsgBoxIcon.Information, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == Dialog.BUTTON_POSITIVE) {
+                            final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+                            ActivityCompat.requestPermissions(Main.this, locationPermissions, Request_ForLocationManager);
                         }
-                    });
-                });
-            }
-            else {
+                    }
+                }));
+            } else {
                 final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION};
                 ActivityCompat.requestPermissions(this, locationPermissions, Request_ForLocationManager);
             }
@@ -468,7 +466,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     public void onDestroy() {
         Log.info(sKlasse, "=> onDestroy AndroidApplication");
         try {
-            PlatformUIBase.addToMediaScannerList(Config.DraftsGarminPath.getValue());
+            PlatformUIBase.addToMediaScannerList(Settings.DraftsGarminPath.getValue());
             PlatformUIBase.addToMediaScannerList(CB_SLF4J.logfile);
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             for (String fn : PlatformUIBase.getMediaScannerList()) {
@@ -495,7 +493,6 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             if (isFinishing()) {
                 Log.info(sKlasse, "isFinishing");
                 if (GlobalCore.RunFromSplash) {
-                    Config.settings.writeToDatabases();
 
                     if (wakeLock != null) {
                         wakeLock.release();
@@ -508,13 +505,12 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     CacheListChangedListeners.getInstance().clear();
                     showViewListener.onDestroyWithFinishing();
 
-                    Config.acceptChanges();
-
-                    CBDB.getInstance().close();
-                    DraftsDatabase.getInstance().close();
+                    Config.that.acceptChanges(); // same as Config.settings.writeToDatabases();
 
                     Sprites.destroyCache();
 
+                    CBDB.getInstance().close();
+                    DraftsDatabase.getInstance().close();
                     SettingsDatabase.getInstance().close();
 
                 }
@@ -591,7 +587,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             if (waypoint != null) {
                 distance = waypoint.getDistance();
             }
-            if (distance > Config.SoundApproachDistance.getValue()) {
+            if (distance > Settings.SoundApproachDistance.getValue()) {
                 runOnUiThread(() -> GlobalCore.switchToCompassCompleted = false);
             }
         }
@@ -706,9 +702,9 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         if (!Translation.isInitialized()) {
             Translation trans = new Translation(Config.workPath);
             try {
-                trans.loadTranslation(Config.Sel_LanguagePath.getValue());
+                trans.loadTranslation(Settings.Sel_LanguagePath.getValue());
             } catch (Exception e) {
-                trans.loadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+                trans.loadTranslation(Settings.Sel_LanguagePath.getDefaultValue());
             }
         }
     }
@@ -718,13 +714,8 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         double latitude = -1000;
         double longitude = -1000;
 
-        if (Config.settings != null) {
-            try {
-                latitude = Config.mapInitLatitude.getValue();
-                longitude = Config.mapInitLongitude.getValue();
-            } catch (Exception ignored) {
-            }
-        }
+        latitude = Settings.mapInitLatitude.getValue();
+        longitude = Settings.mapInitLongitude.getValue();
 
         ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
         CBLocation initialLocation;
@@ -737,31 +728,31 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
         // Use Imperial units?
         try {
-            Locator.getInstance().setUseImperialUnits(Config.ImperialUnits.getValue());
+            Locator.getInstance().setUseImperialUnits(Settings.ImperialUnits.getValue());
         } catch (Exception e) {
             Log.err(sKlasse, "Error Initial Locator.UseImperialUnits");
         }
 
         // GPS update time?
         try {
-            Locator.getInstance().setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-            Config.gpsUpdateTime.addSettingChangedListener(() -> Locator.getInstance().setMinUpdateTime((long) Config.gpsUpdateTime.getValue()));
+            Locator.getInstance().setMinUpdateTime((long) Settings.gpsUpdateTime.getValue());
+            Settings.gpsUpdateTime.addSettingChangedListener(() -> Locator.getInstance().setMinUpdateTime((long) Settings.gpsUpdateTime.getValue()));
         } catch (Exception e) {
             Log.err(sKlasse, "Error Initial Locator.MinUpdateTime");
         }
 
         // Use magnetic Compass?
         try {
-            Locator.getInstance().setUseHardwareCompass(Config.HardwareCompass.getValue());
-            Config.HardwareCompass.addSettingChangedListener(() -> Locator.getInstance().setUseHardwareCompass(Config.HardwareCompass.getValue()));
+            Locator.getInstance().setUseHardwareCompass(Settings.HardwareCompass.getValue());
+            Settings.HardwareCompass.addSettingChangedListener(() -> Locator.getInstance().setUseHardwareCompass(Settings.HardwareCompass.getValue()));
         } catch (Exception e) {
             Log.err(sKlasse, "Error Initial Locator.UseHardwareCompass");
         }
 
         // Magnetic compass level
         try {
-            Locator.getInstance().setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-            Config.HardwareCompassLevel.addSettingChangedListener(() -> Locator.getInstance().setHardwareCompassLevel(Config.HardwareCompassLevel.getValue()));
+            Locator.getInstance().setHardwareCompassLevel(Settings.HardwareCompassLevel.getValue());
+            Settings.HardwareCompassLevel.addSettingChangedListener(() -> Locator.getInstance().setHardwareCompassLevel(Settings.HardwareCompassLevel.getValue()));
         } catch (Exception e) {
             Log.err(sKlasse, "Error Initial Locator.HardwareCompassLevel");
         }

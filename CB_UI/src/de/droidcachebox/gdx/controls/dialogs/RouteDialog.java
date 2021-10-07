@@ -22,9 +22,11 @@ import de.droidcachebox.translation.Translation;
 public class RouteDialog extends ButtonDialog {
 
     int state = -1;
-    private ImageMultiToggleButton btMotoWay, btCycleWay, btFootWay;
-    private CB_CheckBox chkTmc;
-    private IReturnListener mReturnListener;
+    private final ImageMultiToggleButton btMotoWay;
+    private final ImageMultiToggleButton btCycleWay;
+    private final ImageMultiToggleButton btFootWay;
+    private final CB_CheckBox chkTmc;
+    private final IReturnListener mReturnListener;
 
     public RouteDialog(IReturnListener listener) {
         super(GL_UISizes.menuRectangle, "RouteDialog", "", Translation.get("RouteToWaypoit"), MsgBoxButton.OKCancel, null, null);

@@ -48,6 +48,7 @@ import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.main.MenuItemDivider;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.Copy;
@@ -58,14 +59,14 @@ public class Import_GSAK extends ActivityBase {
     private static final String sKlasse = "Import_GSAK";
     private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote,UserFlag";
     private static final String memofields = "LongDescription,ShortDescription,Hints,UserNote";
-    private EditTextField edtCategory, edtDBName, edtImagesDBName, edtImagesPath;
     private final CB_Button bOK;
     private final CB_Button bCancel;
+    private final ProgressBar progressBar;
+    private EditTextField edtCategory, edtDBName, edtImagesDBName, edtImagesPath;
     private CB_Button btnSelectDB;
     private CB_Button btnSelectImagesDB;
     private CB_Button btnSelectImagesPath;
     private CB_CheckBox chkLogImages;
-    private final ProgressBar progressBar;
     private String mDatabasePath, mImageDatabasePath, mImagesPath;
     private String mDatabaseName, mImageDatabaseName;
     private SQLiteInterface sql;
@@ -173,7 +174,7 @@ public class Import_GSAK extends ActivityBase {
         });
 
         btnSelectDB.setClickHandler((v, x, y, pointer, button) -> {
-            mDatabasePath = Config.GSAKLastUsedDatabasePath.getValue();
+            mDatabasePath = Settings.GSAKLastUsedDatabasePath.getValue();
             if (mDatabasePath.length() == 0) {
                 mDatabasePath = Config.workPath + "/User";
             }
@@ -186,7 +187,7 @@ public class Import_GSAK extends ActivityBase {
         });
 
         btnSelectImagesDB.setClickHandler((v, x, y, pointer, button) -> {
-            mImageDatabasePath = Config.GSAKLastUsedImageDatabasePath.getValue();
+            mImageDatabasePath = Settings.GSAKLastUsedImageDatabasePath.getValue();
             if (mImageDatabasePath.length() == 0) {
                 mImageDatabasePath = Config.workPath + "/User";
             }
@@ -199,7 +200,7 @@ public class Import_GSAK extends ActivityBase {
         });
 
         btnSelectImagesPath.setClickHandler(((v, x, y, pointer, button) -> {
-            mImagesPath = Config.GSAKLastUsedImagesPath.getValue();
+            mImagesPath = Settings.GSAKLastUsedImagesPath.getValue();
             if (mImagesPath.length() == 0) {
                 mImagesPath = Config.workPath + "/User";
             }
@@ -211,35 +212,35 @@ public class Import_GSAK extends ActivityBase {
         }));
 
         edtCategory.setText("GSAK_Import");
-        mDatabasePath = Config.GSAKLastUsedDatabasePath.getValue();
+        mDatabasePath = Settings.GSAKLastUsedDatabasePath.getValue();
         if (mDatabasePath == null) mDatabasePath = "";
         if (mDatabasePath.length() == 0) {
             mDatabasePath = Config.workPath + "/User";
         }
-        mDatabaseName = Config.GSAKLastUsedDatabaseName.getValue();
+        mDatabaseName = Settings.GSAKLastUsedDatabaseName.getValue();
         if (mDatabaseName == null) mDatabaseName = "";
         if (mDatabaseName.length() == 0) {
             mDatabaseName = "sqlite.db3";
         }
         edtDBName.setText(mDatabaseName);
 
-        mImageDatabasePath = Config.GSAKLastUsedImageDatabasePath.getValue();
+        mImageDatabasePath = Settings.GSAKLastUsedImageDatabasePath.getValue();
         if (mImageDatabasePath == null) mImageDatabasePath = "";
         if (mImageDatabasePath.length() == 0) {
             mImageDatabasePath = Config.workPath + "/User";
         }
-        mImageDatabaseName = Config.GSAKLastUsedImageDatabaseName.getValue();
+        mImageDatabaseName = Settings.GSAKLastUsedImageDatabaseName.getValue();
         if (mImageDatabaseName == null) mImageDatabaseName = "";
         edtImagesDBName.setText(mImageDatabaseName);
 
-        mImagesPath = Config.GSAKLastUsedImagesPath.getValue();
+        mImagesPath = Settings.GSAKLastUsedImagesPath.getValue();
         if (mImagesPath == null) mImagesPath = "";
         if (mImagesPath.length() == 0) {
             mImagesPath = Config.workPath + "/User";
         }
         edtImagesPath.setText(mImagesPath);
 
-        chkLogImages.setChecked(Config.withLogImages.getValue());
+        chkLogImages.setChecked(Settings.withLogImages.getValue());
 
         progressBar.setProgress(0, "");
     }
@@ -261,10 +262,10 @@ public class Import_GSAK extends ActivityBase {
         // sql.beginTransaction();
         if (sql != null) {
             if (sql.openReadOnly(mDatabasePath + "/" + mDatabaseName)) {
-                Config.GSAKLastUsedDatabasePath.setValue(mDatabasePath);
-                Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
-                Config.withLogImages.setValue(chkLogImages.isChecked());
-                Config.acceptChanges();
+                Settings.GSAKLastUsedDatabasePath.setValue(mDatabasePath);
+                Settings.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
+                Settings.withLogImages.setValue(chkLogImages.isChecked());
+                Config.that.acceptChanges();
                 CBDB.getInstance().getSql().beginTransaction();
 
                 int count = 0;
@@ -321,10 +322,10 @@ public class Import_GSAK extends ActivityBase {
             SQLiteInterface sqlImageLink = PlatformUIBase.getSQLInstance();
             if (sqlImageLink == null) return;
             if (sqlImageLink.openReadOnly(abstractFile.getAbsolutePath())) {
-                Config.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
-                Config.GSAKLastUsedImageDatabaseName.setValue(mImageDatabaseName);
-                Config.GSAKLastUsedImagesPath.setValue(mImagesPath);
-                Config.acceptChanges();
+                Settings.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
+                Settings.GSAKLastUsedImageDatabaseName.setValue(mImageDatabaseName);
+                Settings.GSAKLastUsedImagesPath.setValue(mImagesPath);
+                Config.that.acceptChanges();
             }
             CoreCursor c = sql.rawQuery("select count(*) from " + tableName, null);
             c.moveToFirst();

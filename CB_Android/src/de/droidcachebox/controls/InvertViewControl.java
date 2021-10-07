@@ -24,15 +24,16 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import de.droidcachebox.Config;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.Global;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.R;
 import de.droidcachebox.gdx.ViewConst;
-import de.droidcachebox.gdx.views.DescriptionView;
-
-import java.util.Timer;
-import java.util.TimerTask;
+import de.droidcachebox.menu.menuBtn2.executes.DescriptionView;
+import de.droidcachebox.settings.Settings;
 
 /**
  * @author Longri
@@ -76,9 +77,8 @@ public final class InvertViewControl extends View {
             b = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b);
             WebViewLayout.draw(c);
-            canvas.drawBitmap(b, 0, 0, Config.nightMode.getValue() ? Global.invertPaint : new Paint());
+            canvas.drawBitmap(b, 0, 0, Settings.nightMode.getValue() ? Global.invertPaint : new Paint());
         }
-
 
         super.onDraw(canvas);
 

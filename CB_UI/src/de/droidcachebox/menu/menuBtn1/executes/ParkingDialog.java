@@ -1,4 +1,4 @@
-package de.droidcachebox.gdx.controls.dialogs;
+package de.droidcachebox.menu.menuBtn1.executes;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
@@ -6,7 +6,6 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.gdx.Fonts;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -21,13 +20,11 @@ import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
 public class ParkingDialog extends ButtonDialog {
 
-    private Linearlayout layout;
-
-    private float TextFieldHeight;
     private SizeF msgBoxContentSize;
     private ImageButton btSetGPS, btSelectWP, btDeleteP;
     private CB_Label lblSetGPS, lblSelectWP, lblDeleteP;
@@ -37,11 +34,11 @@ public class ParkingDialog extends ButtonDialog {
 
         msgBoxContentSize = getContentSize();
         // initial VariableField
-        TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
+        float textFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
         float innerWidth = msgBoxContentSize.getWidth();
 
-        layout = new Linearlayout(innerWidth, "layout");
+        Linearlayout layout = new Linearlayout(innerWidth, "layout");
         layout.setX(0);
         // layout.setBackground(new ColorDrawable(Color.GREEN));
 
@@ -99,48 +96,37 @@ public class ParkingDialog extends ButtonDialog {
         }
 
         Size msgBoxSize = MsgBox.calcMsgBoxSize("teste", true, true, false);
-        msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
+        msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (textFieldHeight / 2));
         this.setSize(msgBoxSize.asFloat());
 
-        btSetGPS.setClickHandler(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
+        btSetGPS.setClickHandler((view, x, y, pointer, button) -> {
 
-                Config.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
-                Config.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
-                Config.acceptChanges();
-                CacheListChangedListeners.getInstance().cacheListChanged();
+            Settings.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
+            Settings.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
+            Config.that.acceptChanges();
+            CacheListChangedListeners.getInstance().cacheListChanged();
 
-                close();
-                return true;
-            }
+            close();
+            return true;
         });
 
-        btSelectWP.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                synchronized (CBDB.getInstance().cacheList) {
-                    Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
-                    if (cache != null)
-                        GlobalCore.setSelectedCache(cache);
-                }
-                close();
-                return true;
+        btSelectWP.setClickHandler((view, x, y, pointer, button) -> {
+            synchronized (CBDB.getInstance().cacheList) {
+                Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
+                if (cache != null)
+                    GlobalCore.setSelectedCache(cache);
             }
+            close();
+            return true;
         });
 
-        btDeleteP.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                Config.ParkingLatitude.setValue(0.0);
-                Config.ParkingLongitude.setValue(0.0);
-                Config.acceptChanges();
-                CacheListChangedListeners.getInstance().cacheListChanged();
-                close();
-                return true;
-            }
+        btDeleteP.setClickHandler((view, x, y, pointer, button) -> {
+            Settings.ParkingLatitude.setValue(0.0);
+            Settings.ParkingLongitude.setValue(0.0);
+            Config.that.acceptChanges();
+            CacheListChangedListeners.getInstance().cacheListChanged();
+            close();
+            return true;
         });
 
     }

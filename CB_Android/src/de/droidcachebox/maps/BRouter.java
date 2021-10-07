@@ -9,23 +9,21 @@ import android.os.Bundle;
 import android.util.Xml;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.Date;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.Main;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.log.Log;
 
 public class BRouter implements Router {
-    private final static String sKlasse = "BRouter";
-    private Activity mainActivity;
+    private final static String sClass = "BRouter";
     private final Intent intent;
-
+    private final Activity mainActivity;
     private BRouterServiceConnection brouter;
 
     public BRouter(Main main) {
@@ -39,10 +37,10 @@ public class BRouter implements Router {
         if (brouter == null) brouter = new BRouterServiceConnection();
         if (brouter.isConnected()) return true;
         if (mainActivity.bindService(intent, brouter, Context.BIND_AUTO_CREATE)) {
-            Log.info(sKlasse, "Bind service successful!");
+            Log.info(sClass, "Bind service successful!");
             return true;
         } else {
-            Log.err(sKlasse, "Connect BRouter failed");
+            Log.err(sClass, "Connect BRouter failed");
             brouter = null;
             return false;
         }
@@ -61,23 +59,28 @@ public class BRouter implements Router {
         params.putDoubleArray("lats", new double[]{start.getLatitude(), dest.getLatitude()});
         params.putDoubleArray("lons", new double[]{start.getLongitude(), dest.getLongitude()});
         String routeProfile;
-        switch (Config.routeProfile.getValue()) {
-            case 0: routeProfile = "foot"; break;
-            case 1: routeProfile = "bicycle"; break;
-            default: routeProfile = "motorcar";
+        switch (Settings.routeProfile.getValue()) {
+            case 0:
+                routeProfile = "foot";
+                break;
+            case 1:
+                routeProfile = "bicycle";
+                break;
+            default:
+                routeProfile = "motorcar";
         }
         params.putString("v", routeProfile);
         Track track = new Track("");
         try {
             Xml.parse(brouter.getTrackFromParams(params), new DefaultHandler() {
                 @Override
-                public void startElement(final String uri, final String localName, final String qName, final Attributes atts) throws SAXException {
+                public void startElement(final String uri, final String localName, final String qName, final Attributes atts) {
                     if (qName.equalsIgnoreCase("trkpt")) {
                         final String lat = atts.getValue("lat");
                         if (lat != null) {
                             final String lon = atts.getValue("lon");
                             if (lon != null) {
-                                track.getTrackPoints().add( new TrackPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0, 0, new Date()));
+                                track.getTrackPoints().add(new TrackPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0, 0, new Date()));
                             }
                         }
                     }
@@ -105,101 +108,5 @@ public class BRouter implements Router {
         double lon2 = targetLon * DEG_RAD;
         return (6378137 * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos((lon2 - lon1))));
     }
-
-    /**
-     * Return a valid track (with at least two points, including the start and destination).
-     * In some cases (e.g., destination is too close or too far, path could not be found),
-     * a straight line will be returned.
-     *
-     * @param start the starting point
-     * @param destination the destination point
-     * @return a track with at least two points including the start and destination points
-     */
-    /*
-    @NonNull
-    public static Geopoint[] getTrack(final Geopoint start, final Geopoint destination) {
-        if (brouter == null || Settings.getRoutingMode() == RoutingMode.STRAIGHT) {
-            return defaultTrack(start, destination);
-        }
-
-        // avoid updating to frequently
-        final long timeNow = System.currentTimeMillis();
-        if ((timeNow - timeLastUpdate) < 1000 * UPDATE_MIN_DELAY_SECONDS) {
-            return ensureTrack(lastRoutingPoints, start, destination);
-        }
-
-        // Disable routing for huge distances
-        final int maxThresholdKm = Settings.getBrouterThreshold();
-        final float targetDistance = start.distanceTo(destination);
-        if (targetDistance > maxThresholdKm) {
-            return defaultTrack(start, destination);
-        }
-
-        // disable routing when near the target
-        if (targetDistance < MIN_ROUTING_DISTANCE_KILOMETERS) {
-            return defaultTrack(start, destination);
-        }
-
-        // Use cached route if current position has not changed more than 5m and we had a route
-        // Maybe adjust this to current zoomlevel
-        if (lastDirectionUpdatePoint != null && destination == lastDestination && start.distanceTo(lastDirectionUpdatePoint) < UPDATE_MIN_DISTANCE_KILOMETERS && lastRoutingPoints != null) {
-            return lastRoutingPoints;
-        }
-
-        // now really calculate a new route
-        lastDestination = destination;
-        lastRoutingPoints = calculateRouting(start, destination);
-        lastDirectionUpdatePoint = start;
-        timeLastUpdate = timeNow;
-        return ensureTrack(lastRoutingPoints, start, destination);
-    }
-
-    @NonNull
-    private static Geopoint[] ensureTrack(@Nullable final Geopoint[] routingPoints, final Geopoint start, final Geopoint destination) {
-        return routingPoints != null ? routingPoints : defaultTrack(start, destination);
-    }
-
-    @NonNull
-    private static Geopoint[] defaultTrack(final Geopoint start, final Geopoint destination) {
-        return new Geopoint[] { start, destination };
-    }
-
-    @Nullable
-    private static Geopoint[] parseGpxTrack(@NonNull final String gpx, final Geopoint destination) {
-        try {
-            final LinkedList<Geopoint> result = new LinkedList<>();
-            Xml.parse(gpx, new DefaultHandler() {
-                @Override
-                public void startElement(final String uri, final String localName, final String qName, final Attributes atts) throws SAXException {
-                    if (qName.equalsIgnoreCase("trkpt")) {
-                        final String lat = atts.getValue("lat");
-                        if (lat != null) {
-                            final String lon = atts.getValue("lon");
-                            if (lon != null) {
-                                result.add(new Geopoint(lat, lon));
-                            }
-                        }
-                    }
-                }
-            });
-
-            // artificial straight line from track to target
-            result.add(destination);
-
-            return result.toArray(new Geopoint[result.size()]);
-
-        } catch (final SAXException e) {
-            Log.w("cannot parse brouter output of length " + gpx.length(), e);
-        }
-        return null;
-    }
-
-    public static void invalidateRouting() {
-        lastDirectionUpdatePoint = null;
-        timeLastUpdate = 0;
-    }
-
-     */
-
 
 }

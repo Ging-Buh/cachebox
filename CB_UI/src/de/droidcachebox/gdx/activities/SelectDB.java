@@ -49,6 +49,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.menu.menuBtn5.ShowQuit;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -75,21 +76,20 @@ public class SelectDB extends ActivityBase {
     private V_ListView lvDBSelection;
     private Scrollbar scrollbar;
     private AbstractFile currentDBFile = null;
-    private boolean MustSelect;
+    private final boolean MustSelect;
     private IReturnListener returnListener;
-    private OnMsgBoxClickListener mDialogListenerNewDB = (which, data) -> {
+    private final OnMsgBoxClickListener mDialogListenerNewDB = (which, data) -> {
         String NewDB_Name = NewDB_InputBox.editText.getText();
-        // Behandle das Ergebnis
         switch (which) {
             case 1: // ok clicked
 
-                FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
-                String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
+                FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
+                String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
 
                 // initialize Database
 
                 String database = Config.workPath + "/" + NewDB_Name + ".db3";
-                Config.DatabaseName.setValue(NewDB_Name + ".db3");
+                Settings.DatabaseName.setValue(NewDB_Name + ".db3");
                 CBDB.getInstance().close();
                 CBDB.getInstance().startUp(database);
 
@@ -97,41 +97,41 @@ public class SelectDB extends ActivityBase {
                 if (data != null && !(Boolean) data) {
                     String folder = "?/" + NewDB_Name + "/";
 
-                    Config.DescriptionImageFolderLocal.setValue(folder + "Images");
-                    Config.MapPackFolderLocal.setValue(folder + "Maps");
-                    Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
-                    Config.tileCacheFolderLocal.setValue(folder + "Cache");
-                    Config.acceptChanges();
+                    Settings.DescriptionImageFolderLocal.setValue(folder + "Images");
+                    Settings.MapPackFolderLocal.setValue(folder + "Maps");
+                    Settings.SpoilerFolderLocal.setValue(folder + "Spoilers");
+                    Settings.tileCacheFolderLocal.setValue(folder + "Cache");
+                    Config.that.acceptChanges();
                     Log.debug(log,
                             NewDB_Name + " has own Repository:\n" + //
-                                    Config.DescriptionImageFolderLocal.getValue() + ", \n" + //
-                                    Config.MapPackFolderLocal.getValue() + ", \n" + //
-                                    Config.SpoilerFolderLocal.getValue() + ", \n" + //
-                                    Config.tileCacheFolderLocal.getValue()//
+                                    Settings.DescriptionImageFolderLocal.getValue() + ", \n" + //
+                                    Settings.MapPackFolderLocal.getValue() + ", \n" + //
+                                    Settings.SpoilerFolderLocal.getValue() + ", \n" + //
+                                    Settings.tileCacheFolderLocal.getValue()//
                     );
 
                     // Create Folder?
-                    boolean creationOK = FileIO.createDirectory(Config.DescriptionImageFolderLocal.getValue());
-                    creationOK = creationOK && FileIO.createDirectory(Config.MapPackFolderLocal.getValue());
-                    creationOK = creationOK && FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
-                    creationOK = creationOK && FileIO.createDirectory(Config.tileCacheFolderLocal.getValue());
+                    boolean creationOK = FileIO.createDirectory(Settings.DescriptionImageFolderLocal.getValue());
+                    creationOK = creationOK && FileIO.createDirectory(Settings.MapPackFolderLocal.getValue());
+                    creationOK = creationOK && FileIO.createDirectory(Settings.SpoilerFolderLocal.getValue());
+                    creationOK = creationOK && FileIO.createDirectory(Settings.tileCacheFolderLocal.getValue());
                     if (!creationOK)
                         Log.debug(log,
                                 "Problem with creation of one of the Directories:" + //
-                                        Config.DescriptionImageFolderLocal.getValue() + ", " + //
-                                        Config.MapPackFolderLocal.getValue() + ", " + //
-                                        Config.SpoilerFolderLocal.getValue() + ", " + //
-                                        Config.tileCacheFolderLocal.getValue()//
+                                        Settings.DescriptionImageFolderLocal.getValue() + ", " + //
+                                        Settings.MapPackFolderLocal.getValue() + ", " + //
+                                        Settings.SpoilerFolderLocal.getValue() + ", " + //
+                                        Settings.tileCacheFolderLocal.getValue()//
                         );
                 }
 
-                Config.acceptChanges();
+                Config.that.acceptChanges();
 
                 CoreData.categories = new Categories();
                 CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
                 synchronized (CBDB.getInstance().cacheList) {
-                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
 
@@ -139,7 +139,7 @@ public class SelectDB extends ActivityBase {
                     return true;
                 DraftsDatabase.getInstance().startUp(Config.workPath + "/User/FieldNotes.db3");
 
-                Config.acceptChanges();
+                Config.that.acceptChanges();
                 currentDBFile = FileFactory.createFile(database);
                 selectDB();
 
@@ -163,7 +163,7 @@ public class SelectDB extends ActivityBase {
         dbItemAdapter = new DBItemAdapter();
         lvDBSelection.setAdapter(dbItemAdapter);
 
-        String currentDBFileName = Config.DatabaseName.getValue();
+        String currentDBFileName = Settings.DatabaseName.getValue();
         for (AbstractFile dbFile : dbFiles) {
             if (dbFile.getName().equalsIgnoreCase(currentDBFileName)) {
                 currentDBFile = dbFile;
@@ -229,7 +229,7 @@ public class SelectDB extends ActivityBase {
         bNew.setText(Translation.get("NewDB"));
         bSelect.setText(Translation.get("confirm"));
         bCancel.setText(Translation.get("cancel"));
-        autoStartTime = Config.MultiDBAutoStartTime.getValue();
+        autoStartTime = Settings.MultiDBAutoStartTime.getValue();
         autoStartCounter = 0;
         if (autoStartTime > 0) {
             autoStartCounter = autoStartTime;
@@ -353,11 +353,11 @@ public class SelectDB extends ActivityBase {
             return;
         }
 
-        Config.MultiDBAutoStartTime.setValue(autoStartTime);
-        Config.MultiDBAsk.setValue(autoStartTime >= 0);
+        Settings.MultiDBAutoStartTime.setValue(autoStartTime);
+        Settings.MultiDBAsk.setValue(autoStartTime >= 0);
 
-        Config.DatabaseName.setValue(currentDBFile.getName());
-        Config.acceptChanges();
+        Settings.DatabaseName.setValue(currentDBFile.getName());
+        Config.that.acceptChanges();
 
         LayerManager.getInstance().initLayers();
 

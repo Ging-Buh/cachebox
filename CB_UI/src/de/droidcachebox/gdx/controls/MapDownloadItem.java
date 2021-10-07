@@ -1,21 +1,21 @@
 package de.droidcachebox.gdx.controls;
 
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.ex_import.UnZip;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.activities.FZKDownload.MapRepositoryInfo;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.menu.menuBtn3.executes.FZKDownload.MapRepositoryInfo;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapDownloadItem extends CB_View_Base {
     private static final String log = "MapDownloadItem";

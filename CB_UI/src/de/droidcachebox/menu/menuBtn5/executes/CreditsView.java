@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn5.executes;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
+import de.droidcachebox.gdx.controls.Image;
+import de.droidcachebox.gdx.controls.Linearlayout;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class CreditsView extends CB_View_Base {
     private static CreditsView that;
@@ -208,7 +213,7 @@ public class CreditsView extends CB_View_Base {
         idea, developer, designer, tester, sponsor, library, service, localization, developmentAdvice
     }
 
-    public class Person implements Comparable<Person> {
+    public static class Person implements Comparable<Person> {
 
         public String name;
         public String desc = null;

@@ -1,11 +1,12 @@
 package de.droidcachebox.menu.quickBtns;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.views.GeoCacheListListView;
 import de.droidcachebox.menu.menuBtn1.ShowCacheList;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
 
 public class SearchDialog extends AbstractAction {
 

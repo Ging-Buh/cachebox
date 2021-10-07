@@ -70,6 +70,7 @@ import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AndroidFileFactory;
 import de.droidcachebox.utils.FileFactory;
@@ -175,11 +176,11 @@ public class Splash extends Activity {
             // could bundle utils too, but the (static) classes are initialized directly
             initializeSomeUiSettings(); // don't know, if it must be done here : frame is the space, where everything is shown
             if (SettingsDatabase.getInstance().isDatabaseNew()) {
-                Config.mapViewDPIFaktor.setValue(displayDensity);
+                Settings.mapViewDPIFaktor.setValue(displayDensity);
             }
             Global.Paints.init(this);
             mainIntent.putExtras(bundledData); // the prepared Data
-            Config.acceptChanges(); // saving to SettingsDatabase
+            Config.that.acceptChanges(); // saving to SettingsDatabase
             SettingsDatabase.getInstance().close();
             startActivity(mainIntent);
             setResult(RESULT_OK); // for the calling App (setResult(resultCode, dataIntent));
@@ -586,26 +587,26 @@ public class Splash extends Activity {
         SettingsDatabase.getInstance().startUp(workPath + "/User/Config.db3");
         // Wenn die Settings DB neu erstellt wurde, müssen die Default Werte geschrieben werden.
         if (SettingsDatabase.getInstance().isDatabaseNew()) {
-            Config.settings.LoadAllDefaultValues();
-            Config.settings.writeToDatabases();
+            Config.that.settings.loadAllDefaultValues();
+            Config.that.settings.writeToDatabases();
             Log.info(log, "Default Settings written to new configDB.");
         } else {
-            Config.settings.ReadFromDB();
+            Config.that.settings.readFromDB();
             Log.info(log, "Settings read from configDB.");
         }
-        Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
+        Settings.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue()));
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // copy AssetFolder only if Rev-Number changed, like at new installation
         try {
-            if (Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
+            if (Settings.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
                 String[] exclude = new String[]{"webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", ""};
                 CopyAssetFolder myCopie = new CopyAssetFolder();
                 myCopie.copyAll(getAssets(), Config.workPath, exclude);
 
-                Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
-                Config.newInstall.setValue(true);
+                Settings.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
+                Settings.newInstall.setValue(true);
 
                 // create .nomedia Files
                 FileIO.createFile(workPath + "/data/.nomedia");
@@ -615,7 +616,7 @@ public class Splash extends Activity {
                 FileIO.createFile(workPath + "/cache/.nomedia");
 
             } else {
-                Config.newInstall.setValue(false);
+                Settings.newInstall.setValue(false);
             }
         } catch (Exception e) {
             Log.err(log, "Copy Asset", e);
@@ -729,7 +730,7 @@ public class Splash extends Activity {
                             // if this button is clicked, run Sandbox Path
 
                             showSandbox = true;
-                            // Config.AcceptChanges();
+                            // Config.that.AcceptChanges();
 
                             // close select dialog
                             dialog12.dismiss();

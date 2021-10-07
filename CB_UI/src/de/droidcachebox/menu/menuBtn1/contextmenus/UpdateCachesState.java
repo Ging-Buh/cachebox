@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import java.util.ArrayList;
 
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.Config;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.database.CBDB;
@@ -26,13 +25,14 @@ import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.RunnableReadyHandler;
 import de.droidcachebox.utils.log.Log;
 
 public class UpdateCachesState extends AbstractAction {
-    private static final String sKlasse = "UpdateCachesState";
+    private static final String sClass = "UpdateCachesState";
 
     private int ChangedCount = 0;
     private int result = 0;
@@ -40,7 +40,7 @@ public class UpdateCachesState extends AbstractAction {
     private boolean isCanceled = false;
 
     private final RunnableReadyHandler updateStatusOfCaches = new RunnableReadyHandler() {
-        final int BlockSize = 50; // API 1.0 has a limit of 50, handled in GroundspeakAPI but want to write to DB after Blocksize fetched
+        final int BlockSize = 50; // API 1.0 has a limit of 50, handled in GroundSpeakAPI but want to write to DB after BlockSize fetched
 
         @Override
         public void run() {
@@ -56,9 +56,9 @@ public class UpdateCachesState extends AbstractAction {
                 }
 
             }
-            float ProgressInkrement = 100.0f / ((float) chkList.size() / BlockSize); // 100% durch Anzahl Schleifen
+            float progressIncrement = 100.0f / ((float) chkList.size() / BlockSize); // 100% divided by by number of repeats
 
-            // in Blöcke Teilen
+            // divide into blocks
 
             int skip = 0;
 
@@ -71,15 +71,6 @@ public class UpdateCachesState extends AbstractAction {
 
             CacheDAO dao = CacheDAO.getInstance();
             do {
-                /*
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    // thread abgebrochen
-                    cancelThread = true;
-                }
-
-                 */
                 if (Thread.interrupted())
                     cancelThread = true;
 
@@ -95,7 +86,6 @@ public class UpdateCachesState extends AbstractAction {
                     }
                     skip += BlockSize;
 
-                    /* */
                     CBDB.getInstance().getSql().beginTransaction();
                     for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
                         if (dao.updateDatabaseCacheState(ci.cache))
@@ -103,41 +93,6 @@ public class UpdateCachesState extends AbstractAction {
                     }
                     CBDB.getInstance().getSql().setTransactionSuccessful();
                     CBDB.getInstance().getSql().endTransaction();
-                    /* */
-
-                    /*
-                    // a test for mass - uploading local notes and corrected coords (does not affect API-Limits)
-                    for (Cache aktCache : caches) {
-                        String uploadText = Database.getNote(aktCache);
-                        boolean perhapsUploadedSomething = false;
-                        if (!StringH.isEmpty(uploadText)) {
-                            uploadText = uploadText.replace("<Import from Geocaching.com>", "").replace("</Import from Geocaching.com>", "").trim();
-                            GroundspeakAPI.uploadCacheNote(aktCache.getGcCode(), uploadText);
-                            perhapsUploadedSomething = true;
-                        }
-                        if (aktCache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
-                            if (aktCache.hasCorrectedCoordinates()) {
-                                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.Pos);
-                                perhapsUploadedSomething = true;
-                            } else {
-                                Waypoint correctedFinal = aktCache.getCorrectedFinal();
-                                GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), correctedFinal.Pos);
-                                perhapsUploadedSomething = true;
-                            }
-                        }
-                        if (perhapsUploadedSomething) {
-                            if (GroundspeakAPI.APIError == 0) {
-                                ChangedCount++;
-                                aktCache.setFavorite(true);
-                                // MessageBox.show(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-                            } else {
-                                MessageBox.show(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MessageBoxButton.OK, MessageBoxIcon.Information, null);
-                                return;
-                            }
-                        }
-                    }
-                     */
-
 
                     if (APIError != OK) {
                         GL.that.toast(LastAPIError);
@@ -145,7 +100,7 @@ public class UpdateCachesState extends AbstractAction {
                     }
                 }
 
-                progress += ProgressInkrement;
+                progress += progressIncrement;
                 ProgresssChangedEventList.progressChanged("", (int) progress);
 
             } while (skip < chkList.size() && !cancelThread);
@@ -157,25 +112,25 @@ public class UpdateCachesState extends AbstractAction {
 
         @Override
         public boolean doCancel() {
-            Log.debug(sKlasse, "chkState canceled");
+            Log.debug(sClass, "chkState canceled");
             // misleading use of Interface ICancel, should be named like "isCanceled" from somewhere else. this is only the question if that did happen
-            // seems that noone does that (is always false)
+            // seems that no one does that (is always false)
             return isCanceled;
         }
 
         @Override
         public void runnableIsReady(boolean canceled) {
-            Log.debug(sKlasse, "chkState ready");
-            String sCanceld = canceled ? Translation.get("isCanceld") + br : "";
+            Log.debug(sClass, "chkState ready");
+            String sCanceled = canceled ? Translation.get("isCanceld") + br : "";
             if (result != -1) {
                 // Reload result from DB
                 synchronized (CBDB.getInstance().cacheList) {
-                    String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+                    String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
+                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
                 synchronized (CBDB.getInstance().cacheList) {
-                    MsgBox.show(sCanceld + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + CBDB.getInstance().cacheList.size(),
+                    MsgBox.show(sCanceled + Translation.get("CachesUpdated") + " " + ChangedCount + "/" + CBDB.getInstance().cacheList.size(),
                             Translation.get("chkState"),
                             MsgBoxIcon.None);
                 }
@@ -200,7 +155,7 @@ public class UpdateCachesState extends AbstractAction {
 
     @Override
     public void execute() {
-        Log.debug(sKlasse, "execute ProgressDialog");
+        Log.debug(sClass, "execute ProgressDialog");
         // todo set the ICancelListener of ProgressDialog by setCancelListener(...) else updateStatusOfCaches.run() can never be canceled
         pd = ProgressDialog.Show(Translation.get("chkState"), DownloadAnimation.GetINSTANCE(), updateStatusOfCaches);
     }

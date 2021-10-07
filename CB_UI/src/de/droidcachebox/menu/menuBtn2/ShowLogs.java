@@ -32,9 +32,10 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.gdx.views.LogListView;
-import de.droidcachebox.gdx.views.SpoilerView;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn2.executes.LogListView;
+import de.droidcachebox.menu.menuBtn2.executes.SpoilerView;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.RunnableReadyHandler;
 
@@ -84,8 +85,7 @@ public class ShowLogs extends AbstractShowAction {
 
     @Override
     public Menu getContextMenu() {
-        // if depends on something: call createContextMenu() again
-        // todo why are the clickhandlers of the items gone on following calls? temp solution createContextMenu() again
+        // todo why are the clickHandlers of the items gone on subsequent calls? temp solution createContextMenu() again
         // has to do with the disposing of the compoundMenu in CB_Button after the Show
         return createContextMenu();
     }
@@ -193,8 +193,8 @@ public class ShowLogs extends AbstractShowAction {
         GL.that.postAsync(() -> {
             String friends = GroundspeakAPI.fetchFriends();
             if (GroundspeakAPI.APIError == OK) {
-                Config.friends.setValue(friends);
-                Config.acceptChanges();
+                Settings.friends.setValue(friends);
+                Config.that.acceptChanges();
                 MsgBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
             } else {
                 MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);

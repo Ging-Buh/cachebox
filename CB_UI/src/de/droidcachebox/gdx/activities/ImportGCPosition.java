@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
@@ -57,6 +58,7 @@ import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancel;
 import de.droidcachebox.utils.UnitFormatter;
@@ -64,17 +66,21 @@ import de.droidcachebox.utils.log.Log;
 
 public class ImportGCPosition extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private static final String log = "ImportGCPosition";
-    private CB_Button btnOK, btnCancel, btnPlus, btnMinus;
-    private CB_Label lblHeader, lblRadius, lblRadiusEinheit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
+    private final CB_Button btnOK;
+    private final CB_Button btnCancel;
+    private final CoordinateButton coordinateButton;
+    private final Box box;
+    private final ScrollBox scrollBox;
+    private final SimpleDateFormat simpleDateFormat;
+    private CB_Button btnPlus;
+    private CB_Button btnMinus;
+    private CB_Label lblHeader, lblRadius, lblRadiusUnit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
     private Image gsLogo;
-    private CoordinateButton coordinateButton;
     private CB_CheckBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
     private EditTextField txtRadius;
     private MultiToggleButton tglBtnGPS, tglBtnMap, tglBtnWeb;
     private Coordinate actSearchPos;
     private ImportAnimation dis;
-    private Box box;
-    private ScrollBox scrollBox;
     private boolean importRuns = false;
     private int searchState = 0; // 0=GPS, 1= Map, 2= Manuell
     private boolean isCanceld = false;
@@ -90,12 +96,11 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     private EditTextField edtOwner;
     private CB_Label lblCategory;
     private EditTextField edtCategory;
-    private SimpleDateFormat simpleDateFormat;
     private SearchCoordinates searchCoordinates;
 
     public ImportGCPosition() {
         super("searchOverPosActivity");
-        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         this.removeChilds();
 
         // add to this
@@ -142,10 +147,10 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     private void createRadiusLine() {
         String sRadius = Translation.get("Radius");
-        String sEinheit = Config.ImperialUnits.getValue() ? "mi" : "km";
+        String sUnit = Settings.ImperialUnits.getValue() ? "mi" : "km";
 
         float wRadius = Fonts.Measure(sRadius).width;
-        float wEinheit = Fonts.Measure(sEinheit).width;
+        float wUnit = Fonts.Measure(sUnit).width;
 
         lblRadius = new CB_Label(sRadius);
         lblRadius.setWidth(wRadius);
@@ -157,10 +162,9 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         //box.addNext(txtRadius);
         box.addNext(txtRadius);
 
-        lblRadiusEinheit = new CB_Label(sEinheit);
-        lblRadiusEinheit.setWidth(wEinheit);
-        //box.addNext(lblRadiusEinheit, FIXED);
-        box.addNext(lblRadiusEinheit, FIXED);
+        lblRadiusUnit = new CB_Label(sUnit);
+        lblRadiusUnit.setWidth(wUnit);
+        box.addNext(lblRadiusUnit, FIXED);
 
         btnMinus = new CB_Button("-");
         //box.addNext(btnMinus);
@@ -336,10 +340,10 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         }
         setToggleBtnState(searchState);
 
-        checkBoxExcludeFounds.setChecked(Config.SearchWithoutFounds.getValue());
-        checkBoxOnlyAvailable.setChecked(Config.SearchOnlyAvailable.getValue());
-        checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
-        txtRadius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
+        checkBoxExcludeFounds.setChecked(Settings.SearchWithoutFounds.getValue());
+        checkBoxOnlyAvailable.setChecked(Settings.SearchOnlyAvailable.getValue());
+        checkBoxExcludeHides.setChecked(Settings.SearchWithoutOwns.getValue());
+        txtRadius.setText(String.valueOf(Settings.lastSearchRadius.getValue()));
 
         edtCategory.setText("API-Import");
         if (GlobalCore.isSetSelectedCache()) {
@@ -352,14 +356,8 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
         Category category = CoreData.categories.getCategory(edtCategory.getText());
         edtDate.setText(simpleDateFormat.format(category.LastImported()));
-        /*
-        if (category.size() == 0)
-            btnBeforeAfterEqual.setText("<=");
-        else
-            btnBeforeAfterEqual.setText(">=");
-         */
         btnBeforeAfterEqual.setText("X");
-        edtImportLimit.setText("" + Config.ImportLimit.getValue());
+        edtImportLimit.setText("" + Settings.ImportLimit.getValue());
     }
 
     @Override
@@ -371,12 +369,6 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             if (GL.that.getFocusedEditTextField().equals(edtCategory)) {
                 Category category = CoreData.categories.getCategory(edtCategory.getText());
                 edtDate.setText(simpleDateFormat.format(category.LastImported()));
-                /*
-                if (category.size() == 0)
-                    btnBeforeAfterEqual.setText("<=");
-                else
-                    btnBeforeAfterEqual.setText(">=");
-                */
                 btnBeforeAfterEqual.setText("X");
             }
         }
@@ -448,10 +440,10 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         dis.setBackground(getBackground());
         box.addChild(dis, false);
 
-        Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
-        Config.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
-        Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
-        Config.acceptChanges();
+        Settings.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
+        Settings.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
+        Settings.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
+        Config.that.acceptChanges();
 
         Date tmpDate;
         try {
@@ -461,10 +453,6 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         }
         final Date publishDate = tmpDate;
 
-        // category.GpxFilename == edtCategory.getText()
-        //.resultWithImages(30)
-        // Thread abgebrochen!
-        // Notify Map
         Thread thread = new Thread(() -> {
             boolean threadCanceled = false;
 
@@ -487,29 +475,32 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                             int radius;
                             try {
                                 radius = Integer.parseInt(txtRadius.getText());
-                                if (Config.ImperialUnits.getValue()) radius = UnitFormatter.getKilometer(radius);
-                                Config.lastSearchRadius.setValue(radius);
-                                Config.acceptChanges();
+                                if (Settings.ImperialUnits.getValue())
+                                    radius = UnitFormatter.getKilometer(radius);
+                                Settings.lastSearchRadius.setValue(radius);
+                                Config.that.acceptChanges();
                                 q.searchInCircle(actSearchPos, radius * 1000);
                             } catch (NumberFormatException nex) {
-                                q.searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);
+                                q.searchInCircle(actSearchPos, Settings.lastSearchRadius.getValue() * 1000);
                             }
                         }
-                        if (edtOwner.getText().trim().length() > 0) q.searchForOwner(edtOwner.getText().trim());
-                        if (edtCacheName.getText().trim().length() > 0) q.searchForTitle(edtCacheName.getText().trim());
+                        if (edtOwner.getText().trim().length() > 0)
+                            q.searchForOwner(edtOwner.getText().trim());
+                        if (edtCacheName.getText().trim().length() > 0)
+                            q.searchForTitle(edtCacheName.getText().trim());
 
-                        if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
-                        if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
-                        if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
+                        if (Settings.SearchWithoutFounds.getValue()) q.excludeFinds();
+                        if (Settings.SearchWithoutOwns.getValue()) q.excludeOwn();
+                        if (Settings.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
 
                         int importLimit;
                         try {
                             importLimit = Integer.parseInt(edtImportLimit.getText());
                         } catch (Exception ex) {
-                            importLimit = Config.ImportLimit.getDefaultValue();
+                            importLimit = Settings.ImportLimit.getDefaultValue();
                         }
                         q.setMaxToFetch(importLimit);
-                        Config.ImportLimit.setValue(importLimit);
+                        Settings.ImportLimit.setValue(importLimit);
 
                         dis.setAnimationType(AnimationType.Download);
                         ArrayList<GeoCacheRelated> geoCacheRelateds = searchGeoCaches(q);
@@ -525,7 +516,6 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                     }
                 }
             } catch (Exception e) {
-                // Thread abgebrochen!
                 threadCanceled = true;
             }
 
@@ -565,7 +555,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         dispose(btnMinus);
         dispose(lblHeader);
         dispose(lblRadius);
-        dispose(lblRadiusEinheit);
+        dispose(lblRadiusUnit);
         dispose(lblExcludeFounds);
         dispose(lblOnlyAvailable);
         dispose(lblExcludeHides);

@@ -19,16 +19,22 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
-import de.droidcachebox.gdx.*;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.IRunOnGL;
+import de.droidcachebox.gdx.ParentInfo;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent {
     private static final String log = "ListViewBase";
@@ -393,9 +399,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     @Override
-    public void renderChilds(final Batch batch, ParentInfo parentInfo) {
+    public void renderChildren(final Batch batch, ParentInfo parentInfo) {
         try {
-            super.renderChilds(batch, parentInfo);
+            super.renderChildren(batch, parentInfo);
         } catch (Exception ex) {
             Log.err(log, "renderChilds", ex);
         }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn5.executes;
 
 import static de.droidcachebox.PlatformUIBase.callUrl;
 import static de.droidcachebox.PlatformUIBase.hideForDialog;
@@ -57,15 +57,16 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
 public class AboutView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent, PositionChangedEvent {
-    private static final String sKlasse = "AboutView";
+    private static final String sClass = "AboutView";
     private static AboutView aboutView;
-    private CB_Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
+    private CB_Label descTextView, CachesFoundLabel, WaypointLabel, CoordinateLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoordinate, lblCurrent, Current;
     private Image CB_Logo;
     private float margin;
     private CancelWaitDialog pd;
@@ -74,11 +75,11 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     private boolean mustShowNewInstallInfo;
 
     private AboutView() {
-        super(ViewManager.leftTab.getContentRec(), sKlasse);
+        super(ViewManager.leftTab.getContentRec(), sClass);
         registerSkinChangedEvent();
         createControls();
         mustShowNewInstallInfo = true;
-        Log.debug(sKlasse, " created.");
+        Log.debug(sClass, " created.");
     }
 
     public static AboutView getInstance() {
@@ -104,9 +105,9 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         refreshText();
 
 
-        if (Config.newInstall.getValue() && mustShowNewInstallInfo) {
+        if (Settings.newInstall.getValue() && mustShowNewInstallInfo) {
             mustShowNewInstallInfo = false;
-            String langId = Config.Sel_LanguagePath.getValue().substring(Config.languagePath.getValue().length()).substring(1,3);
+            String langId = Settings.Sel_LanguagePath.getValue().substring(Settings.languagePath.getValue().length()).substring(1, 3);
             String Welcome = Translation.that.getTextFile("welcome", langId) + Translation.that.getTextFile("changelog", langId);
             MsgBox.show(Welcome, Translation.get("welcome"), MsgBoxButton.OK, MsgBoxIcon.Information, (btnNumber, data) -> true);
         }
@@ -180,8 +181,8 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                             if (result > -1) {
                                                 String Text = Translation.get("FoundsSetTo", String.valueOf(result));
                                                 MsgBox.show(Text, Translation.get("LoadFinds!"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);
-                                                Config.FoundOffset.setValue(result);
-                                                Config.acceptChanges();
+                                                Settings.FoundOffset.setValue(result);
+                                                Config.that.acceptChanges();
                                                 AboutView.this.refreshText();
                                             }
                                         }
@@ -194,11 +195,11 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                     break;
                                 case 3:
                                     msgBox.close();
-                                    GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"), Config.FoundOffset.getValue(), new IReturnValueListener() {
+                                    GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"), Settings.FoundOffset.getValue(), new IReturnValueListener() {
                                         @Override
                                         public void returnValue(int value) {
-                                            Config.FoundOffset.setValue(value);
-                                            Config.acceptChanges();
+                                            Settings.FoundOffset.setValue(value);
+                                            Config.that.acceptChanges();
                                             AboutView.this.refreshText();
                                         }
 
@@ -231,8 +232,8 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         lblWP = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblWP.setText(Translation.get("waypoint")).getTextWidth());
 
-        lblCoord = new CB_Label(lblRec);
-        leftMaxWidth = Math.max(leftMaxWidth, lblCoord.setText(Translation.get("coordinate")).getTextWidth());
+        lblCoordinate = new CB_Label(lblRec);
+        leftMaxWidth = Math.max(leftMaxWidth, lblCoordinate.setText(Translation.get("coordinate")).getTextWidth());
 
         lblCurrent = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.setText(Translation.get("current")).getTextWidth());
@@ -242,13 +243,13 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         lblGPS.setWidth(leftMaxWidth);
         lblAccuracy.setWidth(leftMaxWidth);
         lblWP.setWidth(leftMaxWidth);
-        lblCoord.setWidth(leftMaxWidth);
+        lblCoordinate.setWidth(leftMaxWidth);
         lblCurrent.setWidth(leftMaxWidth);
 
         // set lbl position on Screen
         lblCurrent.setPos(margin, margin);
-        lblCoord.setPos(margin, lblCurrent.getMaxY());
-        lblWP.setPos(margin, lblCoord.getMaxY());
+        lblCoordinate.setPos(margin, lblCurrent.getMaxY());
+        lblWP.setPos(margin, lblCoordinate.getMaxY());
         lblAccuracy.setPos(margin, lblWP.getMaxY());
         lblGPS.setPos(margin, lblAccuracy.getMaxY());
 
@@ -256,7 +257,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         addChild(lblGPS);
         addChild(lblAccuracy);
         addChild(lblWP);
-        addChild(lblCoord);
+        addChild(lblCoordinate);
         addChild(lblCurrent);
 
         // ##############################
@@ -268,14 +269,14 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         Accuracy = new CB_Label(lblRec);
         WaypointLabel = new CB_Label("-", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE);
         WaypointLabel.setRec(lblRec);
-        CoordLabel = new CB_Label(lblRec);
+        CoordinateLabel = new CB_Label(lblRec);
         Current = new CB_Label(lblRec);
 
         // set Y Pos
         Gps.setY(lblGPS.getY());
         Accuracy.setY(lblAccuracy.getY());
         WaypointLabel.setY(lblWP.getY());
-        CoordLabel.setY(lblCoord.getY());
+        CoordinateLabel.setY(lblCoordinate.getY());
         Current.setY(lblCurrent.getY());
 
         // set LinkColor
@@ -291,7 +292,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         addChild(Gps);
         addChild(Accuracy);
         addChild(WaypointLabel);
-        addChild(CoordLabel);
+        addChild(CoordinateLabel);
         addChild(Current);
 
         // create Sat Chart
@@ -299,22 +300,22 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, getWidth() - l - l, CachesFoundLabel.getY() - Gps.getMaxY()), "Sat Chart");
         chart.setDrawWithAlpha(true);
         addChild(chart);
-        setYpositions();
+        setYPositions();
     }
 
     @Override
     public void onResized(CB_RectF rec) {
         super.onResized(rec);
-        setYpositions();
+        setYPositions();
     }
 
     @Override
     protected void skinIsChanged() {
         createControls();
-        setYpositions();
+        setYPositions();
     }
 
-    private void setYpositions() {
+    private void setYPositions() {
         if (CB_Logo != null) {
             CB_Logo.setY(getHeight() - (margin * 2) - CB_Logo.getHeight());
             if (descTextView != null) {
@@ -329,10 +330,10 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     }
 
     private void refreshText() {
-        if (WaypointLabel == null || CachesFoundLabel == null || CoordLabel == null)
+        if (WaypointLabel == null || CachesFoundLabel == null || CoordinateLabel == null)
             return;
         try {
-            CachesFoundLabel.setText(Translation.get("caches_found") + " " + Config.FoundOffset.getValue());
+            CachesFoundLabel.setText(Translation.get("caches_found") + " " + Settings.FoundOffset.getValue());
 
             Cache selectedCache = GlobalCore.getSelectedCache();
             Waypoint selectedWaypoint = GlobalCore.getSelectedWayPoint();
@@ -341,13 +342,13 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                 try {
                     if (selectedWaypoint != null) {
                         WaypointLabel.setText(selectedWaypoint.getWaypointCode());
-                        CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedWaypoint.getLongitude()));
+                        CoordinateLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedWaypoint.getLongitude()));
                     } else {
                         WaypointLabel.setText(selectedCache.getGeoCacheCode());
-                        CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.getCoordinate().getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedCache.getCoordinate().getLongitude()));
+                        CoordinateLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.getCoordinate().getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedCache.getCoordinate().getLongitude()));
                     }
                 } catch (Exception e) {
-                    CoordLabel.setText(" - - - ");
+                    CoordinateLabel.setText(" - - - ");
                 }
             }
             GL.that.renderOnce();
@@ -418,9 +419,9 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         if (WaypointLabel != null)
             WaypointLabel.dispose();
         WaypointLabel = null;
-        if (CoordLabel != null)
-            CoordLabel.dispose();
-        CoordLabel = null;
+        if (CoordinateLabel != null)
+            CoordinateLabel.dispose();
+        CoordinateLabel = null;
         if (lblGPS != null)
             lblGPS.dispose();
         lblGPS = null;
@@ -436,9 +437,9 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         if (lblWP != null)
             lblWP.dispose();
         lblWP = null;
-        if (lblCoord != null)
-            lblCoord.dispose();
-        lblCoord = null;
+        if (lblCoordinate != null)
+            lblCoordinate.dispose();
+        lblCoordinate = null;
         if (lblCurrent != null)
             lblCurrent.dispose();
         lblCurrent = null;

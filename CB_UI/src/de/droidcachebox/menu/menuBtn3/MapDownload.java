@@ -1,11 +1,12 @@
 package de.droidcachebox.menu.menuBtn3;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.activities.FZKDownload;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.menu.menuBtn3.executes.FZKDownload;
 
 public class MapDownload extends AbstractAction {
     private static MapDownload that;

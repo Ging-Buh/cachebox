@@ -30,6 +30,7 @@ import de.droidcachebox.Main;
 import de.droidcachebox.R;
 import de.droidcachebox.core.CB_Api;
 import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.log.Log;
 
@@ -207,10 +208,10 @@ public class GcApiLogin extends Activity {
             try {
                 String GC_AuthUrl;
 
-                if (Config.OverrideUrl.getValue().equals("")) {
+                if (Settings.OverrideUrl.getValue().equals("")) {
                     GC_AuthUrl = CB_Api.getGcAuthUrl();
                 } else {
-                    GC_AuthUrl = Config.OverrideUrl.getValue();
+                    GC_AuthUrl = Settings.OverrideUrl.getValue();
                 }
 
                 if (GC_AuthUrl.equals("")) {
@@ -265,7 +266,7 @@ public class GcApiLogin extends Activity {
                     String userNameOfAuthorization = fetchMyUserInfos().username;
                     Log.debug(sKlasse, "userNameOfAuthorization: " + userNameOfAuthorization);
                     GcLogin.setValue(userNameOfAuthorization);
-                    Config.acceptChanges();
+                    Config.that.acceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }
             };

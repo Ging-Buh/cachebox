@@ -38,6 +38,7 @@ import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.log.Log;
 
 public class SelectDBDialog extends AbstractAction {
@@ -69,8 +70,8 @@ public class SelectDBDialog extends AbstractAction {
 
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-            Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Config.acceptChanges();
+            Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
+            Config.that.acceptChanges();
             Log.debug(log, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
 
@@ -82,29 +83,29 @@ public class SelectDBDialog extends AbstractAction {
     private void returnFromSelectDB() {
 
         wd = WaitDialog.ShowWait("Load DB ...");
-        Log.debug(log, "\r\nSwitch DB " + Config.DatabaseName.getValue());
+        Log.debug(log, "\r\nSwitch DB " + Settings.DatabaseName.getValue());
 
         Thread thread = new Thread(() -> {
             CBDB.getInstance().close();
-            CBDB.getInstance().startUp(Config.workPath + "/" + Config.DatabaseName.getValue());
+            CBDB.getInstance().startUp(Config.workPath + "/" + Settings.DatabaseName.getValue());
 
-            Config.settings.ReadFromDB();
+            Config.that.settings.readFromDB();
 
             CoreData.categories = new Categories();
 
-            FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
+            FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
 
-            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
+            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
             CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
             synchronized (CBDB.getInstance().cacheList) {
-                CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+                CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
             }
 
             GlobalCore.setSelectedCache(null);
 
             if (CBDB.getInstance().cacheList.size() > 0) {
-                GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
+                GlobalCore.setAutoResort(Settings.StartWithAutoSelect.getValue());
                 if (GlobalCore.getAutoResort() && !CBDB.getInstance().cacheList.resortAtWork) {
                     synchronized (CBDB.getInstance().cacheList) {
                         Log.debug(log, "sort CacheList");
@@ -121,7 +122,7 @@ public class SelectDBDialog extends AbstractAction {
 
                 if (GlobalCore.getSelectedCache() == null) {
                     // set selectedCache from lastselected Cache
-                    String lastSelectedCache = Config.LastSelectedCache.getValue();
+                    String lastSelectedCache = Settings.LastSelectedCache.getValue();
                     if (lastSelectedCache != null && lastSelectedCache.length() > 0) {
                         for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
                             Cache c = CBDB.getInstance().cacheList.get(i);

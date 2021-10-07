@@ -18,6 +18,8 @@ package de.droidcachebox;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.settings.SettingsAudio;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.IChanged;
@@ -30,35 +32,35 @@ public class SoundCache {
     private static Music GPS_fix;
     private static Music Approach;
     private static Music AutoResort;
-    private static IChanged changedListener = SoundCache::setVolumes;
+    private static final IChanged changedListener = SoundCache::setVolumes;
 
     public static void play(Sounds sound) {
         play(sound, false);
     }
 
     public static void play(Sounds sound, boolean ignoreMute) {
-        if (Config.globalVolume.getValue().Mute && !ignoreMute)
+        if (Settings.globalVolume.getValue().Mute && !ignoreMute)
             return;
 
         switch (sound) {
             case GPS_lose:
-                if ((ignoreMute || !Config.GPS_lose.getValue().Mute) && GPS_lose != null)
+                if ((ignoreMute || !Settings.GPS_lose.getValue().Mute) && GPS_lose != null)
                     GPS_lose.play();
                 break;
             case GPS_fix:
-                if ((ignoreMute || !Config.GPS_fix.getValue().Mute) && GPS_fix != null)
+                if ((ignoreMute || !Settings.GPS_fix.getValue().Mute) && GPS_fix != null)
                     GPS_fix.play();
                 break;
             case Approach:
-                if ((ignoreMute || !Config.Approach.getValue().Mute) && Approach != null)
+                if ((ignoreMute || !Settings.Approach.getValue().Mute) && Approach != null)
                     Approach.play();
                 break;
             case AutoResortSound:
-                if ((ignoreMute || !Config.AutoResortSound.getValue().Mute) && AutoResort != null)
+                if ((ignoreMute || !Settings.AutoResortSound.getValue().Mute) && AutoResort != null)
                     AutoResort.play();
                 break;
             case Global:
-                if ((ignoreMute || !Config.globalVolume.getValue().Mute) && GlobalVolumeSound != null)
+                if ((ignoreMute || !Settings.globalVolume.getValue().Mute) && GlobalVolumeSound != null)
                     GlobalVolumeSound.play();
                 break;
         }
@@ -66,17 +68,17 @@ public class SoundCache {
 
     public static void loadSounds() {
 
-        GlobalVolumeSound = getMusikFromSetting(Config.globalVolume);
-        Approach = getMusikFromSetting(Config.Approach);
-        GPS_fix = getMusikFromSetting(Config.GPS_fix);
-        GPS_lose = getMusikFromSetting(Config.GPS_lose);
-        AutoResort = getMusikFromSetting(Config.AutoResortSound);
+        GlobalVolumeSound = getMusicFromSetting(Settings.globalVolume);
+        Approach = getMusicFromSetting(Settings.Approach);
+        GPS_fix = getMusicFromSetting(Settings.GPS_fix);
+        GPS_lose = getMusicFromSetting(Settings.GPS_lose);
+        AutoResort = getMusicFromSetting(Settings.AutoResortSound);
 
-        Config.globalVolume.addSettingChangedListener(changedListener);
-        Config.Approach.addSettingChangedListener(changedListener);
-        Config.GPS_fix.addSettingChangedListener(changedListener);
-        Config.GPS_lose.addSettingChangedListener(changedListener);
-        Config.AutoResortSound.addSettingChangedListener(changedListener);
+        Settings.globalVolume.addSettingChangedListener(changedListener);
+        Settings.Approach.addSettingChangedListener(changedListener);
+        Settings.GPS_fix.addSettingChangedListener(changedListener);
+        Settings.GPS_lose.addSettingChangedListener(changedListener);
+        Settings.AutoResortSound.addSettingChangedListener(changedListener);
 
         setVolumes();
     }
@@ -84,21 +86,21 @@ public class SoundCache {
     private static void setVolumes() {
 
         // calc volume Global and own
-        float GlobalVolume = Config.globalVolume.getValue().Volume;
+        float GlobalVolume = Settings.globalVolume.getValue().Volume;
 
         if (GlobalVolumeSound != null)
             GlobalVolumeSound.setVolume(GlobalVolume);
         if (Approach != null)
-            Approach.setVolume(Config.Approach.getValue().Volume * GlobalVolume);
+            Approach.setVolume(Settings.Approach.getValue().Volume * GlobalVolume);
         if (GPS_fix != null)
-            GPS_fix.setVolume(Config.GPS_fix.getValue().Volume * GlobalVolume);
+            GPS_fix.setVolume(Settings.GPS_fix.getValue().Volume * GlobalVolume);
         if (GPS_lose != null)
-            GPS_lose.setVolume(Config.GPS_lose.getValue().Volume * GlobalVolume);
+            GPS_lose.setVolume(Settings.GPS_lose.getValue().Volume * GlobalVolume);
         if (AutoResort != null)
-            AutoResort.setVolume(Config.AutoResortSound.getValue().Volume * GlobalVolume);
+            AutoResort.setVolume(Settings.AutoResortSound.getValue().Volume * GlobalVolume);
     }
 
-    private static Music getMusikFromSetting(SettingsAudio set) {
+    private static Music getMusicFromSetting(SettingsAudio set) {
         String path = set.getValue().Path;
 
         FileHandle handle = set.getValue().Class_Absolute ? Gdx.files.absolute(path) : FileFactory.getInternalFileHandle(path);

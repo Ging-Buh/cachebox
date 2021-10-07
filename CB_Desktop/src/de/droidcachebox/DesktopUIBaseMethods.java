@@ -16,6 +16,7 @@ import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.SettingInt;
 import de.droidcachebox.settings.SettingString;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.log.Log;
 
 public class DesktopUIBaseMethods  implements PlatformUIBase.Methods{
@@ -151,8 +152,8 @@ public class DesktopUIBaseMethods  implements PlatformUIBase.Methods{
     public void quit() {
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-            Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Config.acceptChanges();
+            Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
+            Config.that.acceptChanges();
             Log.debug(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
         System.exit(0);

@@ -52,6 +52,7 @@ import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.log.Log;
@@ -67,6 +68,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     private static Cache aktCache;
     private static String message = "";
     private static Activity staticMainActivity;
+    private static Activity mainActivity;
     // private static int downloadTryCounter = 0;
     private static final DialogInterface.OnClickListener downloadCacheDialogResult = new DialogInterface.OnClickListener() {
         @Override
@@ -88,7 +90,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         CacheDAO.getInstance().UpdateDatabase(newCache);
                         newCache.setLongDescription("");
 
-                        for (LogEntry apiLog : geoCacheRelated.logs) LogsTableDAO.getInstance().WriteLogEntry(apiLog);
+                        for (LogEntry apiLog : geoCacheRelated.logs)
+                            LogsTableDAO.getInstance().WriteLogEntry(apiLog);
 
                         WaypointDAO waypointDAO = WaypointDAO.getInstance();
                         for (int i = 0, n = newCache.getWayPoints().size(); i < n; i++) {
@@ -111,7 +114,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         }
 
                         ImageDAO imageDAO = new ImageDAO();
-                        for (ImageEntry image : geoCacheRelated.images) imageDAO.writeToDatabase(image, false);
+                        for (ImageEntry image : geoCacheRelated.images)
+                            imageDAO.writeToDatabase(image, false);
 
                         CBDB.getInstance().getSql().setTransactionSuccessful();
                         CBDB.getInstance().getSql().endTransaction();
@@ -134,8 +138,6 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 dialog.dismiss();
         }
     };
-    private static Activity mainActivity;
-
     Handler onlineSearchReadyHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -162,7 +164,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         }
     };
 
-    private WebViewClient webViewClient = new WebViewClient() {
+    private final WebViewClient webViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // handles submitting a form
@@ -387,7 +389,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         try {
             Iterator<Attribute> attrs = cache.getAttributes().iterator();
 
-            if (attrs == null || !attrs.hasNext())
+            if (!attrs.hasNext())
                 return "";
 
             // alternate is perhaps something like
@@ -447,7 +449,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
                 // im Day Mode brauchen wir kein InvertView
                 // das sollte mehr Performance geben
-                if (Config.nightMode.getValue()) {
+                if (Settings.nightMode.getValue()) {
                     InvertViewControl.Me.setVisibility(VISIBLE);
                 } else {
                     InvertViewControl.Me.setVisibility(GONE);

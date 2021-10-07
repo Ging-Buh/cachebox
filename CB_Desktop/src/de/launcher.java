@@ -38,6 +38,7 @@ import de.droidcachebox.database.DraftsDatabase;
 import de.droidcachebox.database.SettingsDatabase;
 import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.Size;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.DesktopFileFactory;
 import de.droidcachebox.utils.FileFactory;
@@ -67,10 +68,10 @@ class DCB {
         SettingsDatabase.getInstance().startUp(Config.workPath + "/User/Config.db3");
         DraftsDatabase.getInstance().startUp(Config.workPath + "/User/FieldNotes.db3");
 
-        Config.settings.ReadFromDB();
+        Config.that.settings.readFromDB();
 
-        CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-        Config.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue()));
+        CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue());
+        Settings.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue()));
 
         AbstractFile Dir = FileFactory.createFile("./");
         final String[] files;
@@ -78,19 +79,16 @@ class DCB {
         files = Dir.list((dir, filename) -> {
             if (filename.contains("src"))
                 return true;
-            if (filename.contains("DCB") && filename.endsWith("jar"))
-                return true;
-            return false;
+            return filename.contains("DCB") && filename.endsWith("jar");
         });
 
-        if (files.length > 0 && Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
-            Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
-            Config.newInstall.setValue(true);
-            Config.acceptChanges();
+        if (files.length > 0 && Settings.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
+            Settings.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
+            Settings.newInstall.setValue(true);
         } else {
-            Config.newInstall.setValue(false);
-            Config.acceptChanges();
+            Settings.newInstall.setValue(false);
         }
+        Config.that.acceptChanges();
 
         if (files.length > 0 && !files[0].contains("src")) {
             AbstractFile workJar = FileFactory.createFile(files[0]);
@@ -128,37 +126,17 @@ class Gui extends Frame implements ActionListener, WindowListener {
         setLayout(new FlowLayout());
         addWindowListener(this); // listen for events on this Window
 
-        Button pushButton6 = new Button("Desctop Full");
+        Button pushButton6 = new Button("Desktop Full");
         // TODO Activate Full Screen=> add(pushButton6);
         pushButton6.addActionListener(this); // listen for Button press
 
-        Button pushButton = new Button("Phone 480x800 HDPI");
-        add(pushButton);
-        pushButton.addActionListener(this); // listen for Button press
-
-        Button pushButton1 = new Button("Phone on MAC HDPI");
-        add(pushButton1);
-        pushButton1.addActionListener(this); // listen for Button press
-
-        Button pushButton4 = new Button("Phone 240x400 LDPI");
-        add(pushButton4);
-        pushButton4.addActionListener(this); // listen for Button press
-
-        Button pushButton5 = new Button("Phone 720x1280 XHDPI");
-        add(pushButton5);
-        pushButton5.addActionListener(this); // listen for Button press
-
-        Button pushButton2 = new Button("Tab 1280x752 MDPI");
-        add(pushButton2);
-        pushButton2.addActionListener(this); // listen for Button press
-
-        Button pushButton3 = new Button("Tab 1024x768 MDPI");
-        add(pushButton3);
-        pushButton3.addActionListener(this); // listen for Button press
-
-        Button pushButto4 = new Button("Tab Nexus7");
-        add(pushButto4);
-        pushButto4.addActionListener(this); // listen for Button press
+        ((Button) add(new Button("Phone 480x800 HDPI"))).addActionListener(this);
+        ((Button) add(new Button("Phone on MAC HDPI"))).addActionListener(this);
+        ((Button) add(new Button("Phone 240x400 LDPI"))).addActionListener(this);
+        ((Button) add(new Button("Phone 720x1280 XHDPI"))).addActionListener(this);
+        ((Button) add(new Button("Tab 1280x752 MDPI"))).addActionListener(this);
+        ((Button) add(new Button("Tab 1024x768 MDPI"))).addActionListener(this);
+        ((Button) add(new Button("Tab Nexus7"))).addActionListener(this);
 
         debugChkBox = new Checkbox("Enable Debug on Main", null, false);
         scissorChkBox = new Checkbox("Disable scissor on Main", null, false);
@@ -175,71 +153,49 @@ class Gui extends Frame implements ActionListener, WindowListener {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
         Size myInitialSize = new Size(dim.width, dim.height);
-        DevicesSizes ui = getLDPI(myInitialSize);
 
-        return ui;
+        return getLDPI(myInitialSize);
 
     }
 
     public static DevicesSizes iniPhone() {
         Size myInitialSize = new Size(480, 772);
-        DevicesSizes ui = getXHDPI(myInitialSize);
-
-        return ui;
+        return getXHDPI(myInitialSize);
 
     }
 
     public static DevicesSizes iniTab() {
-
         Size myInitialSize = new Size(1280, 752);
-        DevicesSizes ui = getMDPI(myInitialSize);
-
-        return ui;
+        return getMDPI(myInitialSize);
 
     }
 
     public static DevicesSizes iniPad10() {
-
         Size myInitialSize = new Size(1024, 768);
-        DevicesSizes ui = getMDPI(myInitialSize);
-
-        return ui;
+        return getMDPI(myInitialSize);
 
     }
 
     public static DevicesSizes iniLowPhone() {
-
         Size myInitialSize = new Size(240, 381);
-        DevicesSizes ui = getLDPI(myInitialSize);
-
-        return ui;
+        return getLDPI(myInitialSize);
 
     }
 
     public static DevicesSizes iniHighPhone() {
-
         Size myInitialSize = new Size(720, 1230);
-        DevicesSizes ui = getXHDPI(myInitialSize);
-
-        return ui;
-
+        return getXHDPI(myInitialSize);
     }
 
     public static DevicesSizes iniNexus7() {
-
         Size myInitialSize = new Size(1280, 703);
-        DevicesSizes ui = getNexus7(myInitialSize);
-
-        return ui;
+        return getNexus7(myInitialSize);
 
     }
 
     public static DevicesSizes iniMacEmulator() {
-
         Size myInitialSize = new Size(420, 700);
-        DevicesSizes ui = getMac(myInitialSize);
-
-        return ui;
+        return getMac(myInitialSize);
 
     }
 
@@ -306,22 +262,31 @@ class Gui extends Frame implements ActionListener, WindowListener {
     // define action for Button press
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getActionCommand().equals("Phone 480x800 HDPI")) {
-            DesktopMain.start(iniPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-        } else if (event.getActionCommand().equals("Tab 1280x752 MDPI")) {
-            DesktopMain.start(iniTab(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-        } else if (event.getActionCommand().equals("Tab 1024x768 MDPI")) {
-            DesktopMain.start(iniPad10(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-        } else if (event.getActionCommand().equals("Phone 240x400 LDPI")) {
-            DesktopMain.start(iniLowPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-        } else if (event.getActionCommand().equals("Phone 720x1280 XHDPI")) {
-            DesktopMain.start(iniHighPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-        } else if (event.getActionCommand().equals("Desctop Full")) {
-            DesktopMain.start(iniDesktop(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-        } else if (event.getActionCommand().equals("Tab Nexus7")) {
-            DesktopMain.start(iniNexus7(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-        } else if (event.getActionCommand().equals("Phone on MAC HDPI")) {
-            DesktopMain.start(iniMacEmulator(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+        switch (event.getActionCommand()) {
+            case "Phone 480x800 HDPI":
+                DesktopMain.start(iniPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+                break;
+            case "Tab 1280x752 MDPI":
+                DesktopMain.start(iniTab(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+                break;
+            case "Tab 1024x768 MDPI":
+                DesktopMain.start(iniPad10(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+                break;
+            case "Phone 240x400 LDPI":
+                DesktopMain.start(iniLowPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+                break;
+            case "Phone 720x1280 XHDPI":
+                DesktopMain.start(iniHighPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+                break;
+            case "Desktop Full":
+                DesktopMain.start(iniDesktop(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+                break;
+            case "Tab Nexus7":
+                DesktopMain.start(iniNexus7(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+                break;
+            case "Phone on MAC HDPI":
+                DesktopMain.start(iniMacEmulator(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+                break;
         }
     }
 

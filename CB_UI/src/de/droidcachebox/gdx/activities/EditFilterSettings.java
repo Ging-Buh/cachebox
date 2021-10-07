@@ -79,6 +79,7 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.SettingStringList;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
@@ -98,12 +99,12 @@ public class EditFilterSettings extends ActivityBase {
     private static CB_RectF itemRec;
     private static FilterProperties tmpFilterProps; // this is the storage for the filter
     private static WaitDialog pd;
-    private MultiToggleButton btnPresetFilters;
-    private MultiToggleButton btnFilterSetFilters;
-    private MultiToggleButton btnCategoryFilters;
-    private MultiToggleButton btnTextFilters;
-    private CB_Button btnAddUserDefinedFilter;
-    private PresetListView presetView;
+    private final MultiToggleButton btnPresetFilters;
+    private final MultiToggleButton btnFilterSetFilters;
+    private final MultiToggleButton btnCategoryFilters;
+    private final MultiToggleButton btnTextFilters;
+    private final CB_Button btnAddUserDefinedFilter;
+    private final PresetListView presetView;
     private FilterSetListView filterSetView;
     private CategoryListView categoryView;
     private TextFilterView textFilterView;
@@ -151,11 +152,11 @@ public class EditFilterSettings extends ActivityBase {
                     if (filter.isHistory) {
                         FilterProperties tmp = new FilterProperties(filter.toString());
                         tmp.isHistory = false;
-                        Config.FilterNew.setValue(tmp.toString());
+                        Settings.FilterNew.setValue(tmp.toString());
                     } else {
-                        Config.FilterNew.setValue(filter.toString());
+                        Settings.FilterNew.setValue(filter.toString());
                     }
-                    Config.acceptChanges();
+                    Config.that.acceptChanges();
                 }
             }, 300);
             return true;
@@ -269,9 +270,9 @@ public class EditFilterSettings extends ActivityBase {
         new Thread(() -> {
             try {
                 synchronized (CBDB.getInstance().cacheList) {
-                    String sqlWhere = filterProperties.getSqlWhere(Config.GcLogin.getValue());
+                    String sqlWhere = filterProperties.getSqlWhere(Settings.GcLogin.getValue());
                     Log.info(log, "Main.applyFilter: " + sqlWhere);
-                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Config.showAllWaypoints.getValue());
+                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                     GlobalCore.checkSelectedCacheValid();
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
@@ -288,11 +289,11 @@ public class EditFilterSettings extends ActivityBase {
                 if (FilterInstances.getLastFilter().isHistory) {
                     FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
                     tmp.isHistory = false;
-                    Config.FilterNew.setValue(tmp.toString());
+                    Settings.FilterNew.setValue(tmp.toString());
                 } else {
-                    Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
+                    Settings.FilterNew.setValue(FilterInstances.getLastFilter().toString());
                 }
-                Config.acceptChanges();
+                Config.that.acceptChanges();
             } catch (Exception ex) {
                 Log.err(log, "applyFilter", ex);
                 pd.dismis();
@@ -402,7 +403,7 @@ public class EditFilterSettings extends ActivityBase {
                 (which, data) -> {
                     if (which == MsgBox.BTN_LEFT_POSITIVE) { // ok Clicked
                         String nameOfNewFilter = StringInputBox.editText.getText();
-                        String userFilters = Config.UserFilters.getValue();
+                        String userFilters = Settings.UserFilters.getValue();
                         String newFilterString = tmpFilterProps.toString();
 
                         // Category Filterungen aus Filter entfernen
@@ -414,8 +415,8 @@ public class EditFilterSettings extends ActivityBase {
                         }
 
                         userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + SettingStringList.STRINGSPLITTER;
-                        Config.UserFilters.setValue(userFilters);
-                        Config.acceptChanges();
+                        Settings.UserFilters.setValue(userFilters);
+                        Config.that.acceptChanges();
                         presetView.fillPresetList();
                         presetView.notifyDataSetChanged();
                     }
@@ -441,14 +442,13 @@ public class EditFilterSettings extends ActivityBase {
 
         ArrayList<PresetListViewItem> presetListViewItems;
         private ArrayList<Preset> presets;
-        private PresetsAdapter presetsAdapter;
 
         PresetListView(CB_RectF rec) {
             super(rec, "");
             setHasInvisibleItems();
             fillPresetList();
             setDisposeFlag(false);
-            presetsAdapter = new PresetsAdapter(presets);
+            PresetsAdapter presetsAdapter = new PresetsAdapter(presets);
             setAdapter(presetsAdapter);
         }
 
@@ -484,14 +484,15 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             // add userFilters from Config.UserFilter
-            if (Config.UserFilters.getValue().length() > 0) {
-                String[] userFilters = Config.UserFilters.getValue().split(SettingStringList.STRINGSPLITTER);
+            if (Settings.UserFilters.getValue().length() > 0) {
+                String[] userFilters = Settings.UserFilters.getValue().split(SettingStringList.STRINGSPLITTER);
                 try {
                     for (String userFilter : userFilters) {
                         int pos = userFilter.indexOf(";");
                         String name = userFilter.substring(0, pos);
                         String filter = userFilter.substring(pos + 1);
-                        if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1); // relikt?
+                        if (filter.endsWith("#"))
+                            filter = filter.substring(0, filter.length() - 1); // relikt?
                         Preset entry = new Preset(name, Sprites.getSprite("userdata"), new FilterProperties(filter));
                         presets.add(entry);
                         PresetListViewItem v = new PresetListViewItem(itemRec, index, entry);
@@ -511,15 +512,15 @@ public class EditFilterSettings extends ActivityBase {
                                         // NO clicked
                                         if (which == MsgBox.BTN_LEFT_POSITIVE) { // YES Clicked
                                             try {
-                                                String userEntries = Config.UserFilters.getValue();
+                                                String userEntries = Settings.UserFilters.getValue();
                                                 int p1 = userEntries.indexOf(clickedItem.mPreset.mName);
                                                 int p2 = userEntries.indexOf(SettingStringList.STRINGSPLITTER, p1) + 1;
                                                 String newUserEntries;
                                                 if (p2 > p1)
                                                     newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");
                                                 else newUserEntries = userEntries.substring(0, p1);
-                                                Config.UserFilters.setValue(newUserEntries);
-                                                Config.acceptChanges();
+                                                Settings.UserFilters.setValue(newUserEntries);
+                                                Config.that.acceptChanges();
                                                 fillPresetList();
                                                 notifyDataSetChanged();
                                             } catch (Exception ex) {
@@ -545,11 +546,6 @@ public class EditFilterSettings extends ActivityBase {
                 for (PresetListViewItem item : presetListViewItems) {
                     item.isSelected = false;
                 }
-                /*
-                setAdapter(null);
-                presetsAdapter = new PresetsAdapter(presets);
-                setAdapter(presetsAdapter);
-                 */
                 notifyDataSetChanged();
             }
         }
@@ -557,7 +553,7 @@ public class EditFilterSettings extends ActivityBase {
         public static class Preset {
             private final String mName;
             private final Sprite mIcon;
-            private FilterProperties filterProperties;
+            private final FilterProperties filterProperties;
 
             Preset(String Name, Sprite Icon, FilterProperties PresetFilter) {
                 mName = Name;
@@ -1184,8 +1180,8 @@ public class EditFilterSettings extends ActivityBase {
         private static class CategoryEntry {
             private final GpxFilename mFile;
             private final int mItemType;
-            private Category mCat;
-            private Sprite mIcon;
+            private final Category mCat;
+            private final Sprite mIcon;
             private int mState = 0;
 
             // itemType is always CHECK_ITEM -> GpxFilename mFile
@@ -1226,7 +1222,7 @@ public class EditFilterSettings extends ActivityBase {
 
             void plusClick() {
 
-                if (mItemType == COLLAPSE_BUTTON_ITEM) {
+                if (mItemType == COLLAPSE_BUTTON_ITEM && mCat != null) {
                     // collabs Button chk clicked
                     int State = mCat.getCheck();
                     if (State == 0) {// keins ausgewählt, also alle anwählen
@@ -1249,7 +1245,7 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             void minusClick() {
-                if (mItemType == COLLAPSE_BUTTON_ITEM) {
+                if (mItemType == COLLAPSE_BUTTON_ITEM && mCat != null) {
                     CategoryDAO.getInstance().setPinned(mCat, !mCat.pinned);
                 }
             }
@@ -1272,7 +1268,9 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             String getCatName() {
-                return mCat.GpxFilename;
+                if (mCat != null)
+                    return mCat.GpxFilename;
+                return "";
             }
 
             Category getCat() {
@@ -1393,9 +1391,6 @@ public class EditFilterSettings extends ActivityBase {
                     lPinBounds = new CB_RectF(rChkBounds);
                     lPinBounds.offset(-(getWidth() - (halfSize * 2) - rChkBounds.getWidth()), 0);
                 }
-
-                // boolean selected = false;
-                // if (categoryEntry == aktCategorieEntry) selected = true;
 
                 switch (categoryEntry.getItemType()) {
                     case COLLAPSE_BUTTON_ITEM:

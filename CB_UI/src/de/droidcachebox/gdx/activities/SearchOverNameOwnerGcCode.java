@@ -55,6 +55,7 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
@@ -236,9 +237,9 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     private void initialContent() {
         textBox_TextChanged();
         switchSearcheMode(0);
-        checkBoxExcludeFounds.setChecked(Config.SearchWithoutFounds.getValue());
-        checkBoxOnlyAvailable.setChecked(Config.SearchOnlyAvailable.getValue());
-        checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
+        checkBoxExcludeFounds.setChecked(Settings.SearchWithoutFounds.getValue());
+        checkBoxOnlyAvailable.setChecked(Settings.SearchOnlyAvailable.getValue());
+        checkBoxExcludeHides.setChecked(Settings.SearchWithoutOwns.getValue());
 
         mTglBtnTitle.setClickHandler((v, x, y, pointer, button) -> {
             switchSearcheMode(0);
@@ -258,11 +259,11 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 
     private void importNow() {
 
-        Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
-        Config.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
-        Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
+        Settings.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
+        Settings.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
+        Settings.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
 
-        Config.acceptChanges();
+        Config.that.acceptChanges();
 
         btnImport.disable();
 
@@ -307,9 +308,9 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             if (CB_Core_Settings.numberOfLogs.getValue() > 0) {
                                 q.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
                             }
-                            if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
-                            if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
-                            if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
+                            if (Settings.SearchWithoutFounds.getValue()) q.excludeFinds();
+                            if (Settings.SearchWithoutOwns.getValue()) q.excludeOwn();
+                            if (Settings.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
 
                             ArrayList<GeoCacheRelated> geoCacheRelateds;
                             importAnimation.setAnimationType(AnimationType.Download);

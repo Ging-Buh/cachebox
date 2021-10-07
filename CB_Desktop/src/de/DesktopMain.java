@@ -27,6 +27,7 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
 import de.droidcachebox.menu.MainViewInit;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.Plattform;
 
 //import ch.fhnw.imvs.gpssimulator.SimulatorMain;
@@ -54,24 +55,20 @@ public class DesktopMain {
         // Initial Desktop TexturePacker
         new DesktopTexturePacker();
 
-        // has been done by launcher
-        // InitialConfig();
-        // Config.settings.ReadFromDB();
-
         CB_RectF rec = new CB_RectF(0, 0, ui.Window.width, ui.Window.height);
         CB_UI = new GL(ui.Window.width, ui.Window.height, new MainViewInit(rec), new ViewManager(rec));
 
         GL_View_Base.debug = debug;
         GL_View_Base.disableScissor = scissor;
 
-        if (Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
+        if (Settings.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
 
-            Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
-            Config.newInstall.setValue(true);
-            Config.acceptChanges();
+            Settings.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
+            Settings.newInstall.setValue(true);
+            Config.that.acceptChanges();
         } else {
-            Config.newInstall.setValue(false);
-            Config.acceptChanges();
+            Settings.newInstall.setValue(false);
+            Config.that.acceptChanges();
         }
 
         int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
@@ -195,8 +192,8 @@ public class DesktopMain {
         // ##########################################################
         // initial Locator with saved Location
         // ##########################################################
-        double latitude = Config.mapInitLatitude.getValue();
-        double longitude = Config.mapInitLongitude.getValue();
+        double latitude = Settings.mapInitLatitude.getValue();
+        double longitude = Settings.mapInitLongitude.getValue();
         CBLocation.ProviderType provider = (latitude == -1000) ? CBLocation.ProviderType.NULL : CBLocation.ProviderType.Saved;
 
         CBLocation initialLocation;
@@ -214,20 +211,20 @@ public class DesktopMain {
         // ##########################################################
 
         // Use Imperial units?
-        Locator.getInstance().setUseImperialUnits(Config.ImperialUnits.getValue());
-        Config.ImperialUnits.addSettingChangedListener(() -> Locator.getInstance().setUseImperialUnits(Config.ImperialUnits.getValue()));
+        Locator.getInstance().setUseImperialUnits(Settings.ImperialUnits.getValue());
+        Settings.ImperialUnits.addSettingChangedListener(() -> Locator.getInstance().setUseImperialUnits(Settings.ImperialUnits.getValue()));
 
         // GPS update time?
-        Locator.getInstance().setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-        Config.gpsUpdateTime.addSettingChangedListener(() -> Locator.getInstance().setMinUpdateTime((long) Config.gpsUpdateTime.getValue()));
+        Locator.getInstance().setMinUpdateTime((long) Settings.gpsUpdateTime.getValue());
+        Settings.gpsUpdateTime.addSettingChangedListener(() -> Locator.getInstance().setMinUpdateTime((long) Settings.gpsUpdateTime.getValue()));
 
         // Use magnetic Compass?
-        Locator.getInstance().setUseHardwareCompass(Config.HardwareCompass.getValue());
-        Config.HardwareCompass.addSettingChangedListener(() -> Locator.getInstance().setUseHardwareCompass(Config.HardwareCompass.getValue()));
+        Locator.getInstance().setUseHardwareCompass(Settings.HardwareCompass.getValue());
+        Settings.HardwareCompass.addSettingChangedListener(() -> Locator.getInstance().setUseHardwareCompass(Settings.HardwareCompass.getValue()));
 
         // Magnetic compass level
-        Locator.getInstance().setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-        Config.HardwareCompassLevel.addSettingChangedListener(() -> Locator.getInstance().setHardwareCompassLevel(Config.HardwareCompassLevel.getValue()));
+        Locator.getInstance().setHardwareCompassLevel(Settings.HardwareCompassLevel.getValue());
+        Settings.HardwareCompassLevel.addSettingChangedListener(() -> Locator.getInstance().setHardwareCompassLevel(Settings.HardwareCompassLevel.getValue()));
     }
 
     public static boolean isWindows() {

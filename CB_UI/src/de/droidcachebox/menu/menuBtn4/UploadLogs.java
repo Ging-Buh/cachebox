@@ -1,10 +1,11 @@
 package de.droidcachebox.menu.menuBtn4;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.activities.UploadDraftsOrLogs;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.menu.menuBtn4.executes.UploadDraftsOrLogs;
 
 public class UploadLogs extends AbstractAction {
     private static UploadLogs that;

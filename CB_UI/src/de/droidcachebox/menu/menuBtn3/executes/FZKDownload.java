@@ -1,4 +1,4 @@
-package de.droidcachebox.gdx.activities;
+package de.droidcachebox.menu.menuBtn3.executes;
 
 import com.badlogic.gdx.utils.Array;
 import com.thebuzzmedia.sjxp.XMLParser;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.ex_import.BreakawayImportThread;
 import de.droidcachebox.gdx.ActivityBase;
@@ -38,6 +37,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.ProgressChangedEvent;
@@ -51,17 +51,17 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     private static FZKDownload fzkDownload;
     private boolean downloadIsCompleted = false;
     private int allProgress = 0;
-    private Array<MapRepositoryInfo> mapInfoList = new Array<>();
-    private Array<MapDownloadItem> mapInfoItemList = new Array<>();
+    private final Array<MapRepositoryInfo> mapInfoList = new Array<>();
+    private final Array<MapDownloadItem> mapInfoItemList = new Array<>();
     private MapRepositoryInfo actMapRepositoryInfo;
     private CB_Button btnOK, btnCancel;
     private CB_Label lblProgressMsg;
     private ProgressBar progressBar;
     private boolean importStarted = false;
-    private ScrollBox scrollBox;
+    private final ScrollBox scrollBox;
     private ImportAnimation importAnimation;
     private String repository_freizeitkarte_android;
-    private boolean canceld = false;
+    private boolean canceled = false;
     private boolean isChkRepository = false;
     private boolean doImportByUrl;
 
@@ -98,8 +98,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createOkCancelBtn() {
-        btnOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
-        btnCancel = new CB_Button(btnOK.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
+        btnOK = new CB_Button(leftBorder, bottomBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Button");
+        btnCancel = new CB_Button(btnOK.getMaxX(), bottomBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Button");
 
         // Translations
         btnOK.setText(Translation.get("import"));
@@ -206,7 +206,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         importAnimation.setAnimationType(AnimationType.Download);
         addChild(importAnimation, false);
 
-        canceld = false;
+        canceled = false;
         importStarted = true;
         for (int i = 0; i < mapInfoItemList.size; i++) {
             MapDownloadItem item = mapInfoItemList.get(i);
@@ -216,7 +216,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         Thread dlProgressChecker = new Thread(() -> {
 
             while (!downloadIsCompleted) {
-                if (canceld) {
+                if (canceled) {
                     for (int i = 0; i < mapInfoItemList.size; i++) {
                         MapDownloadItem item = mapInfoItemList.get(i);
                         item.cancelDownload();
@@ -245,7 +245,6 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
-
                     e.printStackTrace();
                 }
 
@@ -273,7 +272,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void finishImport() {
-        canceld = true;
+        canceled = true;
         importStarted = false;
         fillDownloadList();
         if (importAnimation != null) {
@@ -355,8 +354,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         parserCache.parse(stream, values);
 
         if (ShowMap.getInstance().normalMapView.center.isValid()) {
-            MapComparer comparer = new MapComparer(ShowMap.getInstance().normalMapView.center);
-            mapInfoList.sort(comparer);
+            MapComparator mapComparator = new MapComparator(ShowMap.getInstance().normalMapView.center);
+            mapInfoList.sort(mapComparator);
         }
 
         fillRepositoryList();
@@ -383,7 +382,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     public String getPathForMapFile() {
 
         // get and check the target directory (global value)
-        String pathForMapFile = Config.MapPackFolder.getValue();
+        String pathForMapFile = Settings.MapPackFolder.getValue();
         boolean isWritable;
         if (pathForMapFile.length() > 0)
             isWritable = FileIO.canWrite(pathForMapFile);
@@ -393,10 +392,10 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             Log.info(log, "Download to " + pathForMapFile);
         else {
             Log.err(log, "Download to " + pathForMapFile + " is not possible!");
-            // don't use Config.MapPackFolder.getDefaultValue()
+            // don't use SettingsClass.MapPackFolder.getDefaultValue()
             // because it doesn't reflect own repository
             // own or global repository is writable by default, but do check again
-            pathForMapFile = Config.MapPackFolderLocal.getValue();
+            pathForMapFile = Settings.MapPackFolderLocal.getValue();
             isWritable = FileIO.canWrite(pathForMapFile);
             Log.info(log, "Download to " + pathForMapFile + " is possible? " + isWritable);
         }
@@ -522,10 +521,10 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         }
     }
 
-    static class MapComparer implements Comparator<MapRepositoryInfo> {
+    static class MapComparator implements Comparator<MapRepositoryInfo> {
         LatLong centre;
 
-        public MapComparer(LatLong centre) {
+        public MapComparator(LatLong centre) {
             this.centre = centre;
         }
 
@@ -537,16 +536,16 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
                 boolean aIsIn = a.getBoundingBox().contains(centre);
                 boolean bIsIn = b.getBoundingBox().contains(centre);
                 if (aIsIn && bIsIn) {
-                    // vereinfachend in Relation zur BoundingBox Diagonalen vergleichen.
+                    // simplifying by comparing the diagonal of the BoundingBox.
                     double ad = a.getBoundingBox().getCenterPoint().distance(centre) / a.getMin().distance(a.getMax());
                     double bd = b.getBoundingBox().getCenterPoint().distance(centre) / b.getMin().distance(b.getMax());
                     if (!a.description.startsWith("*")) a.description = "*" + a.description;
                     if (!b.description.startsWith("*")) b.description = "*" + b.description;
                     return (int) ((ad - bd) * 1000);
                 } else {
-                    if (aIsIn && !bIsIn) {
+                    if (aIsIn) {
                         return -1;
-                    } else if (!aIsIn && bIsIn) {
+                    } else if (bIsIn) {
                         return 1;
                     }
                     // don't need this map

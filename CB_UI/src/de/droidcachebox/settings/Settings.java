@@ -9,12 +9,12 @@ import de.droidcachebox.database.Database_Core;
 import de.droidcachebox.database.SettingsDatabase;
 import de.droidcachebox.locator.LocatorSettings;
 
-public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, LocatorSettings {
+public class Settings extends SettingsList implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, LocatorSettings {
 
     private static final long serialVersionUID = 7330937438116889415L;
 
-    public SettingsClass() {
-        super();
+    public Settings() {
+        super(); // creates the settingsList containing all settingsFields
     }
 
     @Override

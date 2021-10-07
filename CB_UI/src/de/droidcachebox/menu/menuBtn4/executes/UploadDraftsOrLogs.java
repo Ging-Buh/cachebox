@@ -1,8 +1,7 @@
-package de.droidcachebox.activities;
+package de.droidcachebox.menu.menuBtn4.executes;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -14,14 +13,14 @@ import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
-import de.droidcachebox.gdx.views.DraftsView;
-import de.droidcachebox.gdx.views.LogListView;
+import de.droidcachebox.menu.menuBtn2.executes.LogListView;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.RunnableReadyHandler;
 
 public class UploadDraftsOrLogs {
-    private boolean threadCancel = false;
+    private final boolean threadCancel = false;
     private String uploadMeldung = "";
     private boolean apiKeyError = false;
     private ProgressDialog progressDialog;
@@ -48,7 +47,7 @@ public class UploadDraftsOrLogs {
                         anzahl++;
                 }
 
-                boolean sendGCVote = Config.GcVotePassword.getEncryptedValue().length() > 0;
+                boolean sendGCVote = Settings.GcVotePassword.getEncryptedValue().length() > 0;
 
                 if (anzahl > 0) {
                     uploadMeldung = "";
@@ -84,7 +83,12 @@ public class UploadDraftsOrLogs {
 
                         if (result == GroundspeakAPI.ERROR) {
                             GL.that.toast(GroundspeakAPI.LastAPIError);
-                            uploadMeldung = uploadMeldung + draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
+                            uploadMeldung = new StringBuilder()
+                                    .append(uploadMeldung)
+                                    .append(draft.gcCode)
+                                    .append("\n")
+                                    .append(GroundspeakAPI.LastAPIError)
+                                    .append("\n").toString();
                         } else {
                             // set draft as uploaded only when upload was working
                             draft.uploaded = true;

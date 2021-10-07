@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn1.executes;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -24,7 +24,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.CBDB;
@@ -42,10 +41,12 @@ import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.gdx.views.CacheListViewItem;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.CacheContextMenu;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
@@ -82,8 +83,6 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
 
     @Override
     public void initialize() {
-        // Log.debug(log, "CacheListView => Initial()");
-        // setListPos(0, false);
         geoCacheListView.chkSlideBack();
         GL.that.renderOnce();
     }
@@ -118,7 +117,7 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
             return;
 
         if (searchPlaceholder > 0) {
-            // Blende Search Dialog wieder ein
+            // show Search Dialog again
             if (SearchDialog.that != null)
                 SearchDialog.that.showNotCloseAutomaticly();
         }
@@ -256,15 +255,14 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
     public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
-            Log.debug(log,"handle geoCache " + cache.getGeoCacheCode());
+            Log.debug(log, "handle geoCache " + cache.getGeoCacheCode());
             CacheListViewItem selItem = (CacheListViewItem) geoCacheListView.getSelectedItem();
             if (selItem != null && GlobalCore.getSelectedCache().generatedId != selItem.getCache().generatedId) {
                 // TODO Run if ListView Initial and after showing
                 geoCacheListView.runIfListInitial(this::setSelectedCacheVisible);
             }
-        }
-        else {
-            Log.debug(log,"geoCache is nothing");
+        } else {
+            Log.debug(log, "geoCache is nothing");
         }
     }
 
@@ -380,7 +378,7 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
                     geoCacheListView.setSelection(selectionIndex);
                     setSelectedCacheVisible();
                     invalidate();
-                    if (Config.CacheContextMenuShortClickToggle.getValue())
+                    if (Settings.CacheContextMenuShortClickToggle.getValue())
                         CacheContextMenu.getInstance().getCacheContextMenu(true).show();
                     return true;
                 });

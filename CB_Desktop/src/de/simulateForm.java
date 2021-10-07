@@ -14,9 +14,7 @@ import java.awt.event.WindowListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.TrackList;
-import de.droidcachebox.gdx.views.TrackListView;
 import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.CBLocation.ProviderType;
 import de.droidcachebox.locator.Coordinate;
@@ -27,6 +25,8 @@ import de.droidcachebox.locator.GpsStrength;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
@@ -92,7 +92,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
         add(sendSpeed);
         sendSpeed.addActionListener(this); // listen for Button press
 
-        AbstractFile dir = FileFactory.createFile(Config.TrackFolder.getValue());
+        AbstractFile dir = FileFactory.createFile(Settings.TrackFolder.getValue());
         String[] files = dir.list();
         if (!(files == null)) {
             if (files.length > 0) {
@@ -100,7 +100,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
                     if (file.equalsIgnoreCase("simulation.gpx")) {
                         // Simmulations GPX gefunden Punkte Laden
 
-                        file = Config.TrackFolder.getValue() + "/" + file;
+                        file = Settings.TrackFolder.getValue() + "/" + file;
                         loadSimulateRoute(file);
                     }
                 }

@@ -1,23 +1,24 @@
 package de.droidcachebox.menu.menuBtn5;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.settings.SettingsActivity;
+import de.droidcachebox.menu.menuBtn5.executes.SettingsActivity;
 
-public class Settings extends AbstractAction {
+public class SettingsAction extends AbstractAction {
 
-    private static Settings that;
+    private static SettingsAction that;
     boolean lastNightValue;
 
-    private Settings() {
+    private SettingsAction() {
         super("settings");
     }
 
-    public static Settings getInstance() {
-        if (that == null) that = new Settings();
+    public static SettingsAction getInstance() {
+        if (that == null) that = new SettingsAction();
         return that;
     }
 
