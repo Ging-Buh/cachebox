@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.zip.ZipException;
 
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GCVoteCacheInfo;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -32,6 +31,7 @@ import de.droidcachebox.core.RatingData;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.GCVoteDAO;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;

@@ -19,6 +19,7 @@ import java.util.Arrays;
 import de.CB_PlugIn.IPlugIn;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.QuickButtonItem;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.MoveableList;
 
@@ -246,7 +247,7 @@ public class Global {
     private static Drawable getDrawable(int ResId, int NightResId, Resources res) {
         Drawable ret = null;
 
-        if (Config.that == null)
+        if (ViewManager.that == null)
             return res.getDrawable(ResId);
 
         try {
@@ -386,7 +387,7 @@ public class Global {
 
         try {
             boolean nightMode = false;
-            if (Config.that != null)
+            if (ViewManager.that != null)
                 nightMode = Settings.nightMode.getValue();
 
             context.setTheme(nightMode ? R.style.Theme_night : R.style.Theme_day);

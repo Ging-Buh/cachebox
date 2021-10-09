@@ -17,7 +17,7 @@ package de.droidcachebox;
 
 import static de.droidcachebox.core.API_ErrorEventHandlerList.handleApiKeyError;
 import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import android.net.Uri;
 
@@ -70,6 +70,7 @@ public class GlobalCore implements SolverCacheInterface {
     public static final String splashMsg = aboutMsg + br + br + "POWERED BY:";
     private static final String CurrentVersion = "2.0.";
     private static final String log = "GlobalCore";
+    public static String workPath = "";
     public static DisplayType displayType = DisplayType.Normal;
     public static boolean restartAfterKill = false;
     public static String restartCache;

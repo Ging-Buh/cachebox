@@ -9,7 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.DisplayType;
@@ -37,7 +36,7 @@ public class DesktopMain {
     static float compassheading = -1;
     // Retrieve the user preference node for the package com.mycompany
     private static GL CB_UI;
-    private static String OS = System.getProperty("os.name").toLowerCase();
+    private static final String OS = System.getProperty("os.name").toLowerCase();
 
     public static void start(DevicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame) {
 
@@ -65,10 +64,10 @@ public class DesktopMain {
 
             Settings.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
             Settings.newInstall.setValue(true);
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
         } else {
             Settings.newInstall.setValue(false);
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
         }
 
         int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
@@ -105,7 +104,7 @@ public class DesktopMain {
 
             GL.that.setGlListener(new GL_Listener_Interface() {
 
-                AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
+                final AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
 
                 @Override
                 public void requestRender() {

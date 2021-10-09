@@ -1,17 +1,17 @@
-package de.droidcachebox.utils;
+package de.droidcachebox.settings;
 
 import java.io.IOException;
 
 import de.droidcachebox.utils.converter.Base64;
 
-public abstract class Config_Core {
+public class Config_Core {
     public static final String br = System.getProperty("line.separator");
     static final int[] Key = {128, 56, 20, 78, 33, 225};
-    public static String workPath = "";
     public static float displayDensity = 1;
+    static String workPath = "";
 
-    public Config_Core(String workPath) {
-        Config_Core.workPath = workPath;
+    public Config_Core(String _workPath) {
+        workPath = _workPath;
     }
 
     public static String decrypt(String value) {

@@ -23,6 +23,7 @@ import de.droidcachebox.Energy;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.utils.log.Log;
 
 public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListChangedListeners.CacheListChangedListener> {

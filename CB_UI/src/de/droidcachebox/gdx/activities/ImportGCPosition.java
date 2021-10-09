@@ -29,11 +29,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.Category;
@@ -57,7 +55,9 @@ import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancel;
@@ -443,7 +443,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         Settings.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
         Settings.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
         Settings.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
-        Config.that.acceptChanges();
+        ViewManager.that.acceptChanges();
 
         Date tmpDate;
         try {
@@ -478,7 +478,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                                 if (Settings.ImperialUnits.getValue())
                                     radius = UnitFormatter.getKilometer(radius);
                                 Settings.lastSearchRadius.setValue(radius);
-                                Config.that.acceptChanges();
+                                ViewManager.that.acceptChanges();
                                 q.searchInCircle(actSearchPos, radius * 1000);
                             } catch (NumberFormatException nex) {
                                 q.searchInCircle(actSearchPos, Settings.lastSearchRadius.getValue() * 1000);

@@ -1,21 +1,26 @@
 package de.droidcachebox.gdx;
 
+import static java.lang.Character.CONTROL;
+import static de.droidcachebox.gdx.GL.FRAME_RATE_ACTION;
+import static de.droidcachebox.gdx.GL.FRAME_RATE_FAST_ACTION;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import de.droidcachebox.CB_UI_Base_Settings;
+
+import java.util.Collections;
+import java.util.SortedMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
+
 import de.droidcachebox.KeyCodes;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.SelectionMarker;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.Point;
-
-import java.util.*;
-
-import static de.droidcachebox.gdx.GL.FRAME_RATE_ACTION;
-import static de.droidcachebox.gdx.GL.FRAME_RATE_FAST_ACTION;
-import static java.lang.Character.CONTROL;
 
 public class GL_Input implements InputProcessor {
     private static final int MAX_KINETIC_SCROLL_DISTANCE = 100;

@@ -37,7 +37,6 @@ import android.widget.LinearLayout;
 import java.util.Iterator;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
-import de.droidcachebox.Config;
 import de.droidcachebox.Energy;
 import de.droidcachebox.Global;
 import de.droidcachebox.GlobalCore;
@@ -56,6 +55,7 @@ import de.droidcachebox.locator.GPS;
 import de.droidcachebox.locator.GpsStateChangeEvent;
 import de.droidcachebox.locator.GpsStateChangeEventList;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ActivityUtils;
@@ -68,18 +68,18 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
     private static DownSlider Me;
     private final int AnimationTime = 50;
     private final double AnimationMulti = 1.4;
-    boolean mGpsStateChabgedListenerRegistred = false;
     private final LinearLayout strengthLayout = findViewById(R.id.main_strength_control);
+    private final Rect mBtnRec = new Rect();
+    private final Rect mBackRec = new Rect();
+    private final Handler handler = new Handler();
+    private final Runnable task = () -> {
+    };
+    boolean mGpsStateChabgedListenerRegistred = false;
     private int attCompleadHeight = 0;
     private int topCalc = -1;
     private int attLineHeight = -1;
     private int yPos = 0;
-    private final Rect mBtnRec = new Rect();
-    private final Rect mBackRec = new Rect();
     private Paint backPaint;
-    private final Handler handler = new Handler();
-    private final Runnable task = () -> {
-    };
     /*
      * Private Member
      */
@@ -597,7 +597,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
                     QuickButtonHeight = 0;
                     Settings.quickButtonLastShow.setValue(false);
                 }
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
 
                 main.setQuickButtonHeight(QuickButtonHeight);
 

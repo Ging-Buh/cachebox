@@ -1,12 +1,12 @@
 package de.droidcachebox.locator.map;
 
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromData;
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromFile;
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImagePixel;
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getMapsForgeGraphicFactory;
+
 import com.badlogic.gdx.graphics.Pixmap;
-import de.droidcachebox.CB_UI_Base_Settings;
-import de.droidcachebox.locator.LocatorSettings;
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.log.Log;
+
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MultiMapDataStore;
@@ -17,7 +17,11 @@ import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.reader.header.MapFileInfo;
-import org.mapsforge.map.rendertheme.*;
+import org.mapsforge.map.rendertheme.ExternalRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 
@@ -26,7 +30,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.*;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
+import de.droidcachebox.settings.LocatorSettings;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.log.Log;
 
 /**
  * MapsForge (Offline): getting tiles from a file in mapsforge format (one of these can be taken from Freizeitkarte)

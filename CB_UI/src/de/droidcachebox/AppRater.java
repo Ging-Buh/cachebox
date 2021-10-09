@@ -7,6 +7,7 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Plattform;
@@ -33,7 +34,7 @@ public class AppRater {
             @Override
             public void run() {
                 Settings.AppRaterlaunchCount.setValue(launch_count);
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
                 Log.info(log, "10 min usage, increment launch count");
             }
         };
@@ -54,7 +55,7 @@ public class AppRater {
             }
         }
 
-        Config.that.acceptChanges();
+        ViewManager.that.acceptChanges();
     }
 
     private static void showRateDialog() {
@@ -89,7 +90,7 @@ public class AppRater {
                         case 3:
                             // never
                             Settings.AppRaterDontShowAgain.setValue(true);
-                            Config.that.acceptChanges();
+                            ViewManager.that.acceptChanges();
                             break;
                     }
                     return true;

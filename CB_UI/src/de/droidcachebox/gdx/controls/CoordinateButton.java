@@ -1,7 +1,10 @@
 package de.droidcachebox.gdx.controls;
 
+import static de.droidcachebox.settings.Config_Core.br;
+
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
+
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
@@ -15,8 +18,6 @@ import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.translation.Translation;
-
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class CoordinateButton extends CB_Button implements ICopyPaste {
     protected Coordinate mActCoord;

@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.gdx.controls;
 
+import static de.droidcachebox.settings.Config_Core.br;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -26,16 +28,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
-import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.WrapType;
-import de.droidcachebox.gdx.*;
-import de.droidcachebox.gdx.controls.popups.CopyPastePopUp;
-import de.droidcachebox.gdx.controls.popups.ICopyPaste;
-import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.Point;
-import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -43,7 +35,21 @@ import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static de.droidcachebox.utils.Config_Core.br;
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.WrapType;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.controls.popups.CopyPastePopUp;
+import de.droidcachebox.gdx.controls.popups.ICopyPaste;
+import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.Point;
+import de.droidcachebox.utils.log.Log;
 
 public class EditTextField extends CB_View_Base implements ICopyPaste {
     static public final char BACKSPACE = 8;

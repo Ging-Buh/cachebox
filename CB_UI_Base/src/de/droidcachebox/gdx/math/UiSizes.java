@@ -16,7 +16,7 @@
 
 package de.droidcachebox.gdx.math;
 
-import de.droidcachebox.CB_UI_Base_Settings;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 
 /**
  * Enthält die Größen einzelner Controls

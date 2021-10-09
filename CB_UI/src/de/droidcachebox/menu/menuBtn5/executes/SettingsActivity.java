@@ -1,6 +1,6 @@
 package de.droidcachebox.menu.menuBtn5.executes;
 
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
 import de.droidcachebox.SoundCache;
 import de.droidcachebox.SoundCache.Sounds;
 import de.droidcachebox.WrapType;
@@ -41,6 +41,7 @@ import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.QuickButtonItem;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.MapView;
 import de.droidcachebox.settings.API_Button;
@@ -81,19 +82,18 @@ import de.droidcachebox.translation.SelectedLangChangedEventList;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.Config_Core;
 import de.droidcachebox.utils.FileFactory;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent {
 
     private static int EditKey = -1;
     private static SettingsActivity that;
-    private ArrayList<SettingsItem_Audio> audioSettingsList;
-    private ArrayList<Lang> Sprachen;
     private final OnMsgBoxClickListener msgBoxReturnListener = (which, data) -> {
         show();
         return true;
     };
+    private ArrayList<SettingsItem_Audio> audioSettingsList;
+    private ArrayList<Lang> Sprachen;
     private CB_List<SettingCategory> Categories = new CB_List<>();
     private CB_Button btnOk, btnCancel, btnMenu;
     private ScrollBox scrollBox;
@@ -124,7 +124,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     private void initial() {
         setLongClickable(true);
-        Config.that.settings.saveToLastValue();
+        Settings.getInstance().saveToLastValue();
         ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight());
 
         itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UiSizes.getInstance().getButtonHeight());
@@ -196,8 +196,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
             Settings.quickButtonList.setValue(ActionsString.toString());
 
-            Config.that.settings.saveToLastValue();
-            Config.that.acceptChanges();
+            Settings.getInstance().saveToLastValue();
+            ViewManager.that.acceptChanges();
 
             // Notify QuickButtonList
             QuickButtonList.that.notifyDataSetChanged();
@@ -210,7 +210,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         addChild(btnCancel);
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
-            Config.that.settings.LoadFromLastValue();
+            Settings.getInstance().LoadFromLastValue();
 
             finish();
             return true;
@@ -237,7 +237,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         addControlToLinearLayout(langView, margin);
 
         ArrayList<SettingBase<?>> AllSettingList = new ArrayList<>();// Config.settings.values().toArray();
-        for (SettingBase<?> settingItem : Config.that.settings) {
+        for (SettingBase<?> settingItem : Settings.getInstance()) {
             if (settingItem.getUsage() == SettingUsage.ACB || settingItem.getUsage() == SettingUsage.ALL)
                 // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
                 if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Settings.isExpert.getValue()) || Settings.isDeveloper.getValue())
@@ -340,8 +340,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
                     lay.addChild(view);
                     entryCount++;
-                    Config.that.settings.indexOf(settingItem);
-                    if (Config.that.settings.indexOf(settingItem) == EditKey) {
+                    Settings.getInstance().indexOf(settingItem);
+                    if (Settings.getInstance().indexOf(settingItem) == EditKey) {
                         expandLayout = true;
                     }
                 }
@@ -446,14 +446,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.that.settings.indexOf(SB);
+            EditKey = Settings.getInstance().indexOf(SB);
 
             GL.that.RunOnGLWithThreadCheck(() -> {
                 ColorPicker clrPick = new ColorPicker(SB.getValue(), color -> {
                     if (color == null)
                         return; // nothing changed
 
-                    SettingColor SetValue = (SettingColor) Config.that.settings.get(EditKey);
+                    SettingColor SetValue = (SettingColor) Settings.getInstance().get(EditKey);
                     if (SetValue != null)
                         SetValue.setValue(color);
                     resortList();
@@ -491,7 +491,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(toShow + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.that.settings.indexOf(SB);
+            EditKey = Settings.getInstance().indexOf(SB);
 
             WrapType type;
 
@@ -501,7 +501,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     (which, data) -> {
                         String text = StringInputBox.editText.getText();
                         if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                            SettingString value = (SettingString) Config.that.settings.get(EditKey);
+                            SettingString value = (SettingString) Settings.getInstance().get(EditKey);
 
                             // api ohne lineBreak
                             if (value.getName().equalsIgnoreCase("AccessToken")) {
@@ -682,13 +682,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.that.settings.indexOf(SB);
+            EditKey = Settings.getInstance().indexOf(SB);
 
             // Show NumPad Int Edit
             NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListener() {
                 @Override
                 public void returnValue(int value) {
-                    SettingInt SetValue = (SettingInt) Config.that.settings.get(EditKey);
+                    SettingInt SetValue = (SettingInt) Settings.getInstance().get(EditKey);
                     if (SetValue != null)
                         SetValue.setValue(value);
                     resortList();
@@ -724,13 +724,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.that.settings.indexOf(SB);
+            EditKey = Settings.getInstance().indexOf(SB);
 
             // Show NumPad Int Edit
             NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
-                    SettingDouble SetValue = (SettingDouble) Config.that.settings.get(EditKey);
+                    SettingDouble SetValue = (SettingDouble) Settings.getInstance().get(EditKey);
                     if (SetValue != null)
                         SetValue.setValue(value);
                     resortList();
@@ -766,13 +766,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.that.settings.indexOf(SB);
+            EditKey = Settings.getInstance().indexOf(SB);
 
             // Show NumPad Int Edit
             NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
-                    SettingFloat SetValue = (SettingFloat) Config.that.settings.get(EditKey);
+                    SettingFloat SetValue = (SettingFloat) Settings.getInstance().get(EditKey);
                     if (SetValue != null)
                         SetValue.setValue((float) value);
                     resortList();
@@ -814,7 +814,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         }
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.that.settings.indexOf(settingFolder);
+            EditKey = Settings.getInstance().indexOf(settingFolder);
             AbstractFile abstractFile = FileFactory.createFile(settingFolder.getValue());
             final String absolutePath = (abstractFile != null) ? abstractFile.getAbsolutePath() : "";
             Menu icm = new Menu("SelectPathTitle");
@@ -853,7 +853,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(settingFile.getValue() + "\n\n" + Translation.get("Desc_" + settingFile.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.that.settings.indexOf(settingFile);
+            EditKey = Settings.getInstance().indexOf(settingFile);
             AbstractFile abstractFile = FileFactory.createFile(settingFile.getValue());
 
             final String Path = (abstractFile.getParent() != null) ? abstractFile.getParent() : "";
@@ -1008,7 +1008,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(intToTime(SB.getValue()) + "\n\n" + Translation.get("Desc_" + SB.getName()));
 
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Config.that.settings.indexOf(SB);
+            EditKey = Settings.getInstance().indexOf(SB);
 
             String Value = intToTime(SB.getValue());
             String[] s = Value.split(":");
@@ -1020,7 +1020,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             NumericInputBox.Show("default: " + br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
                 @Override
                 public void returnValue(int min, int sec) {
-                    SettingTime SetValue = (SettingTime) Config.that.settings.get(EditKey);
+                    SettingTime SetValue = (SettingTime) Settings.getInstance().get(EditKey);
                     int value = (min * 60 * 1000) + (sec * 1000);
                     if (SetValue != null)
                         SetValue.setValue(value);
@@ -1118,7 +1118,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private CB_View_Base getSkinSpinnerView() {
-        String SkinFolder = Config.workPath + "/skins";
+        String SkinFolder = GlobalCore.workPath + "/skins";
         AbstractFile dir = FileFactory.createFile(SkinFolder);
         final ArrayList<String> skinFolders = new ArrayList<>();
         dir.listFiles((f, name) -> {
@@ -1171,7 +1171,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             } else if (selected.equals("small")) {
                 Settings.skinFolder.setValue("small");
             } else {
-                Settings.skinFolder.setValue(Config_Core.workPath + "/skins/" + selected);
+                Settings.skinFolder.setValue(GlobalCore.workPath + "/skins/" + selected);
             }
         });
 

@@ -16,9 +16,11 @@
 
 package de.droidcachebox.core;
 
+import org.json.JSONObject;
+
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
-import org.json.JSONObject;
 
 /**
  * Diese Klasse stellt eine verbindung zu Team-Cachebox.de her und gibt dort hinterlegte Informationen zurück. (GCAuth url ; Versionsnummer)

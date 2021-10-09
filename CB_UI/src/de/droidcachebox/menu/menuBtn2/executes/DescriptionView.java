@@ -20,7 +20,7 @@ import static de.droidcachebox.core.GroundspeakAPI.fetchMyCacheLimits;
 import static de.droidcachebox.core.GroundspeakAPI.fetchMyUserInfos;
 import static de.droidcachebox.core.GroundspeakAPI.isPremiumMember;
 import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;

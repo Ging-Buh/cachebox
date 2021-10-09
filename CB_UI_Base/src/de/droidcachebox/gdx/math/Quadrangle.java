@@ -15,14 +15,15 @@
  */
 package de.droidcachebox.gdx.math;
 
+import static de.droidcachebox.settings.Config_Core.br;
+
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import de.droidcachebox.gdx.graphics.GL_Paint;
-import de.droidcachebox.gdx.graphics.Join;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static de.droidcachebox.utils.Config_Core.br;
+import de.droidcachebox.gdx.graphics.GL_Paint;
+import de.droidcachebox.gdx.graphics.Join;
 
 /**
  * Holds the four edge points of a square.<br>

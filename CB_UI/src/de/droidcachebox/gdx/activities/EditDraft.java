@@ -32,11 +32,10 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.Draft;
@@ -60,7 +59,9 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.DraftViewItem;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn4.executes.DraftsView;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -373,7 +374,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         btnFromFile.setClickHandler((v, x, y, pointer, button) -> {
             String mPath = Settings.TemplateLastUsedPath.getValue();
             if (mPath.length() == 0) {
-                mPath = Config.workPath + "/User";
+                mPath = GlobalCore.workPath + "/User";
             }
             mPath = mPath + "/" + Settings.TemplateLastUsedName.getValue();
             new FileOrFolderPicker(mPath, "*.txt", Translation.get("TemplateTitleSelect"), Translation.get("TemplateButtonSelect"), abstractFile -> {
@@ -387,7 +388,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                     }
                     Settings.TemplateLastUsedPath.setValue(abstractFile.getParent());
                     Settings.TemplateLastUsedName.setValue(abstractFile.getName());
-                    Config.that.acceptChanges();
+                    ViewManager.that.acceptChanges();
                 } catch (Exception ignored) {
                 }
                 try {

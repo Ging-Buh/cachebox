@@ -21,10 +21,10 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
-import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.locator.map.BoundingBox;
 import de.droidcachebox.locator.map.Descriptor;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;

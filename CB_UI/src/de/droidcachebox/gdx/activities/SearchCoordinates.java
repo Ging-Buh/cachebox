@@ -1,16 +1,21 @@
 package de.droidcachebox.gdx.activities;
 
-import de.droidcachebox.core.CB_Core_Settings;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.http.Webb;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class SearchCoordinates extends ActivityBase {
     private CB_Button btnOK;

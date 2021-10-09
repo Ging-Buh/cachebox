@@ -28,11 +28,9 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.TemplateFormatter;
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -74,6 +72,7 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.executes.LogListView;
 import de.droidcachebox.menu.menuBtn4.UploadDrafts;
 import de.droidcachebox.menu.menuBtn4.UploadLogs;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -172,7 +171,7 @@ public class DraftsView extends V_ListView {
                         CacheDAO cacheDAO = CacheDAO.getInstance();
                         cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                         Settings.FoundOffset.setValue(draft.foundNumber);
-                        Config.that.acceptChanges();
+                        ViewManager.that.acceptChanges();
                     }
 
                 } else if (draft.type == LogType.didnt_find) {
@@ -181,7 +180,7 @@ public class DraftsView extends V_ListView {
                         CacheDAO cacheDAO = CacheDAO.getInstance();
                         cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                         Settings.FoundOffset.setValue(Settings.FoundOffset.getValue() - 1);
-                        Config.that.acceptChanges();
+                        ViewManager.that.acceptChanges();
                     } // and remove a previous found
                     drafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.found);
                 }
@@ -342,7 +341,7 @@ public class DraftsView extends V_ListView {
                     CacheDAO cacheDAO = CacheDAO.getInstance();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                     Settings.FoundOffset.setValue(currentDraft.foundNumber);
-                    Config.that.acceptChanges();
+                    ViewManager.that.acceptChanges();
                 }
                 // und eine evtl. vorhandene Draft DNF löschen
                 tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.didnt_find);
@@ -353,7 +352,7 @@ public class DraftsView extends V_ListView {
                     CacheDAO cacheDAO = CacheDAO.getInstance();
                     cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
                     Settings.FoundOffset.setValue(Settings.FoundOffset.getValue() - 1);
-                    Config.that.acceptChanges();
+                    ViewManager.that.acceptChanges();
                 }
                 // und eine evtl. vorhandene Draft FoundIt löschen
                 tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.found);
@@ -592,13 +591,13 @@ public class DraftsView extends V_ListView {
         private void uploadLogImage() {
             String mPath = Settings.ImageUploadLastUsedPath.getValue();
             if (mPath.length() == 0) {
-                mPath = Config.workPath + "/User/Media/";
+                mPath = GlobalCore.workPath + "/User/Media/";
             }
             new FileOrFolderPicker(mPath, "*.jpg", Translation.get("SelectImage"), Translation.get("SelectImageButton"), abstractFile -> new InputString("imageDescription") {
                 public void callBack(String description) {
                     GL.that.postAsync(() -> {
                         Settings.ImageUploadLastUsedPath.setValue(abstractFile.getParent());
-                        Config.that.acceptChanges();
+                        ViewManager.that.acceptChanges();
                         try {
                             String image = Base64.encodeBytes(WebbUtils.readBytes(abstractFile.getFileInputStream()));
                             GroundspeakAPI.uploadLogImage(currentDraft.gcLogReference, image, description);
@@ -753,7 +752,7 @@ public class DraftsView extends V_ListView {
                             CacheDAO cacheDAO = CacheDAO.getInstance();
                             cacheDAO.WriteToDatabase_Found(cache);
                             Settings.FoundOffset.setValue(Settings.FoundOffset.getValue() - 1);
-                            Config.that.acceptChanges();
+                            ViewManager.that.acceptChanges();
                             // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
                             // damit das Smiley Symbol aus der Map und der CacheList verschwindet
                             synchronized (CBDB.getInstance().cacheList) {

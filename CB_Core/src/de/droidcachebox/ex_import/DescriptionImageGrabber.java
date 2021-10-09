@@ -29,11 +29,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.database.ImageEntry;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;

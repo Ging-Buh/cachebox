@@ -11,7 +11,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.droidcachebox.AbstractShowAction;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
@@ -31,6 +30,7 @@ import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -131,7 +131,7 @@ public class ShowImportMenu extends AbstractShowAction {
 
         AbstractFile exportAbstractFile = FileFactory.createFile(exportPath);
         Settings.gpxExportFileName.setValue(exportAbstractFile.getPath());
-        Config.that.acceptChanges();
+        ViewManager.that.acceptChanges();
 
         // Delete File if exist
         if (exportAbstractFile.exists())

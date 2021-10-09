@@ -15,8 +15,6 @@
  */
 package de.droidcachebox.settings;
 
-import de.droidcachebox.utils.Config_Core;
-
 /**
  * im value intern ist die Einstellung verschlüsselt abgespeichert
  * so wie sie dann in die DB geschrieben wird.

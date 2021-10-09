@@ -15,7 +15,7 @@
  */
 package de.droidcachebox.gdx.controls.dialogs;
 
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.Dialog;

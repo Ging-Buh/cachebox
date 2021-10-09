@@ -24,7 +24,7 @@ import static de.droidcachebox.gdx.Sprites.ListBack;
 import static de.droidcachebox.gdx.Sprites.MapStars;
 import static de.droidcachebox.gdx.Sprites.getMapOverlay;
 import static de.droidcachebox.gdx.Sprites.getSprite;
-import static de.droidcachebox.utils.Config_Core.displayDensity;
+import static de.droidcachebox.settings.Config_Core.displayDensity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -37,9 +37,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
-import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.CacheSelectionChangedListeners;
-import de.droidcachebox.Config;
 import de.droidcachebox.Energy;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.OnResumeListeners;
@@ -96,7 +94,9 @@ import de.droidcachebox.locator.map.MapScale;
 import de.droidcachebox.locator.map.MapTileLoader;
 import de.droidcachebox.locator.map.MapViewBase;
 import de.droidcachebox.locator.map.ZoomScale;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
+import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
@@ -108,9 +108,13 @@ import de.droidcachebox.utils.log.Log;
 public class MapView extends MapViewBase implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
     private static final String sClass = "MapView";
     private final CB_RectF targetArrow = new CB_RectF();
-    private TreeMap<Integer, Integer> distanceZoomLevel;
     private final MapMode mapMode;
     private final LiveButton liveButton;
+    private final MapViewCacheList mapCacheList;
+    private final PointL lastScreenCenter;
+    private final GL_Paint distanceCirclePaint;
+    private final GL_Paint directLinePaint;
+    private TreeMap<Integer, Integer> distanceZoomLevel;
     private MultiToggleButton btnMapState;
     private InfoBubble infoBubble;
     private CancelWaitDialog wd = null;
@@ -124,12 +128,8 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     private Waypoint lastSelectedWaypoint = null;
     private GlyphLayout geocacheOrWayPointName = null;
     private CB_RectF targetArrowScreenRec;
-    private final MapViewCacheList mapCacheList;
     private int lastCompassMapZoom = -1;
     private MapInfoPanel mapInfoPanel;
-    private final PointL lastScreenCenter;
-    private final GL_Paint distanceCirclePaint;
-    private final GL_Paint directLinePaint;
     private PolygonDrawable directLine;
 
     public MapView(CB_RectF cb_RectF, MapMode mapMode) {
@@ -292,7 +292,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
         if (Settings.mapViewDPIFaktor.getValue() == 1) {
             Settings.mapViewDPIFaktor.setValue(displayDensity);
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
         }
         iconFactor = Settings.mapViewDPIFaktor.getValue();
 
@@ -1012,7 +1012,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         // Log.debug(sKlasse, "setMapState :" + state);
 
         Settings.lastMapToggleBtnState.setValue(state.ordinal());
-        Config.that.acceptChanges();
+        ViewManager.that.acceptChanges();
 
         boolean wasCarMode = isCarMode;
 
@@ -1169,7 +1169,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
                 if (Settings.mapViewDPIFaktor.getValue() == 1) {
                     Settings.mapViewDPIFaktor.setValue(displayDensity);
-                    Config.that.acceptChanges();
+                    ViewManager.that.acceptChanges();
                 }
                 iconFactor = Settings.mapViewDPIFaktor.getValue();
 

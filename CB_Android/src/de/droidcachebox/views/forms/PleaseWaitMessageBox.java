@@ -36,13 +36,13 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.Global;
 import de.droidcachebox.Main;
 import de.droidcachebox.R;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.translation.Translation;
 
 /**

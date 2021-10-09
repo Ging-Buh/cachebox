@@ -1,10 +1,12 @@
-package de.droidcachebox.locator;
+package de.droidcachebox.settings;
 
-import de.droidcachebox.settings.*;
-import de.droidcachebox.utils.Config_Core;
-
-import static de.droidcachebox.settings.SettingCategory.*;
-import static de.droidcachebox.settings.SettingModus.*;
+import static de.droidcachebox.settings.SettingCategory.CarMode;
+import static de.droidcachebox.settings.SettingCategory.Folder;
+import static de.droidcachebox.settings.SettingCategory.Map;
+import static de.droidcachebox.settings.SettingCategory.Positions;
+import static de.droidcachebox.settings.SettingModus.EXPERT;
+import static de.droidcachebox.settings.SettingModus.NEVER;
+import static de.droidcachebox.settings.SettingModus.NORMAL;
 import static de.droidcachebox.settings.SettingStoreType.Global;
 import static de.droidcachebox.settings.SettingStoreType.Local;
 import static de.droidcachebox.settings.SettingUsage.ACB;

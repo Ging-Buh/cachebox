@@ -27,6 +27,8 @@ import de.droidcachebox.locator.GPS_FallBackEventList;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
+import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.log.Log;
 

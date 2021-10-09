@@ -9,9 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import de.droidcachebox.Config;
+import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
@@ -48,6 +47,8 @@ import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.main.MenuItemDivider;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -176,7 +177,7 @@ public class Import_GSAK extends ActivityBase {
         btnSelectDB.setClickHandler((v, x, y, pointer, button) -> {
             mDatabasePath = Settings.GSAKLastUsedDatabasePath.getValue();
             if (mDatabasePath.length() == 0) {
-                mDatabasePath = Config.workPath + "/User";
+                mDatabasePath = GlobalCore.workPath + "/User";
             }
             new FileOrFolderPicker(mDatabasePath, "*.db3", Translation.get("GSAKTitleSelectDB"), Translation.get("GSAKButtonSelectDB"), abstractFile -> {
                 mDatabasePath = abstractFile.getParent();
@@ -189,7 +190,7 @@ public class Import_GSAK extends ActivityBase {
         btnSelectImagesDB.setClickHandler((v, x, y, pointer, button) -> {
             mImageDatabasePath = Settings.GSAKLastUsedImageDatabasePath.getValue();
             if (mImageDatabasePath.length() == 0) {
-                mImageDatabasePath = Config.workPath + "/User";
+                mImageDatabasePath = GlobalCore.workPath + "/User";
             }
             new FileOrFolderPicker(mImageDatabasePath, "*.db3", Translation.get("GSAKTitleSelectImagesDB"), Translation.get("GSAKButtonSelectDB"), abstractFile -> {
                 mImageDatabasePath = abstractFile.getParent();
@@ -202,7 +203,7 @@ public class Import_GSAK extends ActivityBase {
         btnSelectImagesPath.setClickHandler(((v, x, y, pointer, button) -> {
             mImagesPath = Settings.GSAKLastUsedImagesPath.getValue();
             if (mImagesPath.length() == 0) {
-                mImagesPath = Config.workPath + "/User";
+                mImagesPath = GlobalCore.workPath + "/User";
             }
             new FileOrFolderPicker(mImagesPath, Translation.get("GSAKTitleSelectImagesPath"), Translation.get("GSAKButtonSelectImagesPath"), abstractFile -> {
                 mImagesPath = abstractFile.getAbsolutePath();
@@ -215,7 +216,7 @@ public class Import_GSAK extends ActivityBase {
         mDatabasePath = Settings.GSAKLastUsedDatabasePath.getValue();
         if (mDatabasePath == null) mDatabasePath = "";
         if (mDatabasePath.length() == 0) {
-            mDatabasePath = Config.workPath + "/User";
+            mDatabasePath = GlobalCore.workPath + "/User";
         }
         mDatabaseName = Settings.GSAKLastUsedDatabaseName.getValue();
         if (mDatabaseName == null) mDatabaseName = "";
@@ -227,7 +228,7 @@ public class Import_GSAK extends ActivityBase {
         mImageDatabasePath = Settings.GSAKLastUsedImageDatabasePath.getValue();
         if (mImageDatabasePath == null) mImageDatabasePath = "";
         if (mImageDatabasePath.length() == 0) {
-            mImageDatabasePath = Config.workPath + "/User";
+            mImageDatabasePath = GlobalCore.workPath + "/User";
         }
         mImageDatabaseName = Settings.GSAKLastUsedImageDatabaseName.getValue();
         if (mImageDatabaseName == null) mImageDatabaseName = "";
@@ -236,7 +237,7 @@ public class Import_GSAK extends ActivityBase {
         mImagesPath = Settings.GSAKLastUsedImagesPath.getValue();
         if (mImagesPath == null) mImagesPath = "";
         if (mImagesPath.length() == 0) {
-            mImagesPath = Config.workPath + "/User";
+            mImagesPath = GlobalCore.workPath + "/User";
         }
         edtImagesPath.setText(mImagesPath);
 
@@ -265,7 +266,7 @@ public class Import_GSAK extends ActivityBase {
                 Settings.GSAKLastUsedDatabasePath.setValue(mDatabasePath);
                 Settings.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
                 Settings.withLogImages.setValue(chkLogImages.isChecked());
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
                 CBDB.getInstance().getSql().beginTransaction();
 
                 int count = 0;
@@ -325,7 +326,7 @@ public class Import_GSAK extends ActivityBase {
                 Settings.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
                 Settings.GSAKLastUsedImageDatabaseName.setValue(mImageDatabaseName);
                 Settings.GSAKLastUsedImagesPath.setValue(mImagesPath);
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
             }
             CoreCursor c = sql.rawQuery("select count(*) from " + tableName, null);
             c.moveToFirst();

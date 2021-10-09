@@ -153,7 +153,7 @@ public class DesktopUIBaseMethods  implements PlatformUIBase.Methods{
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
             Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Config.that.acceptChanges();
+            Config.getInstance().acceptChanges();
             Log.debug(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
         System.exit(0);

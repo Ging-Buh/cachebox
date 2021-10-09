@@ -17,14 +17,13 @@ package de.droidcachebox.menu.menuBtn5.executes;
 
 import static de.droidcachebox.PlatformUIBase.callUrl;
 import static de.droidcachebox.PlatformUIBase.hideForDialog;
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -182,7 +181,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                                 String Text = Translation.get("FoundsSetTo", String.valueOf(result));
                                                 MsgBox.show(Text, Translation.get("LoadFinds!"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);
                                                 Settings.FoundOffset.setValue(result);
-                                                Config.that.acceptChanges();
+                                                ViewManager.that.acceptChanges();
                                                 AboutView.this.refreshText();
                                             }
                                         }
@@ -199,7 +198,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                         @Override
                                         public void returnValue(int value) {
                                             Settings.FoundOffset.setValue(value);
-                                            Config.that.acceptChanges();
+                                            ViewManager.that.acceptChanges();
                                             AboutView.this.refreshText();
                                         }
 

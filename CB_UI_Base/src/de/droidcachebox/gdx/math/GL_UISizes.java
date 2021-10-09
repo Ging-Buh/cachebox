@@ -15,13 +15,13 @@
  */
 package de.droidcachebox.gdx.math;
 
-import static de.droidcachebox.utils.Config_Core.displayDensity;
+import static de.droidcachebox.settings.Config_Core.displayDensity;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 
-import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.log.Log;
 
 /**

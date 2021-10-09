@@ -32,7 +32,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.database.Attribute;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
@@ -46,6 +45,7 @@ import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;

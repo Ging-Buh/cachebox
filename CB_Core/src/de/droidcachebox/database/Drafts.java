@@ -17,7 +17,7 @@ package de.droidcachebox.database;
 
 import com.badlogic.gdx.utils.Array;
 
-import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
 

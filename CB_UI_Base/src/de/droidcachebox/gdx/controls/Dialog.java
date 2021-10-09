@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL_View_Base;
@@ -32,6 +31,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.CB_List;
 
 public abstract class Dialog extends CB_View_Base {

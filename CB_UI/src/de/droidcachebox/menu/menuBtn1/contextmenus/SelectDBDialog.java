@@ -18,7 +18,6 @@ package de.droidcachebox.menu.menuBtn1.contextmenus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
@@ -71,7 +70,7 @@ public class SelectDBDialog extends AbstractAction {
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
             Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
             Log.debug(log, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
 
@@ -87,9 +86,9 @@ public class SelectDBDialog extends AbstractAction {
 
         Thread thread = new Thread(() -> {
             CBDB.getInstance().close();
-            CBDB.getInstance().startUp(Config.workPath + "/" + Settings.DatabaseName.getValue());
+            CBDB.getInstance().startUp(GlobalCore.workPath + "/" + Settings.DatabaseName.getValue());
 
-            Config.that.settings.readFromDB();
+            Settings.getInstance().readFromDB();
 
             CoreData.categories = new Categories();
 

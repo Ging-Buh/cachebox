@@ -16,16 +16,19 @@
 package de.droidcachebox.core;
 
 
-import de.droidcachebox.utils.http.Webb;
-import de.droidcachebox.utils.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.utils.http.Webb;
+import de.droidcachebox.utils.log.Log;
 
 public class GCVote {
     private static final String sKlasse = "GCVote";

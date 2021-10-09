@@ -30,7 +30,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import de.droidcachebox.CB_UI_Base_Settings;
+
+import java.util.HashMap;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -38,12 +40,11 @@ import de.droidcachebox.gdx.graphics.GifDecoder;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.texturepacker.Settings;
 import de.droidcachebox.gdx.texturepacker.TexturePacker_Base;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.HashMap;
 
 /**
  * @author Longri

@@ -15,7 +15,7 @@
  */
 package de.droidcachebox.activities;
 
-import static de.droidcachebox.utils.Config_Core.displayDensity;
+import static de.droidcachebox.settings.Config_Core.displayDensity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -56,7 +56,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.Main;
@@ -180,7 +179,7 @@ public class Splash extends Activity {
             }
             Global.Paints.init(this);
             mainIntent.putExtras(bundledData); // the prepared Data
-            Config.that.acceptChanges(); // saving to SettingsDatabase
+            Settings.getInstance().writeToDatabases(); // saving to SettingsDatabase
             SettingsDatabase.getInstance().close();
             startActivity(mainIntent);
             setResult(RESULT_OK); // for the calling App (setResult(resultCode, dataIntent));
@@ -476,6 +475,7 @@ public class Splash extends Activity {
     }
 
     private void initializationStep3() {
+        GlobalCore.workPath = workPath;
         finishInitializationAndStartMain();
     }
 
@@ -574,7 +574,6 @@ public class Splash extends Activity {
             return;
         }
 
-        new Config(workPath);
         Log.info(log, "start Settings Database " + workPath + "/User/Config.db3");
         boolean userFolderExists = FileIO.createDirectory(workPath + "/User");
         if (!userFolderExists) {
@@ -587,11 +586,11 @@ public class Splash extends Activity {
         SettingsDatabase.getInstance().startUp(workPath + "/User/Config.db3");
         // Wenn die Settings DB neu erstellt wurde, müssen die Default Werte geschrieben werden.
         if (SettingsDatabase.getInstance().isDatabaseNew()) {
-            Config.that.settings.loadAllDefaultValues();
-            Config.that.settings.writeToDatabases();
+            Settings.getInstance().loadAllDefaultValues();
+            Settings.getInstance().writeToDatabases();
             Log.info(log, "Default Settings written to new configDB.");
         } else {
-            Config.that.settings.readFromDB();
+            Settings.getInstance().readFromDB();
             Log.info(log, "Settings read from configDB.");
         }
         Settings.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue()));
@@ -603,7 +602,7 @@ public class Splash extends Activity {
             if (Settings.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
                 String[] exclude = new String[]{"webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", ""};
                 CopyAssetFolder myCopie = new CopyAssetFolder();
-                myCopie.copyAll(getAssets(), Config.workPath, exclude);
+                myCopie.copyAll(getAssets(), GlobalCore.workPath, exclude);
 
                 Settings.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
                 Settings.newInstall.setValue(true);

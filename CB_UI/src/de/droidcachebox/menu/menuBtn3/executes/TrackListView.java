@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.TrackList;
 import de.droidcachebox.gdx.Sprites;
@@ -24,6 +23,7 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;

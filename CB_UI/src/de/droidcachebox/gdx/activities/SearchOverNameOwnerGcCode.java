@@ -26,9 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.Category;
@@ -54,7 +52,9 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -263,7 +263,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         Settings.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
         Settings.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
 
-        Config.that.acceptChanges();
+        ViewManager.that.acceptChanges();
 
         btnImport.disable();
 

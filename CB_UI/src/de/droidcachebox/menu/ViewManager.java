@@ -17,7 +17,8 @@ package de.droidcachebox.menu;
 
 import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.CB_UI_Base_Settings.nightMode;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
@@ -25,7 +26,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.droidcachebox.AppRater;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.GlobalLocationReceiver;
 import de.droidcachebox.InvalidateTextureListeners;
@@ -361,8 +361,12 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         try {
             GL.that.stopRendering();
-            if (switchDayNight)
-                Config.that.changeDayNight();
+            if (switchDayNight) {
+                boolean value = nightMode.getValue();
+                value = !value;
+                nightMode.setValue(value);
+                acceptChanges();
+            }
             GL.that.onStop();
             Sprites.loadSprites(true);
             ShowMap.getInstance().normalMapView.invalidateTexture();
@@ -379,7 +383,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             addChild(slider);
             slider.handleCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 
-            String state = Settings.nightMode.getValue() ? "Night" : "Day";
+            String state = nightMode.getValue() ? "Night" : "Day";
 
             GL.that.toast("Switch to " + state);
 
@@ -491,6 +495,12 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
     public boolean isInitialized() {
         return isInitial;
+    }
+
+    public void acceptChanges() {
+        if (Settings.getInstance().writeToDatabases()) {
+            MsgBox.show(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+        }
     }
 
 }

@@ -19,7 +19,7 @@ import static de.droidcachebox.core.GroundspeakAPI.ERROR;
 import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.uploadTrackableLog;
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import java.util.Date;
 

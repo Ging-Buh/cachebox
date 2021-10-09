@@ -85,6 +85,7 @@ import de.droidcachebox.maps.BRouter;
 import de.droidcachebox.menu.MainViewInit;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ActivityUtils;
@@ -213,10 +214,10 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     // ? everything, that is initialized in Splash
                     if (savedInstanceState.getBoolean("useSmallSkin"))
                         GlobalCore.displayType = DisplayType.Small;
-                    new Config(savedInstanceState.getString("WorkPath"));
-                    if (!FileIO.createDirectory(Config.workPath + "/User"))
+                    GlobalCore.workPath = savedInstanceState.getString("WorkPath");
+                    if (!FileIO.createDirectory(GlobalCore.workPath + "/User"))
                         return;
-                    SettingsDatabase.getInstance().startUp(Config.workPath + "/User/Config.db3");
+                    SettingsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/Config.db3");
 
                     Resources res = getResources();
                     DevicesSizes ui = new DevicesSizes();
@@ -238,7 +239,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
             androidUIBaseMethods = new AndroidUIBaseMethods(this);
             PlatformUIBase.setMethods(androidUIBaseMethods);
-            SettingsDatabase.getInstance().startUp(Config.workPath + "/User/Config.db3");
+            SettingsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/Config.db3");
 
             Object clipboardService = getSystemService(CLIPBOARD_SERVICE);
             if (clipboardService != null) {
@@ -320,7 +321,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.info(sKlasse, "=> onSaveInstanceState");
         savedInstanceState.putBoolean("useSmallSkin", GlobalCore.displayType == DisplayType.Small);
-        savedInstanceState.putString("WorkPath", Config.workPath);
+        savedInstanceState.putString("WorkPath", GlobalCore.workPath);
 
         savedInstanceState.putInt("WindowWidth", UiSizes.getInstance().getWindowWidth());
         savedInstanceState.putInt("WindowHeight", UiSizes.getInstance().getWindowHeight());
@@ -400,7 +401,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         // having a protokoll of the program start: but now reset to SettingsClass.AktLogLevel but >= LogLevel.ERROR
         if (Settings.AktLogLevel.getEnumValue() == LogLevel.OFF)
             Settings.AktLogLevel.setEnumValue(LogLevel.ERROR);
-        CB_SLF4J.getInstance(Config.workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue());
+        CB_SLF4J.getInstance(GlobalCore.workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue());
 
         boolean ret = ((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(GPS_PROVIDER);
         if (!ret && Settings.Ask_Switch_GPS_ON.getValue()) {
@@ -505,7 +506,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     CacheListChangedListeners.getInstance().clear();
                     showViewListener.onDestroyWithFinishing();
 
-                    Config.that.acceptChanges(); // same as Config.settings.writeToDatabases();
+                    ViewManager.that.acceptChanges(); // same as Config.settings.writeToDatabases();
 
                     Sprites.destroyCache();
 
@@ -700,7 +701,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     private void checkTranslationIsLoaded() {
         if (!Translation.isInitialized()) {
-            Translation trans = new Translation(Config.workPath);
+            Translation trans = new Translation(GlobalCore.workPath);
             try {
                 trans.loadTranslation(Settings.Sel_LanguagePath.getValue());
             } catch (Exception e) {

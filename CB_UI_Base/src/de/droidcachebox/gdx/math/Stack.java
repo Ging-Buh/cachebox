@@ -15,9 +15,9 @@
  */
 package de.droidcachebox.gdx.math;
 
-import java.util.ArrayList;
+import static de.droidcachebox.settings.Config_Core.br;
 
-import static de.droidcachebox.utils.Config_Core.br;
+import java.util.ArrayList;
 
 /**
  * @param <T>

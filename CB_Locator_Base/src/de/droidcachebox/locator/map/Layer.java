@@ -1,10 +1,19 @@
 package de.droidcachebox.locator.map;
 
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromData;
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromFile;
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImagePixel;
+
 import com.badlogic.gdx.graphics.Pixmap;
-import de.droidcachebox.CB_UI_Base_Settings;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
-import de.droidcachebox.locator.LocatorSettings;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
+import de.droidcachebox.settings.LocatorSettings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
@@ -12,12 +21,6 @@ import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.http.WebbUtils;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.*;
 
 public class Layer {
     private static final String log = "Layer";

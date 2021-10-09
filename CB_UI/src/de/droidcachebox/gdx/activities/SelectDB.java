@@ -20,7 +20,6 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
@@ -48,6 +47,7 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.map.LayerManager;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn5.ShowQuit;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -65,6 +65,7 @@ import de.droidcachebox.utils.log.Log;
 public class SelectDB extends ActivityBase {
     private static final String log = "SelectDB";
     private final FileList dbFiles;
+    private final boolean MustSelect;
     private DBItemAdapter dbItemAdapter;
     private Timer updateTimer;
     private int autoStartTime;
@@ -76,7 +77,6 @@ public class SelectDB extends ActivityBase {
     private V_ListView lvDBSelection;
     private Scrollbar scrollbar;
     private AbstractFile currentDBFile = null;
-    private final boolean MustSelect;
     private IReturnListener returnListener;
     private final OnMsgBoxClickListener mDialogListenerNewDB = (which, data) -> {
         String NewDB_Name = NewDB_InputBox.editText.getText();
@@ -88,7 +88,7 @@ public class SelectDB extends ActivityBase {
 
                 // initialize Database
 
-                String database = Config.workPath + "/" + NewDB_Name + ".db3";
+                String database = GlobalCore.workPath + "/" + NewDB_Name + ".db3";
                 Settings.DatabaseName.setValue(NewDB_Name + ".db3");
                 CBDB.getInstance().close();
                 CBDB.getInstance().startUp(database);
@@ -101,7 +101,7 @@ public class SelectDB extends ActivityBase {
                     Settings.MapPackFolderLocal.setValue(folder + "Maps");
                     Settings.SpoilerFolderLocal.setValue(folder + "Spoilers");
                     Settings.tileCacheFolderLocal.setValue(folder + "Cache");
-                    Config.that.acceptChanges();
+                    ViewManager.that.acceptChanges();
                     Log.debug(log,
                             NewDB_Name + " has own Repository:\n" + //
                                     Settings.DescriptionImageFolderLocal.getValue() + ", \n" + //
@@ -125,7 +125,7 @@ public class SelectDB extends ActivityBase {
                         );
                 }
 
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
 
                 CoreData.categories = new Categories();
                 CacheDAO.getInstance().updateCacheCountForGPXFilenames();
@@ -135,11 +135,11 @@ public class SelectDB extends ActivityBase {
                     GlobalCore.checkSelectedCacheValid();
                 }
 
-                if (!FileIO.createDirectory(Config.workPath + "/User"))
+                if (!FileIO.createDirectory(GlobalCore.workPath + "/User"))
                     return true;
-                DraftsDatabase.getInstance().startUp(Config.workPath + "/User/FieldNotes.db3");
+                DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
 
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
                 currentDBFile = FileFactory.createFile(database);
                 selectDB();
 
@@ -159,7 +159,7 @@ public class SelectDB extends ActivityBase {
 
         lvDBSelection = new V_ListView(new CB_RectF(leftBorder, getBottomHeight() + UiSizes.getInstance().getButtonHeight() * 2, innerWidth, getHeight() - (UiSizes.getInstance().getButtonHeight() * 2) - getTopHeight() - getBottomHeight()),
                 "DB File ListView");
-        dbFiles = new FileList(Config.workPath, "DB3", true);
+        dbFiles = new FileList(GlobalCore.workPath, "DB3", true);
         dbItemAdapter = new DBItemAdapter();
         lvDBSelection.setAdapter(dbItemAdapter);
 
@@ -357,7 +357,7 @@ public class SelectDB extends ActivityBase {
         Settings.MultiDBAsk.setValue(autoStartTime >= 0);
 
         Settings.DatabaseName.setValue(currentDBFile.getName());
-        Config.that.acceptChanges();
+        ViewManager.that.acceptChanges();
 
         LayerManager.getInstance().initLayers();
 

@@ -8,9 +8,7 @@ import static de.droidcachebox.gdx.controls.messagebox.MsgBox.BTN_LEFT_POSITIVE;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -34,6 +32,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
 import de.droidcachebox.menu.menuBtn2.HintDialog;
@@ -46,6 +45,7 @@ import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
 import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
@@ -120,7 +120,7 @@ public class CacheContextMenu {
             MsgBox mb = MsgBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MsgBoxButton.AbortRetryIgnore, MsgBoxIcon.Question, null);
             mb.setPositiveClickListener((v, x, y, pointer, button) -> {
                 Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
                 return mb.finish();
             });
             mb.setMiddleNeutralClickListener((v, x, y, pointer, button) -> {
@@ -130,7 +130,7 @@ public class CacheContextMenu {
             });
             mb.setRightNegativeClickListener((v, x, y, pointer, button) -> {
                 Settings.rememberedGeoCache.setValue("");
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
                 return mb.finish();
             });
             mb.setButtonText("rememberGeoCache", "selectGeoCache", "forgetGeoCache");
@@ -221,7 +221,7 @@ public class CacheContextMenu {
                         Settings.CacheContextMenuShortClickToggle.setValue(false);
                     else
                         Settings.CacheContextMenuShortClickToggle.setValue(true);
-                    Config.that.acceptChanges();
+                    ViewManager.that.acceptChanges();
                     return true;
                 });
     }

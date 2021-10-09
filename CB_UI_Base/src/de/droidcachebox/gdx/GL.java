@@ -41,7 +41,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.Energy;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.PlatformUIBase;
@@ -59,6 +58,7 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.Plattform;

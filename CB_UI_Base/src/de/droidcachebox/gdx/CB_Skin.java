@@ -4,8 +4,9 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import de.droidcachebox.CB_UI_Base_Settings;
+
 import de.droidcachebox.gdx.graphics.HSV_Color;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 

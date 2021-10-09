@@ -16,15 +16,24 @@
 package de.droidcachebox.gdx.activities;
 
 import de.droidcachebox.WrapType;
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.database.LogType;
 import de.droidcachebox.database.Trackable;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.ActivityBase;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.Image;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.translation.Translation;
 
 /**

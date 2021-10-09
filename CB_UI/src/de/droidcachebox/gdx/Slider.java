@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.GeoCacheSize;
@@ -23,6 +22,7 @@ import de.droidcachebox.gdx.math.SizeChangedEvent;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.WaypointViewItem;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;

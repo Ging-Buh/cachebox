@@ -15,8 +15,6 @@
  */
 package de.droidcachebox.settings;
 
-import de.droidcachebox.utils.Config_Core;
-
 public class SettingFolder extends SettingLongString {
 
     private final boolean needWritePermission;

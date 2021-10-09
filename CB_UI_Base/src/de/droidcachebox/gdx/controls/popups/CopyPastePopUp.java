@@ -1,8 +1,11 @@
 package de.droidcachebox.gdx.controls.popups;
 
+import static de.droidcachebox.settings.Config_Core.br;
+
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
@@ -12,8 +15,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
-
-import static de.droidcachebox.utils.Config_Core.br;
 
 public class CopyPastePopUp extends PopUp_Base {
     private final static String sKlasse = "CopyPastePopUp";

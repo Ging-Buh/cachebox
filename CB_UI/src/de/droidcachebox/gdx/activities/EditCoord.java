@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.COLOR;
@@ -81,7 +80,7 @@ public class EditCoord extends ActivityBase {
             showPage((Integer) mtb.getTag());
             // write a file for Nissan Connect
             // LON,LAT,Waypoint
-            String dirFileName = Config.workPath + "/User/nissan.csv";
+            String dirFileName = GlobalCore.workPath + "/User/nissan.csv";
             AbstractFile txtAbstractFile = FileFactory.createFile(dirFileName);
             FileOutputStream writer;
             try {

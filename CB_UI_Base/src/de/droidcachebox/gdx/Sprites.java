@@ -26,12 +26,13 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import de.droidcachebox.CB_UI_Base_Settings;
-import de.droidcachebox.gdx.graphics.ColorDrawable;
-import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
+
+import de.droidcachebox.gdx.graphics.ColorDrawable;
+import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
+import de.droidcachebox.utils.log.Log;
 
 /**
  * Enthält die geladenen Sprites und das Handling für Laden und Entladen.

@@ -4,7 +4,7 @@ import static de.droidcachebox.core.GroundspeakAPI.ERROR;
 import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCacheLogs;
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -15,9 +15,7 @@ import java.util.TimerTask;
 
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.CacheSelectionChangedListeners;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.core.CB_Core_Settings;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.LogEntry;
@@ -35,6 +33,7 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.executes.LogListView;
 import de.droidcachebox.menu.menuBtn2.executes.SpoilerView;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.RunnableReadyHandler;
@@ -194,7 +193,7 @@ public class ShowLogs extends AbstractShowAction {
             String friends = GroundspeakAPI.fetchFriends();
             if (GroundspeakAPI.APIError == OK) {
                 Settings.friends.setValue(friends);
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
                 MsgBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
             } else {
                 MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);

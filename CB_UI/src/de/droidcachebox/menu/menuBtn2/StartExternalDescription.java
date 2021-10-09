@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
 import java.util.LinkedList;
 
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.database.Cache;
@@ -32,6 +31,7 @@ import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.log.Log;
 
 /**

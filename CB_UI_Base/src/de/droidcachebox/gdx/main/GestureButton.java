@@ -1,14 +1,25 @@
 package de.droidcachebox.gdx.main;
 
+import static de.droidcachebox.gdx.Sprites.getSprite;
+import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.AbstractShowAction;
-import de.droidcachebox.CB_UI_Base_Settings;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.ButtonSprites;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_Input;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -17,14 +28,10 @@ import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
-
-import static de.droidcachebox.gdx.Sprites.getSprite;
-import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 
 /**
  * this is the class for the lower 5 buttons, the main buttons

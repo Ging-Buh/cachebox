@@ -3,10 +3,10 @@ package de.droidcachebox.menu.menuBtn5;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.CB_UI_Base_Settings;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.menu.menuBtn5.executes.SettingsActivity;
+import de.droidcachebox.settings.CB_UI_Base_Settings;
 
 public class SettingsAction extends AbstractAction {
 

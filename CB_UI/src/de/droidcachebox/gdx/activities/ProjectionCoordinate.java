@@ -1,13 +1,17 @@
 package de.droidcachebox.gdx.activities;
 
-import de.droidcachebox.CB_UI_Settings;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.CoordinateButton;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.NumPad;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 

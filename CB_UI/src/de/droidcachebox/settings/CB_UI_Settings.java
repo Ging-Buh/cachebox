@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.droidcachebox;
+package de.droidcachebox.settings;
 
 import static de.droidcachebox.settings.SettingCategory.API;
 import static de.droidcachebox.settings.SettingCategory.CarMode;
@@ -39,19 +39,6 @@ import static de.droidcachebox.settings.SettingStoreType.Global;
 import static de.droidcachebox.settings.SettingStoreType.Platform;
 import static de.droidcachebox.settings.SettingUsage.ACB;
 import static de.droidcachebox.settings.SettingUsage.ALL;
-
-import de.droidcachebox.settings.Audio;
-import de.droidcachebox.settings.SettingBool;
-import de.droidcachebox.settings.SettingFile;
-import de.droidcachebox.settings.SettingFolder;
-import de.droidcachebox.settings.SettingInt;
-import de.droidcachebox.settings.SettingIntArray;
-import de.droidcachebox.settings.SettingLongString;
-import de.droidcachebox.settings.SettingStoreType;
-import de.droidcachebox.settings.SettingString;
-import de.droidcachebox.settings.SettingStringArray;
-import de.droidcachebox.settings.SettingsAudio;
-import de.droidcachebox.utils.Config_Core;
 
 /**
  * @author Longri

@@ -1,19 +1,19 @@
 package de;
 
-import de.droidcachebox.CB_UI_Settings;
+import java.io.IOException;
+import java.net.HttpCookie;
+import java.util.List;
+import java.util.Map;
+
 import de.droidcachebox.core.CB_Api;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog.IcancelListener;
+import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.http.Request;
 import de.droidcachebox.utils.http.Response;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
-
-import java.io.IOException;
-import java.net.HttpCookie;
-import java.util.List;
-import java.util.Map;
 
 public class GcApiLogin {
     private static final String log = "GcApiLogin";

@@ -34,7 +34,6 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.ViewOptionsMenu;
@@ -399,7 +398,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             // In HTML5, the action attribute is no longer required.
             do {
                 Attribute attribute = attrs.next();
-                File attributesImageFile = new File(Config.workPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+                File attributesImageFile = new File(GlobalCore.workPath + "/data/Attributes/" + attribute.getImageName() + ".png");
                 if (attributesImageFile.exists()) {
                     // the url is missing the value, so we give that appended in the name and the blank
                     // String toAppend = "<input name=\"GetAttInfo" + attribute.getImageName() + " \" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\"1\">";

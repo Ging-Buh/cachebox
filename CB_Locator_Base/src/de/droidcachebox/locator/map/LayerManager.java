@@ -16,14 +16,15 @@
 package de.droidcachebox.locator.map;
 
 import com.badlogic.gdx.utils.Array;
-import de.droidcachebox.locator.LocatorSettings;
-import de.droidcachebox.locator.map.Layer.LayerUsage;
-import de.droidcachebox.locator.map.Layer.MapType;
-import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.log.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import de.droidcachebox.locator.map.Layer.LayerUsage;
+import de.droidcachebox.locator.map.Layer.MapType;
+import de.droidcachebox.settings.LocatorSettings;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.log.Log;
 
 /**
  * collects all possible layers into the  ArrayList<Layer> layers with the follwing Definitions:

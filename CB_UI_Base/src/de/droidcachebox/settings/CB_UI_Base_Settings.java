@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox;
+package de.droidcachebox.settings;
 
-import de.droidcachebox.gdx.graphics.HSV_Color;
-import de.droidcachebox.settings.*;
-import de.droidcachebox.utils.Config_Core;
-import de.droidcachebox.utils.log.LogLevel;
-
-import static de.droidcachebox.settings.SettingCategory.*;
-import static de.droidcachebox.settings.SettingModus.*;
-import static de.droidcachebox.settings.SettingStoreType.*;
+import static de.droidcachebox.settings.Config_Core.displayDensity;
+import static de.droidcachebox.settings.SettingCategory.Debug;
+import static de.droidcachebox.settings.SettingCategory.Folder;
+import static de.droidcachebox.settings.SettingCategory.Internal;
+import static de.droidcachebox.settings.SettingCategory.LiveMap;
+import static de.droidcachebox.settings.SettingCategory.Map;
+import static de.droidcachebox.settings.SettingCategory.Misc;
+import static de.droidcachebox.settings.SettingCategory.Skin;
+import static de.droidcachebox.settings.SettingCategory.Sounds;
+import static de.droidcachebox.settings.SettingModus.DEVELOPER;
+import static de.droidcachebox.settings.SettingModus.EXPERT;
+import static de.droidcachebox.settings.SettingModus.NEVER;
+import static de.droidcachebox.settings.SettingModus.NORMAL;
+import static de.droidcachebox.settings.SettingStoreType.Global;
+import static de.droidcachebox.settings.SettingStoreType.Local;
+import static de.droidcachebox.settings.SettingStoreType.Platform;
 import static de.droidcachebox.settings.SettingUsage.ACB;
 import static de.droidcachebox.settings.SettingUsage.ALL;
-import static de.droidcachebox.utils.Config_Core.displayDensity;
+
+import de.droidcachebox.gdx.graphics.HSV_Color;
+import de.droidcachebox.utils.log.LogLevel;
 
 public interface CB_UI_Base_Settings {
     SettingEnum<Enum<LogLevel>> AktLogLevel = new SettingEnum<Enum<LogLevel>>("AktLogLevel", Debug, NORMAL, LogLevel.OFF, Platform, ALL, LogLevel.OFF);
@@ -34,6 +44,7 @@ public interface CB_UI_Base_Settings {
     SettingBool useAndroidKeyboard = new SettingBool("useAndroidKeyboard", Skin, NORMAL, false, Global, ACB);
 
     SettingFolder skinFolder = new SettingFolder("SkinFolder", Folder, DEVELOPER, "default", Global, ACB, false, true);
+    SettingFolder imageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.workPath + "/repository/cache", Local, ACB, true);
 
     SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", Skin, EXPERT, true, Global, ACB, true);
     SettingBool rememberLastAction = new SettingBool("rememberLastAction", Skin, EXPERT, true, Global, ACB, true);
@@ -55,9 +66,6 @@ public interface CB_UI_Base_Settings {
 
     SettingFloat mapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", Map, EXPERT, displayDensity, Global, ACB);
     SettingFloat mapViewTextFaktor = new SettingFloat("MapViewTextFaktor", Map, EXPERT, 2f, Global, ACB);
-
-    SettingFolder imageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.workPath + "/repository/cache", Local, ACB, true);
-
 
     SettingColor liveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), Global, ACB);
 

@@ -353,7 +353,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                     androidApplication.removeAndroidEventListener(handlingGetApiAuth);
                     if (requestCode == REQUEST_GET_APIKEY) {
                         GL.that.RunIfInitial(SettingsActivity::resortList);
-                        Config.that.acceptChanges();
+                        ViewManager.that.acceptChanges();
                     }
                 };
             androidApplication.addAndroidEventListener(handlingGetApiAuth);
@@ -417,7 +417,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
             // speichere selektierten Cache, da nicht alles über die
             // SelectedCacheEventList läuft
             Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
             Log.info(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
         CBDB.getInstance().close();
@@ -582,14 +582,18 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     }
 
     private void positionLatLon(String externalRequestLatLon) {
-        String[] s = externalRequestLatLon.split(",");
-        Coordinate coordinate = new Coordinate(Double.parseDouble(s[0]), Double.parseDouble(s[1]));
-        Log.info(sClass, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
-        if (coordinate.isValid()) {
-            ShowMap.getInstance().execute();
-            ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
-            // ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
-            ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
+        String[] s;
+        try {
+            s = externalRequestLatLon.split(",");
+            Coordinate coordinate = new Coordinate(Double.parseDouble(s[0]), Double.parseDouble(s[1]));
+            Log.info(sClass, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
+            if (coordinate.isValid()) {
+                ShowMap.getInstance().execute();
+                ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
+                // ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
+                ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
+            }
+        } catch (Exception ignored) {
         }
     }
 

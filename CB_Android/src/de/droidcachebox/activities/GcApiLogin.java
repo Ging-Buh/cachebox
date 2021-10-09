@@ -1,8 +1,8 @@
 package de.droidcachebox.activities;
 
-import static de.droidcachebox.core.CB_Core_Settings.GcLogin;
 import static de.droidcachebox.core.GroundspeakAPI.fetchMyUserInfos;
 import static de.droidcachebox.core.GroundspeakAPI.setAuthorization;
+import static de.droidcachebox.settings.CB_Core_Settings.GcLogin;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -24,12 +24,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.Main;
 import de.droidcachebox.R;
 import de.droidcachebox.core.CB_Api;
-import de.droidcachebox.core.CB_Core_Settings;
+import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.log.Log;
@@ -41,7 +41,7 @@ public class GcApiLogin extends Activity {
     private static boolean progressDialogIsShown = false;
     private LinearLayout webViewLayout;
     private WebView webView;
-    private Handler onlineSearchReadyHandler = new Handler() {
+    private final Handler onlineSearchReadyHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1: {
@@ -181,11 +181,11 @@ public class GcApiLogin extends Activity {
         webView.clearCache(true);
         webView.clearHistory();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            Log.debug("GcApiLogin", "Using clearCookies code for API >=" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
+            Log.debug("GcApiLogin", "Using clearCookies code for API >=" + Build.VERSION_CODES.LOLLIPOP_MR1);
             CookieManager.getInstance().removeAllCookies(null);
             CookieManager.getInstance().flush();
         } else {
-            Log.debug("GcApiLogin", "Using clearCookies code for API <" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
+            Log.debug("GcApiLogin", "Using clearCookies code for API <" + Build.VERSION_CODES.LOLLIPOP_MR1);
             CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(this);
             cookieSyncMngr.startSync();
             CookieManager cookieManager = CookieManager.getInstance();
@@ -266,7 +266,7 @@ public class GcApiLogin extends Activity {
                     String userNameOfAuthorization = fetchMyUserInfos().username;
                     Log.debug(sKlasse, "userNameOfAuthorization: " + userNameOfAuthorization);
                     GcLogin.setValue(userNameOfAuthorization);
-                    Config.that.acceptChanges();
+                    ViewManager.that.acceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }
             };

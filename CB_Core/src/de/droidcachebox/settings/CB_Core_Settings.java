@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.core;
+package de.droidcachebox.settings;
 
-import de.droidcachebox.settings.*;
-import de.droidcachebox.utils.Config_Core;
-
-import static de.droidcachebox.settings.SettingCategory.*;
-import static de.droidcachebox.settings.SettingModus.*;
+import static de.droidcachebox.settings.SettingCategory.Drafts;
+import static de.droidcachebox.settings.SettingCategory.Folder;
+import static de.droidcachebox.settings.SettingCategory.Internal;
+import static de.droidcachebox.settings.SettingCategory.LiveMap;
+import static de.droidcachebox.settings.SettingCategory.Login;
+import static de.droidcachebox.settings.SettingCategory.Misc;
+import static de.droidcachebox.settings.SettingCategory.Positions;
+import static de.droidcachebox.settings.SettingCategory.RememberAsk;
+import static de.droidcachebox.settings.SettingModus.DEVELOPER;
+import static de.droidcachebox.settings.SettingModus.EXPERT;
+import static de.droidcachebox.settings.SettingModus.NEVER;
+import static de.droidcachebox.settings.SettingModus.NORMAL;
 import static de.droidcachebox.settings.SettingStoreType.Global;
 import static de.droidcachebox.settings.SettingStoreType.Platform;
 import static de.droidcachebox.settings.SettingUsage.ACB;
 import static de.droidcachebox.settings.SettingUsage.ALL;
+
+import de.droidcachebox.core.LiveMapQue;
 
 public interface CB_Core_Settings {
     Integer[] numberOfLogsArray = new Integer[]{0, 5, 30};

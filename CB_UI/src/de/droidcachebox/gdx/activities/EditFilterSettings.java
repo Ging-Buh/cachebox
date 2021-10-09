@@ -23,7 +23,7 @@ import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
 import static de.droidcachebox.gdx.controls.FilterSetListViewItem.SELECT_ALL_ITEM;
 import static de.droidcachebox.gdx.controls.FilterSetListViewItem.THREE_STATE_ITEM;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -38,7 +38,6 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
@@ -156,7 +155,7 @@ public class EditFilterSettings extends ActivityBase {
                     } else {
                         Settings.FilterNew.setValue(filter.toString());
                     }
-                    Config.that.acceptChanges();
+                    ViewManager.that.acceptChanges();
                 }
             }, 300);
             return true;
@@ -293,7 +292,7 @@ public class EditFilterSettings extends ActivityBase {
                 } else {
                     Settings.FilterNew.setValue(FilterInstances.getLastFilter().toString());
                 }
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
             } catch (Exception ex) {
                 Log.err(log, "applyFilter", ex);
                 pd.dismis();
@@ -416,7 +415,7 @@ public class EditFilterSettings extends ActivityBase {
 
                         userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + SettingStringList.STRINGSPLITTER;
                         Settings.UserFilters.setValue(userFilters);
-                        Config.that.acceptChanges();
+                        ViewManager.that.acceptChanges();
                         presetView.fillPresetList();
                         presetView.notifyDataSetChanged();
                     }
@@ -520,7 +519,7 @@ public class EditFilterSettings extends ActivityBase {
                                                     newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");
                                                 else newUserEntries = userEntries.substring(0, p1);
                                                 Settings.UserFilters.setValue(newUserEntries);
-                                                Config.that.acceptChanges();
+                                                ViewManager.that.acceptChanges();
                                                 fillPresetList();
                                                 notifyDataSetChanged();
                                             } catch (Exception ex) {

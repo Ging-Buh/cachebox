@@ -15,7 +15,7 @@
  */
 package de.droidcachebox.menu;
 
-import static de.droidcachebox.utils.Config_Core.br;
+import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -25,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.io.IOException;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -239,19 +238,19 @@ public class MainViewInit extends MainViewBase {
             // Load from Assets changes
             // delete work path from settings value
             String altValue = Settings.Sel_LanguagePath.getValue();
-            if (altValue.contains(Config.workPath)) {
-                String newValue = altValue.replace(Config.workPath + "/", "");
+            if (altValue.contains(GlobalCore.workPath)) {
+                String newValue = altValue.replace(GlobalCore.workPath + "/", "");
                 Settings.Sel_LanguagePath.setValue(newValue);
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
             }
 
             if (altValue.startsWith("/")) {
                 String newValue = altValue.substring(1);
                 Settings.Sel_LanguagePath.setValue(newValue);
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
             }
 
-            Translation trans = new Translation(Config.workPath);
+            Translation trans = new Translation(GlobalCore.workPath);
             try {
                 trans.loadTranslation(Settings.Sel_LanguagePath.getValue());
             } catch (Exception e) {
@@ -279,16 +278,16 @@ public class MainViewInit extends MainViewBase {
         Log.info(log, "ini_Dirs");
         ini_Dir(Settings.PocketQueryFolder.getValue());
         ini_Dir(Settings.tileCacheFolder.getValue());
-        ini_Dir(Config.workPath + "/User");
+        ini_Dir(GlobalCore.workPath + "/User");
         ini_Dir(Settings.TrackFolder.getValue());
         ini_Dir(Settings.UserImageFolder.getValue());
-        ini_Dir(Config.workPath + "/repository");
+        ini_Dir(GlobalCore.workPath + "/repository");
         ini_Dir(Settings.DescriptionImageFolder.getValue());
         ini_Dir(Settings.MapPackFolder.getValue());
         ini_Dir(Settings.SpoilerFolder.getValue());
 
         // prevent media_scanner to parse all the images in the cachebox folder
-        AbstractFile nomedia = FileFactory.createFile(Config.workPath, ".nomedia");
+        AbstractFile nomedia = FileFactory.createFile(GlobalCore.workPath, ".nomedia");
         if (!nomedia.exists()) {
             try {
                 nomedia.createNewFile();
@@ -313,7 +312,7 @@ public class MainViewInit extends MainViewBase {
         // search number of DB3 files
         FileList fileList = null;
         try {
-            fileList = new FileList(Config.workPath, "DB3");
+            fileList = new FileList(GlobalCore.workPath, "DB3");
         } catch (Exception ex) {
             Log.err(log, "getting DB3 fileList", ex);
         }
@@ -339,9 +338,9 @@ public class MainViewInit extends MainViewBase {
     private void ini_CacheDB() {
         Log.info(log, "ini_CacheDB");
 
-        CBDB.getInstance().startUp(Config.workPath + "/" + Settings.DatabaseName.getValue());
+        CBDB.getInstance().startUp(GlobalCore.workPath + "/" + Settings.DatabaseName.getValue());
 
-        Config.that.settings.readFromDB();
+        Settings.getInstance().readFromDB();
 
         FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
@@ -355,7 +354,7 @@ public class MainViewInit extends MainViewBase {
 
         CacheListChangedListeners.getInstance().cacheListChanged();
 
-        DraftsDatabase.getInstance().startUp(Config.workPath + "/User/FieldNotes.db3");
+        DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
 
     }
 

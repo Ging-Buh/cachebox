@@ -1,6 +1,5 @@
 package de.droidcachebox.menu.menuBtn1.executes;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.CBDB;
@@ -20,6 +19,7 @@ import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
@@ -103,7 +103,7 @@ public class ParkingDialog extends ButtonDialog {
 
             Settings.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
             Settings.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
             CacheListChangedListeners.getInstance().cacheListChanged();
 
             close();
@@ -123,7 +123,7 @@ public class ParkingDialog extends ButtonDialog {
         btDeleteP.setClickHandler((view, x, y, pointer, button) -> {
             Settings.ParkingLatitude.setValue(0.0);
             Settings.ParkingLongitude.setValue(0.0);
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
             CacheListChangedListeners.getInstance().cacheListChanged();
             close();
             return true;

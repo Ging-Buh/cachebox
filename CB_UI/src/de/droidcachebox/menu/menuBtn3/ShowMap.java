@@ -46,7 +46,6 @@ import java.util.Map;
 import java.util.Set;
 
 import de.droidcachebox.AbstractShowAction;
-import de.droidcachebox.Config;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.TrackList;
@@ -67,7 +66,6 @@ import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.locator.LocatorSettings;
 import de.droidcachebox.locator.map.CB_InternalRenderTheme;
 import de.droidcachebox.locator.map.Layer;
 import de.droidcachebox.locator.map.LayerManager;
@@ -80,6 +78,7 @@ import de.droidcachebox.menu.menuBtn3.executes.MapView;
 import de.droidcachebox.menu.menuBtn3.executes.MapView.MapMode;
 import de.droidcachebox.menu.menuBtn3.executes.TrackCreation;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
+import de.droidcachebox.settings.LocatorSettings;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -270,7 +269,7 @@ public class ShowMap extends AbstractShowAction {
                             lsm.close();
                             String selectedLanguage = ((MenuItem) v).getTitle();
                             Settings.preferredMapLanguage.setValue(selectedLanguage);
-                            Config.that.acceptChanges();
+                            ViewManager.that.acceptChanges();
                             return true;
                         });
                     }
@@ -323,13 +322,13 @@ public class ShowMap extends AbstractShowAction {
 
     private void toggleSetting(SettingBool setting) {
         setting.setValue(!setting.getValue());
-        Config.that.acceptChanges();
+        ViewManager.that.acceptChanges();
         normalMapView.setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
     }
 
     private void toggleSettingWithReload(SettingBool setting) {
         setting.setValue(!setting.getValue());
-        Config.that.acceptChanges();
+        ViewManager.that.acceptChanges();
         normalMapView.setNewSettings(INITIAL_WP_LIST);
     }
 
@@ -375,7 +374,7 @@ public class ShowMap extends AbstractShowAction {
             tdMenu.mMsgBoxClickListener = (btnNumber, data) -> {
                 int newValue = (Integer) data;
                 Settings.TrackDistance.setValue(newValue);
-                Config.that.acceptChanges();
+                ViewManager.that.acceptChanges();
                 showMenuTrackFunctions();
                 return true;
             };
@@ -518,7 +517,7 @@ public class ShowMap extends AbstractShowAction {
                             (btnNumber, data) -> {
                                 if (btnNumber == 1) { // change path
                                     Settings.RenderThemesFolder.setValue(Settings.RenderThemesFolder.getDefaultValue());
-                                    Config.that.acceptChanges();
+                                    ViewManager.that.acceptChanges();
                                 }
                                 return true;
                             }, Settings.RememberAsk_RenderThemePathWritable);
@@ -715,7 +714,7 @@ public class ShowMap extends AbstractShowAction {
             // p.ex.: internal Theme -> there is no style
             // style of Config will be ignored while setting of Theme
             setConfig(selectedThemePaN, "");
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
         }
     }
 
@@ -746,7 +745,7 @@ public class ShowMap extends AbstractShowAction {
                     mapStyleValues.append("\t").append("-").append(mi.getData());
             }
             setConfig(selectedThemePaN, mapStyleValues.toString());
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
             return true;
         };
 
@@ -755,7 +754,7 @@ public class ShowMap extends AbstractShowAction {
         } else {
             // save the values, there is perhaps no overlay
             setConfig(selectedThemePaN, mapStyleId);
-            Config.that.acceptChanges();
+            ViewManager.that.acceptChanges();
         }
     }
 
