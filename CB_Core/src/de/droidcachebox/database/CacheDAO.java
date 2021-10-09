@@ -37,10 +37,8 @@ public class CacheDAO {
     static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates, FavPoints ";
     private static final String sClass = "CacheDAO";
     private static CacheDAO cacheDAO;
-    private SQLiteInterface sql;
 
     private CacheDAO() {
-        sql = CBDB.getInstance().sql;
     }
 
     public static CacheDAO getInstance() {
@@ -87,7 +85,7 @@ public class CacheDAO {
             return true;
         cache.setGeoCacheDetail(new CacheDetail());
 
-        CoreCursor reader = sql.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.generatedId)});
+        CoreCursor reader = CBDB.getInstance().sql.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.generatedId)});
 
         try {
             if (reader != null && reader.getCount() > 0) {
@@ -229,7 +227,7 @@ public class CacheDAO {
             args.put("Hint", cache.getHint());
         }
         try {
-            sql.insert("Caches", args);
+            CBDB.getInstance().sql.insert("Caches", args);
         } catch (Exception exc) {
             Log.err(sClass, "Write Cache", "", exc);
         }
@@ -239,7 +237,7 @@ public class CacheDAO {
         Parameters args = new Parameters();
         args.put("found", cache.isFound());
         try {
-            sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
+            CBDB.getInstance().sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
             Replication.FoundChanged(cache.generatedId, cache.isFound());
         } catch (Exception exc) {
             Log.err(sClass, "Write Cache Found", "", exc);
@@ -311,7 +309,7 @@ public class CacheDAO {
         args.put("TourName", cache.getTourName());
         args.put("FavPoints", cache.favPoints);
         try {
-            long ret = sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
+            long ret = CBDB.getInstance().sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
             return ret > 0;
         } catch (Exception exc) {
             Log.err(sClass, "Update Cache", "", exc);
@@ -326,7 +324,7 @@ public class CacheDAO {
      *         or null if not in table
      */
     public Cache getFromDbByCacheId(long CacheID) {
-        CoreCursor reader = sql.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = CBDB.getInstance().sql.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
         try {
             if (reader != null && reader.getCount() > 0) {
                 reader.moveToFirst();
@@ -352,7 +350,7 @@ public class CacheDAO {
     {
         String where = SQL_GET_CACHE + (withDetail ? ", " + SQL_DETAILS : "") + SQL_BY_GC_CODE;
 
-        CoreCursor reader = sql.rawQuery(where, new String[]{GcCode});
+        CoreCursor reader = CBDB.getInstance().sql.rawQuery(where, new String[]{GcCode});
 
         try {
             if (reader != null && reader.getCount() > 0) {
@@ -377,7 +375,7 @@ public class CacheDAO {
 
     public boolean cacheExists(long CacheID) {
 
-        CoreCursor reader = sql.rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = CBDB.getInstance().sql.rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
 
         boolean exists = (reader.getCount() > 0);
 
@@ -434,7 +432,7 @@ public class CacheDAO {
         if (changed) {
 
             try {
-                sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.generatedId)});
+                CBDB.getInstance().sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.generatedId)});
             } catch (Exception exc) {
                 Log.err(sClass, "Update Cache", "", exc);
 
@@ -446,9 +444,9 @@ public class CacheDAO {
 
     public void updateCacheCountForGPXFilenames() {
         // welche GPXFilenamen sind in der DB erfasst
-        sql.beginTransaction();
+        CBDB.getInstance().sql.beginTransaction();
         try {
-            CoreCursor reader = sql.rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
+            CoreCursor reader = CBDB.getInstance().sql.rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
             reader.moveToFirst();
 
             while (!reader.isAfterLast()) {
@@ -457,18 +455,18 @@ public class CacheDAO {
 
                 Parameters val = new Parameters();
                 val.put("CacheCount", CacheCount);
-                sql.update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
+                CBDB.getInstance().sql.update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
 
                 reader.moveToNext();
             }
 
-            sql.delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
-            sql.delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
+            CBDB.getInstance().sql.delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
+            CBDB.getInstance().sql.delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
             reader.close();
-            sql.setTransactionSuccessful();
+            CBDB.getInstance().sql.setTransactionSuccessful();
         } catch (Exception ignored) {
         } finally {
-            sql.endTransaction();
+            CBDB.getInstance().sql.endTransaction();
         }
 
         CategoryDAO.getInstance().loadCategoriesFromDatabase();
@@ -476,7 +474,7 @@ public class CacheDAO {
 
     public String getNote(Cache cache) {
         String resultString = "";
-        CoreCursor c = sql.rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(cache.generatedId)});
+        CoreCursor c = CBDB.getInstance().sql.rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(cache.generatedId)});
         c.moveToFirst();
         if (!c.isAfterLast()) {
             resultString = c.getString(0);
@@ -487,7 +485,7 @@ public class CacheDAO {
 
     public String getNote(long generatedId) {
         String resultString = "";
-        CoreCursor c = sql.rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(generatedId)});
+        CoreCursor c = CBDB.getInstance().sql.rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(generatedId)});
         c.moveToFirst();
         if (!c.isAfterLast()) {
             resultString = c.getString(0);
@@ -506,7 +504,7 @@ public class CacheDAO {
         args.put("Notes", value);
         args.put("HasUserData", true);
 
-        sql.update("Caches", args, "id=" + cacheId, null);
+        CBDB.getInstance().sql.update("Caches", args, "id=" + cacheId, null);
     }
 
     public void setNote(Cache cache, String value) {
@@ -528,7 +526,7 @@ public class CacheDAO {
     public String getSolver(long cacheId) {
         try {
             String resultString = "";
-            CoreCursor c = sql.rawQuery("select Solver from Caches where Id=?", new String[]{String.valueOf(cacheId)});
+            CoreCursor c = CBDB.getInstance().sql.rawQuery("select Solver from Caches where Id=?", new String[]{String.valueOf(cacheId)});
             c.moveToFirst();
             if (!c.isAfterLast()) {
                 resultString = c.getString(0);
@@ -547,7 +545,7 @@ public class CacheDAO {
         args.put("Solver", value);
         args.put("HasUserData", true);
 
-        sql.update("Caches", args, "id=" + cacheId, null);
+        CBDB.getInstance().sql.update("Caches", args, "id=" + cacheId, null);
     }
 
     public void setSolver(Cache cache, String value) {
@@ -562,7 +560,7 @@ public class CacheDAO {
 
     public String getDescription(Cache cache) {
         String description = "";
-        CoreCursor reader = sql.rawQuery("select Description from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
+        CoreCursor reader = CBDB.getInstance().sql.rawQuery("select Description from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
         if (reader == null)
             return "";
         reader.moveToFirst();
@@ -578,7 +576,7 @@ public class CacheDAO {
 
     public String getShortDescription(Cache cache) {
         String description = "";
-        CoreCursor reader = sql.rawQuery("select ShortDescription from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
+        CoreCursor reader = CBDB.getInstance().sql.rawQuery("select ShortDescription from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
         if (reader == null)
             return "";
         reader.moveToFirst();

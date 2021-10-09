@@ -12,5 +12,5 @@ Version 3674 vom 3.Oktober 2021
 ~ erweiterte Prüfung zur Verwendung des Arbeitsverzeichnisses
 
 Version 3671 vom 29.September 2021
-+ Seit mehr als einem Jahr gibt es eine neue Version im Playstore.
-+ Es wird Zeit von Google vorgegebene Änderungen für Android 11 umzusetzen.
++ Nach nun mehr als einem Jahr gibt es eine neue Version im Playstore.
++ Es wird Zeit von Google vorgegebenen Änderungen für Android 11 umzusetzen.
