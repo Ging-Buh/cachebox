@@ -99,6 +99,10 @@ public class Drafts extends Array<Draft> {
                         currentCroppedLength += CB_Core_Settings.DraftsLoadLength.getValue();
                         sql += " LIMIT " + (CB_Core_Settings.DraftsLoadLength.getValue() + 1);
                         sql += " OFFSET " + Offset;
+                        break;
+                    default:
+                        if (currentCroppedLength == -1)
+                            currentCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
                 }
             }
 

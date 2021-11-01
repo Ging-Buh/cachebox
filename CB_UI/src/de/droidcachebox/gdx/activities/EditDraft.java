@@ -340,7 +340,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
             if (btnHow.getText().equals("="))
                 btnHow.setText("+");
             else if (btnHow.getText().equals("+"))
-                btnHow.setText("|");
+                btnHow.setText("="); // | insert at cursor is buggy, so remove (temporarily)
             else btnHow.setText("=");
             return true;
         });
@@ -410,7 +410,8 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 etComment.setText(text);
                 break;
             case "+":
-                etComment.setText(etComment.getText() + text);
+                String tmp = etComment.getText() + text;
+                etComment.setText(tmp); // else concurrent modification
                 break;
             case "|":
                 etComment.setFocus(true);

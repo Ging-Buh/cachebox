@@ -2,8 +2,7 @@ package de.droidcachebox.gdx.controls;
 
 import static de.droidcachebox.GlobalCore.firstSDCard;
 import static de.droidcachebox.GlobalCore.secondSDCard;
-
-import android.os.Environment;
+import static de.droidcachebox.GlobalCore.workPath;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -35,17 +34,26 @@ public class FileOrFolderPicker extends ActivityBase {
     // private static final String log = "FileOrFolderPicker";
     private static final String PARENT_DIR = "..";
     private final String DIRICON = ((char) new BigInteger("1F4C1", 16).intValue()) + " ";
-    private V_ListView filesView;
-    private FileAdapter fileAdapter;
-    private CB_Label title;
-    private String titleText;
-    private CB_Button btnSelectFolder, btnCancel, btnRoot, btnSD1, btnSD2, btnParent;
-    private String possibleExtensions;
-    private IReturnAbstractFile fileReturn;
+    private final V_ListView filesView;
+    private final FileAdapter fileAdapter;
+    private final CB_Label title;
+    private final String titleText;
+    private final CB_Button btnCancel;
+    private final CB_Button btnHome;
+    private final CB_Button btnSD1;
+    private final CB_Button btnSD2;
+    private final CB_Button btnParent;
+    private final CB_Button btnSort;
+    private final String possibleExtensions;
+    private final IReturnAbstractFile fileReturn;
+    private final boolean selectFolder;
+    private CB_Button btnSelectFolder;
     private IReturnAbstractFile folderReturn;
-    private boolean selectFolder;
     private AbstractFile currentFolder;
     private ArrayList<String> containedFoldersAndFiles;
+    private ArrayList<String> containedFolders;
+    private ArrayList<String> containedFiles;
+    private boolean descending;
 
     public FileOrFolderPicker(String initialPath, String titleText, String selectFolderText, IReturnAbstractFile folderReturn) {
         // use this for folder selection (possibleExtensions = null)
@@ -57,12 +65,14 @@ public class FileOrFolderPicker extends ActivityBase {
         // for file selection possibleExtensions must not be null (use "" for no restriction, "*" / placeholders are not handled)
         super("FileOrFolderPicker");
         this.titleText = titleText;
+        descending = false;
         filesView = new V_ListView(this, "files");
         fileAdapter = new FileAdapter(innerWidth);
         title = new CB_Label(titleText);
-        btnRoot = new CB_Button("/");
-        btnRoot.setClickHandler((view, x, y, pointer, button) -> {
-            currentFolder = FileFactory.createFile("/");
+        btnHome = new CB_Button("Home");
+        btnHome.setClickHandler((view, x, y, pointer, button) -> {
+            String path = workPath;
+            currentFolder = FileFactory.createFile(path);
             onShow();
             return true;
         });
@@ -84,6 +94,16 @@ public class FileOrFolderPicker extends ActivityBase {
             onShow();
             return true;
         });
+        btnSort = new CB_Button("Sort <");
+        btnSort.setClickHandler((view, x, y, pointer, button) -> {
+            descending = !descending;
+            if (descending)
+                btnSort.setText("Sort >");
+            else
+                btnSort.setText("Sort <");
+            onShow();
+            return true;
+        });
         this.possibleExtensions = possibleExtensions;
         selectFolder = possibleExtensions == null;
         // or selectFolder = fileReturn == null;
@@ -101,9 +121,13 @@ public class FileOrFolderPicker extends ActivityBase {
             return true;
         });
         AbstractFile initialFolder = FileFactory.createFile(initialPath);
+        if (!selectFolder) {
+            if (!initialFolder.isDirectory())
+                initialFolder = initialFolder.getParentFile();
+        }
         try {
             if (!initialFolder.exists()) {
-                initialFolder = FileFactory.createFile(Environment.getExternalStorageDirectory().getAbsolutePath());
+                initialFolder = FileFactory.createFile(workPath);
             }
         } catch (Exception ex) {
             initialFolder = FileFactory.createFile(firstSDCard);
@@ -125,10 +149,14 @@ public class FileOrFolderPicker extends ActivityBase {
         addNext(btnParent);
         if (firstSDCard.length() > 0) addNext(btnSD1);
         if (secondSDCard.length() > 0) addNext(btnSD2);
-        addNext(btnRoot);
+        addNext(btnHome);
         finaliseRow();
         initRow(BOTTOMUP);
-        if (selectFolder) addNext(btnSelectFolder);
+        if (selectFolder) {
+            addNext(btnSelectFolder);
+        } else {
+            addNext(btnSort);
+        }
         addLast(btnCancel);
         filesView.setHeight(getAvailableHeight());
         addLast(filesView);
@@ -138,19 +166,11 @@ public class FileOrFolderPicker extends ActivityBase {
 
     private void updateLayout() {
         String currentPath = currentFolder.getAbsolutePath();
-        int l = currentPath.length();
-        if (l > 30) {
-            currentPath = "..." + currentPath.substring(l - 30);
-        }
-        if (titleText == null || titleText.length() == 0) {
-            title.setText(currentPath);
-        } else {
-            title.setText(titleText + "\n" + currentPath);
-        }
-        if (currentPath.equals("/"))
-            btnRoot.disable();
+
+        if (currentPath.endsWith(workPath))
+            btnHome.disable();
         else
-            btnRoot.enable();
+            btnHome.enable();
 
         if (currentPath.equals(firstSDCard)) {
             btnSD1.disable();
@@ -170,6 +190,16 @@ public class FileOrFolderPicker extends ActivityBase {
             btnParent.enable();
         }
 
+        int l = currentPath.length();
+        if (l > 30) {
+            currentPath = "..." + currentPath.substring(l - 30);
+        }
+        if (titleText == null || titleText.length() == 0) {
+            title.setText(currentPath);
+        } else {
+            title.setText(titleText + "\n" + currentPath);
+        }
+
         filesView.notifyDataSetChanged();
 
     }
@@ -177,7 +207,7 @@ public class FileOrFolderPicker extends ActivityBase {
     private void loadFileList(AbstractFile path) {
         if (path == null) return;
         currentFolder = path;
-        containedFoldersAndFiles = new ArrayList<>();
+        containedFolders = new ArrayList<>();
 
         FilenameFilter filter = (dir, filename) -> {
             AbstractFile f = FileFactory.createFile(dir, filename);
@@ -202,17 +232,21 @@ public class FileOrFolderPicker extends ActivityBase {
 
         if (currentFolder.exists()) {
             String[] tmpFileList = currentFolder.list(filter);
-            ArrayList<String> containedFiles = new ArrayList<>();
+            containedFiles = new ArrayList<>();
             if (tmpFileList != null) {
                 for (String fileName : tmpFileList) {
                     if (FileFactory.createFile(currentFolder, fileName).isDirectory()) {
-                        containedFoldersAndFiles.add(DIRICON + fileName);
+                        containedFolders.add(DIRICON + fileName);
                     } else {
                         containedFiles.add(fileName);
                     }
                 }
-                Collections.sort(containedFoldersAndFiles, String.CASE_INSENSITIVE_ORDER);
+                Collections.sort(containedFolders, String.CASE_INSENSITIVE_ORDER);
+                // if (descending) Collections.reverse(containedFolders);
                 Collections.sort(containedFiles, String.CASE_INSENSITIVE_ORDER);
+                if (descending) Collections.reverse(containedFiles);
+                containedFoldersAndFiles = new ArrayList<>();
+                containedFoldersAndFiles.addAll(containedFolders);
                 containedFoldersAndFiles.addAll(containedFiles);
             }
         }
@@ -223,7 +257,8 @@ public class FileOrFolderPicker extends ActivityBase {
     }
 
     private class FileAdapter implements Adapter {
-        private float itemWidth, itemHeight;
+        private final float itemWidth;
+        private float itemHeight;
 
         public FileAdapter(float itemWidth) {
             this.itemWidth = itemWidth;

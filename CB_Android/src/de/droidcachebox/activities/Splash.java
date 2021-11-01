@@ -601,8 +601,8 @@ public class Splash extends Activity {
         try {
             if (Settings.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
                 String[] exclude = new String[]{"webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", ""};
-                CopyAssetFolder myCopie = new CopyAssetFolder();
-                myCopie.copyAll(getAssets(), GlobalCore.workPath, exclude);
+                CopyAssetFolder copyAssetFolder = new CopyAssetFolder();
+                copyAssetFolder.copyAll(getAssets(), GlobalCore.workPath, exclude);
 
                 Settings.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
                 Settings.newInstall.setValue(true);

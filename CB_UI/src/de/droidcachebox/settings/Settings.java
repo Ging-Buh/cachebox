@@ -10,16 +10,16 @@ public class Settings extends SettingsList implements CB_Core_Settings, CB_UI_Se
 
     private static final long serialVersionUID = 7330937438116889415L;
     private static Settings settings;
-    private final Config_Core config;
 
-    public Settings() {
-        super(); // creates the settingsList containing all settingsFields
-        config = new Config_Core(GlobalCore.workPath);
+    private Settings() {
+        // creates the settingsList containing all settingsFields
     }
 
     public static Settings getInstance() {
-        if (settings == null)
+        if (settings == null) {
+            new Config_Core(GlobalCore.workPath); // must execute before creation of SettingsList (cause workPath)
             settings = new Settings();
+        }
         return settings;
     }
 

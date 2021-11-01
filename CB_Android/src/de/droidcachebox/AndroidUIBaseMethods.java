@@ -736,14 +736,18 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     }
 
     public void startService() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (Settings.allowLocationService.getValue()) {
-                if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
+        if (Settings.allowLocationService.getValue()) {
+            if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     final String[] requestedPermissions = new String[]{Manifest.permission.FOREGROUND_SERVICE};
                     ActivityCompat.requestPermissions(mainActivity, requestedPermissions, Main.Request_ServiceOption);
-                } else {
+                }
+                else {
+                    Log.err(sClass, "No Permission needed for FOREGROUND_SERVICE from SDK_INT == 26 and 27");
                     serviceCanBeStarted();
                 }
+            } else {
+                serviceCanBeStarted();
             }
         }
     }
@@ -752,6 +756,9 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             locationServiceIntent = new Intent(androidApplication, CBForeground.class);
             androidApplication.startForegroundService(locationServiceIntent);
+        }
+        else {
+            Log.info(sClass, "FOREGROUND_SERVICE requires SDK_INT >= 26");
         }
     }
 
