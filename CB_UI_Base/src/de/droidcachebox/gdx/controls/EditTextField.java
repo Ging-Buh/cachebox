@@ -91,6 +91,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
     private Point touchDownPos = null;
     private float topLineAtTouchDown = 0;
     private float leftPosAtTouchDown = 0;
+    private boolean doRender;
 
     public EditTextField(CB_View_Base parent, String name) {
         super(UiSizes.getInstance().getButtonRectF(), parent, name);
@@ -310,7 +311,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
 
     @Override
     protected void render(Batch batch) {
-        if (this.isDisposed())
+        if (this.isDisposed() || !doRender)
             return;
 
         displayTextLock.lock();
@@ -899,7 +900,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
     }
 
     public boolean keyDown(int keycode) {
-        displayTextLock.lock();
+        doRender = false;
         try {
             if (GL.that.hasFocus(this)) {
                 if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
@@ -998,7 +999,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
                 return true;
             }
         } finally {
-            displayTextLock.unlock();
+            doRender = true;
         }
         return false;
     }
@@ -1278,111 +1279,122 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
         return keyTyped(character, false);
     }
 
-    public boolean keyTyped(char character, boolean ignoreFocus) {
+    private boolean keyTyped(char character, boolean ignoreFocus) {
+        boolean ret;
+        displayTextLock.lock();
+        ret = key_Typed(character, ignoreFocus);
+        displayTextLock.unlock();
+        return ret;
+    }
 
-        if (!isEditable)
-            return false;
+    private boolean key_Typed(char character, boolean ignoreFocus) {
 
-        final BitmapFont font = style.font;
-        Line line = getNthLine(cursor.y);
-        if (line == null)
-            return false;
+        if (isEditable) {
 
-        if (GL.that.hasFocus(this) || ignoreFocus) {
-            if (character == BACKSPACE) {
-                if (selectedArea != null) {
-                    deleteSelection();
-                    sendKeyTyped(character);
-                    return true;
-                } else {
-                    try {
-                        if (cursor.x > 0) {
-                            line.displayText = line.displayText.substring(0, cursor.x - 1) + line.displayText.substring(cursor.x);
+            final BitmapFont font = style.font;
+            Line line = getNthLine(cursor.y);
+            if (line == null) {
+                return false;
+            }
+
+            if (GL.that.hasFocus(this) || ignoreFocus) {
+                if (character == BACKSPACE) {
+                    if (selectedArea != null) {
+                        deleteSelection();
+                        sendKeyTyped(character);
+                        return true;
+                    } else {
+                        try {
+                            if (cursor.x > 0) {
+                                line.displayText = line.displayText.substring(0, cursor.x - 1) + line.displayText.substring(cursor.x);
+                                updateDisplayText(line, true);
+                                cursor.x--;
+                                setTextAtCursorVisible(true);
+                            } else {
+                                if (cursor.y > 0) {
+                                    setCursorLine(cursor.y - 1, true);
+                                    Line line2 = getNthLine(cursor.y);
+                                    if (line2 != null) {
+                                        cursor.x = line2.displayText.length();
+                                        setTextAtCursorVisible(true);
+                                        line2.displayText = line2.displayText + line.displayText;
+                                        lines.remove(cursor.y + 1);
+                                        updateDisplayText(line2, true);
+
+                                        int lineCount = lines.size();
+                                        sendLineCountChanged(lineCount, this.style.font.getLineHeight() * lineCount);
+                                    }
+                                }
+                            }
+                            GL.that.renderOnce();
+                            sendKeyTyped(character);
+                            return true;
+                        } catch (Exception e) {
+                            return true;
+                        }
+                    }
+                }
+
+                if (character == DELETE) {
+                    if (selectedArea != null) {
+                        deleteSelection();
+                    } else {
+                        if (cursor.x < line.displayText.length()) {
+                            line.displayText = line.displayText.substring(0, cursor.x) + line.displayText.substring(cursor.x + 1);
                             updateDisplayText(line, true);
-                            cursor.x--;
-                            setTextAtCursorVisible(true);
+                            GL.that.renderOnce();
                         } else {
-                            if (cursor.y > 0) {
-                                setCursorLine(cursor.y - 1, true);
+                            if (cursor.y + 1 < lines.size()) {
+                                cursor.y++;
                                 Line line2 = getNthLine(cursor.y);
                                 if (line2 != null) {
-                                    cursor.x = line2.displayText.length();
-                                    setTextAtCursorVisible(true);
-                                    line2.displayText = line2.displayText + line.displayText;
-                                    lines.remove(cursor.y + 1);
-                                    updateDisplayText(line2, true);
-
-                                    int lineCount = lines.size();
-                                    sendLineCountChanged(lineCount, this.style.font.getLineHeight() * lineCount);
+                                    cursor.y--;
+                                    lines.remove(line2);
+                                    line.displayText += line2.displayText;
+                                    updateDisplayText(line, true);
+                                    GL.that.renderOnce();
                                 }
                             }
                         }
-                        GL.that.renderOnce();
                         sendKeyTyped(character);
-                        return true;
-                    } catch (Exception e) {
-                        return true;
                     }
-                }
-            }
-
-            if (character == DELETE) {
-                if (selectedArea != null) {
-                    deleteSelection();
-                } else {
-                    if (cursor.x < line.displayText.length()) {
-                        line.displayText = line.displayText.substring(0, cursor.x) + line.displayText.substring(cursor.x + 1);
-                        updateDisplayText(line, true);
-                        GL.that.renderOnce();
-                    } else {
-                        if (cursor.y + 1 < lines.size()) {
-                            cursor.y++;
-                            Line line2 = getNthLine(cursor.y);
-                            if (line2 != null) {
-                                cursor.y--;
-                                lines.remove(line2);
-                                line.displayText += line2.displayText;
-                                updateDisplayText(line, true);
-                                GL.that.renderOnce();
-                            }
-                        }
-                    }
-                    sendKeyTyped(character);
-                }
-                return true;
-            }
-
-            if (character == ENTER_DESKTOP || character == ENTER_ANDROID) {
-                if (isMultiLine()) {
-                    if (selectedArea != null)
-                        deleteSelection();
-                    insertNewLine();
-                    clearSelection();
-                    sendKeyTyped(character);
                     return true;
                 }
-            }
 
-            if (font.getData().getGlyph(character) != null) {
-                if (selectedArea != null)
-                    deleteSelection();
-                {
-                    try {
-                        line.displayText = line.displayText.substring(0, cursor.x) + character + line.displayText.substring(cursor.x);
-                        updateDisplayText(line, true);
-                        cursor.x++;
-                        setTextAtCursorVisible(true);
-                    } catch (Exception e) {
-                        return false;
+                if (character == ENTER_DESKTOP || character == ENTER_ANDROID) {
+                    if (isMultiLine()) {
+                        if (selectedArea != null)
+                            deleteSelection();
+                        insertNewLine();
+                        clearSelection();
+                        sendKeyTyped(character);
+                        return true;
                     }
                 }
 
-                GL.that.renderOnce();
-            }
-            sendKeyTyped(character);
-            return true;
-        } else
+                if (font.getData().getGlyph(character) != null) {
+                    if (selectedArea != null)
+                        deleteSelection();
+                    {
+                        try {
+                            line.displayText = line.displayText.substring(0, cursor.x) + character + line.displayText.substring(cursor.x);
+                            updateDisplayText(line, true);
+                            cursor.x++;
+                            setTextAtCursorVisible(true);
+                        } catch (Exception e) {
+                            return false;
+                        }
+                    }
+
+                    GL.that.renderOnce();
+                }
+                sendKeyTyped(character);
+                return true;
+            } else
+                return false;
+        } else {
             return false;
+        }
     }
 
     private boolean isMultiLine() {
@@ -1414,6 +1426,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
     public void setText(String inputText) {
         if (inputText == null)
             throw new IllegalArgumentException("text cannot be null.");
+        doRender = false;
 
         BitmapFont font = style.font;
 
@@ -1445,6 +1458,8 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
         isEditable = stateIsEditable;
 
         setCursorPosition(inputText.length());
+
+        doRender = true;
 
     }
 

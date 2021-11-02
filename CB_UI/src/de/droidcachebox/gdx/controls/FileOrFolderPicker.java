@@ -4,11 +4,13 @@ import static de.droidcachebox.GlobalCore.firstSDCard;
 import static de.droidcachebox.GlobalCore.secondSDCard;
 import static de.droidcachebox.GlobalCore.workPath;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 
 import de.droidcachebox.gdx.ActivityBase;
@@ -43,7 +45,7 @@ public class FileOrFolderPicker extends ActivityBase {
     private final CB_Button btnSD1;
     private final CB_Button btnSD2;
     private final CB_Button btnParent;
-    private final CB_Button btnSort;
+    private final Spinner btnSort;
     private final String possibleExtensions;
     private final IReturnAbstractFile fileReturn;
     private final boolean selectFolder;
@@ -52,8 +54,8 @@ public class FileOrFolderPicker extends ActivityBase {
     private AbstractFile currentFolder;
     private ArrayList<String> containedFoldersAndFiles;
     private ArrayList<String> containedFolders;
-    private ArrayList<String> containedFiles;
-    private boolean descending;
+    private ArrayList<AbstractFile> containedFiles;
+    private int sortType;
 
     public FileOrFolderPicker(String initialPath, String titleText, String selectFolderText, IReturnAbstractFile folderReturn) {
         // use this for folder selection (possibleExtensions = null)
@@ -65,7 +67,6 @@ public class FileOrFolderPicker extends ActivityBase {
         // for file selection possibleExtensions must not be null (use "" for no restriction, "*" / placeholders are not handled)
         super("FileOrFolderPicker");
         this.titleText = titleText;
-        descending = false;
         filesView = new V_ListView(this, "files");
         fileAdapter = new FileAdapter(innerWidth);
         title = new CB_Label(titleText);
@@ -94,16 +95,12 @@ public class FileOrFolderPicker extends ActivityBase {
             onShow();
             return true;
         });
-        btnSort = new CB_Button("Sort <");
-        btnSort.setClickHandler((view, x, y, pointer, button) -> {
-            descending = !descending;
-            if (descending)
-                btnSort.setText("Sort >");
-            else
-                btnSort.setText("Sort <");
+        btnSort = new Spinner("ResortList", sortPossibilities(), index -> {
+            sortType = index;
             onShow();
-            return true;
         });
+        sortType = 0;
+        btnSort.setSelection(sortType);
         this.possibleExtensions = possibleExtensions;
         selectFolder = possibleExtensions == null;
         // or selectFolder = fileReturn == null;
@@ -204,6 +201,28 @@ public class FileOrFolderPicker extends ActivityBase {
 
     }
 
+    private SpinnerAdapter sortPossibilities() {
+        return new SpinnerAdapter() {
+            @Override
+            public String getText(int index) {
+                if (index == 0) return Translation.get("Name") + " ^";
+                else if (index == 1) return Translation.get("Name") + " v";
+                else if (index == 2) return Translation.get("date") + " ^";
+                return Translation.get("date") + " v";
+            }
+
+            @Override
+            public Drawable getIcon(int index) {
+                return null;
+            }
+
+            @Override
+            public int getCount() {
+                return 4;
+            }
+        };
+    }
+
     private void loadFileList(AbstractFile path) {
         if (path == null) return;
         currentFolder = path;
@@ -231,23 +250,38 @@ public class FileOrFolderPicker extends ActivityBase {
         };
 
         if (currentFolder.exists()) {
-            String[] tmpFileList = currentFolder.list(filter);
+            AbstractFile[] tmpFileList = currentFolder.listFiles(filter);
             containedFiles = new ArrayList<>();
             if (tmpFileList != null) {
-                for (String fileName : tmpFileList) {
-                    if (FileFactory.createFile(currentFolder, fileName).isDirectory()) {
-                        containedFolders.add(DIRICON + fileName);
+                for (AbstractFile file : tmpFileList) {
+                    if (file.isDirectory()) {
+                        containedFolders.add(DIRICON + file.getName());
                     } else {
-                        containedFiles.add(fileName);
+                        containedFiles.add(file);
                     }
                 }
                 Collections.sort(containedFolders, String.CASE_INSENSITIVE_ORDER);
-                // if (descending) Collections.reverse(containedFolders);
-                Collections.sort(containedFiles, String.CASE_INSENSITIVE_ORDER);
-                if (descending) Collections.reverse(containedFiles);
+                Collections.sort(containedFiles, new Comparator<AbstractFile>() {
+                    @Override
+                    public int compare(AbstractFile o1, AbstractFile o2) {
+                        if (sortType == 0) {
+                            return o1.getName().toLowerCase(Locale.ROOT).compareTo(o2.getName().toLowerCase(Locale.ROOT));
+                        } else if (sortType == 1) {
+                            return o2.getName().toLowerCase(Locale.ROOT).compareTo(o1.getName().toLowerCase(Locale.ROOT));
+                        } else if (sortType == 2) {
+                            return ((Long) o1.lastModified()).compareTo(o2.lastModified());
+                        } else
+                            return ((Long) o2.lastModified()).compareTo(o1.lastModified());
+                    }
+                });
                 containedFoldersAndFiles = new ArrayList<>();
                 containedFoldersAndFiles.addAll(containedFolders);
-                containedFoldersAndFiles.addAll(containedFiles);
+                for (AbstractFile file : containedFiles) {
+                    containedFoldersAndFiles.add(file.getName());
+                }
+            }
+            else {
+                containedFoldersAndFiles = new ArrayList<>();
             }
         }
     }

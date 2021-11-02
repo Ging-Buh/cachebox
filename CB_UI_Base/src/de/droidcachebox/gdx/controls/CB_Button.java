@@ -20,8 +20,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import de.droidcachebox.WrapType;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.ButtonSprites;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_Input;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.MoveableList;
@@ -188,16 +195,16 @@ public class CB_Button extends CB_View_Base {
             return super.click(x, y, pointer, button);
     }
 
-    public void setText(String Text, Color color) {
-        setText(Text, null, color);
+    public void setText(String text, Color color) {
+        setText(text, null, color);
     }
 
-    public void setText(String Text, BitmapFont font, Color color) {
-        if (Text == null) return;
+    public void setText(String text, BitmapFont font, Color color) {
+        if (text == null) return;
         // ? no change
         if (lblTxt != null)
             if (lblTxt.mText != null)
-                if (lblTxt.mText.equals(Text))
+                if (lblTxt.mText.equals(text))
                     if (lblTxt.mFont.equals(font))
                         if (lblTxt.mColor.equals(color))
                             if (lblTxt.mHAlignment.equals(hAlignment))
@@ -205,7 +212,7 @@ public class CB_Button extends CB_View_Base {
                                 return;
 
         // no text -> remove label
-        if (Text.equals("")) {
+        if (text.equals("")) {
             if (lblTxt != null) {
                 this.removeChild(lblTxt);
                 lblTxt.dispose();
@@ -224,7 +231,7 @@ public class CB_Button extends CB_View_Base {
             mFont = font;
         if (mFont == null)
             mFont = Fonts.getBig();
-        lblTxt = new CB_Label(Text, mFont, color, WrapType.WRAPPED).setHAlignment(hAlignment).setVAlignment(vAlignment);
+        lblTxt = new CB_Label(text, mFont, color, WrapType.WRAPPED).setHAlignment(hAlignment).setVAlignment(vAlignment);
         this.initRow(BOTTOMUP);
         this.addLast(lblTxt);
 

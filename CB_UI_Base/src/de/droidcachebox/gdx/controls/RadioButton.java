@@ -17,6 +17,7 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -79,9 +80,9 @@ public class RadioButton extends CB_CheckBox {
     }
 
     @Override
-    public void setText(String Text, Color color) {
+    public void setText(String text, Color color) {
         hAlignment = HAlignment.LEFT;
-        setText(Text, null, color);
+        setText(text, null, color);
     }
 
     @Override

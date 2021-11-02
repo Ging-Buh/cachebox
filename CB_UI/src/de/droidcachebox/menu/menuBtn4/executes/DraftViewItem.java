@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.views;
+package de.droidcachebox.menu.menuBtn4.executes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -21,6 +21,10 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import de.droidcachebox.WrapType;
 import de.droidcachebox.database.Draft;
 import de.droidcachebox.database.GeoCacheType;
@@ -28,27 +32,28 @@ import de.droidcachebox.database.LogType;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 public class DraftViewItem extends ListViewItemBackground {
-    private static final String sKlasse = "DraftViewItem";
-    private static NinePatch backheader;
+    private static final String sClass = "DraftViewItem";
+    private static NinePatch backHeader;
     private static float headHeight;
     public boolean headerClicked;
     private final Draft draft;
     private Image ivTyp;
     private Image ivCacheType;
 
-    public DraftViewItem(CB_RectF rec, int Index, Draft fromDraft) {
-        super(rec, Index, "");
+    public DraftViewItem(CB_RectF rec, int index, Draft fromDraft) {
+        super(rec, index, "");
         draft = fromDraft;
         if (draft == null) {
             CB_Button btnLoadMore = new CB_Button(Translation.get("LoadMore"));
@@ -75,18 +80,18 @@ public class DraftViewItem extends ListViewItemBackground {
             header.addNext(ivTyp, FIXED);
             ivTyp.setDrawable(getTypeIcon(draft));
             // private void iniDateLabel() {
-            SimpleDateFormat postFormater = new SimpleDateFormat("dd.MMM (HH:mm)", Locale.US);
+            SimpleDateFormat postFormatter = new SimpleDateFormat("dd.MMM (HH:mm)", Locale.US);
             String foundNumber = "";
             if (draft.foundNumber > 0) {
                 foundNumber = "#" + draft.foundNumber + " @ ";
             }
-            String dateString = foundNumber + postFormater.format(draft.timestamp);
+            String dateString = foundNumber + postFormatter.format(draft.timestamp);
             float DateLength = 100;
 
             try {
                 DateLength = Fonts.Measure(dateString).width;
             } catch (Exception ex) {
-                Log.err(sKlasse, "iniDateLabel", ex);
+                Log.err(sClass, "iniDateLabel", ex);
             }
 
             CB_Label lblDate = new CB_Label(" lblDate", getWidth() - getRightWidth() - DateLength, getHeight() - (headHeight / 2) - (measuredLabelHeight / 2), DateLength, measuredLabelHeight);
@@ -164,7 +169,7 @@ public class DraftViewItem extends ListViewItemBackground {
 
     @Override
     protected void initialize() {
-        backheader = new NinePatch(Sprites.getSprite("listrec-header"), 8, 8, 8, 8);
+        backHeader = new NinePatch(Sprites.getSprite("listrec-header"), 8, 8, 8, 8);
         super.initialize();
     }
 
@@ -193,8 +198,8 @@ public class DraftViewItem extends ListViewItemBackground {
         }
 
         super.render(batch);
-        if (backheader != null) {
-            backheader.draw(batch, 0, getHeight() - headHeight, getWidth(), headHeight);
+        if (backHeader != null) {
+            backHeader.draw(batch, 0, getHeight() - headHeight, getWidth(), headHeight);
         } else {
             resetIsInitialized();
         }

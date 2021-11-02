@@ -6,7 +6,7 @@ Menschen machen Fehler.
 Wenn diese App deine Erwartungen nicht erfüllt oder
 wenn du einen Fehler findest oder
 wenn du dir neue Funktionen wünscht,
-kannst du uns das auf www.team-cachebox.de mitteilen.
+kannst du uns das auf https://github.com/Ging-Buh/cachebox/issues mitteilen.
 
 Oder du besuchst uns in dem von uns benutzten Forum http://www.geoclub.de/viewforum.php?f=114 .
 

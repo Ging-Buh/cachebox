@@ -301,6 +301,7 @@ public class CB_Label extends CB_View_Base {
             }
         }
 
+        /*
         if (mTextObject == null) {
             mTextObject = new BitmapFontCache(mFont, true);
         } else if (!mTextObject.getFont().equals(mFont)) {
@@ -309,6 +310,11 @@ public class CB_Label extends CB_View_Base {
         if (!mColor.equals(mTextObject.getColor())) {
             mTextObject.setColor(mColor);
         }
+
+         */
+        mTextObject = new BitmapFontCache(mFont, true);
+        mTextObject.setColor(mColor);
+
         try {
             switch (mWrapType) {
                 case SINGLELINE:
@@ -322,7 +328,6 @@ public class CB_Label extends CB_View_Base {
                     break;
             }
         } catch (Exception e) {
-            // ich vermute bei Zeichen nicht im Zeichensatz
             Log.err(log, "Für " + mText, e);
         }
         if (underlineStrikeoutDrawable != null) {

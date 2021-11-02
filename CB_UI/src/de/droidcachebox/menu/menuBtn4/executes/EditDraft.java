@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.activities;
+package de.droidcachebox.menu.menuBtn4.executes;
 
 import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
 
@@ -58,9 +58,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.gdx.views.DraftViewItem;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn4.executes.DraftsView;
 import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -340,7 +338,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
             if (btnHow.getText().equals("="))
                 btnHow.setText("+");
             else if (btnHow.getText().equals("+"))
-                btnHow.setText("="); // | insert at cursor is buggy, so remove (temporarily)
+                btnHow.setText("|");
             else btnHow.setText("=");
             return true;
         });
@@ -407,11 +405,10 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         text = TemplateFormatter.ReplaceTemplate(text, currentDraft);
         switch (btnHow.getText()) {
             case "=":
-                etComment.setText(text);
+                currentDraft.comment = text;
                 break;
             case "+":
-                String tmp = etComment.getText() + text;
-                etComment.setText(tmp); // else concurrent modification
+                currentDraft.comment = etComment.getText() + "\n" + text;
                 break;
             case "|":
                 etComment.setFocus(true);
@@ -419,6 +416,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                     etComment.keyTyped(text.charAt(i));
                 }
                 etComment.setFocus(false);
+                currentDraft.comment = etComment.getText();
                 break;
         }
     }

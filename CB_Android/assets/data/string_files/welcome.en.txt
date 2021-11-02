@@ -6,7 +6,7 @@ People make mistakes.
 If this app does not meet your expectations or
 if you find a bug or
 if you have a feature request,
-you can tell us at www.team-cachebox.de.
+you can tell us at https://github.com/Ging-Buh/cachebox/issues.
 
 Or you visit us at our forum http://www.geoclub.de/viewforum.php?f=114.
 Some developers and forums user also speak English, so that you can get help in English.
