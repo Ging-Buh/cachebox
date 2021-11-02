@@ -433,13 +433,25 @@ public class Splash extends Activity {
 
     private void setSelectInternalSDButton(Dialog dialog) {
         Button btnInternal_SD = dialog.findViewById(R.id.btnInternal_SD);
-        final String possibleWorkpath;
-        if (android.os.Build.VERSION.SDK_INT < 29) {
-            possibleWorkpath = Environment.getExternalStorageDirectory().getPath() + "/CacheBox";
-        } else {
-            possibleWorkpath = getExternalFilesDir(null).getAbsolutePath();
+        final String possibleWorkPath;
+        String tmp = Environment.getExternalStorageDirectory().getPath() + "/CacheBox";
+        boolean useOldCacheBoxDir = android.os.Build.VERSION.SDK_INT < 29;
+        if (!useOldCacheBoxDir) {
+            if (!FileIO.directoryExists(tmp)) {
+                FileIO.createDirectory(tmp);
+            }
+            if (FileIO.directoryExists(tmp)) {
+                useOldCacheBoxDir = FileIO.createDirectory(tmp + "/dummy");
+                if (useOldCacheBoxDir)
+                    FileIO.deleteDirectory(FileFactory.createFile(tmp + "/dummy"));
+            }
         }
-        String btnInternal_SDText = "Internal SD\n\n" + possibleWorkpath;
+        if (useOldCacheBoxDir) {
+            possibleWorkPath = tmp;
+        } else {
+            possibleWorkPath = getExternalFilesDir(null).getAbsolutePath();
+        }
+        String btnInternal_SDText = "Internal SD\n\n" + possibleWorkPath;
         btnInternal_SD.setText(btnInternal_SDText);
         btnInternal_SD.setOnClickListener(v -> {
             dialog.dismiss();
@@ -447,7 +459,7 @@ public class Splash extends Activity {
                 @Override
                 public void run() {
                     dialog.dismiss();
-                    workPath = possibleWorkpath;
+                    workPath = possibleWorkPath;
                     initializationStep3();
                 }
             }.start();

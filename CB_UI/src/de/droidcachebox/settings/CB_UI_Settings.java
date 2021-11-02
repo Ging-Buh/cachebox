@@ -19,6 +19,7 @@ package de.droidcachebox.settings;
 import static de.droidcachebox.settings.SettingCategory.API;
 import static de.droidcachebox.settings.SettingCategory.CarMode;
 import static de.droidcachebox.settings.SettingCategory.Compass;
+import static de.droidcachebox.settings.SettingCategory.Drafts;
 import static de.droidcachebox.settings.SettingCategory.Folder;
 import static de.droidcachebox.settings.SettingCategory.Gps;
 import static de.droidcachebox.settings.SettingCategory.Internal;
@@ -123,8 +124,9 @@ public interface CB_UI_Settings {
     SettingInt ImportLimit = new SettingInt("ImportLimit", API, NEVER, 50, Global, ACB);
 
     SettingFolder TrackFolder = new SettingFolder("TrackFolder", Folder, EXPERT, Config_Core.workPath + "/User/Tracks", Global, ACB, true);
-    SettingFile DraftsGarminPath = new SettingFile("DraftsGarminPath", Folder, DEVELOPER, Config_Core.workPath + "/User/geocache_visits.txt", Global, ACB);
     SettingFile gpxExportFileName = new SettingFile("gpxExportFileName", Folder, NEVER, Config_Core.workPath + "/User/export.gpx", Global, ACB, "gpx");
+
+    SettingFile DraftsGarminPath = new SettingFile("DraftsGarminPath", Drafts, DEVELOPER, Config_Core.workPath + "/User/geocache_visits.txt", Global, ACB);
 
     SettingString FoundTemplate = new SettingLongString("FoundTemplate", Templates, NORMAL, FOUND, Global, ACB);
     SettingString AttendedTemplate = new SettingLongString("AttendedTemplate", Templates, NORMAL, ATTENDED, Global, ACB);
