@@ -54,21 +54,21 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
     protected abstract SettingsDAO createSettingsDAO();
 
-    protected abstract boolean canUsePlatformSettings();
+    protected abstract boolean canNotUsePlatformSettings();
     /**
      * Return true, if setting changes need restart
      *
-     * @return
+     * @return ?
      */
     public boolean writeToDatabases() {
         // Write into DB
-        getSettingsDB().getSql().beginTransaction();
+        getSettingsDB().beginTransaction();
         SettingsDAO dao = createSettingsDAO();
         // if used from Splash, DataDB is not possible = Data == null
         Database_Core Data = getDataDB();
         try {
             if (Data != null)
-                Data.getSql().beginTransaction();
+                Data.beginTransaction();
         } catch (Exception ex) {
             Data = null;
         }
@@ -83,7 +83,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                 if (Local == setting.getStoreType()) {
                     if (Data != null)
                         dao.WriteToDatabase(Data, setting);
-                } else if (Global == setting.getStoreType() || (!canUsePlatformSettings() && Platform == setting.getStoreType())) {
+                } else if (Global == setting.getStoreType() || (canNotUsePlatformSettings() && Platform == setting.getStoreType())) {
                     dao.WriteToDatabase(getSettingsDB(), setting);
                 } else if (Platform == setting.getStoreType()) {
                     dao.writePlatformSetting(setting);
@@ -98,14 +98,14 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
             }
             if (Data != null)
-                Data.getSql().setTransactionSuccessful();
-            getSettingsDB().getSql().setTransactionSuccessful();
+                Data.setTransactionSuccessful();
+            getSettingsDB().setTransactionSuccessful();
 
             return needRestart;
         } finally {
-            getSettingsDB().getSql().endTransaction();
+            getSettingsDB().endTransaction();
             if (Data != null)
-                Data.getSql().endTransaction();
+                Data.endTransaction();
         }
 
     }
@@ -128,7 +128,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                             setting.loadDefault();
                         else
                             setting = dao.ReadFromDatabase(getDataDB(), setting);
-                    } else if (Global == setting.getStoreType() || (!canUsePlatformSettings() && Platform == setting.getStoreType())) {
+                    } else if (Global == setting.getStoreType() || (canNotUsePlatformSettings() && Platform == setting.getStoreType())) {
                         setting = dao.ReadFromDatabase(getSettingsDB(), setting);
                     } else if (Platform == setting.getStoreType()) {
                         isPlatform = true;
@@ -195,22 +195,19 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
     }
 
     public void LoadFromLastValue() {
-        for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
-            SettingBase<?> setting = it.next();
+        for (SettingBase<?> setting : this) {
             setting.loadFromLastValue();
         }
     }
 
     public void saveToLastValue() {
-        for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
-            SettingBase<?> setting = it.next();
+        for (SettingBase<?> setting : this) {
             setting.saveToLastValue();
         }
     }
 
     public void loadAllDefaultValues() {
-        for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
-            SettingBase<?> setting = it.next();
+        for (SettingBase<?> setting : this) {
             setting.loadDefault();
         }
     }

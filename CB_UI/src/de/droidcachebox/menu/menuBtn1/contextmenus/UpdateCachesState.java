@@ -86,13 +86,13 @@ public class UpdateCachesState extends AbstractAction {
                     }
                     skip += BlockSize;
 
-                    CBDB.getInstance().getSql().beginTransaction();
+                    CBDB.getInstance().beginTransaction();
                     for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
                         if (dao.updateDatabaseCacheState(ci.cache))
                             ChangedCount++;
                     }
-                    CBDB.getInstance().getSql().setTransactionSuccessful();
-                    CBDB.getInstance().getSql().endTransaction();
+                    CBDB.getInstance().setTransactionSuccessful();
+                    CBDB.getInstance().endTransaction();
 
                     if (APIError != OK) {
                         GL.that.toast(LastAPIError);

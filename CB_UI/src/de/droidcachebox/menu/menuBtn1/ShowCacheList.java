@@ -143,12 +143,12 @@ public class ShowCacheList extends AbstractShowAction {
             gL_MsgBox = MsgBox.show(Translation.get(msgText), Translation.get("Favorites"), MsgBoxButton.OKCancel, MsgBoxIcon.Question, (which, data) -> {
                 gL_MsgBox_close();
                 if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                    CBDB.getInstance().getSql().beginTransaction();
+                    CBDB.getInstance().beginTransaction();
                     Database_Core.Parameters args = new Database_Core.Parameters();
                     args.put("Favorit", finalChecked ? 1 : 0);
                     CBDB.getInstance().getSql().update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
-                    CBDB.getInstance().getSql().setTransactionSuccessful();
-                    CBDB.getInstance().getSql().endTransaction();
+                    CBDB.getInstance().setTransactionSuccessful();
+                    CBDB.getInstance().endTransaction();
                     ViewManager.reloadCacheList();
                     GlobalCore.checkSelectedCacheValid();
                 }

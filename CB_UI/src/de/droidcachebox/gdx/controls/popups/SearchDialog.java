@@ -523,7 +523,7 @@ public class SearchDialog extends PopUp_Base {
 
                 if (geoCacheRelateds.size() > 0) {
 
-                    CBDB.getInstance().getSql().beginTransaction();
+                    CBDB.getInstance().beginTransaction();
 
                     CacheDAO cacheDAO = CacheDAO.getInstance();
                     ImageDAO imageDAO = new ImageDAO();
@@ -555,8 +555,8 @@ public class SearchDialog extends PopUp_Base {
                         }
                     }
 
-                    CBDB.getInstance().getSql().setTransactionSuccessful();
-                    CBDB.getInstance().getSql().endTransaction();
+                    CBDB.getInstance().setTransactionSuccessful();
+                    CBDB.getInstance().endTransaction();
 
                     CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 

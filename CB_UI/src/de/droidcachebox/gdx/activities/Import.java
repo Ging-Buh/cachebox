@@ -917,19 +917,19 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                         long startTime = System.currentTimeMillis();
 
-                        CBDB.getInstance().getSql().beginTransaction();
+                        CBDB.getInstance().beginTransaction();
                         CBDB.getInstance().cacheList.clear();
                         try {
                             importer.importGpx(directoryPath, ip);
-                            CBDB.getInstance().getSql().setTransactionSuccessful();
+                            CBDB.getInstance().setTransactionSuccessful();
                         } catch (Exception exc) {
                             exc.printStackTrace();
-                            CBDB.getInstance().getSql().endTransaction();
+                            CBDB.getInstance().endTransaction();
                             cancelImport();
                             ip.ProgressChangeMsg("", "");
                             return;
                         }
-                        CBDB.getInstance().getSql().endTransaction();
+                        CBDB.getInstance().endTransaction();
 
                         if (BreakawayImportThread.isCanceled()) {
                             cancelImport();
@@ -969,16 +969,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                     if (checkBoxGcVote.isChecked()) {
                         dis.setAnimationType(AnimationType.Download);
-                        CBDB.getInstance().getSql().beginTransaction();
+                        CBDB.getInstance().beginTransaction();
                         try {
                             importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), ip);
 
-                            CBDB.getInstance().getSql().setTransactionSuccessful();
+                            CBDB.getInstance().setTransactionSuccessful();
                         } catch (Exception exc) {
                             exc.printStackTrace();
                         }
                         dis.setAnimationType(AnimationType.Work);
-                        CBDB.getInstance().getSql().endTransaction();
+                        CBDB.getInstance().endTransaction();
                         if (BreakawayImportThread.isCanceled()) {
                             cancelImport();
                             ip.ProgressChangeMsg("", "");

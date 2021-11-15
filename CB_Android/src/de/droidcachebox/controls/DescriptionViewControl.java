@@ -81,7 +81,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     newCache = geoCacheRelated.cache;
 
                     synchronized (CBDB.getInstance().cacheList) {
-                        CBDB.getInstance().getSql().beginTransaction();
+                        CBDB.getInstance().beginTransaction();
 
                         CBDB.getInstance().cacheList.remove(aktCache);
                         CBDB.getInstance().cacheList.add(newCache);
@@ -116,8 +116,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         for (ImageEntry image : geoCacheRelated.images)
                             imageDAO.writeToDatabase(image, false);
 
-                        CBDB.getInstance().getSql().setTransactionSuccessful();
-                        CBDB.getInstance().getSql().endTransaction();
+                        CBDB.getInstance().setTransactionSuccessful();
+                        CBDB.getInstance().endTransaction();
 
                         CacheDAO.getInstance().updateCacheCountForGPXFilenames();
                     }

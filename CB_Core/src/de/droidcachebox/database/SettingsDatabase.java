@@ -10,7 +10,7 @@ public class SettingsDatabase extends Database_Core {
     private SettingsDatabase() {
         super();
         latestDatabaseChange = DatabaseVersions.SettingsLatestVersion;
-        if (PlatformUIBase.canUsePlatformSettings()) sql = PlatformUIBase.getSQLInstance();
+        if (!PlatformUIBase.canNotUsePlatformSettings()) sql = PlatformUIBase.getSQLInstance();
         settings = this;
     }
 

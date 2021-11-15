@@ -267,7 +267,7 @@ public class Import_GSAK extends ActivityBase {
                 Settings.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
                 Settings.withLogImages.setValue(chkLogImages.isChecked());
                 ViewManager.that.acceptChanges();
-                CBDB.getInstance().getSql().beginTransaction();
+                CBDB.getInstance().beginTransaction();
 
                 int count = 0;
                 CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
@@ -299,10 +299,10 @@ public class Import_GSAK extends ActivityBase {
 
                 writeLogs();
 
-                CBDB.getInstance().getSql().setTransactionSuccessful();
+                CBDB.getInstance().setTransactionSuccessful();
             }
             PlatformUIBase.freeSQLInstance(sql);
-            CBDB.getInstance().getSql().endTransaction();
+            CBDB.getInstance().endTransaction();
             CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
             if (mImageDatabaseName.length() > 0) {

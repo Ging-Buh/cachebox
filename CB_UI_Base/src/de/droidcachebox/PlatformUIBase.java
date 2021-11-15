@@ -92,8 +92,8 @@ public class PlatformUIBase {
         methods = _methods;
     }
 
-    public static boolean canUsePlatformSettings() {
-        return (methods != null);
+    public static boolean canNotUsePlatformSettings() {
+        return (methods == null);
     }
 
     public static SettingBase<?> readPlatformSetting(SettingBase<?> setting) {

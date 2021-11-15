@@ -30,6 +30,18 @@ public abstract class Database_Core {
         return sql;
     }
 
+    public void beginTransaction() {
+        sql.beginTransaction();
+    }
+
+    public void setTransactionSuccessful() {
+        sql.setTransactionSuccessful();
+    }
+
+    public void endTransaction() {
+        sql.endTransaction();
+    }
+
     public boolean isDatabaseNew() {
         return newDB;
     }

@@ -639,13 +639,13 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                         Importer importer = new Importer();
                         ImporterProgress ip = new ImporterProgress();
 
-                        CBDB.getInstance().getSql().beginTransaction();
+                        CBDB.getInstance().beginTransaction();
                         try {
                             importer.importGpx(externalRequestGpxPath, ip);
                         } catch (Exception ignored) {
                         }
-                        CBDB.getInstance().getSql().setTransactionSuccessful();
-                        CBDB.getInstance().getSql().endTransaction();
+                        CBDB.getInstance().setTransactionSuccessful();
+                        CBDB.getInstance().endTransaction();
 
                         wd.close();
                         CacheListChangedListeners.getInstance().cacheListChanged();

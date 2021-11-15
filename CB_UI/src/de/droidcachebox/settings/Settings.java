@@ -31,10 +31,10 @@ public class Settings extends SettingsList implements CB_Core_Settings, CB_UI_Se
     @Override
     protected Database_Core getDataDB() {
         // if used from Splash, DataDB is not possible
-        if (PlatformUIBase.canUsePlatformSettings())
-            return CBDB.getInstance();
-        else
+        if (PlatformUIBase.canNotUsePlatformSettings())
             return null;
+        else
+            return CBDB.getInstance();
     }
 
     @Override
@@ -44,8 +44,8 @@ public class Settings extends SettingsList implements CB_Core_Settings, CB_UI_Se
     }
 
     @Override
-    protected boolean canUsePlatformSettings() {
-        return PlatformUIBase.canUsePlatformSettings();
+    protected boolean canNotUsePlatformSettings() {
+        return PlatformUIBase.canNotUsePlatformSettings();
     }
 
 }

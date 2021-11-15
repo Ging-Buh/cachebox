@@ -138,7 +138,7 @@ public class ShowLogs extends AbstractShowAction {
                                             GL.that.toast(LastAPIError);
                                         }
                                         if (logList.size() > 0) {
-                                            CBDB.getInstance().getSql().beginTransaction();
+                                            CBDB.getInstance().beginTransaction();
 
                                             Iterator<LogEntry> iterator = logList.iterator();
                                             if (loadAllLogs)
@@ -154,8 +154,8 @@ public class ShowLogs extends AbstractShowAction {
                                                 }
                                             } while (iterator.hasNext() && !doCancelThread);
 
-                                            CBDB.getInstance().getSql().setTransactionSuccessful();
-                                            CBDB.getInstance().getSql().endTransaction();
+                                            CBDB.getInstance().setTransactionSuccessful();
+                                            CBDB.getInstance().endTransaction();
                                             // update LogListView
                                             LogListView.getInstance().resetIsInitialized();
                                             // for update slider, ?, ?, ? with latest logs
