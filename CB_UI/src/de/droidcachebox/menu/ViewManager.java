@@ -62,8 +62,8 @@ import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.menuBtn1.ShowCacheList;
 import de.droidcachebox.menu.menuBtn1.ShowParkingDialog;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
-import de.droidcachebox.menu.menuBtn2.HintDialog;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
+import de.droidcachebox.menu.menuBtn2.ShowHintDialog;
 import de.droidcachebox.menu.menuBtn2.ShowLogs;
 import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
@@ -288,7 +288,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         mainBtn2.addAction(ShowDescription.getInstance(), true, GestureDirection.Up);
         mainBtn2.addAction(ShowWaypoints.getInstance(), false, GestureDirection.Right);
-        mainBtn2.addAction(HintDialog.getInstance(), false);
+        mainBtn2.addAction(ShowHintDialog.getInstance(), false);
         mainBtn2.addAction(ShowSpoiler.getInstance(), false);
         mainBtn2.addAction(ShowLogs.getInstance(), false, GestureDirection.Down);
         mainBtn2.addAction(ShowNotes.getInstance(), false, GestureDirection.Left);

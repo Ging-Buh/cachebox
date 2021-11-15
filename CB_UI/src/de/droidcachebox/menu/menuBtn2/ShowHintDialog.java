@@ -24,19 +24,20 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.math.Size;
+import de.droidcachebox.menu.menuBtn2.executes.HintDialog;
 import de.droidcachebox.utils.UnitFormatter;
 
-public class HintDialog extends AbstractAction {
+public class ShowHintDialog extends AbstractAction {
 
-    private static HintDialog that;
+    private static ShowHintDialog showHintDialog;
 
-    private HintDialog() {
+    private ShowHintDialog() {
         super("hint");
     }
 
-    public static HintDialog getInstance() {
-        if (that == null) that = new HintDialog();
-        return that;
+    public static ShowHintDialog getInstance() {
+        if (showHintDialog == null) showHintDialog = new ShowHintDialog();
+        return showHintDialog;
     }
 
     @Override
@@ -68,6 +69,6 @@ public class HintDialog extends AbstractAction {
         Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
         Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
 
-        new de.droidcachebox.menu.menuBtn2.executes.HintDialog(decodedSize.height > encodedSize.height ? decodedSize : encodedSize, hintTextEncoded).show();
+        new HintDialog(decodedSize.height > encodedSize.height ? decodedSize : encodedSize, hintTextEncoded).show();
     }
 }

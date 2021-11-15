@@ -23,8 +23,8 @@ import de.droidcachebox.AbstractAction;
 import de.droidcachebox.menu.menuBtn1.ShowCacheList;
 import de.droidcachebox.menu.menuBtn1.ShowParkingDialog;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
-import de.droidcachebox.menu.menuBtn2.HintDialog;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
+import de.droidcachebox.menu.menuBtn2.ShowHintDialog;
 import de.droidcachebox.menu.menuBtn2.ShowLogs;
 import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
@@ -118,7 +118,7 @@ public enum QuickAction {
             case Spoiler:
                 return ShowSpoiler.getInstance();
             case Hint:
-                return HintDialog.getInstance();
+                return ShowHintDialog.getInstance();
             case Parking:
                 return ShowParkingDialog.getInstance();
             case Day_Night:

@@ -35,8 +35,8 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
-import de.droidcachebox.menu.menuBtn2.HintDialog;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
+import de.droidcachebox.menu.menuBtn2.ShowHintDialog;
 import de.droidcachebox.menu.menuBtn2.ShowLogs;
 import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
@@ -97,7 +97,7 @@ public class CacheContextMenu {
         if (_forCacheList) {
             theMenu.addDivider();
             theMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + GeoCacheType.Trailhead.name()), () -> ShowWaypoints.getInstance().execute());
-            theMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> HintDialog.getInstance().showHint()).setEnabled(geoCache.hasHint());
+            theMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> ShowHintDialog.getInstance().showHint()).setEnabled(geoCache.hasHint());
             theMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.getInstance().execute());
             theMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.getInstance().execute());
             theMenu.addMenuItem("Notes", Sprites.getSprite(IconName.userdata.name()), () -> ShowNotes.getInstance().execute());
