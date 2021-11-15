@@ -421,8 +421,13 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
     }
 
     private float getCursorY(int aCursorLine) {
-        float textY = (int) getHeight() - bgTopHeight + style.font.getDescent();
-        return (int) (textY - this.style.font.getLineHeight() * (aCursorLine - topLine + 1.5));
+        try {
+            float textY = (int) getHeight() - bgTopHeight + style.font.getDescent();
+            return (int) (textY - this.style.font.getLineHeight() * (aCursorLine - topLine + 1.5));
+        }
+        catch (Exception ex) {
+            return 0f;
+        }
     }
 
     private void updateDisplayText(Line line, boolean calcCursor) {

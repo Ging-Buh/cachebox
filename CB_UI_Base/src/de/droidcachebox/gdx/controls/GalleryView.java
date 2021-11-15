@@ -120,6 +120,8 @@ public class GalleryView extends H_ListView {
          */
 
         //SnapIN?
+        if (mPosDefault == null) return;
+
         for (int i = 0, n = mPosDefault.size() - 1; i < n; i++) {
             final float pos1 = mPosDefault.get(i);
             final float pos2 = mPosDefault.get(i + 1);

@@ -63,20 +63,22 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
                 CBDB.getInstance().cacheList.add(0, cache);
             }
 
-            for (Array<Cache> geoCacheList : LiveMapQue.getInstance().getAllCacheLists()) {
-                for (Cache geoCache : geoCacheList) {
-                    if (geoCache != null) {
-                        if (FilterInstances.isLastFilterSet()) {
-                            if (!CBDB.getInstance().cacheList.contains(geoCache)) {
-                                if (FilterInstances.getLastFilter().passed(geoCache)) {
+            synchronized (LiveMapQue.getInstance().getAllCacheLists()) {
+                for (Array<Cache> geoCacheList : LiveMapQue.getInstance().getAllCacheLists()) {
+                    for (Cache geoCache : geoCacheList) {
+                        if (geoCache != null) {
+                            if (FilterInstances.isLastFilterSet()) {
+                                if (!CBDB.getInstance().cacheList.contains(geoCache)) {
+                                    if (FilterInstances.getLastFilter().passed(geoCache)) {
+                                        geoCache.setLive(true);
+                                        CBDB.getInstance().cacheList.add(geoCache);
+                                    }
+                                }
+                            } else {
+                                if (!CBDB.getInstance().cacheList.contains(geoCache)) {
                                     geoCache.setLive(true);
                                     CBDB.getInstance().cacheList.add(geoCache);
                                 }
-                            }
-                        } else {
-                            if (!CBDB.getInstance().cacheList.contains(geoCache)) {
-                                geoCache.setLive(true);
-                                CBDB.getInstance().cacheList.add(geoCache);
                             }
                         }
                     }

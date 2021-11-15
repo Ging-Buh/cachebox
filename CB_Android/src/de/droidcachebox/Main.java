@@ -501,7 +501,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
                     TrackRecorder.stopRecording();
                     // GPS Verbindung beenden
-                    androidUIBaseMethods.removeFromGPS();
+                    if (androidUIBaseMethods != null) androidUIBaseMethods.removeFromGPS();
                     CacheSelectionChangedListeners.getInstance().clear();
                     CacheListChangedListeners.getInstance().clear();
                     showViewListener.onDestroyWithFinishing();

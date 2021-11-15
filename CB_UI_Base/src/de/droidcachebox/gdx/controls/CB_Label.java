@@ -313,7 +313,7 @@ public class CB_Label extends CB_View_Base {
 
          */
         mTextObject = new BitmapFontCache(mFont, true);
-        mTextObject.setColor(mColor);
+        if (mColor != null) mTextObject.setColor(mColor);
 
         try {
             switch (mWrapType) {
@@ -426,6 +426,7 @@ public class CB_Label extends CB_View_Base {
         setText();
         return this;
     }
+
 
     public void setUnderline(boolean value) {
         underline = value;
@@ -545,7 +546,8 @@ public class CB_Label extends CB_View_Base {
     protected void skinIsChanged() {
         // todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
         mFont = Fonts.getNormal();
-        mColor = COLOR.getFontColor();
+        Color c = COLOR.getFontColor();
+        if (c != null) mColor = c;
         setText();
     }
 
