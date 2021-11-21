@@ -70,7 +70,6 @@ import de.droidcachebox.locator.GPS;
 import de.droidcachebox.locator.GpsStateChangeEventList;
 import de.droidcachebox.locator.GpsStrength;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
@@ -402,7 +401,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     }
 
     @Override
-    public SQLiteInterface getSQLInstance() {
+    public SQLiteInterface createSQLInstance() {
         return new SQLiteClass(mainActivity);
     }
 
@@ -445,8 +444,12 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                         AbstractFile destinationFile = FileFactory.createFile(FZKDownload.getInstance().getPathForMapFile(), sourceFile.getName());
                         boolean result = sourceFile.renameTo(destinationFile);
                         String sResult = result ? " ok!" : " no success!";
-                        Log.info(sClass, "Move map-file " + destinationFile.getPath() + sResult);
-                        if (result) LayerManager.getInstance().initLayers();
+                        if (result) {
+                            Log.info(sClass, "Move map-file " + destinationFile.getPath() + sResult);
+                        }
+                        else {
+                            Log.err(sClass, "Move map-file " + destinationFile.getPath() + sResult);
+                        }
                     } else {
                         Log.info(sClass, "importGPXFile (*.gpx or *.zip)");
                         importGPXFile(externalRequestGpxPath);
@@ -507,7 +510,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                         // Intent Result Record Video
                         if (requestCode == ACTION_OPEN_DOCUMENT_TREE) {
                             if (resultCode == Activity.RESULT_OK) {
-                                // The result data contains a URI for the document or directory that the user selected.
+                                // The result data contains an Uri for the (document or) directory that the user selected.
                                 GlobalCore.selectedUri = null;
                                 if (resultData != null) {
                                     GlobalCore.selectedUri = resultData.getData();
@@ -532,7 +535,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     @Override
     public boolean request_getLocationIfInBackground() {
         if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && Settings.showGPSDisclosure.getValue()) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                 String permissionlabel = "";
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                     permissionlabel = mainActivity.getPackageManager().getBackgroundPermissionOptionLabel().toString();
@@ -553,10 +556,13 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                                     // frage trotzdem, aber es popt nicht mehr auf. Daher
                                     mainActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)); // dialog gps ein
                                 }
-                            } else {
-                                // if you don't want, never ask again
-                                Settings.showGPSDisclosure.setValue(false);
                             }
+                            /*
+                            else {
+                                // if you don't want
+                            }
+
+                             */
                             return true; // click is handled
                         }
                 );

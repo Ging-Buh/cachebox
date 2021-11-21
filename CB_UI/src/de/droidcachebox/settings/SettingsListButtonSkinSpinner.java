@@ -22,9 +22,8 @@ package de.droidcachebox.settings;
  */
 public class SettingsListButtonSkinSpinner<T> extends SettingBase<T> {
 
-    public SettingsListButtonSkinSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
-
+    public SettingsListButtonSkinSpinner(String name) {
+        super(name, null, null, null);
     }
 
     @Override

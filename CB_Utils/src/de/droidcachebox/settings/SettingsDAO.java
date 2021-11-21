@@ -3,7 +3,7 @@ package de.droidcachebox.settings;
 import de.droidcachebox.database.Database_Core;
 
 public abstract class SettingsDAO {
-    public void WriteToDatabase(Database_Core database, SettingBase<?> setting) {
+    public void writeSetting(Database_Core database, SettingBase<?> setting) {
         String dbString = setting.toDBString();
         if (setting instanceof SettingLongString || setting instanceof SettingStringList) {
             database.writeConfigLongString(setting.name, dbString);
@@ -11,26 +11,25 @@ public abstract class SettingsDAO {
             database.writeConfigString(setting.name, dbString);
     }
 
-    public SettingBase<?> ReadFromDatabase(Database_Core database, SettingBase<?> setting) {
+    public SettingBase<?> readSetting(Database_Core db, SettingBase<?> setting) {
         try {
             String dbString = null;
 
             if (setting instanceof SettingLongString || setting instanceof SettingStringList) {
                 if (setting.name.endsWith("Local")) {
                     try {
-                        dbString = database.readConfigString(setting.name.substring(0, setting.name.length() - 5));
-                    } catch (Exception ex) {
-                        dbString = null;
+                        dbString = db.readConfigString(setting.name.substring(0, setting.name.length() - 5));
+                    } catch (Exception ignored) {
                     }
                     if (dbString == null)
-                        dbString = database.readConfigLongString(setting.name);
+                        dbString = db.readConfigLongString(setting.name);
                 } else {
-                    dbString = database.readConfigLongString(setting.name);
+                    dbString = db.readConfigLongString(setting.name);
                 }
             }
 
             if (dbString == null) {
-                dbString = database.readConfigString(setting.name);
+                dbString = db.readConfigString(setting.name);
             }
 
             if (dbString == null) {

@@ -17,10 +17,10 @@ package de.droidcachebox.settings;
 
 public class SettingFloat extends SettingBase<Float> {
 
-    public SettingFloat(String name, SettingCategory category, SettingModus modus, float defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingFloat(String name, SettingCategory category, SettingModus modus, float defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, StoreType);
         this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        value = defaultValue;
     }
 
     @Override
@@ -41,9 +41,9 @@ public class SettingFloat extends SettingBase<Float> {
 
     @Override
     public SettingBase<Float> copy() {
-        SettingBase<Float> ret = new SettingFloat(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
-        ret.value = this.value;
-        ret.lastValue = this.lastValue;
+        SettingBase<Float> ret = new SettingFloat(name, category, modus, defaultValue, storeType);
+        ret.value = value;
+        ret.lastValue = lastValue;
         return ret;
     }
 
@@ -53,9 +53,9 @@ public class SettingFloat extends SettingBase<Float> {
             return false;
 
         SettingFloat inst = (SettingFloat) obj;
-        if (!(inst.name.equals(this.name)))
+        if (!(inst.name.equals(name)))
             return false;
-        if (inst.value != this.value)
+        if (inst.value != value)
             return false;
 
         return true;

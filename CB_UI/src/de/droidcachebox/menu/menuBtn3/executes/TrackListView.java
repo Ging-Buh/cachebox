@@ -23,7 +23,7 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.settings.CB_UI_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -67,7 +67,7 @@ public class TrackListView extends V_ListView {
     }
 
     public void selectTrackFileReadAndAddToTracks() {
-        new FileOrFolderPicker(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), abstractFile -> {
+        new FileOrFolderPicker(Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), abstractFile -> {
             if (abstractFile != null) {
                 readFromGpxFile(abstractFile);
             }

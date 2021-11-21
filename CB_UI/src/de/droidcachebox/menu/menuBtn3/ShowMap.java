@@ -21,6 +21,7 @@ import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_CAR;
 import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_DEFAULT;
 import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_OSMARENDER;
+import static de.droidcachebox.settings.AllSettings.RenderThemesFolder;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -78,7 +79,6 @@ import de.droidcachebox.menu.menuBtn3.executes.MapView;
 import de.droidcachebox.menu.menuBtn3.executes.MapView.MapMode;
 import de.droidcachebox.menu.menuBtn3.executes.TrackCreation;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
-import de.droidcachebox.settings.LocatorSettings;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -154,7 +154,7 @@ public class ShowMap extends AbstractShowAction {
         Menu icm = new Menu("MapViewContextMenuTitle");
         icm.addMenuItem("Layer", null, this::showMapLayerMenu);
         MenuItem mi = icm.addMenuItem("Renderthemes", null, this::showModeSelectionMenu);
-        if (LocatorSettings.RenderThemesFolder.getValue().length() == 0) {
+        if (RenderThemesFolder.getValue().length() == 0) {
             mi.setEnabled(false);
         }
         icm.addMenuItem("overlays", null, this::showMapOverlayMenu);
@@ -444,7 +444,7 @@ public class ShowMap extends AbstractShowAction {
 
     private HashMap<String, String> getRenderThemes() {
         HashMap<String, String> files = new HashMap<>();
-        String directory = LocatorSettings.RenderThemesFolder.getValue();
+        String directory = RenderThemesFolder.getValue();
         if (directory.length() > 0) {
             files.putAll(getDirsRenderThemes(directory));
         }
@@ -478,7 +478,7 @@ public class ShowMap extends AbstractShowAction {
         mapViewThemeMenu.addMenuItem("RenderThemesCarDay", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.carday));
         mapViewThemeMenu.addMenuItem("RenderThemesCarNight", null, () -> showRenderThemesSelectionMenu(ThemeIsFor.carnight));
 
-        themesPath = LocatorSettings.RenderThemesFolder.getValue();
+        themesPath = RenderThemesFolder.getValue();
         // only download, if writable
         boolean isWritable = false;
         if (themesPath.length() > 0)
@@ -516,7 +516,7 @@ public class ShowMap extends AbstractShowAction {
                     MsgBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MsgBoxButton.YesNo, MsgBoxIcon.Hand,
                             (btnNumber, data) -> {
                                 if (btnNumber == 1) { // change path
-                                    Settings.RenderThemesFolder.setValue(Settings.RenderThemesFolder.getDefaultValue());
+                                    RenderThemesFolder.setValue(RenderThemesFolder.getDefaultValue());
                                     ViewManager.that.acceptChanges();
                                 }
                                 return true;
@@ -837,7 +837,7 @@ public class ShowMap extends AbstractShowAction {
                     // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
                     RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
                 } catch (Exception e) {
-                    Log.err(log, e.getLocalizedMessage());
+                    Log.err(log, e.toString());
                 }
                 return getOverlaysCallback.getOverlays();
             } catch (Exception ignored) {

@@ -19,13 +19,13 @@ public class SettingFolder extends SettingLongString {
 
     private final boolean needWritePermission;
 
-    public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needwritePermission) {
-        super(name, category, modus, defaultValue, StoreType, usage);
+    public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, boolean needwritePermission) {
+        super(name, category, modus, defaultValue, StoreType);
         this.needWritePermission = needwritePermission;
     }
 
-    public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needwritePermission, boolean needRestart) {
-        super(name, category, modus, defaultValue, StoreType, usage);
+    public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, boolean needwritePermission, boolean needRestart) {
+        super(name, category, modus, defaultValue, StoreType);
         this.needWritePermission = needwritePermission;
         if (needRestart) setNeedRestart();
     }

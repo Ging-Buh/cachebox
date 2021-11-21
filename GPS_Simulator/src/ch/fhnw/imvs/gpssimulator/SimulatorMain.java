@@ -218,7 +218,7 @@ public class SimulatorMain {
             }
 
             @Override
-            public SQLiteInterface getSQLInstance() {
+            public SQLiteInterface createSQLInstance() {
                 return null;
             }
 

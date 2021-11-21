@@ -29,10 +29,10 @@ package de.droidcachebox.settings;
  */
 public class SettingsAudio extends SettingBase<Audio> {
 
-    public SettingsAudio(String name, SettingCategory category, SettingModus modus, Audio defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingsAudio(String name, SettingCategory category, SettingModus modus, Audio defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, StoreType);
         this.defaultValue = defaultValue;
-        this.value = new Audio(defaultValue);
+        value = new Audio(defaultValue);
     }
 
     /*
@@ -66,9 +66,9 @@ public class SettingsAudio extends SettingBase<Audio> {
 
     @Override
     public SettingBase<Audio> copy() {
-        SettingBase<Audio> ret = new SettingsAudio(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
-        ret.value = this.value;
-        ret.lastValue = this.lastValue;
+        SettingBase<Audio> ret = new SettingsAudio(name, category, modus, defaultValue, storeType);
+        ret.value = value;
+        ret.lastValue = lastValue;
         return ret;
     }
 
@@ -78,15 +78,15 @@ public class SettingsAudio extends SettingBase<Audio> {
             return false;
 
         SettingsAudio inst = (SettingsAudio) obj;
-        if (!(inst.name.equals(this.name)))
+        if (!(inst.name.equals(name)))
             return false;
-        if (inst.value.Mute != this.value.Mute)
+        if (inst.value.Mute != value.Mute)
             return false;
-        if (inst.value.Volume != this.value.Volume)
+        if (inst.value.Volume != value.Volume)
             return false;
-        if (inst.value.Class_Absolute != this.value.Class_Absolute)
+        if (inst.value.Class_Absolute != value.Class_Absolute)
             return false;
-        if (!inst.value.Path.equals(this.value.Path))
+        if (!inst.value.Path.equals(value.Path))
             return false;
 
         return true;

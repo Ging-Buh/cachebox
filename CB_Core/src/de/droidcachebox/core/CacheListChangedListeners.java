@@ -15,6 +15,9 @@
  */
 package de.droidcachebox.core;
 
+import static de.droidcachebox.settings.AllSettings.ParkingLatitude;
+import static de.droidcachebox.settings.AllSettings.ParkingLongitude;
+
 import com.badlogic.gdx.utils.Array;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -23,7 +26,6 @@ import de.droidcachebox.Energy;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.utils.log.Log;
 
 public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListChangedListeners.CacheListChangedListener> {
@@ -58,8 +60,8 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
             if (cache != null)
                 CBDB.getInstance().cacheList.remove(cache);
             // add Parking Cache from saved Config (ParkingLatitude, ParkingLongitude)
-            if (CB_Core_Settings.ParkingLatitude.getValue() != 0) {
-                cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", GeoCacheType.MyParking, "CBPark");
+            if (ParkingLatitude.getValue() != 0) {
+                cache = new Cache(ParkingLatitude.getValue(), ParkingLongitude.getValue(), "My Parking area", GeoCacheType.MyParking, "CBPark");
                 CBDB.getInstance().cacheList.add(0, cache);
             }
 

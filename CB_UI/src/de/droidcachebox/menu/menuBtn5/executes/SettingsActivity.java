@@ -59,11 +59,9 @@ import de.droidcachebox.settings.SettingInt;
 import de.droidcachebox.settings.SettingIntArray;
 import de.droidcachebox.settings.SettingLongString;
 import de.droidcachebox.settings.SettingModus;
-import de.droidcachebox.settings.SettingStoreType;
 import de.droidcachebox.settings.SettingString;
 import de.droidcachebox.settings.SettingStringArray;
 import de.droidcachebox.settings.SettingTime;
-import de.droidcachebox.settings.SettingUsage;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.settings.SettingsAudio;
 import de.droidcachebox.settings.SettingsItemBase;
@@ -226,9 +224,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         Categories.clear();
         SettingCategory[] tmp = SettingCategory.values();
         for (SettingCategory item : tmp) {
-            if (item != SettingCategory.Button) {
-                Categories.add(item);
-            }
+            Categories.add(item);
         }
 
         // SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<>("Lang", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
@@ -238,12 +234,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         ArrayList<SettingBase<?>> AllSettingList = new ArrayList<>();// Config.settings.values().toArray();
         for (SettingBase<?> settingItem : Settings.getInstance()) {
-            if (settingItem.getUsage() == SettingUsage.ACB || settingItem.getUsage() == SettingUsage.ALL)
-                // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
-                if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Settings.isExpert.getValue()) || Settings.isDeveloper.getValue())
-                        && (settingItem.getModus() != SettingModus.NEVER)) {
-                    AllSettingList.add(settingItem);
-                }
+            // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
+            if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Settings.isExpert.getValue()) || Settings.isDeveloper.getValue())
+                    && (settingItem.getModus() != SettingModus.NEVER)) {
+                AllSettingList.add(settingItem);
+            }
         }
 
         for (SettingCategory cat : Categories) {
@@ -257,7 +252,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             int position = 0;
 
-            SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<>(cat.name(), SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
+            SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<>(cat.name());
 
             final CB_View_Base btn = getView(catBtn, 1);
 
@@ -276,7 +271,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             switch (cat) {
                 case Login:
-                    SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<>(cat.name(), SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
+                    SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<>(cat.name());
                     lay.addChild(getView(lgIn, 1));
                     entryCount++;
                     break;
@@ -284,44 +279,37 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     lay.addChild(settingsItem_QuickButton = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor"));
                     entryCount++;
                     break;
-                case Debug:
-                    SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<>("DebugDisplayInfo", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
-                    final CB_View_Base btnDisp = getView(disp, 1);
-                    if (btnDisp != null) {
-                        btnDisp.setSize(itemRec);
-                        lay.addChild(btnDisp);
-                        entryCount++;
-                    }
-                    break;
                 case Skin:
-                    SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<>("Skin", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
+                    // SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<>("Skin");
                     CB_View_Base skinView = getSkinSpinnerView();
                     lay.addChild(skinView);
                     entryCount++;
                     break;
                 case Sounds:
-                    CB_RectF rec = new CB_RectF(itemRec);
-                    Box lblBox = new Box(rec, "LabelBox");
+                    if (CatList.size() > 0) {
+                        // top line for sound settings
+                        CB_RectF rec = new CB_RectF(itemRec);
+                        Box lblBox = new Box(rec, "LabelBox");
 
-                    CB_RectF rec2 = new CB_RectF(rec);
-                    rec2.setWidth(rec.getWidth() - (rec.getX() * 2));
-                    rec2.setHeight(rec.getHalfHeight());
+                        CB_RectF rec2 = new CB_RectF(rec);
+                        rec2.setWidth(rec.getWidth() - (rec.getX() * 2));
+                        rec2.setHeight(rec.getHalfHeight());
 
-                    CB_Label lblVolume = new CB_Label(name + " lblVolume", itemRec, Translation.get("Volume"));
-                    CB_Label lblMute = new CB_Label(name + " lblMute", itemRec, Translation.get("Mute"));
+                        CB_Label lblVolume = new CB_Label(name + " lblVolume", itemRec, Translation.get("Volume"));
+                        CB_Label lblMute = new CB_Label(name + " lblMute", itemRec, Translation.get("Mute"));
 
-                    lblVolume.setZeroPos();
-                    lblMute.setZeroPos();
+                        lblVolume.setZeroPos();
+                        lblMute.setZeroPos();
 
-                    lblMute.setHAlignment(HAlignment.RIGHT);
+                        lblMute.setHAlignment(HAlignment.RIGHT);
 
-                    lblBox.addChild(lblMute);
-                    lblBox.addChild(lblVolume);
+                        lblBox.addChild(lblMute);
+                        lblBox.addChild(lblVolume);
 
-                    lay.addChild(lblBox);
-                    entryCount++;
+                        lay.addChild(lblBox);
+                        entryCount++;
+                    }
                     break;
-
             }
 
             boolean expandLayout = false;

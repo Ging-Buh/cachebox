@@ -31,7 +31,6 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
     protected String name;
     protected SettingModus modus;
     protected SettingStoreType storeType;
-    protected SettingUsage usage;
     protected T value;
     protected T defaultValue;
     protected T lastValue;
@@ -40,14 +39,13 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
      * saves whether this setting is changed and needs to be saved
      */
     protected boolean dirty;
-    private int index;
+    private final int index;
 
-    public SettingBase(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
+    public SettingBase(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType) {
         this.name = name;
         this.category = category;
         this.modus = modus;
         this.storeType = StoreType;
-        this.usage = usage;
         this.dirty = false;
 
         this.index = indexCount++;
@@ -167,10 +165,6 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
 
     @Override
     public abstract boolean equals(Object obj);
-
-    public SettingUsage getUsage() {
-        return this.usage;
-    }
 
     public boolean isDefault() {
         return value.equals(defaultValue);

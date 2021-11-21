@@ -4,8 +4,15 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.WrapType;
-import de.droidcachebox.gdx.*;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
@@ -20,8 +27,6 @@ import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
 
 public class Menu extends ButtonDialog {
 
@@ -56,8 +61,16 @@ public class Menu extends ButtonDialog {
     private int Level = 0;
 
     public Menu(String titleTranslationId) {
-        super(GL_UISizes.menuRectangle, titleTranslationId);
-        setTitle("<= " + Translation.get(titleTranslationId));
+        this(Translation.get(titleTranslationId), "");
+    }
+
+    public Menu(String title, String dummy) {
+        super(GL_UISizes.menuRectangle, title);
+        setTitle("<= " + title);
+        createMenu();
+    }
+
+    private void createMenu() {
         autoClose = true;
         singleSelection = false;
 

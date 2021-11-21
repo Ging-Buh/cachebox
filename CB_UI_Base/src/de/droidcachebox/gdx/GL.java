@@ -16,6 +16,10 @@
 package de.droidcachebox.gdx;
 
 import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
+import static de.droidcachebox.settings.AllSettings.fadeToGrayAfterXSeconds;
+import static de.droidcachebox.settings.AllSettings.nightMode;
+import static de.droidcachebox.settings.AllSettings.useAndroidKeyboard;
+import static de.droidcachebox.settings.AllSettings.useGrayFader;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -58,7 +62,6 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.Plattform;
@@ -150,7 +153,7 @@ public class GL implements ApplicationListener {
         // ApplicationListener Implementation create()
         GL_UISizes.initial(width, height);
         initialize();
-        CB_UI_Base_Settings.nightMode.addSettingChangedListener(() -> {
+        nightMode.addSettingChangedListener(() -> {
             mDarknessSprite = null;// for new creation with changed color
         });
 
@@ -189,15 +192,15 @@ public class GL implements ApplicationListener {
 
         if (grayFader == null) {
             grayFader = new Fader(); // !!! is calling GL.that.GLrenderOnce(true)
-            grayFader.setAlwaysOn(!CB_UI_Base_Settings.useGrayFader.getValue());
-            grayFader.setTimeToFadeOut(CB_UI_Base_Settings.fadeToGrayAfterXSeconds.getValue() * 1000);
+            grayFader.setAlwaysOn(!useGrayFader.getValue());
+            grayFader.setTimeToFadeOut(fadeToGrayAfterXSeconds.getValue() * 1000);
             IChanged ce = () -> {
-                grayFader.setAlwaysOn(!CB_UI_Base_Settings.useGrayFader.getValue());
-                grayFader.setTimeToFadeOut(CB_UI_Base_Settings.fadeToGrayAfterXSeconds.getValue() * 1000);
+                grayFader.setAlwaysOn(!useGrayFader.getValue());
+                grayFader.setTimeToFadeOut(fadeToGrayAfterXSeconds.getValue() * 1000);
                 grayFader.resetFadeOut();
             };
-            CB_UI_Base_Settings.useGrayFader.addSettingChangedListener(ce);
-            CB_UI_Base_Settings.fadeToGrayAfterXSeconds.addSettingChangedListener(ce);
+            useGrayFader.addSettingChangedListener(ce);
+            fadeToGrayAfterXSeconds.addSettingChangedListener(ce);
         }
         setGrayscale(grayFader.getValue());
 
@@ -274,7 +277,7 @@ public class GL implements ApplicationListener {
             }
         }
 
-        if (CB_UI_Base_Settings.nightMode.getValue()) {
+        if (nightMode.getValue()) {
             Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         } else {
 
@@ -1221,12 +1224,12 @@ public class GL implements ApplicationListener {
         boolean shallBeOpened = editTextField != null && editTextField.isKeyboardPopupEnabled();
         if (isAlreadyOpen) {
             if (!shallBeOpened) {
-                if (!CB_UI_Base_Settings.useAndroidKeyboard.getValue() || Plattform.used != Plattform.Android)
+                if (!useAndroidKeyboard.getValue() || Plattform.used != Plattform.Android)
                     Gdx.input.setOnscreenKeyboardVisible(false);
             }
         } else {
             if (shallBeOpened) {
-                if (CB_UI_Base_Settings.useAndroidKeyboard.getValue() && Plattform.used == Plattform.Android)
+                if (useAndroidKeyboard.getValue() && Plattform.used == Plattform.Android)
                     textInput.requestKeyboard(editTextField);
                 else Gdx.input.setOnscreenKeyboardVisible(true);
             }

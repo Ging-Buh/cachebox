@@ -82,81 +82,84 @@ public class SelectDBDialog extends AbstractAction {
     private void returnFromSelectDB() {
 
         wd = WaitDialog.ShowWait("Load DB ...");
+
         Log.debug(log, "\r\nSwitch DB " + Settings.DatabaseName.getValue());
+        CBDB.getInstance().close();
+        CBDB.getInstance().startUp(GlobalCore.workPath + "/" + Settings.DatabaseName.getValue());
+        Settings.getInstance().readFromDB();
+        Log.debug(log, "\r\nAfter switch DB " + Settings.DatabaseName.getValue());
 
-        Thread thread = new Thread(() -> {
-            CBDB.getInstance().close();
-            CBDB.getInstance().startUp(GlobalCore.workPath + "/" + Settings.DatabaseName.getValue());
+        CoreData.categories = new Categories();
 
-            Settings.getInstance().readFromDB();
+        FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
 
-            CoreData.categories = new Categories();
+        String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
+        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 
-            FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
+        synchronized (CBDB.getInstance().cacheList) {
+            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+        }
 
-            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
-            CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+        GlobalCore.setSelectedCache(null);
 
-            synchronized (CBDB.getInstance().cacheList) {
-                CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
-            }
-
-            GlobalCore.setSelectedCache(null);
-
-            if (CBDB.getInstance().cacheList.size() > 0) {
-                GlobalCore.setAutoResort(Settings.StartWithAutoSelect.getValue());
-                if (GlobalCore.getAutoResort() && !CBDB.getInstance().cacheList.resortAtWork) {
-                    synchronized (CBDB.getInstance().cacheList) {
-                        Log.debug(log, "sort CacheList");
-                        CacheWithWP ret = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(null));
-                        // null -- GlobalCore.getSelectedCache().getCoordinate()
-                        if (ret != null && ret.getCache() != null) {
-                            Log.debug(log, "returnFromSelectDB:Set selectedCache to " + ret.getCache().getGeoCacheCode() + " from valid position.");
-                            ret.getCache().loadDetail();
-                            GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-                            GlobalCore.setNearestCache(ret.getCache());
-                        }
+        if (CBDB.getInstance().cacheList.size() > 0) {
+            GlobalCore.setAutoResort(Settings.StartWithAutoSelect.getValue());
+            if (GlobalCore.getAutoResort() && !CBDB.getInstance().cacheList.resortAtWork) {
+                synchronized (CBDB.getInstance().cacheList) {
+                    Log.debug(log, "sort CacheList");
+                    CacheWithWP ret = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(null));
+                    // null -- GlobalCore.getSelectedCache().getCoordinate()
+                    if (ret != null && ret.getCache() != null) {
+                        Log.debug(log, "returnFromSelectDB:Set selectedCache to " + ret.getCache().getGeoCacheCode() + " from valid position.");
+                        ret.getCache().loadDetail();
+                        GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
+                        GlobalCore.setNearestCache(ret.getCache());
                     }
                 }
+            }
 
-                if (GlobalCore.getSelectedCache() == null) {
-                    // set selectedCache from lastselected Cache
-                    String lastSelectedCache = Settings.LastSelectedCache.getValue();
-                    if (lastSelectedCache != null && lastSelectedCache.length() > 0) {
-                        for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
-                            Cache c = CBDB.getInstance().cacheList.get(i);
+            if (GlobalCore.getSelectedCache() == null) {
+                // set selectedCache from lastselected Cache
+                String lastSelectedCache = Settings.LastSelectedCache.getValue();
+                if (lastSelectedCache != null && lastSelectedCache.length() > 0) {
+                    for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
+                        Cache c = CBDB.getInstance().cacheList.get(i);
 
-                            if (c.getGeoCacheCode().equalsIgnoreCase(lastSelectedCache)) {
-                                try {
-                                    Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
-                                    c.loadDetail();
-                                    GlobalCore.setSelectedCache(c);
-                                } catch (Exception ex) {
-                                    Log.err(log, "set last selected Cache", ex);
-                                }
-                                break;
+                        if (c.getGeoCacheCode().equalsIgnoreCase(lastSelectedCache)) {
+                            try {
+                                Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
+                                c.loadDetail();
+                                GlobalCore.setSelectedCache(c);
+                            } catch (Exception ex) {
+                                Log.err(log, "set last selected Cache", ex);
                             }
+                            break;
                         }
                     }
                 }
-
-                // Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
-                if (GlobalCore.getSelectedCache() == null) {
-                    Cache c = CBDB.getInstance().cacheList.get(0);
-                    Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from firstInDB");
-                    c.loadDetail();
-                    GlobalCore.setSelectedCache(c);
-                }
-                Log.debug(log, "selected cache: " + GlobalCore.getSelectedCache().getGeoCacheName() + " (" + GlobalCore.getSelectedCache().getGeoCacheCode() + ")");
             }
 
-            CacheListChangedListeners.getInstance().cacheListChanged();
-            ViewManager.that.filterSetChanged();
+            // Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
+            if (GlobalCore.getSelectedCache() == null) {
+                Cache c = CBDB.getInstance().cacheList.get(0);
+                Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from firstInDB");
+                c.loadDetail();
+                GlobalCore.setSelectedCache(c);
+            }
+            Log.debug(log, "selected cache: " + GlobalCore.getSelectedCache().getGeoCacheName() + " (" + GlobalCore.getSelectedCache().getGeoCacheCode() + ")");
+        }
 
-            wd.dismis();
+        CacheListChangedListeners.getInstance().cacheListChanged();
+        ViewManager.that.filterSetChanged();
+
+        wd.dismis();
+/*
+        Thread thread = new Thread(() -> {
         });
 
         thread.start();
+
+ */
 
     }
 }

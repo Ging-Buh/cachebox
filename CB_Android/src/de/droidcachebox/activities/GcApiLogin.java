@@ -2,7 +2,6 @@ package de.droidcachebox.activities;
 
 import static de.droidcachebox.core.GroundspeakAPI.fetchMyUserInfos;
 import static de.droidcachebox.core.GroundspeakAPI.setAuthorization;
-import static de.droidcachebox.settings.CB_Core_Settings.GcLogin;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -29,7 +28,6 @@ import de.droidcachebox.Main;
 import de.droidcachebox.R;
 import de.droidcachebox.core.CB_Api;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.log.Log;
@@ -257,15 +255,15 @@ public class GcApiLogin extends Activity {
                     // store the encrypted AccessToken in the Config file
                     // wir bekommen den Key schon verschlüsselt, deshalb muss er
                     // nicht noch einmal verschlüsselt werden!
-                    if (CB_Core_Settings.UseTestUrl.getValue()) {
-                        CB_Core_Settings.AccessTokenForTest.setEncryptedValue(accessToken);
+                    if (Settings.UseTestUrl.getValue()) {
+                        Settings.AccessTokenForTest.setEncryptedValue(accessToken);
                     } else {
-                        CB_Core_Settings.AccessToken.setEncryptedValue(accessToken);
+                        Settings.AccessToken.setEncryptedValue(accessToken);
                     }
                     setAuthorization();
                     String userNameOfAuthorization = fetchMyUserInfos().username;
                     Log.debug(sKlasse, "userNameOfAuthorization: " + userNameOfAuthorization);
-                    GcLogin.setValue(userNameOfAuthorization);
+                    Settings.GcLogin.setValue(userNameOfAuthorization);
                     ViewManager.that.acceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }

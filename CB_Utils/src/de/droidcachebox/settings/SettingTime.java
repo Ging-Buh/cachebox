@@ -17,10 +17,10 @@ package de.droidcachebox.settings;
 
 public class SettingTime extends SettingBase<Integer> {
 
-    public SettingTime(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingTime(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, StoreType);
         this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        value = defaultValue;
     }
 
     public int getMin() {
@@ -63,9 +63,9 @@ public class SettingTime extends SettingBase<Integer> {
 
     @Override
     public SettingBase<Integer> copy() {
-        SettingBase<Integer> ret = new SettingTime(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
-        ret.value = this.value;
-        ret.lastValue = this.lastValue;
+        SettingBase<Integer> ret = new SettingTime(name, category, modus, defaultValue, storeType);
+        ret.value = value;
+        ret.lastValue = lastValue;
         return ret;
     }
 
@@ -75,11 +75,8 @@ public class SettingTime extends SettingBase<Integer> {
             return false;
 
         SettingTime inst = (SettingTime) obj;
-        if (!(inst.name.equals(this.name)))
+        if (!(inst.name.equals(name)))
             return false;
-        if (inst.value != this.value)
-            return false;
-
-        return true;
+        return inst.value.equals(value);
     }
 }

@@ -15,6 +15,17 @@
  */
 package de.droidcachebox.locator.map;
 
+import static de.droidcachebox.settings.AllSettings.CurrentMapOverlayLayerName;
+import static de.droidcachebox.settings.AllSettings.MoveMapCenterMaxSpeed;
+import static de.droidcachebox.settings.AllSettings.MoveMapCenterWithSpeed;
+import static de.droidcachebox.settings.AllSettings.OsmMaxLevel;
+import static de.droidcachebox.settings.AllSettings.OsmMinLevel;
+import static de.droidcachebox.settings.AllSettings.PositionMarkerTransparent;
+import static de.droidcachebox.settings.AllSettings.currentMapLayer;
+import static de.droidcachebox.settings.AllSettings.lastZoomLevel;
+import static de.droidcachebox.settings.AllSettings.mapInitLatitude;
+import static de.droidcachebox.settings.AllSettings.mapInitLongitude;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -44,7 +55,6 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
-import de.droidcachebox.settings.LocatorSettings;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.MathUtils;
@@ -185,9 +195,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     @Override
     public void onStop() {
-        LocatorSettings.mapInitLatitude.setValue(center.getLatitude());
-        LocatorSettings.mapInitLongitude.setValue(center.getLongitude());
-        LocatorSettings.lastZoomLevel.setValue(zoomBtn.getZoom());
+        mapInitLatitude.setValue(center.getLatitude());
+        mapInitLongitude.setValue(center.getLongitude());
+        lastZoomLevel.setValue(zoomBtn.getZoom());
         super.onStop();
     }
 
@@ -199,9 +209,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         Layer currentLayer = MapTileLoader.getInstance().getCurrentLayer();
         currentLayer.clearAdditionalMaps();
         if (newLayer == null) {
-            LocatorSettings.currentMapLayer.setValue(new String[0]);
+            currentMapLayer.setValue(new String[0]);
         } else {
-            LocatorSettings.currentMapLayer.setValue(newLayer.getAllLayerNames());
+            currentMapLayer.setValue(newLayer.getAllLayerNames());
         }
         if (MapTileLoader.getInstance().setCurrentLayer(newLayer, isCarMode)) {
             lastDescriptorOrdered = new Descriptor(0, 0, 10);
@@ -212,7 +222,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     public void addAdditionalLayer(Layer layer) {
         Layer currentLayer = MapTileLoader.getInstance().getCurrentLayer();
         currentLayer.addAdditionalMap(layer);
-        LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
+        currentMapLayer.setValue(currentLayer.getAllLayerNames());
         MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
         renderOnce("addAdditionalLayer");
     }
@@ -220,7 +230,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     public void clearAdditionalLayers() {
         Layer currentLayer = MapTileLoader.getInstance().getCurrentLayer();
         currentLayer.clearAdditionalMaps();
-        LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
+        currentMapLayer.setValue(currentLayer.getAllLayerNames());
         MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
         renderOnce("clearAdditionalLayers");
     }
@@ -228,16 +238,16 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     public void removeAdditionalLayer() {
         Layer currentLayer = MapTileLoader.getInstance().getCurrentLayer();
         currentLayer.clearAdditionalMaps();
-        LocatorSettings.currentMapLayer.setValue(currentLayer.getAllLayerNames());
+        currentMapLayer.setValue(currentLayer.getAllLayerNames());
         MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
         renderOnce("removeAdditionalLayer");
     }
 
     public void setCurrentOverlayLayer(Layer newLayer) {
         if (newLayer == null) {
-            LocatorSettings.CurrentMapOverlayLayerName.setValue("");
+            CurrentMapOverlayLayerName.setValue("");
         } else {
-            LocatorSettings.CurrentMapOverlayLayerName.setValue(newLayer.getName());
+            CurrentMapOverlayLayerName.setValue(newLayer.getName());
         }
         MapTileLoader.getInstance().setCurrentOverlayLayer(newLayer);
     }
@@ -245,9 +255,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     @Override
     protected void render(Batch batch) {
         try {
-            if (LocatorSettings.MoveMapCenterWithSpeed.getValue() && isCarMode && Locator.getInstance().hasSpeed()) {
+            if (MoveMapCenterWithSpeed.getValue() && isCarMode && Locator.getInstance().hasSpeed()) {
 
-                double maxSpeed = LocatorSettings.MoveMapCenterMaxSpeed.getValue();
+                double maxSpeed = MoveMapCenterMaxSpeed.getValue();
 
                 double percent = Locator.getInstance().speedOverGround() / maxSpeed;
 
@@ -509,7 +519,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         }
 
         boolean lastUsedCompass = Locator.getInstance().UseMagneticCompass();
-        boolean Transparency = LocatorSettings.PositionMarkerTransparent.getValue();
+        boolean Transparency = PositionMarkerTransparent.getValue();
 
         int arrowId;
         if (lastUsedCompass) {
@@ -642,11 +652,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     public void initializeMap() {
         lastDescriptorOrdered = new Descriptor(0, 0, 10);
-        zoomBtn.setZoom(LocatorSettings.lastZoomLevel.getValue());
+        zoomBtn.setZoom(lastZoomLevel.getValue());
         // Bestimmung der ersten Position auf der Karte
         if (!positionInitialized) {
-            double lat = LocatorSettings.mapInitLatitude.getValue();
-            double lon = LocatorSettings.mapInitLongitude.getValue();
+            double lat = mapInitLatitude.getValue();
+            double lon = mapInitLongitude.getValue();
 
             // Initialisierungskoordinaten bekannt und k�nnen �bernommen werden
             if (lat != -1000 && lon != -1000) {
@@ -858,8 +868,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
             float zoomValue = div / 100f;
 
-            int maxZoom = LocatorSettings.OsmMaxLevel.getValue();
-            int minZoom = LocatorSettings.OsmMinLevel.getValue();
+            int maxZoom = OsmMaxLevel.getValue();
+            int minZoom = OsmMinLevel.getValue();
             float dynZoom = (lastDynamicZoom - zoomValue);
 
             if (dynZoom > maxZoom)

@@ -10,8 +10,8 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.OptionMenu;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.executes.CompassView;
-import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.settings.SettingBool;
+import de.droidcachebox.settings.Settings;
 
 public class ShowCompass extends AbstractShowAction {
     private static ShowCompass that;
@@ -59,30 +59,30 @@ public class ShowCompass extends AbstractShowAction {
 
     private void showOptionMenu() {
         OptionMenu menuCompassElements = new OptionMenu("CompassViewElementsMenuTitle");
-        menuCompassElements.addCheckableMenuItem("CompassShowMap", CB_UI_Settings.CompassShowMap.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowMap));
-        menuCompassElements.addCheckableMenuItem("CompassShowWP_Name", CB_UI_Settings.CompassShowWP_Name.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowWP_Name));
-        menuCompassElements.addCheckableMenuItem("CompassShowWP_Icon", CB_UI_Settings.CompassShowWP_Icon.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowWP_Icon));
-        menuCompassElements.addCheckableMenuItem("CompassShowAttributes", CB_UI_Settings.CompassShowAttributes.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowAttributes));
-        menuCompassElements.addCheckableMenuItem("CompassShowGcCode", CB_UI_Settings.CompassShowGcCode.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowGcCode));
-        menuCompassElements.addCheckableMenuItem("CompassShowCoords", CB_UI_Settings.CompassShowCoords.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowCoords));
-        menuCompassElements.addCheckableMenuItem("CompassShowWpDesc", CB_UI_Settings.CompassShowWpDesc.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowWpDesc));
-        menuCompassElements.addCheckableMenuItem("CompassShowSatInfos", CB_UI_Settings.CompassShowSatInfos.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowSatInfos));
-        menuCompassElements.addCheckableMenuItem("CompassShowSunMoon", CB_UI_Settings.CompassShowSunMoon.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowSunMoon));
-        menuCompassElements.addCheckableMenuItem("CompassShowTargetDirection", CB_UI_Settings.CompassShowTargetDirection.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowTargetDirection));
-        menuCompassElements.addCheckableMenuItem("CompassShowSDT", CB_UI_Settings.CompassShowSDT.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowSDT));
-        menuCompassElements.addCheckableMenuItem("CompassShowLastFound", CB_UI_Settings.CompassShowLastFound.getValue(),
-                () -> toggleSetting(CB_UI_Settings.CompassShowLastFound));
+        menuCompassElements.addCheckableMenuItem("CompassShowMap", Settings.CompassShowMap.getValue(),
+                () -> toggleSetting(Settings.CompassShowMap));
+        menuCompassElements.addCheckableMenuItem("CompassShowWP_Name", Settings.CompassShowWP_Name.getValue(),
+                () -> toggleSetting(Settings.CompassShowWP_Name));
+        menuCompassElements.addCheckableMenuItem("CompassShowWP_Icon", Settings.CompassShowWP_Icon.getValue(),
+                () -> toggleSetting(Settings.CompassShowWP_Icon));
+        menuCompassElements.addCheckableMenuItem("CompassShowAttributes", Settings.CompassShowAttributes.getValue(),
+                () -> toggleSetting(Settings.CompassShowAttributes));
+        menuCompassElements.addCheckableMenuItem("CompassShowGcCode", Settings.CompassShowGcCode.getValue(),
+                () -> toggleSetting(Settings.CompassShowGcCode));
+        menuCompassElements.addCheckableMenuItem("CompassShowCoords", Settings.CompassShowCoords.getValue(),
+                () -> toggleSetting(Settings.CompassShowCoords));
+        menuCompassElements.addCheckableMenuItem("CompassShowWpDesc", Settings.CompassShowWpDesc.getValue(),
+                () -> toggleSetting(Settings.CompassShowWpDesc));
+        menuCompassElements.addCheckableMenuItem("CompassShowSatInfos", Settings.CompassShowSatInfos.getValue(),
+                () -> toggleSetting(Settings.CompassShowSatInfos));
+        menuCompassElements.addCheckableMenuItem("CompassShowSunMoon", Settings.CompassShowSunMoon.getValue(),
+                () -> toggleSetting(Settings.CompassShowSunMoon));
+        menuCompassElements.addCheckableMenuItem("CompassShowTargetDirection", Settings.CompassShowTargetDirection.getValue(),
+                () -> toggleSetting(Settings.CompassShowTargetDirection));
+        menuCompassElements.addCheckableMenuItem("CompassShowSDT", Settings.CompassShowSDT.getValue(),
+                () -> toggleSetting(Settings.CompassShowSDT));
+        menuCompassElements.addCheckableMenuItem("CompassShowLastFound", Settings.CompassShowLastFound.getValue(),
+                () -> toggleSetting(Settings.CompassShowLastFound));
         menuCompassElements.show();
     }
 

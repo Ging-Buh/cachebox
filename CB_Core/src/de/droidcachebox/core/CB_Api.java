@@ -16,9 +16,10 @@
 
 package de.droidcachebox.core;
 
+import static de.droidcachebox.settings.AllSettings.UseTestUrl;
+
 import org.json.JSONObject;
 
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
 
@@ -37,7 +38,7 @@ public class CB_Api {
     public static String getGcAuthUrl() {
         try {
             String url, resultKey;
-            if (CB_Core_Settings.UseTestUrl.getValue()) {
+            if (UseTestUrl.getValue()) {
                 url = "https://longri.de/CB_API/index.php?get=url_ACB_Staging";
                 resultKey = "GcAuth_ACB_Staging";
             } else {

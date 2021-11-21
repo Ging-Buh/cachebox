@@ -16,15 +16,15 @@
 package de.droidcachebox.settings;
 
 /**
- * Der Button der sich hinter einer Category verbirgt und in der Settings List als Toggle Button dieser Category angezeigt wird.
+ * special for fetch of API key
  *
  * @param <T>
  * @author Longri
  */
 public class SettingsListGetApiButton<T> extends SettingBase<T> {
 
-    public SettingsListGetApiButton(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingsListGetApiButton(String name) {
+        super(name, null, null, null);
 
     }
 

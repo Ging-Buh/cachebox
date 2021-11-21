@@ -17,10 +17,10 @@ package de.droidcachebox.settings;
 
 public class SettingDouble extends SettingBase<Double> {
 
-    public SettingDouble(String name, SettingCategory category, SettingModus modus, double defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingDouble(String name, SettingCategory category, SettingModus modus, double defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, StoreType);
         this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        value = defaultValue;
     }
 
     @Override
@@ -41,10 +41,10 @@ public class SettingDouble extends SettingBase<Double> {
 
     @Override
     public SettingBase<Double> copy() {
-        SettingBase<Double> ret = new SettingDouble(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
+        SettingBase<Double> ret = new SettingDouble(name, category, modus, defaultValue, storeType);
 
-        ret.value = this.value;
-        ret.lastValue = this.lastValue;
+        ret.value = value;
+        ret.lastValue = lastValue;
 
         return ret;
     }
@@ -55,9 +55,9 @@ public class SettingDouble extends SettingBase<Double> {
             return false;
 
         SettingDouble inst = (SettingDouble) obj;
-        if (!(inst.name.equals(this.name)))
+        if (!(inst.name.equals(name)))
             return false;
-        if (inst.value != this.value)
+        if (inst.value != value)
             return false;
 
         return true;

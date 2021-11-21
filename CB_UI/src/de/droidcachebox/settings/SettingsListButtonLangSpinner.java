@@ -22,8 +22,8 @@ package de.droidcachebox.settings;
  */
 public class SettingsListButtonLangSpinner<T> extends SettingBase<T> {
 
-    public SettingsListButtonLangSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingsListButtonLangSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType) {
+        super(name, category, modus, StoreType);
 
     }
 
@@ -53,10 +53,7 @@ public class SettingsListButtonLangSpinner<T> extends SettingBase<T> {
         SettingsListButtonLangSpinner<?> inst = (SettingsListButtonLangSpinner<?>) obj;
         if (!(inst.name.equals(this.name)))
             return false;
-        if (inst.value != this.value)
-            return false;
-
-        return true;
+        return inst.value == this.value;
     }
 
 }

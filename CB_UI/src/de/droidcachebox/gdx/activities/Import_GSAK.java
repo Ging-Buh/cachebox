@@ -48,7 +48,6 @@ import de.droidcachebox.gdx.main.MenuItemDivider;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -257,7 +256,7 @@ public class Import_GSAK extends ActivityBase {
                 isCanceled = true;
             }
         }
-        sql = PlatformUIBase.getSQLInstance();
+        sql = PlatformUIBase.createSQLInstance();
         String ResultFields = fields + "," + memofields;
         ResultFieldsArray = ResultFields.split(",");
         // sql.beginTransaction();
@@ -301,6 +300,7 @@ public class Import_GSAK extends ActivityBase {
 
                 CBDB.getInstance().setTransactionSuccessful();
             }
+            sql.close();
             PlatformUIBase.freeSQLInstance(sql);
             CBDB.getInstance().endTransaction();
             CacheDAO.getInstance().updateCacheCountForGPXFilenames();
@@ -320,7 +320,7 @@ public class Import_GSAK extends ActivityBase {
         AbstractFile abstractFile = FileFactory.createFile(mImageDatabasePath + "/" + mImageDatabaseName);
         if (abstractFile.exists()) {
             // sql.execSQL("ATTACH DATABASE " + file.getAbsolutePath() + " AS imagesLink");
-            SQLiteInterface sqlImageLink = PlatformUIBase.getSQLInstance();
+            SQLiteInterface sqlImageLink = PlatformUIBase.createSQLInstance();
             if (sqlImageLink == null) return;
             if (sqlImageLink.openReadOnly(abstractFile.getAbsolutePath())) {
                 Settings.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
@@ -540,7 +540,7 @@ public class Import_GSAK extends ActivityBase {
                     boolean hasCorrected = reader.getInt(ii) != 0;
                     // switch subValue
                     if (hasCorrected) {
-                        if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
+                        if (Settings.UseCorrectedFinal.getValue()) {
                             cache.setCoordinate(new Coordinate((float) reader.getDouble("LatOriginal"), (float) reader.getDouble("LonOriginal")));
                             cache.getWayPoints().add(new Waypoint(
                                     "!?" + cache.getGeoCacheCode().substring(2),

@@ -17,7 +17,7 @@ package de.droidcachebox.settings;
 
 public class SettingLongString extends SettingString {
 
-    public SettingLongString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, defaultValue, StoreType, usage);
+    public SettingLongString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, defaultValue, StoreType);
     }
 }

@@ -2,17 +2,18 @@ package de.droidcachebox.locator.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import de.droidcachebox.utils.log.Log;
+
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 
 import java.io.InputStream;
 
+import de.droidcachebox.utils.log.Log;
+
 /**
  * on releasse update: place a copy of the themes from mapsforge-themes\src\main\resources\assets to Android_GUI\assets\internalRenderThemes
  * the old car theme is placed there too
- *
  */
 public enum CB_InternalRenderTheme implements XmlRenderTheme {
 
@@ -28,8 +29,7 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
         try {
             fileHandle = Gdx.files.classpath(this.absolutePath + this.fileName);
             fileHandle.readString(); // to get an Exception
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.err("ininin", "irender", ex);
         }
     }
@@ -50,16 +50,15 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
     }
 
     @Override
-    public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
-    }
-
-    @Override
     public void setResourceProvider(XmlThemeResourceProvider resourceProvider) {
-
     }
 
     @Override
     public XmlRenderThemeMenuCallback getMenuCallback() {
         return null;
+    }
+
+    @Override
+    public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
     }
 }

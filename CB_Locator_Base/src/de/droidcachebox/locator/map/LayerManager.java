@@ -15,6 +15,12 @@
  */
 package de.droidcachebox.locator.map;
 
+import static de.droidcachebox.settings.AllSettings.MapPackFolder;
+import static de.droidcachebox.settings.AllSettings.MapPackFolderLocal;
+import static de.droidcachebox.settings.AllSettings.UserMap1;
+import static de.droidcachebox.settings.AllSettings.UserMap2;
+import static de.droidcachebox.settings.AllSettings.currentMapLayer;
+
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
@@ -22,7 +28,6 @@ import java.util.Collections;
 
 import de.droidcachebox.locator.map.Layer.LayerUsage;
 import de.droidcachebox.locator.map.Layer.MapType;
-import de.droidcachebox.settings.LocatorSettings;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
@@ -46,50 +51,23 @@ public class LayerManager {
 
     private static final String log = "LayerManager";
     private static LayerManager manager;
-    private final Layer[] userMaps;
-    private ArrayList<Layer> layers;
-    private ArrayList<Layer> overlayLayers;
+    private final ArrayList<Layer> fixedLayers;
+    private final ArrayList<Layer> layers;
+    private final ArrayList<Layer> overlayLayers;
 
     private LayerManager() {
         layers = new ArrayList<>();
+        fixedLayers = new ArrayList<>();
+        initFixedLayers();
+        overlayLayers = new ArrayList<>();
         initOverlayLayers();
-        userMaps = new Layer[2];
-
-        LocatorSettings.currentMapLayer.addSettingChangedListener(() -> {
-           // what todo getLayer(LocatorSettings.CurrentMapLayer.getValue());
-        });
-
-        LocatorSettings.UserMap1.addSettingChangedListener(() -> {
-            try {
-                if (userMaps[0] != null) {
-                    layers.remove(userMaps[0]);
-                }
-                String url = LocatorSettings.UserMap1.getValue();
-                userMaps[0] = getUserMap(url, "UserMap1");
-                layers.add(userMaps[0]);
-            } catch (Exception e) {
-                Log.err(log, "Initial UserMap1", e);
-            }
-        });
-
-        LocatorSettings.UserMap2.addSettingChangedListener(() -> {
-            try {
-                if (userMaps[1] != null) {
-                    layers.remove(userMaps[1]);
-                }
-                String url = LocatorSettings.UserMap2.getValue();
-                userMaps[1] = getUserMap(url, "UserMap2");
-                layers.add(userMaps[1]);
-            } catch (Exception e) {
-                Log.err(log, "Initial UserMap2", e);
-            }
-        });
     }
 
     public static LayerManager getInstance() {
         if (manager == null) manager = new LayerManager();
         return manager;
     }
+
     public Layer getOverlayLayer(String[] names) {
         // todo seems as if there is more than one overlay possible
         String name = names != null && names.length > 0 ? names[0] : "";
@@ -100,6 +78,9 @@ public class LayerManager {
     }
 
     public Layer getLayer(String[] names) {
+
+        fillLayerList();
+
         if (names[0].equals("OSM") || names[0].length() == 0)
             names[0] = "Mapnik";
         for (Layer layer : layers) {
@@ -119,29 +100,13 @@ public class LayerManager {
                 return layer;
             }
         }
-        return getDefaultLayer();
-    }
-
-    private Layer getDefaultLayer() {
-        Layer layer = getLayer(new String[] {"Mapnik"});
-        LocatorSettings.currentMapLayer.setValue(layer.getAllLayerNames());
+        // default
+        Layer layer = getLayer(new String[]{"Mapnik"});
+        currentMapLayer.setValue(layer.getAllLayerNames());
         return layer;
     }
 
-    /*
-    public Layer addLayer(String[] Name, String url) {
-        if (getLayer(Name) != null) {
-            Layer newLayer = new Layer(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, Name[0], Name[0], url);
-            layers.add(newLayer);
-            Collections.sort(layers, (layer1, layer2) -> layer1.getName().toLowerCase().compareTo(layer2.getName().toLowerCase()));
-            return newLayer;
-        }
-        return null;
-    }
-     */
-
     private void initOverlayLayers() {
-        overlayLayers = new ArrayList<>();
         overlayLayers.add(new Layer(MapType.ONLINE, LayerUsage.overlay, Layer.StorageType.PNG, "hiking", "hiking", "https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png")); // k 8.10.2019
         overlayLayers.add(new Layer(MapType.ONLINE, LayerUsage.overlay, Layer.StorageType.PNG, "cycling", "cycling", "https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png"));  // k 8.10.2019
         overlayLayers.add(new Layer(MapType.ONLINE, LayerUsage.overlay, Layer.StorageType.PNG, "mtb", "mtb", "https://tile.waymarkedtrails.org/mtb/{z}/{x}/{y}.png")); // k 8.10.2019
@@ -154,41 +119,42 @@ public class LayerManager {
         overlayLayers.add(new Layer(MapType.ONLINE, LayerUsage.overlay, Layer.StorageType.PNG, "hillshading", "hillshading", "https://tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png")); // k 8.10.2019
     }
 
-    public void initLayers() {
+    private void initFixedLayers() {
+        fixedLayers.add(new Layer(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, "Mapnik", "Mapnik", "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"));
+        fixedLayers.add(new Layer(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, "OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"));
+        // fixedLayers.add(new Layer(MapType.ONLINE, Type.normal, "Esri", "", "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"));
+        // fixedLayers.add(new Layer(MapType.ONLINE, Type.normal, "Google Hybrid", "", "http://mt0.google.com/vt/lyrs=y@142&x={x}&y={y}&z={z}"));
+    }
+
+    private void fillLayerList() {
         // after selection of Database
         layers.clear();
-
-        layers.add(new Layer(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, "Mapnik", "Mapnik", "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"));
-        layers.add(new Layer(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, "OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"));
-        // layers.add(new Layer(MapType.ONLINE, Type.normal, "Esri", "", "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"));
-        // layers.add(new Layer(MapType.ONLINE, Type.normal, "Google Hybrid", "", "http://mt0.google.com/vt/lyrs=y@142&x={x}&y={y}&z={z}"));
+        layers.addAll(fixedLayers);
 
         try {
-            String url = LocatorSettings.UserMap1.getValue();
+            String url = UserMap1.getValue();
             if (url.length() == 0) {
-                url = LocatorSettings.UserMap1.getDefaultValue();
+                url = UserMap1.getDefaultValue();
             }
-            userMaps[0] = getUserMap(url, "UserMap1");
-            layers.add(userMaps[0]);
+            layers.add(getUserMap(url, "UserMap1"));
         } catch (Exception e) {
-            Log.err(log, "Initial UserMap1", e);
+            Log.err(log, "Init UserMap1", e);
         }
 
         try {
-            String url = LocatorSettings.UserMap2.getValue();
+            String url = UserMap2.getValue();
             if (url.length() > 0) {
-                userMaps[1] = getUserMap(url, "UserMap2");
-                layers.add(userMaps[1]);
+                layers.add(getUserMap(url, "UserMap2"));
             }
         } catch (Exception e) {
-            Log.err(log, "Initial UserMap2", e);
+            Log.err(log, "Init UserMap2", e);
         }
 
         Array<String> alreadyAdded = new Array<>(); // avoid same file in different directories
-        Log.info(log, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
-        addToLayers(LocatorSettings.MapPackFolderLocal.getValue(), alreadyAdded);
-        Log.info(log, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
-        addToLayers(LocatorSettings.MapPackFolder.getValue(), alreadyAdded);
+        Log.info(log, "dirOwnMaps = " + MapPackFolderLocal.getValue());
+        addToLayers(MapPackFolderLocal.getValue(), alreadyAdded);
+        Log.info(log, "dirGlobalMaps = " + MapPackFolder.getValue());
+        addToLayers(MapPackFolder.getValue(), alreadyAdded);
 
         Collections.sort(layers, (layer1, layer2) -> layer1.getName().toLowerCase().compareTo(layer2.getName().toLowerCase()));
 
@@ -217,6 +183,8 @@ public class LayerManager {
                     } catch (Exception ex) {
                         Log.err(log, "addToLayers: " + directoryName + "/" + fileName + ex.toString());
                     }
+                } else {
+                    Log.err(log, "addToLayers: " + directoryName + "/" + fileName + " already entered");
                 }
             }
         }

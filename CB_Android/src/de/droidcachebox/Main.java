@@ -85,7 +85,6 @@ import de.droidcachebox.maps.BRouter;
 import de.droidcachebox.menu.MainViewInit;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
-import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ActivityUtils;
@@ -99,7 +98,7 @@ import de.droidcachebox.utils.log.LogLevel;
 import de.droidcachebox.views.forms.MessageBox;
 import de.droidcachebox.views.forms.PleaseWaitMessageBox;
 
-public class Main extends AndroidApplication implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStatus.NmeaListener, CB_UI_Settings {
+public class Main extends AndroidApplication implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStatus.NmeaListener {
     private static final String sKlasse = "Main";
     public static boolean isCreated = false;
     public static int Request_ForLocationManager = 11052016;
@@ -217,7 +216,6 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     GlobalCore.workPath = savedInstanceState.getString("WorkPath");
                     if (!FileIO.createDirectory(GlobalCore.workPath + "/User"))
                         return;
-                    SettingsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/Config.db3");
 
                     Resources res = getResources();
                     DevicesSizes ui = new DevicesSizes();
@@ -239,6 +237,9 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
             androidUIBaseMethods = new AndroidUIBaseMethods(this);
             PlatformUIBase.setMethods(androidUIBaseMethods);
+
+            LocatorBasePlatFormMethods.setMethods(new AndroidLocatorBaseMethods(this));
+
             SettingsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/Config.db3");
 
             Object clipboardService = getSystemService(CLIPBOARD_SERVICE);
@@ -302,8 +303,6 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
             CacheSelectionChangedListeners.getInstance().addListener(this);
 
-            Log.debug(sKlasse, "initializeLocatorBaseMethods");
-            initializeLocatorBaseMethods();
             androidUIBaseMethods.getLocationManager(); // now the onLocationChanged is called (LocationListener) or no permission
             androidUIBaseMethods.startService();
 
@@ -757,10 +756,6 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         } catch (Exception e) {
             Log.err(sKlasse, "Error Initial Locator.HardwareCompassLevel");
         }
-    }
-
-    private void initializeLocatorBaseMethods() {
-        LocatorBasePlatFormMethods.setMethods(new AndroidLocatorBaseMethods(this));
     }
 
     private enum LastState {

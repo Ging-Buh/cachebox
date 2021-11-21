@@ -33,7 +33,7 @@ import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.database.ImageEntry;
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
@@ -121,9 +121,9 @@ public class DescriptionImageGrabber {
                 path = path.replace("/large/", "/");
             }
         }
-        String imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
-        if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
-            imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
+        String imagePath = AllSettings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
+        if (AllSettings.DescriptionImageFolderLocal.getValue().length() > 0)
+            imagePath = AllSettings.DescriptionImageFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
 
         // String uriName = url.Substring(url.LastIndexOf('/') + 1);
         // int idx = uri.AbsolutePath.LastIndexOf('.');
@@ -316,11 +316,11 @@ public class DescriptionImageGrabber {
             Log.debug(log, "GrabImagesSelectedByCache -> grab spoiler images");
             // Get additional images (Spoiler)
 
-            String[] files = getFilesInDirectory(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
+            String[] files = getFilesInDirectory(AllSettings.SpoilerFolder.getValue(), gcCode);
             ArrayList<String> allSpoilers = new ArrayList<>();
             for (String file : files)
                 allSpoilers.add(file);
-            String[] filesLocal = getFilesInDirectory(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
+            String[] filesLocal = getFilesInDirectory(AllSettings.SpoilerFolderLocal.getValue(), gcCode);
             for (String file : filesLocal)
                 allSpoilers.add(file);
 
@@ -425,10 +425,10 @@ public class DescriptionImageGrabber {
     }
 
     public static String getSpoilerPath(String GcCode) {
-        String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
+        String imagePath = AllSettings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
 
-        if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
-            imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
+        if (AllSettings.SpoilerFolderLocal.getValue().length() > 0)
+            imagePath = AllSettings.SpoilerFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
 
         return imagePath;
     }
@@ -439,10 +439,10 @@ public class DescriptionImageGrabber {
     public static ImageEntry BuildAdditionalImageFilenameHashNew(ImageEntry imageEntry) {
         try {
             String uriPath = new URI(imageEntry.getImageUrl()).getPath();
-            String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + imageEntry.getGcCode().substring(0, 4);
+            String imagePath = AllSettings.SpoilerFolder.getValue() + "/" + imageEntry.getGcCode().substring(0, 4);
 
-            if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
-                imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + imageEntry.getGcCode().substring(0, 4);
+            if (AllSettings.SpoilerFolderLocal.getValue().length() > 0)
+                imagePath = AllSettings.SpoilerFolderLocal.getValue() + "/" + imageEntry.getGcCode().substring(0, 4);
             imageEntry.setName(imageEntry.getDescription().trim());
             imageEntry.setName(imageEntry.getName().replaceAll("[^a-zA-Z0-9_\\.\\-]", "_"));
 

@@ -34,7 +34,6 @@ import de.droidcachebox.locator.Locator.CompassType;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
-import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -76,7 +75,7 @@ public class TrackRecorder {
         GlobalCore.currentRoute.setTrackLength(0);
         GlobalCore.currentRoute.setAltitudeDifference(0);
 
-        String directory = CB_UI_Settings.TrackFolder.getValue();
+        String directory = Settings.TrackFolder.getValue();
         if (!FileIO.createDirectory(directory))
             return;
 

@@ -30,7 +30,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.DesktopUIBaseMethods;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
@@ -67,7 +66,7 @@ class DCB {
         SettingsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/Config.db3");
         DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
 
-        Config.getInstance().settings.readFromDB();
+        Settings.getInstance().readFromDB();
 
         CB_SLF4J.getInstance(GlobalCore.workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue());
         Settings.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(GlobalCore.workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue()));
@@ -87,7 +86,6 @@ class DCB {
         } else {
             Settings.newInstall.setValue(false);
         }
-        Config.getInstance().acceptChanges();
 
         if (files.length > 0 && !files[0].contains("src")) {
             AbstractFile workJar = FileFactory.createFile(files[0]);

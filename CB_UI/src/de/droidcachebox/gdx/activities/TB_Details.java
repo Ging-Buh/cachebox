@@ -33,7 +33,7 @@ import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
 /**
@@ -165,15 +165,15 @@ public class TB_Details extends ActivityBase {
     private void showLogMenu() {
         final Menu menuLog = new Menu("TB_DetailsLogMenuTitle");
         menuLog.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> TB_Log.getInstance().Show(trackable, LogType.note));
-        if (trackable.isLogTypePossible(LogType.discovered, CB_Core_Settings.GcLogin.getValue()))
+        if (trackable.isLogTypePossible(LogType.discovered, Settings.GcLogin.getValue()))
             menuLog.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> TB_Log.getInstance().Show(trackable, LogType.discovered));
-        if (trackable.isLogTypePossible(LogType.visited, CB_Core_Settings.GcLogin.getValue()))
+        if (trackable.isLogTypePossible(LogType.visited, Settings.GcLogin.getValue()))
             menuLog.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> TB_Log.getInstance().Show(trackable, LogType.visited));
-        if (trackable.isLogTypePossible(LogType.dropped_off, CB_Core_Settings.GcLogin.getValue()))
+        if (trackable.isLogTypePossible(LogType.dropped_off, Settings.GcLogin.getValue()))
             menuLog.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> TB_Log.getInstance().Show(trackable, LogType.dropped_off));
-        if (trackable.isLogTypePossible(LogType.grab_it, CB_Core_Settings.GcLogin.getValue()))
+        if (trackable.isLogTypePossible(LogType.grab_it, Settings.GcLogin.getValue()))
             menuLog.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.getInstance().Show(trackable, LogType.grab_it));
-        if (trackable.isLogTypePossible(LogType.retrieve, CB_Core_Settings.GcLogin.getValue()))
+        if (trackable.isLogTypePossible(LogType.retrieve, Settings.GcLogin.getValue()))
             menuLog.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.getInstance().Show(trackable, LogType.retrieve));
         menuLog.show();
     }

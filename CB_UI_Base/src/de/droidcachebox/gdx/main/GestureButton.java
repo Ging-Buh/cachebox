@@ -2,6 +2,7 @@ package de.droidcachebox.gdx.main;
 
 import static de.droidcachebox.gdx.Sprites.getSprite;
 import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
+import static de.droidcachebox.settings.AllSettings.gestureOn;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -28,7 +29,6 @@ import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
@@ -257,7 +257,7 @@ public class GestureButton extends CB_Button {
         cb_actionButtons.add(Action);
 
         // disable Gesture ?
-        if (!CB_UI_Base_Settings.gestureOn.getValue())
+        if (!gestureOn.getValue())
             Action.setGestureDirection(GestureDirection.None);
 
         GestureDirection gestureDirection = Action.getGestureDirection();

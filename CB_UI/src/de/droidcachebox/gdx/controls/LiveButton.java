@@ -20,7 +20,7 @@ public class LiveButton extends ImageButton {
     private int lastAnimation = 0;
 
     public LiveButton() {
-        super("");
+        super();
         name = "LiveButton";
         setClickable(true);
         setImageScale(0.9f);

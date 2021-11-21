@@ -33,7 +33,6 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.executes.LogListView;
 import de.droidcachebox.menu.menuBtn2.executes.SpoilerView;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.RunnableReadyHandler;
@@ -92,7 +91,7 @@ public class ShowLogs extends AbstractShowAction {
     private Menu createContextMenu() {
         Menu contextMenu = new Menu("LogListViewContextMenuTitle");
         contextMenu.addMenuItem("ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()), () -> loadLogs(true));
-        if (CB_Core_Settings.friends.getValue().length() > 0) {
+        if (Settings.friends.getValue().length() > 0) {
             contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
             contextMenu.addCheckableMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), GlobalCore.filterLogsOfFriends, () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;

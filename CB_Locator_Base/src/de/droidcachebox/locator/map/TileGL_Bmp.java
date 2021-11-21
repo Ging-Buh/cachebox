@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.locator.map;
 
+import static de.droidcachebox.settings.AllSettings.useMipMap;
+
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -27,7 +29,6 @@ import java.io.ByteArrayOutputStream;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
@@ -115,7 +116,7 @@ public class TileGL_Bmp extends TileGL {
     private void getTexture() {
         try {
             Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-            texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
+            texture = new Texture(pixmap, format, useMipMap.getValue());
             pixmap.dispose();
             // Log.info(log, "Final step: " + this);
         } catch (Exception ex) {

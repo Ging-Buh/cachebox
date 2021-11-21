@@ -24,7 +24,7 @@ import javax.imageio.ImageIO;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.locator.map.BoundingBox;
 import de.droidcachebox.locator.map.Descriptor;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
@@ -223,7 +223,7 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
 
         try {
             Pixmap pixmap = new Pixmap(byteArray, 0, byteArray.length);
-            Texture texture = new Texture(pixmap, Pixmap.Format.RGB565, CB_UI_Base_Settings.useMipMap.getValue());
+            Texture texture = new Texture(pixmap, Pixmap.Format.RGB565, Settings.useMipMap.getValue());
             pixmap.dispose();
             return texture;
         } catch (Exception ex) {

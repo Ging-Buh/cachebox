@@ -29,7 +29,7 @@ import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.map.MapViewBase;
-import de.droidcachebox.settings.CB_UI_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.UnitFormatter;
 
 public class MapInfoPanel extends CB_View_Base {
@@ -67,7 +67,7 @@ public class MapInfoPanel extends CB_View_Base {
                 } catch (Exception ignored) {
                 }
 
-                if (CB_UI_Settings.liveMapEnabled.getValue() && !parentMapView.isCarMode())
+                if (Settings.liveMapEnabled.getValue() && !parentMapView.isCarMode())
                     LiveMapQue.getInstance().quePosition(Coord);
 
                 GL.that.renderOnce();

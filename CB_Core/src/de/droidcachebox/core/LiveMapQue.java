@@ -16,6 +16,10 @@
 
 package de.droidcachebox.core;
 
+import static de.droidcachebox.settings.AllSettings.liveRadius;
+import static de.droidcachebox.settings.AllSettings.tileCacheFolder;
+import static de.droidcachebox.settings.AllSettings.tileCacheFolderLocal;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
@@ -36,8 +40,7 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.map.Descriptor;
-import de.droidcachebox.settings.CB_Core_Settings;
-import de.droidcachebox.settings.LocatorSettings;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.LoopThread;
 import de.droidcachebox.utils.log.Log;
@@ -61,7 +64,7 @@ public class LiveMapQue {
     private Descriptor lastLo, lastRu;
     private Byte count = 0;
     private CacheListLive cacheListLive;
-    private Live_Radius radius;
+    private AllSettings.Live_Radius radius;
     private byte usedZoom;
     private GpxFilename gpxFilename;
     private final LoopThread loopThread = new LoopThread(2000) {
@@ -107,12 +110,12 @@ public class LiveMapQue {
                             .setMaxToFetch(MAX_REQUEST_CACHE_COUNT)
                             .setDescriptor(descriptor)
                             .searchInCircle(descriptor.getCenterCoordinate(), request_radius);
-                    if (CB_Core_Settings.liveExcludeFounds.getValue()) q.excludeFinds();
-                    if (CB_Core_Settings.liveExcludeOwn.getValue()) q.excludeOwn();
+                    if (AllSettings.liveExcludeFounds.getValue()) q.excludeFinds();
+                    if (AllSettings.liveExcludeOwn.getValue()) q.excludeOwn();
                     q.resultWithLiteFields();
                     // todo change to Array<Cache> to make copy from arraylist to array unnecessary
                     ArrayList<GroundspeakAPI.GeoCacheRelated> apiCaches = null;
-                    if (FileIO.fileExistsMaxAge(getLocalCachePath(descriptor), CB_Core_Settings.liveCacheTime.getEnumValue().getLifetime())) {
+                    if (FileIO.fileExistsMaxAge(getLocalCachePath(descriptor), AllSettings.liveCacheTime.getEnumValue().getLifetime())) {
                         apiCaches = loadDescLiveFromCache(q);
                     }
                     if (apiCaches == null) {
@@ -158,25 +161,25 @@ public class LiveMapQue {
         descriptorStack = new Array<>();
         downloadIsActive = new AtomicBoolean(false);
 
-        CB_Core_Settings.liveRadius.addSettingChangedListener(() -> {
-            radius = CB_Core_Settings.liveRadius.getEnumValue();
-            if (radius == Live_Radius.Zoom_13) {
+        liveRadius.addSettingChangedListener(() -> {
+            radius = liveRadius.getEnumValue();
+            if (radius == AllSettings.Live_Radius.Zoom_13) {
                 usedZoom = DEFAULT_ZOOM_13;
             } else {
                 usedZoom = DEFAULT_ZOOM_14;
             }
         });
 
-        radius = CB_Core_Settings.liveRadius.getEnumValue();
+        radius = liveRadius.getEnumValue();
 
-        if (radius == Live_Radius.Zoom_13) {
+        if (radius == AllSettings.Live_Radius.Zoom_13) {
             usedZoom = DEFAULT_ZOOM_13;
         } else {
             usedZoom = DEFAULT_ZOOM_14;
         }
 
-        cacheListLive = new CacheListLive(CB_Core_Settings.liveMaxCount.getValue(), usedZoom);
-        CB_Core_Settings.liveMaxCount.addSettingChangedListener(() -> cacheListLive = new CacheListLive(CB_Core_Settings.liveMaxCount.getValue(), usedZoom));
+        cacheListLive = new CacheListLive(AllSettings.liveMaxCount.getValue(), usedZoom);
+        AllSettings.liveMaxCount.addSettingChangedListener(() -> cacheListLive = new CacheListLive(AllSettings.liveMaxCount.getValue(), usedZoom));
 
         Log.debug(sKlasse, "A new LiveMapQue");
 
@@ -219,14 +222,14 @@ public class LiveMapQue {
     public String getLocalCachePath(Descriptor desc) {
         if (desc == null)
             return "";
-        String tileCacheFolder = LocatorSettings.tileCacheFolder.getValue();
-        if (LocatorSettings.tileCacheFolderLocal.getValue().length() > 0)
-            tileCacheFolder = LocatorSettings.tileCacheFolderLocal.getValue();
-        return tileCacheFolder + "/" + LIVE_CACHE_NAME + "/" + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + LIVE_CACHE_EXTENSION;
+        String sTileCacheFolder = tileCacheFolder.getValue();
+        if (tileCacheFolderLocal.getValue().length() > 0)
+            sTileCacheFolder = tileCacheFolderLocal.getValue();
+        return sTileCacheFolder + "/" + LIVE_CACHE_NAME + "/" + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + LIVE_CACHE_EXTENSION;
     }
 
     public void quePosition(Coordinate coord) {
-        if (!CB_Core_Settings.disableLiveMap.getValue()) {
+        if (!AllSettings.disableLiveMap.getValue()) {
             if (coord != null && coord.isValid()) {
                 final Descriptor descriptor = new Descriptor(coord, usedZoom);
                 if (cacheListLive.contains(descriptor)) {
@@ -336,9 +339,5 @@ public class LiveMapQue {
 
     public void clearDescriptorStack() {
         descriptorStack.clear();
-    }
-
-    public enum Live_Radius {
-        Zoom_13, Zoom_14
     }
 }

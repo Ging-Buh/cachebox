@@ -1,13 +1,19 @@
 package de.droidcachebox.utils;
 
-import de.droidcachebox.utils.log.Log;
-
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.droidcachebox.utils.log.Log;
 
 
 /**
@@ -44,8 +50,12 @@ public class AndroidAbstractFile extends AbstractFile {
     }
 
     @Override
-    public boolean delete() {
-        return mFile.delete();
+    public boolean delete() throws IOException {
+        boolean ret = mFile.delete();
+        if (mFile.exists()) {
+            throw new IOException("File not deleted");
+        }
+        return ret;
     }
 
     @Override

@@ -61,7 +61,7 @@ import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Descriptor;
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.DLong;
@@ -94,8 +94,8 @@ public class GroundspeakAPI {
         if (netz == null) {
             netz = Webb.create();
             netz.setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getOrFetchGroundSpeakAccessToken());
-            Webb.setReadTimeout(CB_Core_Settings.socket_timeout.getValue());
-            Webb.setConnectTimeout(CB_Core_Settings.connection_timeout.getValue());
+            Webb.setReadTimeout(AllSettings.socket_timeout.getValue());
+            Webb.setConnectTimeout(AllSettings.connection_timeout.getValue());
             startTs = System.currentTimeMillis();
             nrOfApiCalls = 0;
             retryCount = 0;
@@ -295,8 +295,8 @@ public class GroundspeakAPI {
                 .resultWithFullFields()
                 //.resultWithImages(30) // todo maybe remove, cause not used from DB
                 ;
-        if (CB_Core_Settings.numberOfLogs.getValue() > 0) {
-            query.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
+        if (AllSettings.numberOfLogs.getValue() > 0) {
+            query.resultWithLogs(AllSettings.numberOfLogs.getValue());
         }
         return updateGeoCaches(query, caches);
     }
@@ -586,7 +586,7 @@ public class GroundspeakAPI {
 
         LinkedList<String> friendList = new LinkedList<>();
         if (!all) {
-            String friends = CB_Core_Settings.friends.getValue().replace(", ", "|").replace(",", "|");
+            String friends = AllSettings.friends.getValue().replace(", ", "|").replace(",", "|");
             for (String f : friends.split("\\|")) {
                 friendList.add(f.toLowerCase(Locale.US));
             }
@@ -1090,10 +1090,10 @@ public class GroundspeakAPI {
 
     public static String getAccessTokenFromSettings() {
         String act;
-        if (CB_Core_Settings.UseTestUrl.getValue()) {
-            act = CB_Core_Settings.AccessTokenForTest.getValue();
+        if (AllSettings.UseTestUrl.getValue()) {
+            act = AllSettings.AccessTokenForTest.getValue();
         } else {
-            act = CB_Core_Settings.AccessToken.getValue();
+            act = AllSettings.AccessToken.getValue();
         }
         // for ACB we added an additional A in settings
         if ((act.startsWith("A"))) {
@@ -1132,7 +1132,7 @@ public class GroundspeakAPI {
                 mPath = "";
         }
         String url;
-        if (CB_Core_Settings.UseTestUrl.getValue()) {
+        if (AllSettings.UseTestUrl.getValue()) {
             url = StagingApiUrl + mPath;
         } else {
             url = ApiUrl + mPath;
@@ -1294,7 +1294,7 @@ public class GroundspeakAPI {
                             // correctedCoordinates
                             JSONObject correctedCoordinate = userData.optJSONObject("correctedCoordinates");
                             if (correctedCoordinate != null) {
-                                if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
+                                if (AllSettings.UseCorrectedFinal.getValue()) {
                                     JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
                                     cache.setCoordinate(new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0)));
                                     cache.getWayPoints().add(new Waypoint(

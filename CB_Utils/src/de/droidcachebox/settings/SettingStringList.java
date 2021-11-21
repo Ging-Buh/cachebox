@@ -21,10 +21,10 @@ package de.droidcachebox.settings;
  * @author Longri  2016
  */
 public class SettingStringList extends SettingBase<String[]> {
-    public static final String STRINGSPLITTER = "�";
+    public static final String SPLITTER = "�";
 
-    public SettingStringList(String name, SettingCategory category, SettingModus modus, String[] defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingStringList(String name, SettingCategory category, SettingModus modus, String[] defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, StoreType);
         this.defaultValue = defaultValue;
     }
 
@@ -36,7 +36,7 @@ public class SettingStringList extends SettingBase<String[]> {
         for (String str : value) {
             sb.append(str);
             if (idx++ < value.length - 1)
-                sb.append(STRINGSPLITTER);
+                sb.append(SPLITTER);
         }
         return sb.toString();
     }
@@ -44,7 +44,7 @@ public class SettingStringList extends SettingBase<String[]> {
     @Override
     public boolean fromDBString(String dbString) {
         try {
-            value = dbString.split(STRINGSPLITTER);
+            value = dbString.split(SPLITTER);
             return true;
         } catch (Exception ex) {
             value = defaultValue;
@@ -54,7 +54,7 @@ public class SettingStringList extends SettingBase<String[]> {
 
     @Override
     public SettingBase<String[]> copy() {
-        SettingBase<String[]> ret = new SettingStringList(this.name, this.category, this.modus, this.defaultValue, this.storeType, usage);
+        SettingBase<String[]> ret = new SettingStringList(this.name, this.category, this.modus, this.defaultValue, this.storeType);
         ret.value = this.value;
         ret.lastValue = this.lastValue;
         return ret;
@@ -69,14 +69,9 @@ public class SettingStringList extends SettingBase<String[]> {
         if (!(inst.name.equals(this.name)))
             return false;
         if (this.value == null) {
-            if (inst.value == null)
-                return true;
-            return false;
+            return inst.value == null;
         }
-        if (!ifValueEquals(inst.value))
-            return false;
-
-        return true;
+        return ifValueEquals(inst.value);
     }
 
     @Override

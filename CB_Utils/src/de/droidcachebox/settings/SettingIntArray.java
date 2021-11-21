@@ -19,8 +19,8 @@ public class SettingIntArray extends SettingInt {
 
     private Integer values[];
 
-    public SettingIntArray(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType, SettingUsage usage, Integer arr[]) {
-        super(name, category, modus, defaultValue, StoreType, usage);
+    public SettingIntArray(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType, Integer arr[]) {
+        super(name, category, modus, defaultValue, StoreType);
         values = arr;
     }
 

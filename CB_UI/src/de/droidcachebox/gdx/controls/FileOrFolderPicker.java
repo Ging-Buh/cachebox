@@ -7,6 +7,7 @@ import static de.droidcachebox.GlobalCore.workPath;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,11 +20,13 @@ import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
+import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FilenameFilter;
+import de.droidcachebox.utils.log.Log;
 
 /**
  * picks a file or folder depending on the used constructor
@@ -33,14 +36,14 @@ import de.droidcachebox.utils.FilenameFilter;
  * The GlobalCores firstSDCard and secondSDCard must be set (in global initializing) once before
  */
 public class FileOrFolderPicker extends ActivityBase {
-    // private static final String log = "FileOrFolderPicker";
+    private static final String sClass = "FileOrFolderPicker";
     private static final String PARENT_DIR = "..";
     private final String DIRICON = ((char) new BigInteger("1F4C1", 16).intValue()) + " ";
     private final V_ListView filesView;
     private final FileAdapter fileAdapter;
     private final CB_Label title;
     private final String titleText;
-    private final CB_Button btnCancel;
+    private final ImageButton btnCancel;
     private final CB_Button btnHome;
     private final CB_Button btnSD1;
     private final CB_Button btnSD2;
@@ -101,8 +104,11 @@ public class FileOrFolderPicker extends ActivityBase {
         });
         sortType = 0;
         btnSort.setSelection(sortType);
-        this.possibleExtensions = possibleExtensions;
         selectFolder = possibleExtensions == null;
+        if (selectFolder)
+            this.possibleExtensions = ""; // want to show files on directory selection
+        else
+            this.possibleExtensions = possibleExtensions;
         // or selectFolder = fileReturn == null;
         if (selectFolder) {
             btnSelectFolder = new CB_Button(selectFolderText);
@@ -112,7 +118,7 @@ public class FileOrFolderPicker extends ActivityBase {
                 return true;
             });
         }
-        btnCancel = new CB_Button(Translation.get("cancel"));
+        btnCancel = new ImageButton(Sprites.IconName.exit);
         btnCancel.setClickHandler((view, x, y, pointer, button) -> {
             finish();
             return true;
@@ -155,6 +161,8 @@ public class FileOrFolderPicker extends ActivityBase {
             addNext(btnSort);
         }
         addLast(btnCancel);
+        btnCancel.setText(Translation.get("cancel"));
+        // btnCancel.setText("");
         filesView.setHeight(getAvailableHeight());
         addLast(filesView);
         // maybe setAdapter once after first load of data. then use notifyDataSetChanged
@@ -162,6 +170,7 @@ public class FileOrFolderPicker extends ActivityBase {
     }
 
     private void updateLayout() {
+
         String currentPath = currentFolder.getAbsolutePath();
 
         if (currentPath.endsWith(workPath))
@@ -232,21 +241,24 @@ public class FileOrFolderPicker extends ActivityBase {
             AbstractFile f = FileFactory.createFile(dir, filename);
             if (!f.canRead())
                 return false;
+            /*
             if (selectFolder)
                 return f.isDirectory();
             else {
-                if (f.isDirectory()) return true;
-                if (possibleExtensions.length() > 0) {
-                    int lastIndex = filename.lastIndexOf('.');
-                    // filename.substring(lastIndex) includes the dot
-                    if (lastIndex > -1)
-                        return possibleExtensions.contains(filename.substring(lastIndex).toLowerCase(Locale.US));
-                    // has no extension
-                    return false;
-                }
-                // no restriction by extensions
-                return true;
             }
+
+             */
+            if (f.isDirectory()) return true;
+            if (possibleExtensions.length() > 0) {
+                int lastIndex = filename.lastIndexOf('.');
+                // filename.substring(lastIndex) includes the dot
+                if (lastIndex > -1)
+                    return possibleExtensions.contains(filename.substring(lastIndex).toLowerCase(Locale.US));
+                // has no extension
+                return false;
+            }
+            // no restriction by extensions
+            return true;
         };
 
         if (currentFolder.exists()) {
@@ -279,8 +291,7 @@ public class FileOrFolderPicker extends ActivityBase {
                 for (AbstractFile file : containedFiles) {
                     containedFoldersAndFiles.add(file.getName());
                 }
-            }
-            else {
+            } else {
                 containedFoldersAndFiles = new ArrayList<>();
             }
         }
@@ -320,8 +331,28 @@ public class FileOrFolderPicker extends ActivityBase {
                     currentFolder = selected;
                     onShow();
                 } else {
-                    finish();
-                    fileReturn.returns(selected);
+                    if (fileReturn != null) {
+                        finish();
+                        fileReturn.returns(selected);
+                    }
+                }
+                return true;
+            });
+            v.setOnLongClickListener((view, x, y, pointer, button) -> {
+                FileItem v1 = (FileItem) view;
+                String fileName = containedFoldersAndFiles.get(v1.getIndex());
+                if (!fileName.startsWith(DIRICON)) {
+                    Menu fileModifications = new Menu(fileName, "");
+                    fileModifications.addMenuItem("delete", null, () -> {
+                        AbstractFile selected = FileFactory.createFile(currentFolder, fileName);
+                        try {
+                            selected.delete();
+                            onShow();
+                        } catch (IOException ex) {
+                            Log.err(sClass, ex.getMessage() + " " + selected);
+                        }
+                    });
+                    fileModifications.show();
                 }
                 return true;
             });

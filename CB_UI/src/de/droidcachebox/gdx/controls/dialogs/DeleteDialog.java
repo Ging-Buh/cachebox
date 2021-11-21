@@ -19,7 +19,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
@@ -73,8 +72,8 @@ public class DeleteDialog extends ButtonDialog {
 
                 @Override
                 public void run() {
-                    long nun = CacheListDAO.getInstance().deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
-                            CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+                    long nun = CacheListDAO.getInstance().deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(),
+                            Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
                     cleanupLogs();
                     cleanupWaypoints();
                     wd.close();

@@ -13,7 +13,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.menu.menuBtn2.executes.LogListView;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ProgresssChangedEventList;
@@ -136,7 +135,7 @@ public class UploadDraftsOrLogs {
 
         // Stimme abgeben
         try {
-            if (!GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
+            if (!GCVote.sendVote(Settings.GcLogin.getValue(), Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
                 uploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
             }
         } catch (Exception e) {

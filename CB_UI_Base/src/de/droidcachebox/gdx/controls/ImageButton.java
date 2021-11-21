@@ -19,6 +19,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
 
 public class ImageButton extends CB_Button {
@@ -26,11 +29,33 @@ public class ImageButton extends CB_Button {
     float mScale = 1f;
     float mAngle = 0;
 
-    public ImageButton(String name) {
-        super(name);
-        this.setText("");
+    public ImageButton() {
+        super("");
         image = new Image(this.scaleCenter(0.8f), "", false);
         this.addChild(image);
+    }
+
+    public ImageButton(Sprites.IconName iconName) {
+        super(null, "");
+        image = new Image(this.scaleCenter(0.8f), "", false);
+        image.setSprite(Sprites.getSprite(iconName.name()));
+        setText("");
+    }
+
+    @Override
+    protected void layout() {
+        if (image == null) return;
+        initRow(BOTTOMUP);
+        image.setHeight(innerHeight);
+        image.setWidth(innerHeight);
+        if (lblTxt != null) {
+            addNext(image, FIXED);
+            addLast(lblTxt);
+        }
+        else {
+            addLast(image, FIXED);
+        }
+        GL.that.renderOnce();
     }
 
     public ImageButton(CB_RectF rec, String name) {

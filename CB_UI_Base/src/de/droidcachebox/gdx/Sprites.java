@@ -16,6 +16,11 @@
 
 package de.droidcachebox.gdx;
 
+import static de.droidcachebox.settings.AllSettings.liveMapBackgroundColor;
+import static de.droidcachebox.settings.AllSettings.nightMode;
+import static de.droidcachebox.settings.AllSettings.solvedMysteryColor;
+import static de.droidcachebox.settings.AllSettings.useMipMap;
+
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -31,7 +36,6 @@ import java.util.ArrayList;
 
 import de.droidcachebox.gdx.graphics.ColorDrawable;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.log.Log;
 
 /**
@@ -120,11 +124,11 @@ public class Sprites {
                 return getSprite("shaddowrect-selected");
             case live:
                 Sprite live = getSprite(IconName.shaddowrect);
-                live.setColor(CB_UI_Base_Settings.liveMapBackgroundColor.getValue());
+                live.setColor(liveMapBackgroundColor.getValue());
                 return live;
             case liveSelected:
                 Sprite liveSelected = getSprite("shaddowrect-selected");
-                liveSelected.setColor(CB_UI_Base_Settings.liveMapBackgroundColor.getValue());
+                liveSelected.setColor(liveMapBackgroundColor.getValue());
                 return liveSelected;
             default:
                 return getSprite(i);
@@ -138,7 +142,7 @@ public class Sprites {
             Gdx.gl.glFinish();
         }
 
-        String TexturName = CB_UI_Base_Settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp.atlas" : "UI_IconPack.spp.atlas";
+        String TexturName = useMipMap.getValue() ? "UI_IconPack_MipMap.spp.atlas" : "UI_IconPack.spp.atlas";
 
         FileHandleCustomAtlas = null;
         FileHandleCustomNightAtlas = null;
@@ -201,7 +205,7 @@ public class Sprites {
 
     public static Sprite getSprite(String name, float scale) {
         Sprite tmp;
-        if (CB_UI_Base_Settings.nightMode.getValue()) {
+        if (nightMode.getValue()) {
             tmp = createSprite(atlasCustomtNight, name);
             if (tmp == null) {
                 tmp = createSprite(atlasCustom, name);
@@ -234,7 +238,7 @@ public class Sprites {
             tmp = createSprite(atlasDefault, "bigUndefined"); // damit kein null Sprite zurückgegeben wird falls ich was übersehen habe
         } else {
             if (name.endsWith("Solved")) {
-                tmp.setColor(CB_UI_Base_Settings.solvedMysteryColor.getValue());
+                tmp.setColor(solvedMysteryColor.getValue());
             }
         }
 
@@ -243,7 +247,7 @@ public class Sprites {
 
     protected static NinePatch getThemedPatch(String name) {
         NinePatch tmp;
-        if (CB_UI_Base_Settings.nightMode.getValue()) {
+        if (nightMode.getValue()) {
             tmp = createPatch(atlasCustomtNight, name);
             if (tmp == null) {
                 tmp = createPatch(atlasCustom, name);
@@ -703,6 +707,7 @@ public class Sprites {
         downloadFriendsLogs,
         downloadLogs,
         share,
+        exit,
     }
 
     public enum DialogElement {

@@ -4,6 +4,18 @@ import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromDa
 import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromFile;
 import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImagePixel;
 import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getMapsForgeGraphicFactory;
+import static de.droidcachebox.settings.AllSettings.mapViewTextFaktor;
+import static de.droidcachebox.settings.AllSettings.mapsForgeCarDayStyle;
+import static de.droidcachebox.settings.AllSettings.mapsForgeCarDayTheme;
+import static de.droidcachebox.settings.AllSettings.mapsForgeCarNightStyle;
+import static de.droidcachebox.settings.AllSettings.mapsForgeCarNightTheme;
+import static de.droidcachebox.settings.AllSettings.mapsForgeDayStyle;
+import static de.droidcachebox.settings.AllSettings.mapsForgeDayTheme;
+import static de.droidcachebox.settings.AllSettings.mapsForgeNightStyle;
+import static de.droidcachebox.settings.AllSettings.mapsForgeNightTheme;
+import static de.droidcachebox.settings.AllSettings.mapsForgeSaveZoomLevel;
+import static de.droidcachebox.settings.AllSettings.nightMode;
+import static de.droidcachebox.settings.AllSettings.preferredMapLanguage;
 
 import com.badlogic.gdx.graphics.Pixmap;
 
@@ -30,8 +42,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import de.droidcachebox.settings.CB_UI_Base_Settings;
-import de.droidcachebox.settings.LocatorSettings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
@@ -57,9 +67,9 @@ public class MapsForgeLayer extends Layer {
     private final TileCache firstLevelTileCache; // perhaps static?
     private MapFile mapFile;
     private float textScale;
-    private String pathAndName;
+    private final String pathAndName;
     private String mapsforgeThemesStyle;
-    private String mapsforgeTheme;
+    private String mapsforgeThemeName;
     private boolean isSetRenderTheme;
     private int mDataStoreNumber;
 
@@ -86,7 +96,7 @@ public class MapsForgeLayer extends Layer {
         additionalMapsForgeLayers = new ArrayList<>();
 
         mapsforgeThemesStyle = "";
-        mapsforgeTheme = "";
+        mapsforgeThemeName = "";
         isSetRenderTheme = false;
 
         getMapsForgeGraphicFactory(); // else overwrites the device scale faktor
@@ -182,7 +192,7 @@ public class MapsForgeLayer extends Layer {
     TileGL getTileGL(Descriptor desc) {
         // hint: if returns null, cacheTileToFile(Descriptor descriptor) is called, but we already cache the tile to file here.
         String cachedTileFilename = getLocalFilename(desc); // to do perhaps extend name with language, theme, style
-        if (desc.getZoom() <= LocatorSettings.mapsForgeSaveZoomLevel.getValue()) {
+        if (desc.getZoom() <= mapsForgeSaveZoomLevel.getValue()) {
             try {
                 long lastModified = 0;
                 if (FileIO.fileExists(cachedTileFilename)) {
@@ -194,7 +204,7 @@ public class MapsForgeLayer extends Layer {
                 if (lastModified != 0) {
                     if (FileIO.fileExistsNotEmpty(cachedTileFilename)) {
                         byte[] bytes = getImageFromFile(cachedTileFilename);
-                        if (CB_UI_Base_Settings.nightMode.getValue()) {
+                        if (nightMode.getValue()) {
                             bytes = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(bytes)));
                         }
                         return new TileGL_Bmp(desc, bytes, TileGL.TileState.Present, Pixmap.Format.RGB565);
@@ -219,7 +229,7 @@ public class MapsForgeLayer extends Layer {
                 return null;
             } else {
                 TileGL_Bmp mfTile = new TileGL_Bmp(desc, bitmap, TileGL.TileState.Present, Pixmap.Format.RGB565);
-                if (desc.getZoom() <= LocatorSettings.mapsForgeSaveZoomLevel.getValue()) {
+                if (desc.getZoom() <= mapsForgeSaveZoomLevel.getValue()) {
                     // cache to file here
                     byte[]  bytesOfMfTile = mfTile.getBytes();
                     if (bytesOfMfTile != null) {
@@ -236,11 +246,11 @@ public class MapsForgeLayer extends Layer {
                             outAbstractFile.setLastModified(mapFile.getDataTimestamp(null));
                         }
                         catch (Exception ex) {
-                            Log.err(log,"bad write to disk ", ex);;
+                            Log.err(log,"bad write to disk ", ex);
                             try {
                                 if (outAbstractFile != null) outAbstractFile.delete();
                             } catch (IOException e) {
-                                Log.err(log,"delete File after bad write to disk ", e);;
+                                Log.err(log,"delete File after bad write to disk ", e);
                             }
                         }
                     }
@@ -258,7 +268,7 @@ public class MapsForgeLayer extends Layer {
         if (getLanguages() == null) {
             mapFile = new MapFile(file);
         } else {
-            String preferredLanguage = LocatorSettings.preferredMapLanguage.getValue();
+            String preferredLanguage = preferredMapLanguage.getValue();
             if (preferredLanguage.length() > 0) {
                 for (String la : getLanguages()) {
                     if (la.equals(preferredLanguage)) {
@@ -281,30 +291,30 @@ public class MapsForgeLayer extends Layer {
         return false;
     }
 
-    private void setRenderTheme(String theme, String themestyle) {
+    private void setRenderTheme(String themeName, String themeStyleName) {
         if (isSetRenderTheme)
-            if (theme.equals(mapsforgeTheme))
-                if (themestyle.equals(mapsforgeThemesStyle))
+            if (themeName.equals(mapsforgeThemeName))
+                if (themeStyleName.equals(mapsforgeThemesStyle))
                     return;
-        mapsforgeThemesStyle = themestyle;
-        mapsforgeTheme = theme;
+        mapsforgeThemesStyle = themeStyleName;
+        mapsforgeThemeName = themeName;
         XmlRenderTheme renderTheme;
-        if (mapsforgeTheme.length() == 0) {
+        if (mapsforgeThemeName.length() == 0) {
             renderTheme = CB_InternalRenderTheme.DEFAULT;
-        } else if (mapsforgeTheme.equals(INTERNAL_THEME_OSMARENDER)) {
+        } else if (mapsforgeThemeName.equals(INTERNAL_THEME_OSMARENDER)) {
             renderTheme = CB_InternalRenderTheme.OSMARENDER;
-        } else if (mapsforgeTheme.equals(INTERNAL_THEME_CAR)) {
+        } else if (mapsforgeThemeName.equals(INTERNAL_THEME_CAR)) {
             renderTheme = CB_InternalRenderTheme.CAR;
-        } else if (mapsforgeTheme.equals(INTERNAL_THEME_DEFAULT)) {
+        } else if (mapsforgeThemeName.equals(INTERNAL_THEME_DEFAULT)) {
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         } else {
             try {
-                AbstractFile abstractFile = FileFactory.createFile(mapsforgeTheme);
+                AbstractFile abstractFile = FileFactory.createFile(mapsforgeThemeName);
                 if (abstractFile.exists()) {
                     java.io.File themeFile = new java.io.File(abstractFile.getAbsolutePath());
                     renderTheme = new ExternalRenderTheme(themeFile, new Xml_RenderThemeMenuCallback());
                 } else {
-                    Log.err(log, mapsforgeTheme + " not found!");
+                    Log.err(log, mapsforgeThemeName + " not found!");
                     renderTheme = CB_InternalRenderTheme.DEFAULT;
                 }
             } catch (Exception e) {
@@ -316,7 +326,7 @@ public class MapsForgeLayer extends Layer {
         try {
             RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), displayModel, renderTheme);
         } catch (Exception e) {
-            Log.err(log, "Error in checking RenderTheme " + mapsforgeTheme, e);
+            Log.err(log, "Error in checking RenderTheme " + mapsforgeThemeName, e);
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         }
 
@@ -329,38 +339,38 @@ public class MapsForgeLayer extends Layer {
     }
 
     private void initTheme(boolean carMode) {
-        String themeStyle;
-        String theme;
+        String themeStyleName;
+        String themeName;
         String path;
         if (carMode) {
             textScale = DEFAULT_TEXT_SCALE * 1.35f;
-            if (CB_UI_Base_Settings.nightMode.getValue()) {
-                themeStyle = LocatorSettings.mapsForgeCarNightStyle.getValue();
-                path = LocatorSettings.mapsForgeCarNightTheme.getValue();
+            if (nightMode.getValue()) {
+                themeStyleName = mapsForgeCarNightStyle.getValue();
+                path = mapsForgeCarNightTheme.getValue();
             } else {
-                themeStyle = LocatorSettings.mapsForgeCarDayStyle.getValue();
-                path = LocatorSettings.mapsForgeCarDayTheme.getValue();
+                themeStyleName = mapsForgeCarDayStyle.getValue();
+                path = mapsForgeCarDayTheme.getValue();
             }
         } else {
-            textScale = DEFAULT_TEXT_SCALE * CB_UI_Base_Settings.mapViewTextFaktor.getValue();
-            if (CB_UI_Base_Settings.nightMode.getValue()) {
-                themeStyle = LocatorSettings.mapsForgeNightStyle.getValue();
-                path = LocatorSettings.mapsForgeNightTheme.getValue();
+            textScale = DEFAULT_TEXT_SCALE * mapViewTextFaktor.getValue();
+            if (nightMode.getValue()) {
+                themeStyleName = mapsForgeNightStyle.getValue();
+                path = mapsForgeNightTheme.getValue();
             } else {
-                themeStyle = LocatorSettings.mapsForgeDayStyle.getValue();
-                path = LocatorSettings.mapsForgeDayTheme.getValue();
+                themeStyleName = mapsForgeDayStyle.getValue();
+                path = mapsForgeDayTheme.getValue();
             }
         }
         if (path.length() > 0) {
             if (path.equals(INTERNAL_THEME_CAR) || path.equals(INTERNAL_THEME_DEFAULT) || path.equals(INTERNAL_THEME_OSMARENDER)) {
-                theme = path;
+                themeName = path;
             } else if (FileIO.fileExists(path) && FileIO.getFileExtension(path).contains("xml")) {
-                theme = path;
+                themeName = path;
             } else
-                theme = "";
+                themeName = "";
         } else
-            theme = "";
-        setRenderTheme(theme, themeStyle);
+            themeName = "";
+        setRenderTheme(themeName, themeStyleName);
     }
 
     private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {
@@ -386,7 +396,7 @@ public class MapsForgeLayer extends Layer {
                 boolean overlayEnabled = overlay.isEnabled();
                 int posInConfig = ConfigStyle.indexOf(overlay.getId());
                 if (posInConfig > -1) {
-                    overlayEnabled = ConfigStyle.substring(posInConfig - 1, posInConfig).equals("+");
+                    overlayEnabled = ConfigStyle.charAt(posInConfig - 1) == '+';
                 }
                 if (overlayEnabled) {
                     result.addAll(overlay.getCategories());

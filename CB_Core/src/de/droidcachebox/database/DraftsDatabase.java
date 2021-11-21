@@ -10,7 +10,7 @@ public class DraftsDatabase extends Database_Core {
         private DraftsDatabase() {
                 super();
                 latestDatabaseChange = DatabaseVersions.DraftsLatestVersion;
-                sql = PlatformUIBase.getSQLInstance();
+                sql = PlatformUIBase.createSQLInstance();
                 draftsDatabase = this;
         }
 
@@ -72,6 +72,7 @@ public class DraftsDatabase extends Database_Core {
 
         @Override
         public void close() {
+                databasePath = "";
                 if (sql != null) sql.close();
                 sql = null;
                 draftsDatabase = null;

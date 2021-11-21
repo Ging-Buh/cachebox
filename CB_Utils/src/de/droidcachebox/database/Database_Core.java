@@ -20,10 +20,11 @@ public abstract class Database_Core {
     protected SQLiteInterface sql;
     protected long DatabaseId = 0; // for Database replication with WinCachebox
     protected int latestDatabaseChange = 0;
-    private String databasePath;
+    protected String databasePath;
     private boolean newDB = false;
 
     public Database_Core() {
+        databasePath = "";
     }
 
     public SQLiteInterface getSql() {

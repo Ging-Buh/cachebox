@@ -30,7 +30,6 @@ import de.droidcachebox.menu.menuBtn1.contextmenus.ShowDeleteDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -146,7 +145,7 @@ public class ShowCacheList extends AbstractShowAction {
                     CBDB.getInstance().beginTransaction();
                     Database_Core.Parameters args = new Database_Core.Parameters();
                     args.put("Favorit", finalChecked ? 1 : 0);
-                    CBDB.getInstance().getSql().update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), null);
+                    CBDB.getInstance().getSql().update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), null);
                     CBDB.getInstance().setTransactionSuccessful();
                     CBDB.getInstance().endTransaction();
                     ViewManager.reloadCacheList();

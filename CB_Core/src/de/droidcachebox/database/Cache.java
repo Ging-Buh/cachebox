@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.DLong;
 import de.droidcachebox.utils.MathUtils;
@@ -234,7 +234,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         boolean ret = false;
         try {
             if (gcLogin == null) {
-                gcLogin = CB_Core_Settings.GcLogin.getValue().toLowerCase(Locale.getDefault());
+                gcLogin = AllSettings.GcLogin.getValue().toLowerCase(Locale.getDefault());
             }
             ret = getOwner().toLowerCase(Locale.getDefault()).equals(gcLogin);
         } catch (Exception ignored) {

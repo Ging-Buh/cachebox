@@ -24,8 +24,8 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString {
 
     private EnumTyp myEnum;
 
-    public SettingEnum(String name, SettingCategory category, SettingModus modus, EnumTyp defaultValue, SettingStoreType StoreType, SettingUsage usage, EnumTyp enu) {
-        super(name, category, modus, defaultValue.name(), StoreType, usage);
+    public SettingEnum(String name, SettingCategory category, SettingModus modus, EnumTyp defaultValue, SettingStoreType StoreType, EnumTyp enu) {
+        super(name, category, modus, defaultValue.name(), StoreType);
         myEnum = enu;
 
         values = new CB_List<>();

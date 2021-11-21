@@ -48,7 +48,7 @@ public class CB_Button extends CB_View_Base {
     protected boolean isFocused = false;
     protected boolean isPressed = false;
     boolean isDisabled = false;
-    CB_Label lblTxt;
+    protected CB_Label lblTxt;
     boolean draggableButton = false;
     CB_Label.HAlignment hAlignment = CB_Label.HAlignment.CENTER;
     protected CB_Label.VAlignment vAlignment = CB_Label.VAlignment.CENTER;
@@ -218,7 +218,7 @@ public class CB_Button extends CB_View_Base {
                 lblTxt.dispose();
             }
             lblTxt = null;
-            GL.that.renderOnce();
+            layout();
             return;
         }
 
@@ -232,9 +232,14 @@ public class CB_Button extends CB_View_Base {
         if (mFont == null)
             mFont = Fonts.getBig();
         lblTxt = new CB_Label(text, mFont, color, WrapType.WRAPPED).setHAlignment(hAlignment).setVAlignment(vAlignment);
-        this.initRow(BOTTOMUP);
-        this.addLast(lblTxt);
 
+        layout();
+
+    }
+
+    protected void layout() {
+        this.initRow(BOTTOMUP);
+        if (lblTxt != null) this.addLast(lblTxt);
         GL.that.renderOnce();
     }
 

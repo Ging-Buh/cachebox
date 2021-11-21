@@ -148,8 +148,8 @@ public class PlatformUIBase {
         methods.startPictureApp(file);
     }
 
-    public static SQLiteInterface getSQLInstance() {
-        return methods.getSQLInstance();
+    public static SQLiteInterface createSQLInstance() {
+        return methods.createSQLInstance();
     }
 
     public static void freeSQLInstance(SQLiteInterface sqlInstance) {
@@ -261,7 +261,7 @@ public class PlatformUIBase {
 
         void startPictureApp(String file);
 
-        SQLiteInterface getSQLInstance();
+        SQLiteInterface createSQLInstance();
 
         void freeSQLInstance(SQLiteInterface sqlInstance);
 

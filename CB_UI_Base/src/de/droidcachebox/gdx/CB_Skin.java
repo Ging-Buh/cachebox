@@ -1,12 +1,20 @@
 package de.droidcachebox.gdx;
 
+import static de.droidcachebox.settings.AllSettings.FONT_SIZE_BIG;
+import static de.droidcachebox.settings.AllSettings.FONT_SIZE_COMPASS_DISTANCE;
+import static de.droidcachebox.settings.AllSettings.FONT_SIZE_NORMAL;
+import static de.droidcachebox.settings.AllSettings.FONT_SIZE_NORMAL_BUBBLE;
+import static de.droidcachebox.settings.AllSettings.FONT_SIZE_SMALL;
+import static de.droidcachebox.settings.AllSettings.FONT_SIZE_SMALL_BUBBLE;
+import static de.droidcachebox.settings.AllSettings.nightMode;
+import static de.droidcachebox.settings.AllSettings.skinFolder;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import de.droidcachebox.gdx.graphics.HSV_Color;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
@@ -45,12 +53,12 @@ public class CB_Skin {
 
     private void init() {
 
-        if (CB_UI_Base_Settings.skinFolder.getValue().equals("default")) {
+        if (skinFolder.getValue().equals("default")) {
             SkinFolder = FileFactory.getInternalFileHandle("skins/default");
-        } else if (CB_UI_Base_Settings.skinFolder.getValue().equals("small")) {
+        } else if (skinFolder.getValue().equals("small")) {
             SkinFolder = FileFactory.getInternalFileHandle("skins/small");
         } else {
-            SkinFolder = Gdx.files.absolute(CB_UI_Base_Settings.skinFolder.getValue());
+            SkinFolder = Gdx.files.absolute(skinFolder.getValue());
             if (!SkinFolder.isDirectory()) {
                 SkinFolder = FileFactory.getInternalFileHandle("skins/default");
             }
@@ -58,14 +66,14 @@ public class CB_Skin {
 
         DefaultSkinFolder = FileFactory.getInternalFileHandle("skins/default");
 
-        SizeBiggest = CB_UI_Base_Settings.FONT_SIZE_COMPASS_DISTANCE.getValue();
-        SizeBig = CB_UI_Base_Settings.FONT_SIZE_BIG.getValue();
-        SizeNormal = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue();
-        SizeNormalbubble = CB_UI_Base_Settings.FONT_SIZE_NORMAL_BUBBLE.getValue();
-        SizeSmall = CB_UI_Base_Settings.FONT_SIZE_SMALL.getValue();
-        SizeSmallBubble = CB_UI_Base_Settings.FONT_SIZE_SMALL_BUBBLE.getValue();
+        SizeBiggest = FONT_SIZE_COMPASS_DISTANCE.getValue();
+        SizeBig = FONT_SIZE_BIG.getValue();
+        SizeNormal = FONT_SIZE_NORMAL.getValue();
+        SizeNormalbubble = FONT_SIZE_NORMAL_BUBBLE.getValue();
+        SizeSmall = FONT_SIZE_SMALL.getValue();
+        SizeSmallBubble = FONT_SIZE_SMALL_BUBBLE.getValue();
 
-        NightMode = CB_UI_Base_Settings.nightMode.getValue();
+        NightMode = nightMode.getValue();
 
         FileHandle default_day_skinPath = FileFactory.getInternalFileHandle("skins/default/day/skin.json");
         default_day_skin = new Skin(default_day_skinPath);
@@ -112,7 +120,7 @@ public class CB_Skin {
 
 
     public HSV_Color getThemedColor(String Name) {
-        if (CB_UI_Base_Settings.nightMode.getValue()) {
+        if (nightMode.getValue()) {
             return new HSV_Color(night_skin.getColor(Name));
         } else {
             return new HSV_Color(day_skin.getColor(Name));

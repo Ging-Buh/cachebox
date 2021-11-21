@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.DLong;
@@ -301,7 +301,7 @@ public class CacheDetail implements Serializable {
             String directory = "";
 
             // from own Repository
-            String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
+            String path = AllSettings.SpoilerFolderLocal.getValue();
             // Log.debug(log, "from SpoilerFolderLocal: " + path);
             try {
                 if (path != null && path.length() > 0) {
@@ -314,7 +314,7 @@ public class CacheDetail implements Serializable {
 
             // from Description own Repository
             try {
-                path = CB_Core_Settings.DescriptionImageFolderLocal.getValue();
+                path = AllSettings.DescriptionImageFolderLocal.getValue();
                 // Log.debug(log, "from DescriptionImageFolderLocal: " + path);
                 directory = path + "/" + gcCode.substring(0, 4);
                 loadSpoilerResourcesFromPath(directory, cache);
@@ -324,7 +324,7 @@ public class CacheDetail implements Serializable {
 
             // from Description Global Repository
             try {
-                path = CB_Core_Settings.DescriptionImageFolder.getValue();
+                path = AllSettings.DescriptionImageFolder.getValue();
                 // Log.debug(log, "from DescriptionImageFolder: " + path);
                 directory = path + "/" + gcCode.substring(0, 4);
                 loadSpoilerResourcesFromPath(directory, cache);
@@ -334,7 +334,7 @@ public class CacheDetail implements Serializable {
 
             // from Spoiler Global Repository
             try {
-                path = CB_Core_Settings.SpoilerFolder.getValue();
+                path = AllSettings.SpoilerFolder.getValue();
                 // Log.debug(log, "from SpoilerFolder: " + path);
                 directory = path + "/" + gcCode.substring(0, 4);
                 loadSpoilerResourcesFromPath(directory, cache);
@@ -343,7 +343,7 @@ public class CacheDetail implements Serializable {
             }
 
             // Add own taken photo
-            directory = CB_Core_Settings.UserImageFolder.getValue();
+            directory = AllSettings.UserImageFolder.getValue();
             if (directory != null) {
                 try {
                     loadSpoilerResourcesFromPath(directory, cache);

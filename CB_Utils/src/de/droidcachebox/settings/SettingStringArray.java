@@ -17,10 +17,10 @@ package de.droidcachebox.settings;
 
 public class SettingStringArray extends SettingString {
 
-    private String possibleValues[];
+    private final String[] possibleValues;
 
-    public SettingStringArray(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, String possibleValues[]) {
-        super(name, category, modus, defaultValue, StoreType, usage);
+    public SettingStringArray(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, String[] possibleValues) {
+        super(name, category, modus, defaultValue, StoreType);
         this.defaultValue = defaultValue;
         this.value = defaultValue;
         this.possibleValues = possibleValues;

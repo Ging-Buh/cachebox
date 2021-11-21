@@ -57,7 +57,6 @@ import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancel;
@@ -468,8 +467,8 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                         if (!btnBeforeAfterEqual.getText().equals("X")) {
                             q.publishedDate(publishDate, btnBeforeAfterEqual.getText());
                         }
-                        if (CB_Core_Settings.numberOfLogs.getValue() > 0) {
-                            q.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
+                        if (Settings.numberOfLogs.getValue() > 0) {
+                            q.resultWithLogs(Settings.numberOfLogs.getValue());
                         }
                         if (txtRadius.getText().trim().length() > 0) {
                             int radius;

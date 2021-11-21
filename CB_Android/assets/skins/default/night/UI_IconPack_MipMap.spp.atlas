@@ -1,6 +1,6 @@
 
 UI_IconPack.spp.png
-size: 2048,512
+size: 2048, 512
 format: RGBA8888
 filter: MipMapLinearNearest,Nearest
 repeat: none

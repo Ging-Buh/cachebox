@@ -6,7 +6,7 @@ import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.menu.menuBtn5.executes.SettingsActivity;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
+import de.droidcachebox.settings.Settings;
 
 public class SettingsAction extends AbstractAction {
 
@@ -36,7 +36,7 @@ public class SettingsAction extends AbstractAction {
     public void execute() {
 
         SettingsActivity settingsActivity = new SettingsActivity();
-        lastNightValue = CB_UI_Base_Settings.nightMode.getValue();
+        lastNightValue = Settings.nightMode.getValue();
 
         settingsActivity.show();
     }

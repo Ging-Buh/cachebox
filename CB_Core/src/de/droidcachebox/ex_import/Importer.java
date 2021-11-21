@@ -31,7 +31,7 @@ import de.droidcachebox.core.RatingData;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.GCVoteDAO;
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
@@ -182,7 +182,7 @@ public class Importer {
         GCVoteDAO gcVoteDAO = new GCVoteDAO();
         int i;
 
-        if (CB_Core_Settings.GcVotePassword.getValue().length() > 0) {
+        if (AllSettings.GcVotePassword.getValue().length() > 0) {
             ArrayList<GCVoteCacheInfo> pendingVotes = gcVoteDAO.getPendingGCVotes();
 
             ip.setJobMax("sendGcVote", pendingVotes.size());
@@ -200,7 +200,7 @@ public class Importer {
 
                 ip.ProgressInkrement("sendGcVote", "Sending Votes (" + i + " / " + pendingVotes.size() + ")", false);
 
-                if (GCVote.sendVote(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.getVote(), info.getUrl(), info.getGcCode())) {
+                if (GCVote.sendVote(AllSettings.GcLogin.getValue(), AllSettings.GcVotePassword.getValue(), info.getVote(), info.getUrl(), info.getGcCode())) {
                     gcVoteDAO.updatePendingVote(info.getId());
                 }
             }
@@ -242,7 +242,7 @@ public class Importer {
                 idLookup.put(gcVoteCacheInfo.getGcCode(), gcVoteCacheInfo.getId());
             }
 
-            ArrayList<RatingData> ratingData = GCVote.getRating(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), requests);
+            ArrayList<RatingData> ratingData = GCVote.getRating(AllSettings.GcLogin.getValue(), AllSettings.GcVotePassword.getValue(), requests);
 
             if (ratingData == null || ratingData.isEmpty()) {
                 failCount += packageSize;

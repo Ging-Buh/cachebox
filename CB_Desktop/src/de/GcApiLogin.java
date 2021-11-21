@@ -8,7 +8,7 @@ import java.util.Map;
 import de.droidcachebox.core.CB_Api;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog.IcancelListener;
-import de.droidcachebox.settings.CB_UI_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.http.Request;
 import de.droidcachebox.utils.http.Response;
@@ -66,10 +66,10 @@ public class GcApiLogin {
                 // State = 0;
                 String GC_AuthUrl;
 
-                if (CB_UI_Settings.OverrideUrl.getValue().equals("")) {
+                if (Settings.OverrideUrl.getValue().equals("")) {
                     GC_AuthUrl = CB_Api.getGcAuthUrl();
                 } else {
-                    GC_AuthUrl = CB_UI_Settings.OverrideUrl.getValue();
+                    GC_AuthUrl = Settings.OverrideUrl.getValue();
                 }
                 GC_AuthUrl = GC_AuthUrl.trim();
 

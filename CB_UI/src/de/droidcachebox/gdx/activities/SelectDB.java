@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.settings.AllSettings.DatabaseName;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Timer;
@@ -46,7 +48,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn5.ShowQuit;
 import de.droidcachebox.settings.Settings;
@@ -90,6 +91,7 @@ public class SelectDB extends ActivityBase {
 
                 String database = GlobalCore.workPath + "/" + NewDB_Name + ".db3";
                 Settings.DatabaseName.setValue(NewDB_Name + ".db3");
+                Log.debug(log, "\r\nnew DB " + DatabaseName.getValue());
                 CBDB.getInstance().close();
                 CBDB.getInstance().startUp(database);
 
@@ -358,8 +360,6 @@ public class SelectDB extends ActivityBase {
 
         Settings.DatabaseName.setValue(currentDBFile.getName());
         ViewManager.that.acceptChanges();
-
-        LayerManager.getInstance().initLayers();
 
         finish();
 

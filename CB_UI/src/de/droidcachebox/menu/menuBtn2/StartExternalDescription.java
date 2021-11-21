@@ -31,7 +31,7 @@ import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.log.Log;
 
 /**
@@ -74,7 +74,7 @@ public class StartExternalDescription extends AbstractAction {
             // add trailer
             html += "</br></br>" + "</body></html>";
 
-            String filePath = CB_UI_Base_Settings.imageCacheFolder.getValue() + "/" + TEMP_CACHE_HTML_FILE;
+            String filePath = Settings.imageCacheFolder.getValue() + "/" + TEMP_CACHE_HTML_FILE;
 
             try {
 

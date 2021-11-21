@@ -98,7 +98,7 @@ public class TB_Log extends ActivityBase {
             return true;
         });
 
-        btnAction = new ImageButton("Action");
+        btnAction = new ImageButton();
         btnAction.setClickHandler((v, x, y, pointer, button) -> {
             LogNow();
             return true;

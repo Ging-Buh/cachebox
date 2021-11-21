@@ -65,7 +65,6 @@ import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
@@ -490,8 +489,8 @@ public class SearchDialog extends PopUp_Base {
                         .resultWithFullFields()
                         // .resultWithImages(30)
                         ;
-                if (CB_Core_Settings.numberOfLogs.getValue() > 0) {
-                    q.resultWithLogs(CB_Core_Settings.numberOfLogs.getValue());
+                if (Settings.numberOfLogs.getValue() > 0) {
+                    q.resultWithLogs(Settings.numberOfLogs.getValue());
                 }
 
                 if (Settings.SearchWithoutFounds.getValue()) q.excludeFinds();

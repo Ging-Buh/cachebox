@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
 
@@ -46,8 +46,8 @@ public class GCVote {
         try {
             InputStream is = Webb.create()
                     .get("http://gcvote.com/getVotes.php?" + data)
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .connectTimeout(AllSettings.connection_timeout.getValue())
+                    .readTimeout(AllSettings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asStream()
                     .getBody();
@@ -107,8 +107,8 @@ public class GCVote {
         try {
             String responseString = Webb.create()
                     .get("http://gcvote.com/setVote.php?" + data)
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .connectTimeout(AllSettings.connection_timeout.getValue())
+                    .readTimeout(AllSettings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asString()
                     .getBody();

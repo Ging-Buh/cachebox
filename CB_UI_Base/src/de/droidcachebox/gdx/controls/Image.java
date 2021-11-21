@@ -21,6 +21,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -30,15 +33,8 @@ import de.droidcachebox.gdx.controls.animation.AnimationBase;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.math.CB_RectF;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-/**
- * Ein Control, welches ein Bild aus einem Pfad Darstellt.
- *
- * @author Longri
- */
 public class Image extends CB_View_Base {
-    private AtomicBoolean isAsRenderViewRegistered = new AtomicBoolean(false);
+    private final AtomicBoolean isAsRenderViewRegistered = new AtomicBoolean(false);
     private AnimationBase Wait;
     private ImageLoader imageLoader;
     private Color mColor = new Color(1, 1, 1, 1);
@@ -108,7 +104,7 @@ public class Image extends CB_View_Base {
                     Wait = null;
                 }
                 imageLoader.inLoad = false;
-                float drawwidth = getWidth();
+                float drawWidth = getWidth();
                 float drawHeight = getHeight();
                 float drawX = 0;
                 float drawY = 0;
@@ -119,7 +115,7 @@ public class Image extends CB_View_Base {
 
                     float proportion = Math.min(proportionWidth, proportionHeight);
 
-                    drawwidth = imageLoader.getSpriteWidth() * proportion;
+                    drawWidth = imageLoader.getSpriteWidth() * proportion;
                     drawHeight = imageLoader.getSpriteHeight() * proportion;
 
                     switch (hAlignment) {
@@ -129,17 +125,17 @@ public class Image extends CB_View_Base {
                             break;
                         case RIGHT:
                         case SCROLL_RIGHT:
-                            drawX = getWidth() - drawwidth;
+                            drawX = getWidth() - drawWidth;
                             break;
                         default:
-                            drawX = (getWidth() - drawwidth) / 2;
+                            drawX = (getWidth() - drawWidth) / 2;
                             break;
                     }
 
                     drawY = (getHeight() - drawHeight) / 2;
                 }
 
-                imageLoader.getDrawable(Gdx.graphics.getDeltaTime()).draw(batch, drawX, drawY, drawwidth, drawHeight);
+                imageLoader.getDrawable(Gdx.graphics.getDeltaTime()).draw(batch, drawX, drawY, drawWidth, drawHeight);
 
                 if (!isAsRenderViewRegistered.get() && imageLoader.getAnimDelay() > 0) {
                     GL.that.addRenderView(this, imageLoader.getAnimDelay());
@@ -170,14 +166,16 @@ public class Image extends CB_View_Base {
 
         batch.setColor(altColor);
 
-        //Draw Debug Rec
-        //	if (DebugSprite != null) {
-        //	    batch.flush();
-        //	    DebugSprite.draw(batch);
-        //
-        //	} else {
-        //	    writeDebug();
-        //	}
+        /*
+        Draw Debug Rec
+        	if (DebugSprite != null) {
+        	    batch.flush();
+        	    DebugSprite.draw(batch);
+
+        	} else {
+        	    writeDebug();
+        	}
+        */
 
     }
 
@@ -203,7 +201,7 @@ public class Image extends CB_View_Base {
     }
 
     /**
-     * Sets a Image URl and Downlowd this Image if this don't exist on Cache
+     * Sets a Image URl and Download this Image if this don't exist on Cache
      *
      */
     public void setImageURL(final String iconUrl) {

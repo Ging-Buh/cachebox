@@ -16,26 +16,24 @@
 package de.droidcachebox.settings;
 
 /**
- * im value intern ist die Einstellung verschlüsselt abgespeichert
- * so wie sie dann in die DB geschrieben wird.
+ * value is encrypted like in DB
  */
 public class SettingEncryptedString extends SettingLongString {
 
-    public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, defaultValue, StoreType, usage);
+    public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, defaultValue, StoreType);
     }
 
-    // liefert die Einstellung im Klartext
+    // gets unencrypted
     @Override
     public String getValue() {
         if (value == null)
-            return value;
+            return null;
         else
             return Config_Core.decrypt(this.value);
     }
 
-    // hiermit kann die Einstellung im Klartext übergeben werden und wird sofort
-    // verschlüsselt
+    // set encryption from unencrypted String
     @Override
     public void setValue(String value) {
         String encrypted = "";
@@ -47,12 +45,11 @@ public class SettingEncryptedString extends SettingLongString {
         setDirty();
     }
 
-    // Liefert die verschlüsselte Einstellung zurück
     public String getEncryptedValue() {
         return this.value;
     }
 
-    // hier kann die schon verschlüsselte Einstellung übergeben werden.
+    // set from already encrypted String
     public void setEncryptedValue(String value) {
         if ((this.value != null) && (this.value.equals(value)))
             return;
@@ -60,15 +57,9 @@ public class SettingEncryptedString extends SettingLongString {
         setDirty();
     }
 
-    // liefert den Standardwert im Klartext
     @Override
     public String getDefaultValue() {
         return Config_Core.decrypt(this.defaultValue);
-    }
-
-    // liefert den verschlüsselten Standadwert
-    public String getEncryptedDefaultValue() {
-        return this.defaultValue;
     }
 
 }

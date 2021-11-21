@@ -1,8 +1,8 @@
 
 UI_IconPack.spp.png
-size: 1024,1024
+size: 1024, 1024
 format: RGBA8888
-filter: Linear,Linear
+filter: Linear, Linear
 repeat: none
 1to4bubble
   rotate: false

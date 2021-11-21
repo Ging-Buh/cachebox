@@ -11,7 +11,7 @@ import de.droidcachebox.gdx.controls.NumPad;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.settings.CB_UI_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 
@@ -40,7 +40,7 @@ public class ProjectionCoordinate extends ActivityBase {
         coordinateButtonText = fromText;
         projectionType = wantedProjectionType;
         coordinateReturnListener = theCoordinateReturnListener;
-        imperialUnits = CB_UI_Settings.ImperialUnits.getValue();
+        imperialUnits = Settings.ImperialUnits.getValue();
         if (projectionType == ProjectionType.point2point)
             projectedCoordinate = from.copy();
         iniCacheNameLabel();

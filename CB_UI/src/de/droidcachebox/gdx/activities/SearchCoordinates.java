@@ -13,7 +13,7 @@ import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.http.Webb;
 
@@ -106,8 +106,8 @@ public class SearchCoordinates extends ActivityBase {
     private JSONArray fetchLocations() {
         return Webb.create()
                 .get("https://nominatim.openstreetmap.org/search")
-                .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                .connectTimeout(Settings.connection_timeout.getValue())
+                .readTimeout(Settings.socket_timeout.getValue())
                 .param("city", edtCity.getText())
                 .param("street", edtStreet.getText())
                 .param("format", "json")

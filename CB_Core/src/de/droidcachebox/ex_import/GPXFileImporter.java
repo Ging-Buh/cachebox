@@ -45,7 +45,7 @@ import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
@@ -1272,7 +1272,7 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("cache_gsak_corrected_coordinates")) { // Handle GSAK Corrected Coordinates
-            if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
+            if (AllSettings.UseCorrectedFinal.getValue()) {
                 if (values.get("cache_gsak_corrected_coordinates").equalsIgnoreCase("True")) {
                     double lat = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lat"));
                     double lon = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lon"));

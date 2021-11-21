@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.gdx.controls;
 
+import static de.droidcachebox.settings.AllSettings.nightMode;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -31,7 +33,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.CB_List;
 
 public abstract class Dialog extends CB_View_Base {
@@ -72,14 +73,14 @@ public abstract class Dialog extends CB_View_Base {
             return;
         } // noch nicht initialisiert!
 
-        if (mTitle9patch == null || mHeader9patch == null || mCenter9patch == null || mFooter9patch == null || lastNightMode != CB_UI_Base_Settings.nightMode.getValue()) {
+        if (mTitle9patch == null || mHeader9patch == null || mCenter9patch == null || mFooter9patch == null || lastNightMode != nightMode.getValue()) {
             int pW = (int) (Sprites.Dialog.get(DialogElement.footer.ordinal()).getWidth() / 8);
             mTitle9patch = new NinePatch(Sprites.Dialog.get(DialogElement.title.ordinal()), pW, (pW * 12 / 8), pW, pW);
             mHeader9patch = new NinePatch(Sprites.Dialog.get(DialogElement.header.ordinal()), pW, pW, pW, 3);
             mCenter9patch = new NinePatch(Sprites.Dialog.get(DialogElement.center.ordinal()), pW, pW, 1, 1);
             mFooter9patch = new NinePatch(Sprites.Dialog.get(DialogElement.footer.ordinal()), pW, pW, 3, pW);
             mTitleVersatz = pW;
-            lastNightMode = CB_UI_Base_Settings.nightMode.getValue();
+            lastNightMode = nightMode.getValue();
         }
 
         leftBorder = mCenter9patch.getLeftWidth();

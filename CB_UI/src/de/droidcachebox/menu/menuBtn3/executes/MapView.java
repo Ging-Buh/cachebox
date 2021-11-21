@@ -96,7 +96,6 @@ import de.droidcachebox.locator.map.MapViewBase;
 import de.droidcachebox.locator.map.ZoomScale;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
-import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
@@ -908,7 +907,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
             MapTileLoader.isWorking.set(false);
 
 
-            if (isCarMode && CB_UI_Settings.liveMapEnabled.getValue()) {
+            if (isCarMode && Settings.liveMapEnabled.getValue()) {
                 LiveMapQue.getInstance().setCenterDescriptor(center);
                 // LiveMap queue complete screen
                 lowerTile.setData(center);

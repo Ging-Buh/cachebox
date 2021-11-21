@@ -413,7 +413,7 @@ public class EditFilterSettings extends ActivityBase {
                             newFilterString = newFilterString.substring(0, pos) + after;
                         }
 
-                        userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + SettingStringList.STRINGSPLITTER;
+                        userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + SettingStringList.SPLITTER;
                         Settings.UserFilters.setValue(userFilters);
                         ViewManager.that.acceptChanges();
                         presetView.fillPresetList();
@@ -484,7 +484,7 @@ public class EditFilterSettings extends ActivityBase {
 
             // add userFilters from Config.UserFilter
             if (Settings.UserFilters.getValue().length() > 0) {
-                String[] userFilters = Settings.UserFilters.getValue().split(SettingStringList.STRINGSPLITTER);
+                String[] userFilters = Settings.UserFilters.getValue().split(SettingStringList.SPLITTER);
                 try {
                     for (String userFilter : userFilters) {
                         int pos = userFilter.indexOf(";");
@@ -513,7 +513,7 @@ public class EditFilterSettings extends ActivityBase {
                                             try {
                                                 String userEntries = Settings.UserFilters.getValue();
                                                 int p1 = userEntries.indexOf(clickedItem.mPreset.mName);
-                                                int p2 = userEntries.indexOf(SettingStringList.STRINGSPLITTER, p1) + 1;
+                                                int p2 = userEntries.indexOf(SettingStringList.SPLITTER, p1) + 1;
                                                 String newUserEntries;
                                                 if (p2 > p1)
                                                     newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");

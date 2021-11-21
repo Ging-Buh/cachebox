@@ -1,24 +1,28 @@
 package de.droidcachebox.locator.map;
 
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.FileIO;
+import static de.droidcachebox.locator.LocatorBasePlatFormMethods.loadFromBoundingBoxByteArray;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.loadFromBoundingBoxByteArray;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
 
 public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
 
     public static boolean Cancel = false;
     long maxAge;
-    private String Filename;
+    private String fileName;
     private ArrayList<BoundingBox> BoundingBoxes = new ArrayList<>();
 
     MapPackLayer(String file) throws Exception {
-        Filename = file;
+        fileName = file;
         AbstractFile queryAbstractFile = FileFactory.createFile(file);
         FileInputStream stream = queryAbstractFile.getFileInputStream();
         DataInputStream reader = new DataInputStream(stream);
@@ -47,7 +51,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
         /*
          * FileStream stream = new FileStream(filename, FileMode.Create); BinaryWriter writer = new BinaryWriter(stream);
          */
-        FileOutputStream stream = new FileOutputStream(Filename + ".new");
+        FileOutputStream stream = new FileOutputStream(fileName + ".new");
         DataOutputStream writer = new DataOutputStream(stream);
 
         Write(writer);
@@ -55,7 +59,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
         writer.close();
 
         if (Cancel) {
-            AbstractFile abstractFile = FileFactory.createFile(Filename);
+            AbstractFile abstractFile = FileFactory.createFile(fileName);
             abstractFile.delete();
         }
     }
@@ -118,15 +122,15 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
         }
     }
 
-    public void generatePack(String filename, long maxAge, int minZoom, int maxZoom, double minLat, double maxLat, double minLon, double maxLon) throws IOException {
+    public void generatePack(String fileName, long maxAge, int minZoom, int maxZoom, double minLat, double maxLat, double minLon, double maxLon) throws IOException {
+        this.fileName = fileName;
         this.maxAge = maxAge;
-        Filename = filename;
 
         createBoudingBoxesFromBounds(minZoom, maxZoom, minLat, maxLat, minLon, maxLon);
         /*
          * FileStream stream = new FileStream(filename, FileMode.Create); BinaryWriter writer = new BinaryWriter(stream);
          */
-        FileOutputStream stream = new FileOutputStream(filename);
+        FileOutputStream stream = new FileOutputStream(fileName);
         DataOutputStream writer = new DataOutputStream(stream);
 
         Write(writer);
@@ -134,7 +138,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
         writer.close();
 
         if (Cancel) {
-            AbstractFile abstractFile = FileFactory.createFile(filename);
+            AbstractFile abstractFile = FileFactory.createFile(fileName);
             abstractFile.delete();
         }
     }
@@ -229,7 +233,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
     }
 
     byte[] LoadFromBoundingBoxByteArray(BoundingBox bbox, Descriptor desc) {
-        return loadFromBoundingBoxByteArray(Filename, bbox, desc);
+        return loadFromBoundingBoxByteArray(fileName, bbox, desc);
     }
 
     @Override

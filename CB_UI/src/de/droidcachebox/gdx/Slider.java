@@ -22,7 +22,6 @@ import de.droidcachebox.gdx.math.SizeChangedEvent;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.WaypointViewItem;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.settings.CB_UI_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
@@ -156,8 +155,8 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
         addChild(mSlideBox);
 
         //register QuickButtonStateChangedEvent
-        CB_UI_Settings.quickButtonShow.addSettingChangedListener(() -> {
-            if (CB_UI_Settings.quickButtonShow.getValue()) {
+        Settings.quickButtonShow.addSettingChangedListener(() -> {
+            if (Settings.quickButtonShow.getValue()) {
                 quickButtonList.setHeight(QuickButtonMaxHeight);
             } else {
                 quickButtonList.setHeight(0);

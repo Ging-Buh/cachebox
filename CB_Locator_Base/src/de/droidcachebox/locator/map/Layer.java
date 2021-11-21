@@ -3,6 +3,9 @@ package de.droidcachebox.locator.map;
 import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromData;
 import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromFile;
 import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImagePixel;
+import static de.droidcachebox.settings.AllSettings.nightMode;
+import static de.droidcachebox.settings.AllSettings.tileCacheFolder;
+import static de.droidcachebox.settings.AllSettings.tileCacheFolderLocal;
 
 import com.badlogic.gdx.graphics.Pixmap;
 
@@ -12,8 +15,6 @@ import java.io.InputStream;
 
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.locator.LocatorBasePlatFormMethods;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
-import de.droidcachebox.settings.LocatorSettings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
@@ -76,10 +77,10 @@ public class Layer {
     String getLocalFilename(Descriptor desc) {
         if (desc == null)
             return "";
-        String tileCacheFolder = LocatorSettings.tileCacheFolder.getValue();
-        if (LocatorSettings.tileCacheFolderLocal.getValue().length() > 0)
-            tileCacheFolder = LocatorSettings.tileCacheFolderLocal.getValue();
-        return tileCacheFolder + "/" + name + "/" + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + storageType.extension;
+        String sTileCacheFolder = tileCacheFolder.getValue();
+        if (tileCacheFolderLocal.getValue().length() > 0)
+            sTileCacheFolder = tileCacheFolderLocal.getValue();
+        return sTileCacheFolder + "/" + name + "/" + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + storageType.extension;
     }
 
     public boolean isOverlay() {
@@ -143,7 +144,7 @@ public class Layer {
                     BoundingBox bbox = mapPack.contains(desc);
                     if (bbox != null) {
                         byte[] bytes = mapPack.LoadFromBoundingBoxByteArray(bbox, desc);
-                        if (CB_UI_Base_Settings.nightMode.getValue()) {
+                        if (nightMode.getValue()) {
                             bytes = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(bytes)));
                         }
                         return new TileGL_Bmp(desc, bytes, TileGL.TileState.Present, format);
@@ -154,7 +155,7 @@ public class Layer {
             if (cachedTileAge != 0) {
                 if (FileIO.fileExistsNotEmpty(cachedTileFilename)) {
                     byte[] bytes = getImageFromFile(cachedTileFilename);
-                    if (CB_UI_Base_Settings.nightMode.getValue()) {
+                    if (nightMode.getValue()) {
                         bytes = getImageFromData(getImageDataWithColorMatrixManipulation(getImagePixel(bytes)));
                     }
                     return new TileGL_Bmp(desc, bytes, TileGL.TileState.Present, format);

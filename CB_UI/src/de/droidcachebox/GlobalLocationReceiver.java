@@ -15,6 +15,8 @@
  */
 package de.droidcachebox;
 
+import static de.droidcachebox.settings.Settings.globalVolume;
+
 import de.droidcachebox.SoundCache.Sounds;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
@@ -27,8 +29,7 @@ import de.droidcachebox.locator.GPS_FallBackEventList;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
-import de.droidcachebox.settings.CB_UI_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.log.Log;
 
@@ -62,7 +63,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
         if (GlobalCore.isSetSelectedCache()) {
             float distance = GlobalCore.getSelectedCache().recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
-            boolean value = distance < CB_UI_Settings.SoundApproachDistance.getValue();
+            boolean value = distance < Settings.SoundApproachDistance.getValue();
             approachSoundCompleted = value;
             GlobalCore.switchToCompassCompleted = value;
         } else {
@@ -75,7 +76,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
     @Override
     public void positionChanged() {
 
-        PlaySounds = !CB_UI_Base_Settings.globalVolume.getValue().Mute;
+        PlaySounds = !globalVolume.getValue().Mute;
 
         if (newLocationThread != null) {
             if (newLocationThread.getState() != Thread.State.TERMINATED)
@@ -91,7 +92,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                             distance = GlobalCore.getSelectedWayPoint().getDistance();
                         }
 
-                        if (!approachSoundCompleted && (distance < CB_UI_Settings.SoundApproachDistance.getValue())) {
+                        if (!approachSoundCompleted && (distance < Settings.SoundApproachDistance.getValue())) {
                             SoundCache.play(Sounds.Approach);
                             approachSoundCompleted = true;
 
@@ -207,7 +208,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
     @Override
     public void Fix() {
-        PlaySounds = !CB_UI_Base_Settings.globalVolume.getValue().Mute;
+        PlaySounds = !globalVolume.getValue().Mute;
 
         try {
 
@@ -228,7 +229,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
     @Override
     public void FallBackToNetworkProvider() {
-        PlaySounds = !CB_UI_Base_Settings.globalVolume.getValue().Mute;
+        PlaySounds = !globalVolume.getValue().Mute;
 
         if (initialFixSoundCompleted && !loseSoundCompleated) {
 

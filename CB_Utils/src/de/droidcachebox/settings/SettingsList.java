@@ -7,7 +7,6 @@ import static de.droidcachebox.settings.SettingStoreType.Platform;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import de.droidcachebox.database.Database_Core;
@@ -82,12 +81,12 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
                 if (Local == setting.getStoreType()) {
                     if (Data != null)
-                        dao.WriteToDatabase(Data, setting);
+                        dao.writeSetting(Data, setting);
                 } else if (Global == setting.getStoreType() || (canNotUsePlatformSettings() && Platform == setting.getStoreType())) {
-                    dao.WriteToDatabase(getSettingsDB(), setting);
+                    dao.writeSetting(getSettingsDB(), setting);
                 } else if (Platform == setting.getStoreType()) {
                     dao.writePlatformSetting(setting);
-                    dao.WriteToDatabase(getSettingsDB(), setting);
+                    dao.writeSetting(getSettingsDB(), setting);
                 }
 
                 if (setting.needRestart) {
@@ -116,24 +115,22 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
             SettingsDAO dao = createSettingsDAO();
             try {
 
-                for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
-                    SettingBase<?> setting = it.next();
-                    String debugString;
-
-                    boolean isPlatform = false;
-                    boolean isPlattformoverride = false;
+                for (SettingBase<?> setting : this) {
+                    // String debugString;
+                    // boolean isPlatform = false;
+                    // boolean isPlattformoverride = false;
 
                     if (Local == setting.getStoreType()) {
                         if (getDataDB() == null || getDataDB().getDatabasePath() == null)
                             setting.loadDefault();
                         else
-                            setting = dao.ReadFromDatabase(getDataDB(), setting);
+                            setting = dao.readSetting(getDataDB(), setting);
                     } else if (Global == setting.getStoreType() || (canNotUsePlatformSettings() && Platform == setting.getStoreType())) {
-                        setting = dao.ReadFromDatabase(getSettingsDB(), setting);
+                        setting = dao.readSetting(getSettingsDB(), setting);
                     } else if (Platform == setting.getStoreType()) {
-                        isPlatform = true;
+                        // isPlatform = true;
                         SettingBase<?> cpy = setting.copy();
-                        cpy = dao.ReadFromDatabase(getSettingsDB(), cpy);
+                        cpy = dao.readSetting(getSettingsDB(), cpy);
                         setting = dao.readPlatformSetting(setting);
 
                         // chk for Value on User.db3 and cleared Platform Value
@@ -143,7 +140,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
                             if (st.value.length() == 0) {
                                 // Platform Settings are empty use db3 value or default
-                                setting = dao.ReadFromDatabase(getSettingsDB(), setting);
+                                setting = dao.readSetting(getSettingsDB(), setting);
                                 dao.writePlatformSetting(setting);
                             }
                         } else if (!cpy.value.equals(setting.value)) {
@@ -152,11 +149,11 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                                 setting.setValueFrom(cpy);
                                 dao.writePlatformSetting(setting);
                                 setting.clearDirty();
-                                isPlattformoverride = true;
+                                // isPlattformoverride = true;
                             } else {
                                 // override UserDBSettings with Platformsettings
                                 cpy.setValueFrom(setting);
-                                dao.WriteToDatabase(getSettingsDB(), cpy);
+                                dao.writeSetting(getSettingsDB(), cpy);
                                 cpy.clearDirty();
                             }
                         }

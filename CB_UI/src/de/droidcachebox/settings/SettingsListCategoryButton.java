@@ -17,15 +17,14 @@
 package de.droidcachebox.settings;
 
 /**
- * Der Button der sich hinter einer Category verbirgt und in der Settings List als Toggle Button dieser Category angezeigt wird.
+ * button to show or hide the settings of a category
  *
  * @author Longri
  */
 public class SettingsListCategoryButton<T> extends SettingBase<T> {
 
-    public SettingsListCategoryButton(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
-
+    public SettingsListCategoryButton(String name) {
+        super(name, null, null, null);
     }
 
     @Override

@@ -5,18 +5,18 @@ import de.droidcachebox.utils.log.Log;
 
 public class SettingsDatabase extends Database_Core {
     private static final String sKlasse = "SettingsDatabase";
-    private static SettingsDatabase settings;
+    private static SettingsDatabase settingsDatabase;
 
     private SettingsDatabase() {
         super();
         latestDatabaseChange = DatabaseVersions.SettingsLatestVersion;
-        if (!PlatformUIBase.canNotUsePlatformSettings()) sql = PlatformUIBase.getSQLInstance();
-        settings = this;
+        if (!PlatformUIBase.canNotUsePlatformSettings()) sql = PlatformUIBase.createSQLInstance();
+        settingsDatabase = this;
     }
 
     public static SettingsDatabase getInstance() {
-        if (settings == null) settings = new SettingsDatabase();
-        return settings;
+        if (settingsDatabase == null) settingsDatabase = new SettingsDatabase();
+        return settingsDatabase;
     }
 
     public void setSQL(SQLiteInterface _sql) {
@@ -46,9 +46,10 @@ public class SettingsDatabase extends Database_Core {
 
     @Override
     public void close() {
+        databasePath = "";
         if (sql != null) sql.close();
         sql = null;
-        settings = null;
+        settingsDatabase = null;
     }
 
 }

@@ -32,7 +32,7 @@ import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
-import de.droidcachebox.settings.CB_UI_Settings;
+import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -232,7 +232,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 
     private void saveAsFile() {
         if (track.getName().length() > 0) {
-            new FileOrFolderPicker(CB_UI_Settings.TrackFolder.getValue(),
+            new FileOrFolderPicker(Settings.TrackFolder.getValue(),
                     Translation.get("SaveTrack"),
                     Translation.get("save"),
                     abstractFile -> {
@@ -251,7 +251,7 @@ public class TrackListViewItem extends ListViewItemBackground {
                     }).show();
         } else {
             // existing gpx-file
-            new FileOrFolderPicker(CB_UI_Settings.TrackFolder.getValue(),
+            new FileOrFolderPicker(Settings.TrackFolder.getValue(),
                     "*.gpx",
                     Translation.get("SaveTrack"),
                     Translation.get("save"),

@@ -17,16 +17,16 @@ package de.droidcachebox.settings;
 
 public class SettingBool extends SettingBase<Boolean> {
 
-    public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, StoreType);
         this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        value = defaultValue;
     }
 
-    public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needRestart) {
-        super(name, category, modus, StoreType, usage);
+    public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, SettingStoreType StoreType, boolean needRestart) {
+        super(name, category, modus, StoreType);
         this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        value = defaultValue;
         if (needRestart) setNeedRestart();
     }
 
@@ -48,10 +48,10 @@ public class SettingBool extends SettingBase<Boolean> {
 
     @Override
     public SettingBase<Boolean> copy() {
-        SettingBase<Boolean> ret = new SettingBool(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
+        SettingBase<Boolean> ret = new SettingBool(name, category, modus, defaultValue, storeType);
 
-        ret.value = this.value;
-        ret.lastValue = this.lastValue;
+        ret.value = value;
+        ret.lastValue = lastValue;
 
         return ret;
     }
@@ -62,8 +62,8 @@ public class SettingBool extends SettingBase<Boolean> {
             return false;
 
         SettingBool inst = (SettingBool) obj;
-        if (!(inst.name.equals(this.name)))
+        if (!(inst.name.equals(name)))
             return false;
-        return inst.value == this.value;
+        return inst.value == value;
     }
 }

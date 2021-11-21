@@ -13,19 +13,21 @@ import de.droidcachebox.utils.log.Log;
 public class LogsTableDAO {
     private static final String log = "LogsTableDAO";
     private static LogsTableDAO logsTableDAO;
-    private final SQLiteInterface sql;
+    private SQLiteInterface sql;
     private final CB_List<LogEntry> cacheLogs; // depends on the last used GeoCache
     private String lastGeoCache;
 
     private LogsTableDAO() {
         cacheLogs = new CB_List<>();
         lastGeoCache = "";
-        sql = CBDB.getInstance().sql;
         logsTableDAO = this;
     }
 
     static public LogsTableDAO getInstance() {
-        if (logsTableDAO == null) logsTableDAO = new LogsTableDAO();
+        if (logsTableDAO == null) {
+            logsTableDAO = new LogsTableDAO();
+        }
+        logsTableDAO.sql = CBDB.getInstance().sql;
         return logsTableDAO;
     }
 

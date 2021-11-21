@@ -20,8 +20,19 @@ package de.droidcachebox.settings;
  * String is for translation
  */
 public enum SettingCategory {
-    Login("Login"), QuickList("QuickList"), Map("Map"), LiveMap("LiveMap"), Gps("Gps"), Compass("Compass"), Misc("Misc"), Sounds("Sounds"), Skin("Skin"), API("API"), Folder("Folder"), Templates("Templates"), Drafts("Drafts"), Internal(
-            "Internal"), CarMode("CarMode"), RememberAsk("RememberAsk"), Debug("Debug"), Button("Button"), Positions("Positions"), CBS("CBS"),;
+    Login("Login"),
+    Templates("Templates"),
+    Map("Map"),
+    LiveMap("LiveMap"),
+    Gps("Gps"),
+    Skin("Skin"),
+    QuickList("QuickList"),
+    Drafts("Drafts"),
+    Misc("Misc"),
+    Sounds("Sounds"),
+    CarMode("CarMode"),
+    Internal("Internal"),
+    ;
 
     private String langString;
 

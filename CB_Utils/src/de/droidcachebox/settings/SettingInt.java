@@ -17,8 +17,8 @@ package de.droidcachebox.settings;
 
 public class SettingInt extends SettingBase<Integer> {
 
-    public SettingInt(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingInt(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, StoreType);
         this.defaultValue = defaultValue;
         this.value = defaultValue;
     }
@@ -41,7 +41,7 @@ public class SettingInt extends SettingBase<Integer> {
 
     @Override
     public SettingBase<Integer> copy() {
-        SettingBase<Integer> ret = new SettingInt(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
+        SettingBase<Integer> ret = new SettingInt(this.name, this.category, this.modus, this.defaultValue, this.storeType);
         ret.value = this.value;
         ret.lastValue = this.lastValue;
         return ret;

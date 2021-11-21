@@ -17,7 +17,6 @@ package de.droidcachebox.menu;
 
 import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
-import static de.droidcachebox.settings.CB_UI_Base_Settings.nightMode;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -362,9 +361,9 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         try {
             GL.that.stopRendering();
             if (switchDayNight) {
-                boolean value = nightMode.getValue();
+                boolean value = Settings.nightMode.getValue();
                 value = !value;
-                nightMode.setValue(value);
+                Settings.nightMode.setValue(value);
                 acceptChanges();
             }
             GL.that.onStop();
@@ -383,7 +382,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             addChild(slider);
             slider.handleCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 
-            String state = nightMode.getValue() ? "Night" : "Day";
+            String state = Settings.nightMode.getValue() ? "Night" : "Day";
 
             GL.that.toast("Switch to " + state);
 

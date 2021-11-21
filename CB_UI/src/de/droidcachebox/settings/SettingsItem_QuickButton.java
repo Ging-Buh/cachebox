@@ -96,10 +96,10 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 
     private void initialButtons() {
 
-        up = new ImageButton("up");
-        down = new ImageButton("down");
-        del = new ImageButton("del");
-        add = new ImageButton("add");
+        up = new ImageButton();
+        down = new ImageButton();
+        del = new ImageButton();
+        add = new ImageButton();
 
         up.setWidth(up.getHeight());
         down.setWidth(up.getHeight());

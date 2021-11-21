@@ -45,7 +45,6 @@ import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
 import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
@@ -124,7 +123,7 @@ public class CacheContextMenu {
                 return mb.finish();
             });
             mb.setMiddleNeutralClickListener((v, x, y, pointer, button) -> {
-                Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(CB_Core_Settings.rememberedGeoCache.getValue());
+                Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
                 if (rememberedCache != null) GlobalCore.setSelectedCache(rememberedCache);
                 return mb.finish();
             });
@@ -195,7 +194,7 @@ public class CacheContextMenu {
     private void deleteSelectedCache() {
         ArrayList<String> GcCodeList = new ArrayList<>();
         GcCodeList.add(GlobalCore.getSelectedCache().getGeoCacheCode());
-        CacheListDAO.getInstance().delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+        CacheListDAO.getInstance().delCacheImages(GcCodeList, Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
 
         for (int i = 0, n = GlobalCore.getSelectedCache().getWayPoints().size(); i < n; i++) {
             Waypoint wp = GlobalCore.getSelectedCache().getWayPoints().get(i);

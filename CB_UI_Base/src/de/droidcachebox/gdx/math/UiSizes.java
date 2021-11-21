@@ -16,7 +16,7 @@
 
 package de.droidcachebox.gdx.math;
 
-import de.droidcachebox.settings.CB_UI_Base_Settings;
+import static de.droidcachebox.settings.AllSettings.FONT_SIZE_NORMAL;
 
 /**
  * Enthält die Größen einzelner Controls
@@ -75,7 +75,7 @@ public class UiSizes {
 
         margin = (int) (10 * scale);
 
-        float normalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
+        float normalTextSize = FONT_SIZE_NORMAL.getValue() * 3.2f;
 
         buttonHeight = (int) (normalTextSize * scale);
         wideButtonWidth = (windowWidth - 4 * margin) / 3;

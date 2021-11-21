@@ -31,12 +31,14 @@ public class CBDB extends Database_Core {
         super();
         latestDatabaseChange = DatabaseVersions.CachesDBLatestVersion;
         cacheList = new CacheList();
-        sql = PlatformUIBase.getSQLInstance();
+        sql = PlatformUIBase.createSQLInstance();
         cbdb = this;
     }
 
     public static CBDB getInstance() {
-        if (cbdb == null) cbdb = new CBDB();
+        if (cbdb == null) {
+            cbdb = new CBDB();
+        }
         return cbdb;
     }
 
@@ -252,6 +254,7 @@ public class CBDB extends Database_Core {
 
     @Override
     public void close() {
+        databasePath = "";
         if (sql != null) sql.close();
         sql = null;
         cbdb = null;

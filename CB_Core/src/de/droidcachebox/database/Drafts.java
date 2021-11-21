@@ -17,7 +17,7 @@ package de.droidcachebox.database;
 
 import com.badlogic.gdx.utils.Array;
 
-import de.droidcachebox.settings.CB_Core_Settings;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
 
@@ -44,14 +44,14 @@ public class Drafts extends Array<Draft> {
                 }
             };
         }
-        CB_Core_Settings.DraftsLoadAll.addSettingChangedListener(settingsChangedListener);
-        CB_Core_Settings.DraftsLoadLength.addSettingChangedListener(settingsChangedListener);
+        AllSettings.DraftsLoadAll.addSettingChangedListener(settingsChangedListener);
+        AllSettings.DraftsLoadLength.addSettingChangedListener(settingsChangedListener);
     }
 
     public void removeSettingsChangedHandler() {
         if (settingsChangedListener != null) {
-            CB_Core_Settings.DraftsLoadAll.removeSettingChangedListener(settingsChangedListener);
-            CB_Core_Settings.DraftsLoadLength.removeSettingChangedListener(settingsChangedListener);
+            AllSettings.DraftsLoadAll.removeSettingChangedListener(settingsChangedListener);
+            AllSettings.DraftsLoadLength.removeSettingChangedListener(settingsChangedListener);
         }
     }
 
@@ -81,28 +81,28 @@ public class Drafts extends Array<Draft> {
             }
 
             // SQLite Limit ?
-            boolean maybeCropped = !CB_Core_Settings.DraftsLoadAll.getValue() && loadingType != LoadingType.Loadall;
+            boolean maybeCropped = !AllSettings.DraftsLoadAll.getValue() && loadingType != LoadingType.Loadall;
 
             if (maybeCropped) {
                 switch (loadingType) {
                     case LoadNew:
-                        currentCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
+                        currentCroppedLength = AllSettings.DraftsLoadLength.getValue();
                         sql += " LIMIT " + (currentCroppedLength + 1);
                         break;
                     case LoadNewLastLength:
                         if (currentCroppedLength == -1)
-                            currentCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
+                            currentCroppedLength = AllSettings.DraftsLoadLength.getValue();
                         sql += " LIMIT " + (currentCroppedLength + 1);
                         break;
                     case LoadMore:
                         int Offset = currentCroppedLength;
-                        currentCroppedLength += CB_Core_Settings.DraftsLoadLength.getValue();
-                        sql += " LIMIT " + (CB_Core_Settings.DraftsLoadLength.getValue() + 1);
+                        currentCroppedLength += AllSettings.DraftsLoadLength.getValue();
+                        sql += " LIMIT " + (AllSettings.DraftsLoadLength.getValue() + 1);
                         sql += " OFFSET " + Offset;
                         break;
                     default:
                         if (currentCroppedLength == -1)
-                            currentCroppedLength = CB_Core_Settings.DraftsLoadLength.getValue();
+                            currentCroppedLength = AllSettings.DraftsLoadLength.getValue();
                 }
             }
 

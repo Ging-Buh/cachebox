@@ -59,7 +59,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -173,7 +172,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         tvTime = new EditTextField(this, "");
         tvFinds = new CB_Label("");
         title = new CB_Label("");
-        if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
+        if (Settings.GcVotePassword.getEncryptedValue().length() > 0) {
             FilterSetListViewItem.FilterSetEntry gcVoteSelection = new FilterSetListViewItem.FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), NUMERIC_ITEM, 0, 5, 0, 0.5f);
             gcVoteItem = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f), 0, gcVoteSelection);
         } else gcVoteItem = null;
@@ -237,7 +236,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                 }
             }
         }
-        if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
+        if (Settings.GcVotePassword.getEncryptedValue().length() > 0) {
             if (!currentDraft.isTbDraft) {
                 gcVoteItem.setValue(currentDraft.gc_Vote / 100.0);
                 scrollBoxContent.addLast(gcVoteItem);
@@ -322,7 +321,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
             tvFinds.setText("");
         //
         title.setText(currentDraft.isTbDraft ? currentDraft.TbName : currentDraft.CacheName);
-        if (CB_Core_Settings.GcVotePassword.getEncryptedValue().length() > 0) {
+        if (Settings.GcVotePassword.getEncryptedValue().length() > 0) {
             if (!currentDraft.isTbDraft) {
                 gcVoteItem.setValue(currentDraft.gc_Vote / 100.0);
             }

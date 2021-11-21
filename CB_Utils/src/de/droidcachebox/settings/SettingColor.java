@@ -16,6 +16,7 @@
 package de.droidcachebox.settings;
 
 import com.badlogic.gdx.graphics.Color;
+
 import de.droidcachebox.gdx.graphics.HSV_Color;
 
 /**
@@ -23,8 +24,8 @@ import de.droidcachebox.gdx.graphics.HSV_Color;
  */
 public class SettingColor extends SettingBase<Color> {
 
-    public SettingColor(String name, SettingCategory category, SettingModus modus, Color defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-        super(name, category, modus, StoreType, usage);
+    public SettingColor(String name, SettingCategory category, SettingModus modus, Color defaultValue, SettingStoreType StoreType) {
+        super(name, category, modus, StoreType);
         this.defaultValue = defaultValue;
     }
 
@@ -46,9 +47,9 @@ public class SettingColor extends SettingBase<Color> {
 
     @Override
     public SettingBase<Color> copy() {
-        SettingBase<Color> ret = new SettingColor(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
-        ret.value = this.value;
-        ret.lastValue = this.lastValue;
+        SettingBase<Color> ret = new SettingColor(name, category, modus, defaultValue, storeType);
+        ret.value = value;
+        ret.lastValue = lastValue;
         return ret;
     }
 
@@ -59,13 +60,13 @@ public class SettingColor extends SettingBase<Color> {
         if (!(obj instanceof SettingColor))
             return false;
         SettingColor inst = (SettingColor) obj;
-        if (inst.name == null || this.name == null)
+        if (inst.name == null || name == null)
             return false;
-        if (!(inst.name.equals(this.name)))
+        if (!(inst.name.equals(name)))
             return false;
-        if (inst.value == null || this.value == null)
+        if (inst.value == null || value == null)
             return false;
-        if (!inst.value.equals(this.value))
+        if (!inst.value.equals(value))
             return false;
 
         return true;

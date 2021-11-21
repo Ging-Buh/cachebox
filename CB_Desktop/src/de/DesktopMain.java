@@ -56,6 +56,7 @@ public class DesktopMain {
 
         CB_RectF rec = new CB_RectF(0, 0, ui.Window.width, ui.Window.height);
         CB_UI = new GL(ui.Window.width, ui.Window.height, new MainViewInit(rec), new ViewManager(rec));
+        ViewManager.that.acceptChanges();
 
         GL_View_Base.debug = debug;
         GL_View_Base.disableScissor = scissor;

@@ -34,9 +34,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.FileIO;
@@ -294,7 +292,6 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             lblProgressMsg.setText(Translation.get("DownloadCanceld"));
 
         btnOK.enable();
-        LayerManager.getInstance().initLayers();
     }
 
     private void chkRepository() {
@@ -320,8 +317,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             // Read XML
             repository_freizeitkarte_android = Webb.create()
                     .get(URL_repositoryFREIZEITKARTE)
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .connectTimeout(Settings.connection_timeout.getValue())
+                    .readTimeout(Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asString()
                     .getBody();
@@ -337,7 +334,6 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
             isChkRepository = false;
             lblProgressMsg.setText("");
 
-            LayerManager.getInstance().initLayers();
         });
     }
 

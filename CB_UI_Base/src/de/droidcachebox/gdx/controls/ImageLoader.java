@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.gdx.controls;
 
+import static de.droidcachebox.settings.AllSettings.imageCacheFolder;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -40,7 +42,6 @@ import de.droidcachebox.gdx.graphics.GifDecoder;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.texturepacker.Settings;
 import de.droidcachebox.gdx.texturepacker.TexturePacker_Base;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.http.Download;
@@ -137,7 +138,7 @@ public class ImageLoader {
         textureSettings.debug = false;
 
         String inputFolder = FileIO.getDirectoryName(imagePath);
-        String outputFolder = CB_UI_Base_Settings.imageCacheFolder.getValue();
+        String outputFolder = imageCacheFolder.getValue();
         String Name = getCachedAtlasName(inputFolder);
 
         try {
@@ -172,7 +173,7 @@ public class ImageLoader {
         String ImageName = FileIO.getFileNameWithoutExtension(ImagePath);
         String Name = getCachedAtlasName(inputFolder);
 
-        final String AtlasPath = CB_UI_Base_Settings.imageCacheFolder.getValue() + "/" + Name;
+        final String AtlasPath = imageCacheFolder.getValue() + "/" + Name;
         if (!FileIO.fileExistsNotEmpty(AtlasPath))
             return null;
         TextureAtlas atlas = null;
@@ -254,7 +255,7 @@ public class ImageLoader {
         }
 
         ImageDownloadThread = new Thread(() -> {
-            final String CachePath = FileFactory.createFile(CB_UI_Base_Settings.imageCacheFolder.getValue()).getAbsolutePath();
+            final String CachePath = FileFactory.createFile(imageCacheFolder.getValue()).getAbsolutePath();
 
             // Search first slash after Http or www
             int slashPos;

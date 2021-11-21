@@ -15,6 +15,7 @@
  */
 package de.droidcachebox.menu;
 
+import static de.droidcachebox.settings.AllSettings.DatabaseName;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.Gdx;
@@ -50,7 +51,6 @@ import de.droidcachebox.gdx.controls.ProgressBar;
 import de.droidcachebox.gdx.main.MainViewBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -121,7 +121,6 @@ public class MainViewInit extends MainViewBase {
                     progress.setProgress(80, "initial Map layer");
                     break;
                 case 8:
-                    initLayers();
                     progress.setProgress(100, "Run");
                     break;
                 case 100:
@@ -336,11 +335,12 @@ public class MainViewInit extends MainViewBase {
      * Load Cache DB3
      */
     private void ini_CacheDB() {
-        Log.info(log, "ini_CacheDB");
 
-        CBDB.getInstance().startUp(GlobalCore.workPath + "/" + Settings.DatabaseName.getValue());
-
+        Log.debug(log, "\r\nini_CacheDB " + Settings.DatabaseName.getValue());
+        Log.debug(log, "\r\nini_CacheDB " + DatabaseName.getValue());
+        CBDB.getInstance().startUp(GlobalCore.workPath + "/" + DatabaseName.getValue());
         Settings.getInstance().readFromDB();
+        Log.debug(log, "\r\nini_CacheDB " + Settings.DatabaseName.getValue());
 
         FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
@@ -356,15 +356,6 @@ public class MainViewInit extends MainViewBase {
 
         DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
 
-    }
-
-    /**
-     * Step 7 <br>
-     * chk installed map packs/layers
-     */
-    private void initLayers() {
-        Log.info(log, "ini_MapPacks");
-        LayerManager.getInstance().initLayers();
     }
 
     /**

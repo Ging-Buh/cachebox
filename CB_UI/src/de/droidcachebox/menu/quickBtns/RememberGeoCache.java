@@ -9,7 +9,6 @@ import de.droidcachebox.database.Cache;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.settings.CB_Core_Settings;
 import de.droidcachebox.settings.Settings;
 
 public class RememberGeoCache extends AbstractAction {
@@ -27,8 +26,8 @@ public class RememberGeoCache extends AbstractAction {
 
     @Override
     public void execute() {
-        if (CB_Core_Settings.rememberedGeoCache.getValue().length() > 0) {
-            Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(CB_Core_Settings.rememberedGeoCache.getValue());
+        if (Settings.rememberedGeoCache.getValue().length() > 0) {
+            Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
             GlobalCore.setSelectedCache(rememberedCache);
         } else {
             Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());

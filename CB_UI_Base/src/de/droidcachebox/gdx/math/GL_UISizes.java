@@ -15,13 +15,14 @@
  */
 package de.droidcachebox.gdx.math;
 
+import static de.droidcachebox.settings.AllSettings.mapViewDPIFaktor;
+import static de.droidcachebox.settings.AllSettings.nightMode;
 import static de.droidcachebox.settings.Config_Core.displayDensity;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 
 import de.droidcachebox.gdx.Fonts;
-import de.droidcachebox.settings.CB_UI_Base_Settings;
 import de.droidcachebox.utils.log.Log;
 
 /**
@@ -140,13 +141,13 @@ public class GL_UISizes implements SizeChangedEvent {
         Log.debug(log, "DPI = " + dpi);
 
 
-        if (CB_UI_Base_Settings.mapViewDPIFaktor.getValue() == 1) {
-            CB_UI_Base_Settings.mapViewDPIFaktor.setValue(displayDensity);
+        if (mapViewDPIFaktor.getValue() == 1) {
+            mapViewDPIFaktor.setValue(displayDensity);
         }
 
 
-        if (dpi != CB_UI_Base_Settings.mapViewDPIFaktor.getValue()) {
-            dpi = CB_UI_Base_Settings.mapViewDPIFaktor.getValue();
+        if (dpi != mapViewDPIFaktor.getValue()) {
+            dpi = mapViewDPIFaktor.getValue();
             isInitialized = false; // sizes must be recalculated
         }
 
@@ -182,7 +183,7 @@ public class GL_UISizes implements SizeChangedEvent {
         if (!isInitialized) {
             calcSizes();
 
-            CB_UI_Base_Settings.nightMode.addSettingChangedListener(() -> Fonts.setNightMode(CB_UI_Base_Settings.nightMode.getValue()));
+            nightMode.addSettingChangedListener(() -> Fonts.setNightMode(nightMode.getValue()));
 
             try {
                 Fonts.loadFonts();
