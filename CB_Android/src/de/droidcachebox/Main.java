@@ -75,12 +75,12 @@ import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.texturepacker.AndroidTexturePacker;
 import de.droidcachebox.gdx.utils.AndroidContentClipboard;
-import de.droidcachebox.locator.AndroidLocatorBaseMethods;
+import de.droidcachebox.locator.AndroidLocatorMethods;
 import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.CBLocation.ProviderType;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.Locator.CompassType;
-import de.droidcachebox.locator.LocatorBasePlatFormMethods;
+import de.droidcachebox.locator.LocatorMethods;
 import de.droidcachebox.maps.BRouter;
 import de.droidcachebox.menu.MainViewInit;
 import de.droidcachebox.menu.ViewManager;
@@ -122,7 +122,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     private Sensor magnetometer;
     private Dialog pWaitD;
     private LastState lastState;
-    private ShowViewListener showViewListener;
+    private ShowViewMethods showViewListener;
     private AndroidUIBaseMethods androidUIBaseMethods;
 
     public Main() {
@@ -236,9 +236,9 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             }
 
             androidUIBaseMethods = new AndroidUIBaseMethods(this);
-            PlatformUIBase.setMethods(androidUIBaseMethods);
+            PlatformUIBase.init(androidUIBaseMethods);
 
-            LocatorBasePlatFormMethods.setMethods(new AndroidLocatorBaseMethods(this));
+            LocatorMethods.init(new AndroidLocatorMethods(this));
 
             SettingsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/Config.db3");
 
@@ -270,8 +270,8 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             new GL(width, height, new MainViewInit(rec), new ViewManager(rec));
             GL.that.setTextInput(new Android_TextInput(this));
 
-            showViewListener = new ShowViewListener(this);
-            PlatformUIBase.setShowViewListener(showViewListener);
+            showViewListener = new ShowViewMethods(this);
+            PlatformUIBase.initShowViewMethods(showViewListener);
 
             // registerReceiver receiver for screen switched on/off
             IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);

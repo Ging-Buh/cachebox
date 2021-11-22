@@ -1,9 +1,9 @@
 package de.droidcachebox.locator.map;
 
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromData;
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromFile;
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImagePixel;
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getMapsForgeGraphicFactory;
+import static de.droidcachebox.locator.LocatorMethods.getImageFromData;
+import static de.droidcachebox.locator.LocatorMethods.getImageFromFile;
+import static de.droidcachebox.locator.LocatorMethods.getImagePixel;
+import static de.droidcachebox.locator.LocatorMethods.getMapsForgeGraphicFactory;
 import static de.droidcachebox.settings.AllSettings.mapViewTextFaktor;
 import static de.droidcachebox.settings.AllSettings.mapsForgeCarDayStyle;
 import static de.droidcachebox.settings.AllSettings.mapsForgeCarDayTheme;

@@ -301,7 +301,7 @@ public class Import_GSAK extends ActivityBase {
                 CBDB.getInstance().setTransactionSuccessful();
             }
             sql.close();
-            PlatformUIBase.freeSQLInstance(sql);
+            sql = null;
             CBDB.getInstance().endTransaction();
             CacheDAO.getInstance().updateCacheCountForGPXFilenames();
 

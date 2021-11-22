@@ -36,10 +36,10 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 
-public class SpoilerView extends CB_View_Base {
+public class Spoiler extends CB_View_Base {
     private final static int MAX_THUMB_WIDTH = 500;
     private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
-    private static SpoilerView that;
+    private static Spoiler spoiler;
     private final CB_List<GalleryBigItem> bigItems = new CB_List<>();
     private final CB_List<GalleryItem> overviewItems = new CB_List<>();
     private Cache actCache;
@@ -48,7 +48,7 @@ public class SpoilerView extends CB_View_Base {
     private boolean forceReload = false;
     private final ImageDAO imageDAO = new ImageDAO();
 
-    private SpoilerView() {
+    private Spoiler() {
         super(ViewManager.leftTab.getContentRec(), "SpoilerView");
 
         CB_RectF gr = new CB_RectF(this);
@@ -73,9 +73,9 @@ public class SpoilerView extends CB_View_Base {
         this.addChild(galleryOverwiew);
     }
 
-    public static SpoilerView getInstance() {
-        if (that == null) that = new SpoilerView();
-        return that;
+    public static Spoiler getInstance() {
+        if (spoiler == null) spoiler = new Spoiler();
+        return spoiler;
     }
 
     public void ForceReload() {
@@ -152,7 +152,7 @@ public class SpoilerView extends CB_View_Base {
 
                             String path = selectionImage.getImageLoader().getOriginalImagePath();
 
-                            Image img = new Image(SpoilerView.this, "Image for Activity", true);
+                            Image img = new Image(Spoiler.this, "Image for Activity", true);
                             img.setImage(path);
 
                             ImageActivity ac = new ImageActivity(img);

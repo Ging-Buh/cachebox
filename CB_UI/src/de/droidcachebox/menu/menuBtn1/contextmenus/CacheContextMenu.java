@@ -33,10 +33,10 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
+import de.droidcachebox.menu.menuBtn1.ShowTrackables;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
-import de.droidcachebox.menu.menuBtn2.ShowHintDialog;
+import de.droidcachebox.menu.menuBtn2.ShowHint;
 import de.droidcachebox.menu.menuBtn2.ShowLogs;
 import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
@@ -96,17 +96,17 @@ public class CacheContextMenu {
         if (_forCacheList) {
             theMenu.addDivider();
             theMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + GeoCacheType.Trailhead.name()), () -> ShowWaypoints.getInstance().execute());
-            theMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> ShowHintDialog.getInstance().showHint()).setEnabled(geoCache.hasHint());
+            theMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> ShowHint.getInstance().showHint()).setEnabled(geoCache.hasHint());
             theMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.getInstance().execute());
             theMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.getInstance().execute());
             theMenu.addMenuItem("Notes", Sprites.getSprite(IconName.userdata.name()), () -> ShowNotes.getInstance().execute());
-            theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().execute());
+            theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackables.getInstance().execute());
             theMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().execute());
             theMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().execute());
             theMenu.addMenuItem("descExt", Sprites.getSprite(IconName.docIcon.name()), () -> StartExternalDescription.getInstance().execute());
         } else {
             theMenu.addDivider();
-            theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.getInstance().execute());
+            theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackables.getInstance().execute());
             theMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().execute()).setEnabled(selectedCacheIsGC);
             theMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().execute());
         }
@@ -209,7 +209,7 @@ public class CacheContextMenu {
 
         GlobalCore.setSelectedCache(null);
         CacheListChangedListeners.getInstance().cacheListChanged();
-        GeoCacheListListView.getInstance().setSelectedCacheVisible();
+        GeoCaches.getInstance().setSelectedCacheVisible();
 
     }
 

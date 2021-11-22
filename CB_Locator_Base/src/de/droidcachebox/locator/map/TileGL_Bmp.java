@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream;
 
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
-import de.droidcachebox.locator.LocatorBasePlatFormMethods;
+import de.droidcachebox.locator.LocatorMethods;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
@@ -94,7 +94,7 @@ public class TileGL_Bmp extends TileGL {
             if (bitmap == null)
                 getTexture();
             else {
-                texture = LocatorBasePlatFormMethods.getTexture(bitmap);
+                texture = LocatorMethods.getTexture(bitmap);
                 bitmap = null;
                 // Log.info(log, "created: " + this);
             }
@@ -104,7 +104,7 @@ public class TileGL_Bmp extends TileGL {
                 if (bitmap == null)
                     getTexture();
                 else {
-                    texture = LocatorBasePlatFormMethods.getTexture(bitmap);
+                    texture = LocatorMethods.getTexture(bitmap);
                     bitmap = null;
                     // Log.info(log, "created: " + this);
                 }

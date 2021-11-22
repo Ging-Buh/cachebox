@@ -31,7 +31,7 @@ import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.controls.Spinner;
 import de.droidcachebox.gdx.controls.Spinner.ISpinnerSelectionChanged;
 import de.droidcachebox.gdx.controls.SpinnerAdapter;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 
@@ -264,7 +264,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
                 cacheDAO.WriteToDatabase(cache);
                 GlobalCore.setSelectedCache(cache);
                 CacheListChangedListeners.getInstance().cacheListChanged();
-                GeoCacheListListView.getInstance().setSelectedCacheVisible();
+                GeoCaches.getInstance().setSelectedCacheVisible();
             }
 
             // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB

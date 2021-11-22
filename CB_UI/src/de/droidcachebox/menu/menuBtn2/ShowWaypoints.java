@@ -8,7 +8,7 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.WaypointsView;
+import de.droidcachebox.menu.menuBtn2.executes.Waypoints;
 
 public class ShowWaypoints extends AbstractShowAction {
 
@@ -25,7 +25,7 @@ public class ShowWaypoints extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(WaypointsView.getInstance());
+        ViewManager.leftTab.showView(Waypoints.getInstance());
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ShowWaypoints extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return WaypointsView.getInstance();
+        return Waypoints.getInstance();
     }
 
     @Override
@@ -50,6 +50,6 @@ public class ShowWaypoints extends AbstractShowAction {
 
     @Override
     public Menu getContextMenu() {
-        return WaypointsView.getInstance().getContextMenu();
+        return Waypoints.getInstance().getContextMenu();
     }
 }

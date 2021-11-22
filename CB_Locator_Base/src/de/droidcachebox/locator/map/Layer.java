@@ -1,8 +1,8 @@
 package de.droidcachebox.locator.map;
 
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromData;
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImageFromFile;
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getImagePixel;
+import static de.droidcachebox.locator.LocatorMethods.getImageFromData;
+import static de.droidcachebox.locator.LocatorMethods.getImageFromFile;
+import static de.droidcachebox.locator.LocatorMethods.getImagePixel;
 import static de.droidcachebox.settings.AllSettings.nightMode;
 import static de.droidcachebox.settings.AllSettings.tileCacheFolder;
 import static de.droidcachebox.settings.AllSettings.tileCacheFolderLocal;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import de.droidcachebox.gdx.graphics.HSV_Color;
-import de.droidcachebox.locator.LocatorBasePlatFormMethods;
+import de.droidcachebox.locator.LocatorMethods;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
@@ -183,7 +183,7 @@ public class Layer {
      *
      * @return ImageData
      */
-    LocatorBasePlatFormMethods.ImageData getImageDataWithColorMatrixManipulation(LocatorBasePlatFormMethods.ImageData imgData) {
+    LocatorMethods.ImageData getImageDataWithColorMatrixManipulation(LocatorMethods.ImageData imgData) {
 
         int[] data = imgData.PixelColorArray;
         for (int i = 0; i < data.length; i++) {

@@ -20,11 +20,11 @@ import static de.droidcachebox.menu.ViewManager.actionRecordVoice;
 import static de.droidcachebox.menu.ViewManager.actionTakePicture;
 
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.menu.menuBtn1.ShowCacheList;
-import de.droidcachebox.menu.menuBtn1.ShowParkingDialog;
-import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
+import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
+import de.droidcachebox.menu.menuBtn1.ShowParkingMenu;
+import de.droidcachebox.menu.menuBtn1.ShowTrackables;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
-import de.droidcachebox.menu.menuBtn2.ShowHintDialog;
+import de.droidcachebox.menu.menuBtn2.ShowHint;
 import de.droidcachebox.menu.menuBtn2.ShowLogs;
 import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
@@ -98,7 +98,7 @@ public enum QuickAction {
             case CompassView:
                 return ShowCompass.getInstance();
             case CacheListView:
-                return ShowCacheList.getInstance();
+                return ShowGeoCaches.getInstance();
             case TrackListView:
                 return ShowTracks.getInstance();
             case TakePhoto:
@@ -118,9 +118,9 @@ public enum QuickAction {
             case Spoiler:
                 return ShowSpoiler.getInstance();
             case Hint:
-                return ShowHintDialog.getInstance();
+                return ShowHint.getInstance();
             case Parking:
-                return ShowParkingDialog.getInstance();
+                return ShowParkingMenu.getInstance();
             case Day_Night:
                 return SwitchDayNight.getInstance();
             case Drafts:
@@ -128,7 +128,7 @@ public enum QuickAction {
             case QuickDraft:
                 return de.droidcachebox.menu.quickBtns.QuickDraft.getInstance();
             case TrackableListView:
-                return ShowTrackableList.getInstance();
+                return ShowTrackables.getInstance();
             case addWP:
                 return AddWayPoint.getInstance();
             case Solver2:

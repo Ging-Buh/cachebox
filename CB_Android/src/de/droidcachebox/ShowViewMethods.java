@@ -54,7 +54,7 @@ import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.SpoilerView;
+import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -64,7 +64,7 @@ import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.views.DescriptionView;
 import de.droidcachebox.views.ViewGL;
 
-public class ShowViewListener implements PlatformUIBase.IShowViewListener {
+public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
     private final static String sKlasse = "ShowViewListener";
     private static final int REQUEST_CAPTURE_IMAGE = 6516;
     private static final int REQUEST_CAPTURE_VIDEO = 6517;
@@ -96,7 +96,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
     private ExtAudioRecorder extAudioRecorder;
     private final View.OnTouchListener onTouchListener;
 
-    ShowViewListener(Main main) {
+    ShowViewMethods(Main main) {
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
@@ -747,7 +747,7 @@ public class ShowViewListener implements PlatformUIBase.IShowViewListener {
                                         // for the photo to show within spoilers
                                         if (GlobalCore.isSetSelectedCache()) {
                                             GlobalCore.getSelectedCache().loadSpoilerRessources();
-                                            SpoilerView.getInstance().ForceReload();
+                                            Spoiler.getInstance().ForceReload();
                                         }
 
                                         ViewManager.that.reloadSprites(false);

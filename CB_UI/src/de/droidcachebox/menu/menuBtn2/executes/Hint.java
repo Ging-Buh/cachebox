@@ -9,11 +9,11 @@ import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.UnitFormatter;
 
-public class HintDialog extends MsgBox {
+public class Hint extends MsgBox {
 
     ScrollBox scrollBox;
 
-    public HintDialog(Size size, String hint) {
+    public Hint(Size size, String hint) {
         super(size, "");
         setTitle(Translation.get("hint"));
         addButtons(Translation.get("decode"), null, Translation.get("close"));

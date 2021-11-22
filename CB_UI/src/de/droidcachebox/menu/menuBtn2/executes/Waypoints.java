@@ -46,23 +46,23 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 
-public class WaypointsView extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener, WaypointListChangedEvent {
+public class Waypoints extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener, WaypointListChangedEvent {
     private static final String sClass = "WaypointsView";
-    private static WaypointsView waypointsView;
+    private static Waypoints waypoints;
     private Waypoint currentWaypoint = null;
     private Cache currentCache = null;
     private WayPointListViewAdapter wayPointListViewAdapter;
     private boolean createNewWaypoint = false;
 
-    private WaypointsView() {
+    private Waypoints() {
         super(ViewManager.leftTab.getContentRec(), "WaypointView");
         setBackground(Sprites.ListBack);
         setDisposeFlag(false);
     }
 
-    public static WaypointsView getInstance() {
-        if (waypointsView == null) waypointsView = new WaypointsView();
-        return waypointsView;
+    public static Waypoints getInstance() {
+        if (waypoints == null) waypoints = new Waypoints();
+        return waypoints;
     }
 
     @Override
@@ -250,7 +250,7 @@ public class WaypointsView extends V_ListView implements CacheSelectionChangedLi
 
                         GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
                         wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                        waypointsView.setAdapter(wayPointListViewAdapter);
+                        waypoints.setAdapter(wayPointListViewAdapter);
                         currentWaypoint = waypoint;
                         GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
                         if (waypoint.isStartWaypoint) {
@@ -282,7 +282,7 @@ public class WaypointsView extends V_ListView implements CacheSelectionChangedLi
                         WaypointDAO.getInstance().UpdateDatabase(currentWaypoint);
 
                         wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                        waypointsView.setAdapter(wayPointListViewAdapter);
+                        waypoints.setAdapter(wayPointListViewAdapter);
                     }
                 }
             }, showCoordinateDialog, false);
@@ -303,8 +303,8 @@ public class WaypointsView extends V_ListView implements CacheSelectionChangedLi
                         GlobalCore.getSelectedCache().getWayPoints().remove(currentWaypoint);
                         currentWaypoint = null;
                         GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
-                        waypointsView.notifyDataSetChanged();
-                        waypointsView.scrollToItem(0);
+                        waypoints.notifyDataSetChanged();
+                        waypoints.scrollToItem(0);
                     } catch (Exception ex) {
                         Log.err(sClass, ex);
                     }
@@ -355,7 +355,7 @@ public class WaypointsView extends V_ListView implements CacheSelectionChangedLi
                 Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Entered Manually", targetCoordinate.getLatitude(), targetCoordinate.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
                 GlobalCore.getSelectedCache().getWayPoints().add(newWP);
                 wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                waypointsView.setAdapter(wayPointListViewAdapter);
+                waypoints.setAdapter(wayPointListViewAdapter);
                 currentWaypoint = newWP;
                 GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
                 WaypointDAO.getInstance().WriteToDatabase(newWP);
@@ -408,7 +408,7 @@ public class WaypointsView extends V_ListView implements CacheSelectionChangedLi
             wayPointListViewAdapter = null;
             currentWaypoint = null;
             currentCache = null;
-            waypointsView = null;
+            waypoints = null;
 
             // release all EventHandler
             CacheSelectionChangedListeners.getInstance().remove(this);
@@ -498,7 +498,7 @@ public class WaypointsView extends V_ListView implements CacheSelectionChangedLi
                             });
                             waypointViewItem.addListener(() -> {
                                 // relayout items
-                                WaypointsView.this.calculateItemPosition();
+                                Waypoints.this.calculateItemPosition();
                                 mMustSetPos = true;
                                 GL.that.renderOnce(true);
                             });
@@ -544,7 +544,7 @@ public class WaypointsView extends V_ListView implements CacheSelectionChangedLi
                             });
                             waypointViewItem.addListener(() -> {
                                 // relayout items
-                                WaypointsView.this.calculateItemPosition();
+                                Waypoints.this.calculateItemPosition();
                                 mMustSetPos = true;
                                 GL.that.renderOnce(true);
                             });

@@ -7,7 +7,7 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.NotesView;
+import de.droidcachebox.menu.menuBtn2.executes.Notes;
 
 public class ShowNotes extends AbstractShowAction {
 
@@ -24,7 +24,7 @@ public class ShowNotes extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(NotesView.getInstance());
+        ViewManager.leftTab.showView(Notes.getInstance());
     }
 
     @Override
@@ -39,6 +39,6 @@ public class ShowNotes extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return NotesView.getInstance();
+        return Notes.getInstance();
     }
 }

@@ -68,7 +68,7 @@ public class SQLiteClass implements SQLiteInterface {
             myDB.close();
             return true;
         } catch (Exception exc) {
-            Log.err(log, "createDB", exc);
+            // Log.err(log, "createDB", exc);
             return false;
         }
     }

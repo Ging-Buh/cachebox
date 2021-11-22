@@ -38,15 +38,15 @@ import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 
-public class LogListView extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
+public class Logs extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static CB_RectF itemRec;
-    private static LogListView logListView;
-    CB_List<LogEntry> logs;
+    private static Logs logs;
+    CB_List<LogEntry> logEntries;
     private Cache currentCache;
     private LogListViewAdapter logListViewAdapter;
     private ArrayList<String> friendList;
 
-    private LogListView() {
+    private Logs() {
         super(ViewManager.leftTab.getContentRec(), "LogListView");
         setForceHandleTouchEvents();
         itemRec = (new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).scaleCenter(0.97f);
@@ -60,9 +60,9 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
 
     }
 
-    public static LogListView getInstance() {
-        if (logListView == null) logListView = new LogListView();
-        return logListView;
+    public static Logs getInstance() {
+        if (logs == null) logs = new Logs();
+        return logs;
     }
 
     private void createFriendList() {
@@ -101,14 +101,14 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
     public void setCache(Cache cache) {
         if (cache == null) {
             setAdapter(null);
-            logs = new CB_List<>();
+            logEntries = new CB_List<>();
             setEmptyMsgItem(Translation.get("EmptyLogList"));
             return;
         }
         if (currentCache != cache) {
             currentCache = cache;
             setAdapter(null);
-            logs = new CB_List<>();
+            logEntries = new CB_List<>();
             setEmptyMsgItem(Translation.get("EmptyLogList"));
             for (LogEntry logEntry : LogsTableDAO.getInstance().getLogs(currentCache)) {
                 if (GlobalCore.filterLogsOfFriends) {
@@ -119,7 +119,7 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
                 // else height of logItem is not sufficient
                 if (!logEntry.logText.endsWith("\n"))
                     logEntry.logText = logEntry.logText + "\n";
-                logs.add(logEntry);
+                logEntries.add(logEntry);
             }
             logListViewAdapter = new LogListViewAdapter();
             setAdapter(logListViewAdapter);
@@ -147,8 +147,8 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
 
         @Override
         public int getCount() {
-            if (logs != null) {
-                return logs.size();
+            if (logEntries != null) {
+                return logEntries.size();
             } else {
                 return 0;
             }
@@ -156,9 +156,9 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
 
         @Override
         public ListViewItemBase getView(int position) {
-            if (logs != null) {
-                if (logs.size() > 0) {
-                    LogEntry logEntry = logs.get(position);
+            if (logEntries != null) {
+                if (logEntries.size() > 0) {
+                    LogEntry logEntry = logEntries.get(position);
                     // todo for not to get stack or heap overflow handle a list to set an old (no longer visible) logListViewItem to null
                     // reducing the list from database is not handled (like in DraftsView)
                     return new LogListViewItem(getItemRect_F(logEntry), position, logEntry);
@@ -169,9 +169,9 @@ public class LogListView extends V_ListView implements CacheSelectionChangedList
 
         @Override
         public float getItemSize(int position) {
-            if (logs != null) {
-                if (logs.size() > 0) {
-                    return getItemRect_F(logs.get(position)).getHeight();
+            if (logEntries != null) {
+                if (logEntries.size() > 0) {
+                    return getItemRect_F(logEntries.get(position)).getHeight();
                 }
             }
             return 0;

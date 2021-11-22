@@ -67,7 +67,7 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.LogListView;
+import de.droidcachebox.menu.menuBtn2.executes.Logs;
 import de.droidcachebox.menu.menuBtn4.UploadDrafts;
 import de.droidcachebox.menu.menuBtn4.UploadLogs;
 import de.droidcachebox.settings.Settings;
@@ -636,7 +636,7 @@ public class DraftsView extends V_ListView {
                         draft.uploaded = true;
                         if (isLog && !draft.isTbDraft) {
                             draft.gcLogReference = GroundspeakAPI.logReferenceCode;
-                            LogListView.getInstance().resetIsInitialized(); // if own log is written !
+                            Logs.getInstance().resetIsInitialized(); // if own log is written !
                         }
                         addOrChangeDraft(draft, false, EditDraft.SaveMode.LocalUpdate);
                     } else {

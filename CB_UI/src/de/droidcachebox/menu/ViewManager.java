@@ -58,11 +58,11 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
-import de.droidcachebox.menu.menuBtn1.ShowCacheList;
-import de.droidcachebox.menu.menuBtn1.ShowParkingDialog;
-import de.droidcachebox.menu.menuBtn1.ShowTrackableList;
+import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
+import de.droidcachebox.menu.menuBtn1.ShowParkingMenu;
+import de.droidcachebox.menu.menuBtn1.ShowTrackables;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
-import de.droidcachebox.menu.menuBtn2.ShowHintDialog;
+import de.droidcachebox.menu.menuBtn2.ShowHint;
 import de.droidcachebox.menu.menuBtn2.ShowLogs;
 import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
@@ -219,7 +219,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         if (Settings.TrackRecorderStartup.getValue()) {
             if (PlatformUIBase.isGPSon()) {
-                PlatformUIBase.startRecordTrack();
+                TrackRecorder.startRecording();
             }
         }
         Settings.TrackDistance.addSettingChangedListener(() -> TrackRecorder.distanceForNextTrackpoint = Settings.TrackDistance.getValue());
@@ -279,15 +279,15 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         leftTab.setButtonList();
         addChild(leftTab);
 
-        mainBtn1.addAction(ShowCacheList.getInstance(), true, GestureDirection.Up);
-        mainBtn1.addAction(ShowParkingDialog.getInstance(), false, GestureDirection.Down);
-        mainBtn1.addAction(ShowTrackableList.getInstance(), false, GestureDirection.Right);
+        mainBtn1.addAction(ShowGeoCaches.getInstance(), true, GestureDirection.Up);
+        mainBtn1.addAction(ShowParkingMenu.getInstance(), false, GestureDirection.Down);
+        mainBtn1.addAction(ShowTrackables.getInstance(), false, GestureDirection.Right);
         actionShare = new PlatformAction("Share", ViewConst.Share, Sprites.getSprite(IconName.share.name()));
         mainBtn1.addAction(actionShare, false, GestureDirection.Left);
 
         mainBtn2.addAction(ShowDescription.getInstance(), true, GestureDirection.Up);
         mainBtn2.addAction(ShowWaypoints.getInstance(), false, GestureDirection.Right);
-        mainBtn2.addAction(ShowHintDialog.getInstance(), false);
+        mainBtn2.addAction(ShowHint.getInstance(), false);
         mainBtn2.addAction(ShowSpoiler.getInstance(), false);
         mainBtn2.addAction(ShowLogs.getInstance(), false, GestureDirection.Down);
         mainBtn2.addAction(ShowNotes.getInstance(), false, GestureDirection.Left);
@@ -312,7 +312,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         mainBtn5.addAction(ShowCredits.getInstance(), false, GestureDirection.Up);
         mainBtn5.addAction(SettingsAction.getInstance(), false, GestureDirection.Left);
-        mainBtn5.addAction(ShowParkingDialog.getInstance(), false, GestureDirection.Right);
+        mainBtn5.addAction(ShowParkingMenu.getInstance(), false, GestureDirection.Right);
         mainBtn5.addAction(SwitchDayNight.getInstance(), false);
         mainBtn5.addAction(HelpOnline.getInstance(), false);
         mainBtn5.addAction(SwitchTorch.getInstance(), false);
@@ -441,7 +441,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
             Name = "  (" + strFilterCount + DBCount + ")";
         }
-        ShowCacheList.getInstance().setNameExtension(Name);
+        ShowGeoCaches.getInstance().setNameExtension(Name);
     }
 
     @Override

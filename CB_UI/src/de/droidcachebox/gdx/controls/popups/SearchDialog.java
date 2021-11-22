@@ -63,7 +63,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -81,7 +81,7 @@ public class SearchDialog extends PopUp_Base {
 
         @Override
         public void Position(float SliderTop, float SliderBottom) {
-            setY(GeoCacheListListView.getInstance().getMaxY() - that.getHeight());
+            setY(GeoCaches.getInstance().getMaxY() - that.getHeight());
         }
     };
     /**
@@ -624,8 +624,8 @@ public class SearchDialog extends PopUp_Base {
     public void onShow() {
         try {
 
-            setY(GeoCacheListListView.getInstance().getMaxY() - this.getHeight());
-            GeoCacheListListView.getInstance().setTopPlaceHolder(this.getHeight());
+            setY(GeoCaches.getInstance().getMaxY() - this.getHeight());
+            GeoCaches.getInstance().setTopPlaceHolder(this.getHeight());
 
             if (GL.that.PopUpIsHidden())
                 that.showNotCloseAutomaticly();
@@ -639,7 +639,7 @@ public class SearchDialog extends PopUp_Base {
     @Override
     public void onHide() {
         Slider.that.removePosChangedEvent(listener);
-        GeoCacheListListView.getInstance().resetPlaceHolder();
+        GeoCaches.getInstance().resetPlaceHolder();
     }
 
     private void askPremium() {

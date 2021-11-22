@@ -31,8 +31,8 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.LogListView;
-import de.droidcachebox.menu.menuBtn2.executes.SpoilerView;
+import de.droidcachebox.menu.menuBtn2.executes.Logs;
+import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.RunnableReadyHandler;
@@ -58,7 +58,7 @@ public class ShowLogs extends AbstractShowAction {
     @Override
     public void execute() {
         GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogListView
-        ViewManager.leftTab.showView(LogListView.getInstance());
+        ViewManager.leftTab.showView(Logs.getInstance());
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ShowLogs extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return LogListView.getInstance();
+        return Logs.getInstance();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class ShowLogs extends AbstractShowAction {
             contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
             contextMenu.addCheckableMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), GlobalCore.filterLogsOfFriends, () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
-                LogListView.getInstance().resetIsInitialized();
+                Logs.getInstance().resetIsInitialized();
             });
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
@@ -104,7 +104,7 @@ public class ShowLogs extends AbstractShowAction {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {
                 GlobalCore.getSelectedCache().loadSpoilerRessources();
-                SpoilerView.getInstance().ForceReload();
+                Spoiler.getInstance().ForceReload();
             }
         }));
         return contextMenu;
@@ -156,7 +156,7 @@ public class ShowLogs extends AbstractShowAction {
                                             CBDB.getInstance().setTransactionSuccessful();
                                             CBDB.getInstance().endTransaction();
                                             // update LogListView
-                                            LogListView.getInstance().resetIsInitialized();
+                                            Logs.getInstance().resetIsInitialized();
                                             // for update slider, ?, ?, ? with latest logs
                                             CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 

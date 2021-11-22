@@ -49,8 +49,7 @@ import ch.fhnw.imvs.gpssimulator.nmea.NMEASentence;
 import ch.fhnw.imvs.gpssimulator.nmea.RMC;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.PlatformUIBase.Methods;
-import de.droidcachebox.TrackRecorder;
+import de.droidcachebox.PlatformUIBase.UIBaseMethods;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.settings.SettingBase;
 
@@ -125,7 +124,7 @@ public class SimulatorMain {
         GlobalCore.firstSDCard = "C:/";
         GlobalCore.secondSDCard = "D:/";
 
-        PlatformUIBase.setMethods(new Methods() {
+        PlatformUIBase.init(new UIBaseMethods() {
 
             @Override
             public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
@@ -223,10 +222,6 @@ public class SimulatorMain {
             }
 
             @Override
-            public void freeSQLInstance(SQLiteInterface sqlInstance) {
-            }
-
-            @Override
             public void quit() {
             }
 
@@ -237,11 +232,6 @@ public class SimulatorMain {
 
             @Override
             public void getDirectoryAccess(String _DirectoryToAccess) {            }
-
-            @Override
-            public void startRecordTrack() {
-                TrackRecorder.startRecording();
-            }
 
             @Override
             public boolean request_getLocationIfInBackground() {

@@ -16,7 +16,7 @@
 
 package de.droidcachebox.menu.menuBtn3;
 
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.getMapsForgeGraphicFactory;
+import static de.droidcachebox.locator.LocatorMethods.getMapsForgeGraphicFactory;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_CAR;
 import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_DEFAULT;

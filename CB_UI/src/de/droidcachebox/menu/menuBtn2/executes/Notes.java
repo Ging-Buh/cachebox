@@ -35,16 +35,16 @@ import de.droidcachebox.utils.log.Log;
 /**
  * @author Longri
  */
-public class NotesView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
-    private static NotesView notesView;
-    private final EditTextField notes;
+public class Notes extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
+    private static Notes notes;
+    private final EditTextField note;
     private final float notesDefaultYPos;
     private final CB_Button btnUpload;
     private float notesHeight;
     private Cache currentCache;
     private String notesText;
 
-    private NotesView() {
+    private Notes() {
         super(ViewManager.leftTab.getContentRec(), "NotesView");
 
         initRow(BOTTOMUP);
@@ -54,16 +54,16 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
         btnUpload = new CB_Button(Translation.get("Upload"));
         addLast(btnUpload);
         notesHeight = getAvailableHeight();
-        notes = new EditTextField(new CB_RectF(0, 0, getWidth(), notesHeight), this, "notes", WrapType.WRAPPED);
-        addLast(notes);
-        notesDefaultYPos = notes.getY();
+        note = new EditTextField(new CB_RectF(0, 0, getWidth(), notesHeight), this, "notes", WrapType.WRAPPED);
+        addLast(note);
+        notesDefaultYPos = note.getY();
 
         btnUpload.setClickHandler((v, x, y, pointer, button) -> {
             final CB_Button b = (CB_Button) v;
-            if (notes.getText().length() > 0) {
+            if (note.getText().length() > 0) {
                 b.setText("Cancel");
                 GL.that.RunOnGL(() -> {
-                    String UploadText = notes.getText().replace("<Import from Geocaching.com>", "").replace("</Import from Geocaching.com>", "").trim();
+                    String UploadText = note.getText().replace("<Import from Geocaching.com>", "").replace("</Import from Geocaching.com>", "").trim();
                     int result = GroundspeakAPI.uploadCacheNote(currentCache.getGeoCacheCode(), UploadText);
                     b.disable();
                     if (result == 0) {
@@ -82,7 +82,7 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
                 solver = CacheDAO.getInstance().getSolver(currentCache);
             } else solver = null;
             solver = solver != null ? "<Solver>\r\n" + solver + "\r\n</Solver>" : "";
-            String text = notes.getText();
+            String text = note.getText();
             int i1 = text.indexOf("<Solver>");
             if (i1 > -1) {
                 int i2 = text.indexOf("</Solver>");
@@ -97,33 +97,33 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
             } else {
                 text = text + solver;
             }
-            notes.setText(text);
+            note.setText(text);
             return true;
         });
 
     }
 
-    public static NotesView getInstance() {
-        if (notesView == null) notesView = new NotesView();
-        return notesView;
+    public static Notes getInstance() {
+        if (notes == null) notes = new Notes();
+        return notes;
     }
 
     @Override
     public void onResized(CB_RectF rec) {
         notesHeight = rec.getHeight() - btnUpload.getHeight();
-        notes.setHeight(notesHeight);
+        note.setHeight(notesHeight);
     }
 
     @Override
     public void keyboardFocusChanged(EditTextField editTextField) {
         btnUpload.setText(Translation.get("Upload"));
         btnUpload.enable();
-        if (editTextField == notes) {
-            notes.setHeight(getHalfHeight());
-            notes.setY(getHalfHeight());
+        if (editTextField == note) {
+            note.setHeight(getHalfHeight());
+            note.setY(getHalfHeight());
         } else {
-            notes.setHeight(notesHeight);
-            notes.setY(notesDefaultYPos);
+            note.setHeight(notesHeight);
+            note.setY(notesDefaultYPos);
         }
     }
 
@@ -147,8 +147,8 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
             notesText = currentCache != null ? CacheDAO.getInstance().getNote(currentCache.generatedId) : "";
             if (notesText == null)
                 notesText = "";
-            notes.setText(notesText);
-            notes.showFromLineNo(0);
+            note.setText(notesText);
+            note.showFromLineNo(0);
             btnUpload.setText(Translation.get("Upload"));
             btnUpload.enable();
         }
@@ -156,7 +156,7 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
 
     private void saveNotes() {
         // Save changed Note text to Database
-        String text = notes.getText();
+        String text = note.getText();
         if (!notesText.equals(text)) {
             if (text != null) {
                 try {

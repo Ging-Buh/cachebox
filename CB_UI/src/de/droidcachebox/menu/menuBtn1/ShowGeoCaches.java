@@ -28,24 +28,24 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.SelectDBDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowDeleteDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
-public class ShowCacheList extends AbstractShowAction {
-    private static ShowCacheList that;
+public class ShowGeoCaches extends AbstractShowAction {
+    private static ShowGeoCaches that;
     private EditCache editCache;
     private MsgBox gL_MsgBox;
 
-    private ShowCacheList() {
+    private ShowGeoCaches() {
         super("cacheList", "  (" + CBDB.getInstance().cacheList.size() + ")");
         editCache = null;
     }
 
-    public static ShowCacheList getInstance() {
-        if (that == null) that = new ShowCacheList();
+    public static ShowGeoCaches getInstance() {
+        if (that == null) that = new ShowGeoCaches();
         return that;
     }
 
@@ -54,12 +54,12 @@ public class ShowCacheList extends AbstractShowAction {
         if (PlatformUIBase.isGPSon()) {
             PlatformUIBase.request_getLocationIfInBackground();
         }
-        ViewManager.leftTab.showView(GeoCacheListListView.getInstance());
+        ViewManager.leftTab.showView(GeoCaches.getInstance());
     }
 
     @Override
     public CB_View_Base getView() {
-        return GeoCacheListListView.getInstance();
+        return GeoCaches.getInstance();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ShowCacheList extends AbstractShowAction {
                         GlobalCore.setSelectedWaypoint(nearestCacheWp.getCache(), nearestCacheWp.getWaypoint());
                         GlobalCore.setNearestCache(nearestCacheWp.getCache());
                     }
-                    GeoCacheListListView.getInstance().setSelectedCacheVisible();
+                    GeoCaches.getInstance().setSelectedCacheVisible();
                 }
             }
         });

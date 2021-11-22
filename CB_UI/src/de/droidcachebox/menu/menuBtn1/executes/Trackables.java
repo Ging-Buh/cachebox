@@ -40,24 +40,24 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
-public class TrackableListView extends V_ListView {
+public class Trackables extends V_ListView {
     private static final String log = "TrackableListView";
-    public static TrackableListView that;
+    public static Trackables trackables;
     private final TrackableListViewAdapter trackableListViewAdapter;
     private final TBList trackableList;
     private CancelWaitDialog wd;
 
-    private TrackableListView() {
+    private Trackables() {
         super(ViewManager.leftTab.getContentRec(), "TrackableListView");
-        that = this;
+        trackables = this;
         setBackground(Sprites.ListBack);
         trackableList = new TBList();
         trackableListViewAdapter = new TrackableListViewAdapter();
     }
 
-    public static TrackableListView getInstance() {
-        if (that == null) that = new TrackableListView();
-        return that;
+    public static Trackables getInstance() {
+        if (trackables == null) trackables = new Trackables();
+        return trackables;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class TrackableListView extends V_ListView {
 
     public void dispose() {
         super.dispose();
-        that = null;
+        trackables = null;
     }
 
     public void onShow() {

@@ -24,20 +24,20 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.math.Size;
-import de.droidcachebox.menu.menuBtn2.executes.HintDialog;
+import de.droidcachebox.menu.menuBtn2.executes.Hint;
 import de.droidcachebox.utils.UnitFormatter;
 
-public class ShowHintDialog extends AbstractAction {
+public class ShowHint extends AbstractAction {
 
-    private static ShowHintDialog showHintDialog;
+    private static ShowHint showHint;
 
-    private ShowHintDialog() {
+    private ShowHint() {
         super("hint");
     }
 
-    public static ShowHintDialog getInstance() {
-        if (showHintDialog == null) showHintDialog = new ShowHintDialog();
-        return showHintDialog;
+    public static ShowHint getInstance() {
+        if (showHint == null) showHint = new ShowHint();
+        return showHint;
     }
 
     @Override
@@ -49,10 +49,7 @@ public class ShowHintDialog extends AbstractAction {
 
     @Override
     public boolean getEnabled() {
-        // liefert true zurück wenn ein Cache gewählt ist und dieser einen Hint hat
-        if (GlobalCore.getSelectedCache() == null)
-            return false;
-        return GlobalCore.getSelectedCache().hasHint();
+        return GlobalCore.getSelectedCache() != null && GlobalCore.getSelectedCache().hasHint();
     }
 
     @Override
@@ -69,6 +66,6 @@ public class ShowHintDialog extends AbstractAction {
         Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
         Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
 
-        new HintDialog(decodedSize.height > encodedSize.height ? decodedSize : encodedSize, hintTextEncoded).show();
+        new Hint(decodedSize.height > encodedSize.height ? decodedSize : encodedSize, hintTextEncoded).show();
     }
 }

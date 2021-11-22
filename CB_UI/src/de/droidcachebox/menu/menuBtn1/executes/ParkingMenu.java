@@ -23,13 +23,13 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
-public class ParkingDialog extends ButtonDialog {
+public class ParkingMenu extends ButtonDialog {
 
     private SizeF msgBoxContentSize;
     private ImageButton btSetGPS, btSelectWP, btDeleteP;
     private CB_Label lblSetGPS, lblSelectWP, lblDeleteP;
 
-    public ParkingDialog() {
+    public ParkingMenu() {
         super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation.get("My_Parking_Area_Title"), MsgBoxButton.Cancel, null, null);
 
         msgBoxContentSize = getContentSize();

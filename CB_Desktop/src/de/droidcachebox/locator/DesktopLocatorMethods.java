@@ -29,53 +29,55 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
-public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Methods {
+public class DesktopLocatorMethods implements LocatorMethods.PlatformLocatorMethods {
     private static final String sKlasse = "DesktopLocatorBaseMethods";
 
-    public DesktopLocatorBaseMethods() {
+    public DesktopLocatorMethods() {
 
     }
 
-    // // unpack all files to cache
-    // // extractImages();
-    // private void extractImages()
-    // {
-    // for (BoundingBox bbox : BoundingBoxes)
-    // {
-    // int z = bbox.Zoom;
-    // for (int x = bbox.MinX; x <= bbox.MaxX; x++)
-    // {
-    // for (int y = bbox.MinY; y <= bbox.MaxY; y++)
-    // {
-    // Descriptor desc = new Descriptor(x, y, z);
-    // byte[] b = LoadFromBoundingBoxByteArray(bbox, desc);
-    // String fname = Layer.GetLocalFilename(desc);
-    // File ff = new File(fname);
-    // if (!ff.getParentFile().exists())
-    // {
-    // ff.getParentFile().mkdirs();
-    // }
-    // try
-    // {
-    // FileOutputStream fos = new FileOutputStream(ff.getAbsoluteFile());
-    // fos.write(b);
-    // fos.close();
-    // }
-    // catch (Exception e)
-    // {
-    // // handle exception
-    // }
-    // }
-    // }
-    //
-    // }
-    //
-    // }
+    /*
+    // unpack all files to cache
+    // extractImages();
+    private void extractImages()
+    {
+        for (BoundingBox bbox : BoundingBoxes)
+        {
+            int z = bbox.Zoom;
+            for (int x = bbox.MinX; x <= bbox.MaxX; x++)
+            {
+                for (int y = bbox.MinY; y <= bbox.MaxY; y++)
+                {
+                    Descriptor desc = new Descriptor(x, y, z);
+                    byte[] b = LoadFromBoundingBoxByteArray(bbox, desc);
+                    String fname = Layer.GetLocalFilename(desc);
+                    File ff = new File(fname);
+                    if (!ff.getParentFile().exists())
+                    {
+                        ff.getParentFile().mkdirs();
+                    }
+                    try
+                    {
+                        FileOutputStream fos = new FileOutputStream(ff.getAbsoluteFile());
+                        fos.write(b);
+                        fos.close();
+                    }
+                    catch (Exception e)
+                    {
+                        // handle exception
+                    }
+                }
+            }
+
+        }
+
+    }
+    */
 
     /**
      * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
      */
-    private static byte[] get(byte[] array, int offset, int length) {
+    private byte[] get(byte[] array, int offset, int length) {
         byte[] result = new byte[length];
         System.arraycopy(array, offset, result, 0, length);
         return result;
@@ -88,7 +90,7 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
                 return null;
 
             int index = (desc.getY() - bbox.MinY) * bbox.Stride + (desc.getX() - bbox.MinX) - 1;
-            long offset = bbox.OffsetToIndex + index * 8;
+            long offset = bbox.OffsetToIndex + index * 8L;
 
             FileInputStream stream = new FileInputStream(filename);
             /* Stream stream = new FileStream(Filename, FileMode.Open, FileAccess.Read); */
@@ -161,7 +163,7 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
     }
 
     @Override
-    public LocatorBasePlatFormMethods.ImageData getImagePixel(byte[] img) {
+    public LocatorMethods.ImageData getImagePixel(byte[] img) {
         InputStream in = new ByteArrayInputStream(img);
         BufferedImage bImage;
         try {
@@ -170,7 +172,7 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
             return null;
         }
 
-        LocatorBasePlatFormMethods.ImageData imgData = new LocatorBasePlatFormMethods.ImageData();
+        LocatorMethods.ImageData imgData = new LocatorMethods.ImageData();
         imgData.width = bImage.getWidth();
         imgData.height = bImage.getHeight();
 
@@ -188,7 +190,7 @@ public class DesktopLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
     }
 
     @Override
-    public byte[] getImageFromData(LocatorBasePlatFormMethods.ImageData imgData) {
+    public byte[] getImageFromData(LocatorMethods.ImageData imgData) {
 
         BufferedImage dstImage = new BufferedImage(imgData.width, imgData.height, BufferedImage.TYPE_INT_RGB);
 

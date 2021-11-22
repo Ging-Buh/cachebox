@@ -32,11 +32,11 @@ import de.droidcachebox.database.Categories;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.activities.SelectDB;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn1.executes.SelectDB;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.log.Log;
 

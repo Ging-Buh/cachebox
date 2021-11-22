@@ -5,19 +5,19 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.menu.menuBtn1.executes.ParkingDialog;
+import de.droidcachebox.menu.menuBtn1.executes.ParkingMenu;
 
-public class ShowParkingDialog extends AbstractAction {
+public class ShowParkingMenu extends AbstractAction {
 
-    private static ShowParkingDialog showParkingDialog;
+    private static ShowParkingMenu showParkingMenu;
 
-    private ShowParkingDialog() {
+    private ShowParkingMenu() {
         super("MyParking");
     }
 
-    public static ShowParkingDialog getInstance() {
-        if (showParkingDialog == null) showParkingDialog = new ShowParkingDialog();
-        return showParkingDialog;
+    public static ShowParkingMenu getInstance() {
+        if (showParkingMenu == null) showParkingMenu = new ShowParkingMenu();
+        return showParkingMenu;
     }
 
     @Override
@@ -32,6 +32,6 @@ public class ShowParkingDialog extends AbstractAction {
 
     @Override
     public void execute() {
-        new ParkingDialog().show();
+        new ParkingMenu().show();
     }
 }

@@ -71,7 +71,7 @@ import de.droidcachebox.locator.GpsStateChangeEventList;
 import de.droidcachebox.locator.GpsStrength;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.FZKDownload;
 import de.droidcachebox.menu.menuBtn5.executes.SettingsActivity;
@@ -88,7 +88,7 @@ import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
 
-public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationListener {
+public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, LocationListener {
     private static final String sClass = "PlatformListener";
     private static final int REQUEST_GET_APIKEY = 987654321;
     private static final int ACTION_OPEN_DOCUMENT_TREE = 6518;
@@ -406,11 +406,6 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     }
 
     @Override
-    public void freeSQLInstance(SQLiteInterface sqlInstance) {
-        // sqlInstance = null;
-    }
-
-    @Override
     public void quit() {
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die
@@ -526,13 +521,6 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
     }
 
     @Override
-    public void startRecordTrack() {
-        request_getLocationIfInBackground();
-        // if permission is not granted, recording must be done with cb always in foreground
-        TrackRecorder.startRecording();
-    }
-
-    @Override
     public boolean request_getLocationIfInBackground() {
         if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
@@ -615,7 +603,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
                         if (mustShowCacheList) {
                             // show cachelist first then search dialog
                             mustShowCacheList = false;
-                            ViewManager.leftTab.showView(GeoCacheListListView.getInstance());
+                            ViewManager.leftTab.showView(GeoCaches.getInstance());
                             importCacheByGCCode(externalRequestGCCode); // now the search can start (doSearchOnline)
                         } else {
                             mustShowCacheList = true;
@@ -733,15 +721,15 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
         }
     }
 
-    public boolean askForLocationPermission() {
+    boolean askForLocationPermission() {
         return askForLocationPermission;
     }
 
-    public void resetAskForLocationPermission() {
+    void resetAskForLocationPermission() {
         askForLocationPermission = false;
     }
 
-    public void startService() {
+    void startService() {
         if (Settings.allowLocationService.getValue()) {
             if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -758,7 +746,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
         }
     }
 
-    public void serviceCanBeStarted() {
+    void serviceCanBeStarted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             locationServiceIntent = new Intent(androidApplication, CBForeground.class);
             androidApplication.startForegroundService(locationServiceIntent);
@@ -768,7 +756,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.Methods, LocationLis
         }
     }
 
-    public void stopService() {
+    void stopService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!Settings.allowLocationService.getValue()) {
                 androidApplication.stopService(locationServiceIntent);

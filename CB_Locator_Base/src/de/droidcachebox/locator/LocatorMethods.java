@@ -1,45 +1,53 @@
 package de.droidcachebox.locator;
 
 import com.badlogic.gdx.graphics.Texture;
-import de.droidcachebox.locator.map.BoundingBox;
-import de.droidcachebox.locator.map.Descriptor;
+
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 
 import java.io.IOException;
 
-public class LocatorBasePlatFormMethods {
-    private static Methods methods;
+import de.droidcachebox.locator.map.BoundingBox;
+import de.droidcachebox.locator.map.Descriptor;
 
-    public static void setMethods(Methods methods) {
-        LocatorBasePlatFormMethods.methods = methods;
+/**
+ * gives static access to the methods that have to be implemented for the used platform
+ */
+public class LocatorMethods {
+    private static PlatformLocatorMethods m;
+
+    public static void init(PlatformLocatorMethods m) {
+        LocatorMethods.m = m;
     }
 
     public static byte[] loadFromBoundingBoxByteArray(String filename, BoundingBox bbox, Descriptor desc) {
-        return methods.loadFromBoundingBoxByteArray(filename, bbox, desc);
+        return m.loadFromBoundingBoxByteArray(filename, bbox, desc);
     }
 
     public static byte[] getImageFromFile(String cachedTileFilename) throws IOException {
-        return methods.getImageFromFile(cachedTileFilename);
+        return m.getImageFromFile(cachedTileFilename);
     }
 
     public static ImageData getImagePixel(byte[] b) {
-        return methods.getImagePixel(b);
+        return m.getImagePixel(b);
     }
 
     public static byte[] getImageFromData(ImageData imageDataWithColorMatrixManipulation) {
-        return methods.getImageFromData(imageDataWithColorMatrixManipulation);
+        return m.getImageFromData(imageDataWithColorMatrixManipulation);
     }
 
     public static GraphicFactory getMapsForgeGraphicFactory() {
-        return methods.getMapsForgeGraphicFactory();
+        return m.getMapsForgeGraphicFactory();
     }
 
     public static Texture getTexture(TileBitmap tileBitmap) {
-        return methods.getTexture(tileBitmap);
+        return m.getTexture(tileBitmap);
     }
 
-    public interface Methods {
+    /**
+     these methods need platform specific implementations
+     */
+    public interface PlatformLocatorMethods {
         byte[] loadFromBoundingBoxByteArray(String filename, BoundingBox bbox, Descriptor desc);
 
         byte[] getImageFromFile(String cachedTileFilename) throws IOException;

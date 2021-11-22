@@ -1,6 +1,6 @@
 package de.droidcachebox.locator.map;
 
-import static de.droidcachebox.locator.LocatorBasePlatFormMethods.loadFromBoundingBoxByteArray;
+import static de.droidcachebox.locator.LocatorMethods.loadFromBoundingBoxByteArray;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

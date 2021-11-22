@@ -30,162 +30,142 @@ import de.droidcachebox.utils.log.Log;
  */
 public class PlatformUIBase {
     public static int AndroidVersion = 999;
+    private static UIBaseMethods m;
+    private static ShowViewMethods sm;
     private static Thread threadVibrate;
-    private static Methods methods;
-    private static IShowViewListener showViewListener;
-    private static ArrayList<String> sendToMediaScannerList;
     private static Clipboard clipBoard;
+    private static ArrayList<String> sendToMediaScannerList;
 
-    public static void setShowViewListener(IShowViewListener listener) {
-        showViewListener = listener;
+    public static void initShowViewMethods(ShowViewMethods showViewMethods) {
+        sm = showViewMethods;
     }
 
     public static void showView(ViewID viewID, float x, float y, float leftMargin, float topMargin, float rightMargin, float bottomMargin) {
-        if (showViewListener != null) {
-            GL.that.clearRenderViews();
+        GL.that.clearRenderViews();
 
-            int left = (int) (x + leftMargin);
-            int right = (int) rightMargin;
-            int bottom = (int) (y + bottomMargin);
-            int top = (int) topMargin;
+        int left = (int) (x + leftMargin);
+        int right = (int) rightMargin;
+        int bottom = (int) (y + bottomMargin);
+        int top = (int) topMargin;
 
-            showViewListener.showView(viewID, left, top, right, bottom);
-        }
+        sm.showView(viewID, left, top, right, bottom);
     }
 
     public static void dayNightSwitched() {
-        if (showViewListener != null) {
-            showViewListener.dayNightSwitched();
-        }
+        sm.dayNightSwitched();
     }
 
     public static void hideView(ViewID viewID) {
-        if (showViewListener != null) {
-            showViewListener.hideView(viewID);
-        }
+        sm.hideView(viewID);
     }
 
     public static void showForDialog() {
-        if (showViewListener != null) {
-            try {
-                GL.that.clearRenderViews();
-                showViewListener.showForDialog();
-            } catch (Exception ex) {
-                Log.err("PlatformUIBase", "showForDialog", ex);
-            }
+        try {
+            GL.that.clearRenderViews();
+            sm.showForDialog();
+        } catch (Exception ex) {
+            Log.err("PlatformUIBase", "showForDialog", ex);
         }
     }
 
     public static void hideForDialog() {
-        if (showViewListener != null) {
-            showViewListener.hideForDialog();
-        }
+        sm.hideForDialog();
     }
 
     public static void setContentSize(final int left, final int top, final int right, final int bottom) {
-        if (showViewListener != null) {
-            showViewListener.setContentSize(left, top, right, bottom);
-        }
+        sm.setContentSize(left, top, right, bottom);
     }
 
-    public static void setMethods(Methods _methods) {
-        methods = _methods;
+    public static void init(UIBaseMethods _m) {
+        m = _m;
     }
 
     public static boolean canNotUsePlatformSettings() {
-        return (methods == null);
+        return (m == null);
     }
 
     public static SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
-        setting = methods.readPlatformSetting(setting);
+        setting = m.readPlatformSetting(setting);
         return setting;
     }
 
     public static <T> void writePlatformSetting(SettingBase<T> setting) {
-        methods.writePlatformSetting(setting);
+        m.writePlatformSetting(setting);
     }
 
     public static void vibrate() {
         if (threadVibrate == null) {
-            threadVibrate = new Thread(() -> methods.vibrate());
+            threadVibrate = new Thread(() -> m.vibrate());
         }
-        threadVibrate.run(); // do not replace with start()
+        threadVibrate.run(); // do not replace with start() (or always create new Thread)
     }
 
     public static boolean isOnline() {
-        return methods.isOnline();
+        return m.isOnline();
     }
 
     public static boolean isGPSon() {
-        return methods.isGPSon();
+        return m.isGPSon();
     }
 
     public static boolean isTorchAvailable() {
-        return methods.isTorchAvailable();
+        return m.isTorchAvailable();
     }
 
     public static boolean isTorchOn() {
-        return methods.isTorchOn();
+        return m.isTorchOn();
     }
 
     public static void switchTorch() {
-        methods.switchTorch();
+        m.switchTorch();
     }
 
     public static void quit() {
-        methods.quit();
+        m.quit();
     }
 
     public static void getApiKey() {
-        methods.getApiKey();
+        m.getApiKey();
     }
 
     public static void callUrl(String url) {
-        methods.callUrl(url);
+        m.callUrl(url);
     }
 
     public static void startPictureApp(String file) {
-        methods.startPictureApp(file);
+        m.startPictureApp(file);
     }
 
     public static SQLiteInterface createSQLInstance() {
-        return methods.createSQLInstance();
-    }
-
-    public static void freeSQLInstance(SQLiteInterface sqlInstance) {
-        methods.freeSQLInstance(sqlInstance);
+        return m.createSQLInstance();
     }
 
     public static void switchToGpsMeasure() {
-        methods.switchToGpsMeasure();
+        m.switchToGpsMeasure();
     }
 
     public static void switchToGpsDefault() {
-        methods.switchToGpsDefault();
+        m.switchToGpsDefault();
     }
 
     public static void handleExternalRequest() {
-        methods.handleExternalRequest();
+        m.handleExternalRequest();
     }
 
     public static String removeHtmlEntyties(String text) {
-        return methods.removeHtmlEntyties(text);
+        return m.removeHtmlEntyties(text);
     }
 
     public static String getFileProviderContentUrl(String localFile) {
-        return methods.getFileProviderContentUrl(localFile);
+        return m.getFileProviderContentUrl(localFile);
     }
 
     public static void getDirectoryAccess(String directory) {
-        methods.getDirectoryAccess(directory);
-    }
-
-    public static void startRecordTrack() {
-        methods.startRecordTrack();
+        m.getDirectoryAccess(directory);
     }
 
     public static boolean request_getLocationIfInBackground() {
-        return methods.request_getLocationIfInBackground();
+        return m.request_getLocationIfInBackground();
     }
 
     public static ArrayList<String> getMediaScannerList() {
@@ -213,10 +193,13 @@ public class PlatformUIBase {
     }
 
     public static int getCacheCountInDB(String absolutePath) {
-        return methods.getCacheCountInDB(absolutePath);
+        return m.getCacheCountInDB(absolutePath);
     }
 
-    public interface IShowViewListener {
+    /**
+     these methods need platform specific implementations
+     */
+    public interface ShowViewMethods {
         void showView(ViewID viewID, int left, int top, int right, int bottom);
 
         void setContentSize(int left, int top, int right, int bottom);
@@ -234,7 +217,10 @@ public class PlatformUIBase {
         void requestLayout();
     }
 
-    public interface Methods {
+    /**
+     these methods need platform specific implementations
+     */
+    public interface UIBaseMethods {
         SettingBase<?> readPlatformSetting(SettingBase<?> setting);
 
         void writePlatformSetting(SettingBase<?> setting);
@@ -263,8 +249,6 @@ public class PlatformUIBase {
 
         SQLiteInterface createSQLInstance();
 
-        void freeSQLInstance(SQLiteInterface sqlInstance);
-
         void quit();
 
         void handleExternalRequest();
@@ -274,8 +258,6 @@ public class PlatformUIBase {
         String getFileProviderContentUrl(String localFile);
 
         void getDirectoryAccess(String directory);
-
-        void startRecordTrack();
 
         boolean request_getLocationIfInBackground();
 

@@ -51,9 +51,9 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 
-public class GeoCacheListListView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
+public class GeoCaches extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
     private static final String log = "GeoCacheListListView";
-    private static GeoCacheListListView that;
+    private static GeoCaches geoCaches;
     private V_ListView geoCacheListView;
     private Scrollbar scrollBar;
     private GeoCacheListViewAdapter geoCacheListViewAdapter;
@@ -61,7 +61,7 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
     private boolean isShown = false;
     private float searchPlaceholder = 0;
 
-    private GeoCacheListListView() {
+    private GeoCaches() {
         super(ViewManager.leftTab.getContentRec(), "CacheListView");
         registerSkinChangedEvent();
         CacheListChangedListeners.getInstance().addListener(this);
@@ -76,9 +76,9 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
         addChild(scrollBar);
     }
 
-    public static GeoCacheListListView getInstance() {
-        if (that == null) that = new GeoCacheListListView();
-        return that;
+    public static GeoCaches getInstance() {
+        if (geoCaches == null) geoCaches = new GeoCaches();
+        return geoCaches;
     }
 
     @Override
@@ -318,7 +318,7 @@ public class GeoCacheListListView extends CB_View_Base implements CacheListChang
 
     @Override
     public void dispose() {
-        that = null;
+        geoCaches = null;
 
         if (geoCacheListView != null)
             geoCacheListView.dispose();

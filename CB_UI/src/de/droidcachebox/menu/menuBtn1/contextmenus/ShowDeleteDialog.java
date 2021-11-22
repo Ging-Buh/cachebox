@@ -1,10 +1,11 @@
 package de.droidcachebox.menu.menuBtn1.contextmenus;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.controls.dialogs.DeleteDialog;
+import de.droidcachebox.menu.menuBtn1.executes.DeleteDialog;
 
 public class ShowDeleteDialog extends AbstractAction {
 

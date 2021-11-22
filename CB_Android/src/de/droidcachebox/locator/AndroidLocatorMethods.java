@@ -1,17 +1,17 @@
 package de.droidcachebox.locator;
 
+import static org.mapsforge.map.android.graphics.AndroidGraphicFactory.getBitmap;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import de.droidcachebox.Main;
-import de.droidcachebox.locator.map.BoundingBox;
-import de.droidcachebox.locator.map.Descriptor;
-import de.droidcachebox.utils.log.Log;
+
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -21,16 +21,19 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.util.Arrays;
 
-import static org.mapsforge.map.android.graphics.AndroidGraphicFactory.getBitmap;
+import de.droidcachebox.Main;
+import de.droidcachebox.locator.map.BoundingBox;
+import de.droidcachebox.locator.map.Descriptor;
+import de.droidcachebox.utils.log.Log;
 
-public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Methods {
+public class AndroidLocatorMethods implements LocatorMethods.PlatformLocatorMethods {
     private static final String sKlasse = "AndroidLocatorBaseMethods";
     private AndroidApplication androidApplication;
     private Activity mainActivity;
     private Main mainMain;
     private boolean isCreatedAndroidGraphicFactory;
 
-    public AndroidLocatorBaseMethods(Main main) {
+    public AndroidLocatorMethods(Main main) {
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
@@ -148,7 +151,7 @@ public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
 
 
     @Override
-    public LocatorBasePlatFormMethods.ImageData getImagePixel(byte[] img) {
+    public LocatorMethods.ImageData getImagePixel(byte[] img) {
         android.graphics.Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
         // Buffer dst = null;
         int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
@@ -156,7 +159,7 @@ public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
 
         bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 
-        LocatorBasePlatFormMethods.ImageData imgData = new LocatorBasePlatFormMethods.ImageData();
+        LocatorMethods.ImageData imgData = new LocatorMethods.ImageData();
         imgData.width = bitmap.getWidth();
         imgData.height = bitmap.getHeight();
         imgData.PixelColorArray = pixels;
@@ -165,7 +168,7 @@ public class AndroidLocatorBaseMethods implements LocatorBasePlatFormMethods.Met
     }
 
     @Override
-    public byte[] getImageFromData(LocatorBasePlatFormMethods.ImageData imgData) {
+    public byte[] getImageFromData(LocatorMethods.ImageData imgData) {
         android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height, android.graphics.Bitmap.Config.RGB_565);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);

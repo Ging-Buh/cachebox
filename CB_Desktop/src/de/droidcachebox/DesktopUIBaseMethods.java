@@ -20,7 +20,7 @@ import de.droidcachebox.settings.SettingString;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.log.Log;
 
-public class DesktopUIBaseMethods  implements PlatformUIBase.Methods{
+public class DesktopUIBaseMethods  implements PlatformUIBase.UIBaseMethods {
     private static final String sClass = "DesktopUIBaseMethods";
     static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
 
@@ -139,11 +139,6 @@ public class DesktopUIBaseMethods  implements PlatformUIBase.Methods{
     }
 
     @Override
-    public void freeSQLInstance(SQLiteInterface sqlInstance) {
-        sqlInstance = null;
-    }
-
-    @Override
     public void getApiKey() {
         // Android : GetApiAuth();
         (new GcApiLogin()).RunRequest();
@@ -179,11 +174,6 @@ public class DesktopUIBaseMethods  implements PlatformUIBase.Methods{
     @Override
     public void getDirectoryAccess(String _DirectoryToAccess) {
 
-    }
-
-    @Override
-    public void startRecordTrack() {
-        TrackRecorder.startRecording();
     }
 
     @Override

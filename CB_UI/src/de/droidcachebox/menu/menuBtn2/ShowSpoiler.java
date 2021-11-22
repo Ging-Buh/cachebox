@@ -20,7 +20,7 @@ import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.SpoilerView;
+import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
 
@@ -48,7 +48,7 @@ public class ShowSpoiler extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(SpoilerView.getInstance());
+        ViewManager.leftTab.showView(Spoiler.getInstance());
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ShowSpoiler extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return SpoilerView.getInstance();
+        return Spoiler.getInstance();
     }
 
     @Override
@@ -92,9 +92,9 @@ public class ShowSpoiler extends AbstractShowAction {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {
                 GlobalCore.getSelectedCache().loadSpoilerRessources();
-                SpoilerView.getInstance().ForceReload();
-                ViewManager.leftTab.showView(SpoilerView.getInstance());
-                SpoilerView.getInstance().onShow();
+                Spoiler.getInstance().ForceReload();
+                ViewManager.leftTab.showView(Spoiler.getInstance());
+                Spoiler.getInstance().onShow();
             }
         }));
 
@@ -102,14 +102,14 @@ public class ShowSpoiler extends AbstractShowAction {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {
                 GlobalCore.getSelectedCache().loadSpoilerRessources();
-                SpoilerView.getInstance().ForceReload();
-                ViewManager.leftTab.showView(SpoilerView.getInstance());
-                SpoilerView.getInstance().onShow();
+                Spoiler.getInstance().ForceReload();
+                ViewManager.leftTab.showView(Spoiler.getInstance());
+                Spoiler.getInstance().onShow();
             }
         }));
 
         contextMenu.addMenuItem("startPictureApp", Sprites.getSprite("image-export"), () -> {
-            String file = SpoilerView.getInstance().getSelectedFilePath();
+            String file = Spoiler.getInstance().getSelectedFilePath();
             if (file != null) PlatformUIBase.startPictureApp(file);
         });
     }

@@ -21,9 +21,9 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.texturepacker.DesktopTexturePacker;
 import de.droidcachebox.gdx.utils.DesktopClipboard;
 import de.droidcachebox.locator.CBLocation;
-import de.droidcachebox.locator.DesktopLocatorBaseMethods;
+import de.droidcachebox.locator.DesktopLocatorMethods;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.locator.LocatorBasePlatFormMethods;
+import de.droidcachebox.locator.LocatorMethods;
 import de.droidcachebox.menu.MainViewInit;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
@@ -145,7 +145,7 @@ public class DesktopMain {
         };
         timer.schedule(task, 600);
         PlatformUIBase.setClipboard(new DesktopClipboard());
-        LocatorBasePlatFormMethods.setMethods(new DesktopLocatorBaseMethods());
+        LocatorMethods.init(new DesktopLocatorMethods());
 
     }
 

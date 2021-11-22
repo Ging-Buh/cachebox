@@ -64,42 +64,44 @@ public class TrackRecorder {
     private static boolean writePos = false;
 
     public static void startRecording() {
+        if (PlatformUIBase.request_getLocationIfInBackground()) {
 
-        distanceForNextTrackpoint = Settings.TrackDistance.getValue();
+            distanceForNextTrackpoint = Settings.TrackDistance.getValue();
 
-        GlobalCore.currentRoute = new Track(Translation.get("actualTrack"));
-        GlobalCore.currentRoute.setColor(Color.BLUE);
-        GlobalCore.currentRoute.setVisible(true);
-        GlobalCore.currentRoute.setActualTrack(true);
-        GlobalCore.currentRouteCount = 0;
-        GlobalCore.currentRoute.setTrackLength(0);
-        GlobalCore.currentRoute.setAltitudeDifference(0);
+            GlobalCore.currentRoute = new Track(Translation.get("actualTrack"));
+            GlobalCore.currentRoute.setColor(Color.BLUE);
+            GlobalCore.currentRoute.setVisible(true);
+            GlobalCore.currentRoute.setActualTrack(true);
+            GlobalCore.currentRouteCount = 0;
+            GlobalCore.currentRoute.setTrackLength(0);
+            GlobalCore.currentRoute.setAltitudeDifference(0);
 
-        String directory = Settings.TrackFolder.getValue();
-        if (!FileIO.createDirectory(directory))
-            return;
+            String directory = Settings.TrackFolder.getValue();
+            if (!FileIO.createDirectory(directory))
+                return;
 
-        if (gpxfile == null) {
-            gpxfile = FileFactory.createFile(directory + "/" + generateTrackFileName());
-            FileWriter writer;
-            try {
-                writer = gpxfile.getFileWriter();
-                writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-                        .append("<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n")
-                        .append("<time>").append(getDateTimeString()).append("</time>\n")
-                        // set real bounds or basecamp (mapsource) will not import this track
-                        // writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
-                        .append("<trk><trkseg>\n</trkseg>\n</trk>\n</gpx>\n");
-                writer.close();
-            } catch (IOException e) {
-                Log.err(log, "IOException", e);
+            if (gpxfile == null) {
+                gpxfile = FileFactory.createFile(directory + "/" + generateTrackFileName());
+                FileWriter writer;
+                try {
+                    writer = gpxfile.getFileWriter();
+                    writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+                            .append("<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n")
+                            .append("<time>").append(getDateTimeString()).append("</time>\n")
+                            // set real bounds or basecamp (mapsource) will not import this track
+                            // writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
+                            .append("<trk><trkseg>\n</trkseg>\n</trk>\n</gpx>\n");
+                    writer.close();
+                } catch (IOException e) {
+                    Log.err(log, "IOException", e);
+                }
             }
+
+            pauseRecording = false;
+            recording = true;
+
+            TrackListView.getInstance().notifyDataSetChanged();
         }
-
-        pauseRecording = false;
-        recording = true;
-
-        TrackListView.getInstance().notifyDataSetChanged();
     }
 
     private static String getDateTimeString() {

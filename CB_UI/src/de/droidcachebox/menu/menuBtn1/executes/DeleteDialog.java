@@ -1,4 +1,4 @@
-package de.droidcachebox.gdx.controls.dialogs;
+package de.droidcachebox.menu.menuBtn1.executes;
 
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.FilterInstances;
@@ -14,6 +14,7 @@ import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.ImageButton;
+import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;

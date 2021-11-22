@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.menu.menuBtn1.ShowCacheList;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCacheListListView;
+import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 
 public class SearchDialog extends AbstractAction {
 
@@ -24,8 +24,8 @@ public class SearchDialog extends AbstractAction {
     @Override
     public void execute() {
 
-        if (!GeoCacheListListView.getInstance().isVisible()) {
-            ShowCacheList.getInstance().execute();
+        if (!GeoCaches.getInstance().isVisible()) {
+            ShowGeoCaches.getInstance().execute();
         }
 
         if (de.droidcachebox.gdx.controls.popups.SearchDialog.that == null) {
