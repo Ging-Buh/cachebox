@@ -38,6 +38,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -86,12 +88,14 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.IChanged;
+import de.droidcachebox.utils.StringReturner;
 import de.droidcachebox.utils.log.Log;
 
 public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, LocationListener {
     private static final String sClass = "PlatformListener";
     private static final int REQUEST_GET_APIKEY = 987654321;
     private static final int ACTION_OPEN_DOCUMENT_TREE = 6518;
+    private static final int ACTION_OPEN_DOCUMENT = 6519;
     private static final int useGNSS = Build.VERSION_CODES.N;
     private final AndroidApplication androidApplication;
     private final Activity mainActivity;
@@ -106,7 +110,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
     private boolean mustShowCacheList = true;
     private CancelWaitDialog wd;
     private LocationManager locationManager;
-    private AndroidEventListener handlingGetDirectoryAccess;
+    private AndroidEventListener handlingGetDirectoryAccess, handlingGetDocumentAccess;
     private Intent locationServiceIntent;
     private GnssStatus.Callback gnssStatusCallback;
     private android.location.GpsStatus.Listener gpsStatusListener;
@@ -491,33 +495,71 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
     }
 
     @Override
-    public void getDirectoryAccess(String _DirectoryToAccess) {
+    public void getDirectoryAccess(String _DirectoryToAccess, StringReturner stringReturner) {
         // Choose a directory using the system's file picker.
         final Intent intent;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             // Optionally, specify a URI for the directory that should be opened in the system file picker when it loads.
-            intent.putExtra(DocumentsContract.EXTRA_INFO, _DirectoryToAccess);
+            // DocumentFile documentFile = DocumentFile.fromTreeUri(context, uri);
+            // intent.putExtra(EXTRA_INITIAL_URI, documentFile.getUri());
+            intent.putExtra(DocumentsContract.EXTRA_INFO, "please select a dir for " + _DirectoryToAccess);
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
                 if (handlingGetDirectoryAccess == null)
                     handlingGetDirectoryAccess = (requestCode, resultCode, resultData) -> {
                         androidApplication.removeAndroidEventListener(handlingGetDirectoryAccess);
-                        // Intent Result Record Video
                         if (requestCode == ACTION_OPEN_DOCUMENT_TREE) {
                             if (resultCode == Activity.RESULT_OK) {
-                                // The result data contains an Uri for the (document or) directory that the user selected.
-                                GlobalCore.selectedUri = null;
+                                // The result data contains an Uri for the directory that the user selected.
                                 if (resultData != null) {
-                                    GlobalCore.selectedUri = resultData.getData();
-                                    // Perform actions using its URI.
+                                    stringReturner.returnString(resultData.getData().toString());
                                 }
                             }
                         }
                     };
+                androidApplication.addAndroidEventListener(handlingGetDirectoryAccess);
+                mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT_TREE);
             }
-            androidApplication.addAndroidEventListener(handlingGetDirectoryAccess);
-            mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT_TREE);
         }
+    }
+
+    public void getDocumentAccess(String _DirectoryToAccess, StringReturner stringReturner) {
+        // Choose a directory using the system's file picker.
+        final Intent intent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.setType("application/octet-stream");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            // Optionally, specify a URI for the directory that should be opened in the system file picker when it loads.
+            // intent.putExtra(DocumentsContract.EXTRA_INFO, "Please, Bitte, " + _DirectoryToAccess);
+            if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
+                if (handlingGetDocumentAccess == null)
+                    handlingGetDocumentAccess = new AndroidEventListener() {
+                        @Override
+                        public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+                            androidApplication.removeAndroidEventListener(handlingGetDocumentAccess);
+                            if (requestCode == ACTION_OPEN_DOCUMENT) {
+                                if (resultCode == Activity.RESULT_OK) {
+                                    // The result data contains an Uri for the directory that the user selected.
+                                    if (resultData != null) {
+                                        // Perform actions on result
+                                        Uri uri = resultData.getData();
+                                        mainActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                        stringReturner.returnString(uri.toString());
+                                    }
+                                }
+                            }
+                        }
+                    };
+                androidApplication.addAndroidEventListener(handlingGetDocumentAccess);
+                mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT);
+            }
+        }
+    }
+
+    @Override
+    public InputStream getInputStream(String path) throws FileNotFoundException {
+        return mainActivity.getContentResolver().openInputStream(Uri.parse(path));
     }
 
     @Override

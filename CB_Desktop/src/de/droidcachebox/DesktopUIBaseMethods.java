@@ -18,6 +18,7 @@ import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.SettingInt;
 import de.droidcachebox.settings.SettingString;
 import de.droidcachebox.settings.Settings;
+import de.droidcachebox.utils.StringReturner;
 import de.droidcachebox.utils.log.Log;
 
 public class DesktopUIBaseMethods  implements PlatformUIBase.UIBaseMethods {
@@ -172,8 +173,7 @@ public class DesktopUIBaseMethods  implements PlatformUIBase.UIBaseMethods {
     }
 
     @Override
-    public void getDirectoryAccess(String _DirectoryToAccess) {
-
+    public void getDirectoryAccess(String _DirectoryToAccess, StringReturner returnUri) {
     }
 
     @Override

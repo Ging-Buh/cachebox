@@ -16,11 +16,12 @@
 package de.droidcachebox.locator.map;
 
 import com.badlogic.gdx.utils.Array;
-import de.droidcachebox.utils.log.Log;
 
 import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import de.droidcachebox.utils.log.Log;
 
 /**
  * at moment MapTileLoader is singleton ( meaning: there is only one instance ) for (all) the three MapView Modes (normal, compass, track)
@@ -29,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Every call to loadTiles empties the orders, because there is possibly a new area to cover with mapTiles. Tiles already in generation will not be affected.
  */
 public class MapTileLoader {
-    private static final String log = "MapTileLoader";
+    private static final String sClass = "MapTileLoader";
     public static AtomicBoolean finishYourself, isWorking;
     private static MapTileLoader mapTileLoader;
     private static int PROCESSOR_COUNT; // == nr of threads for getting tiles ?
@@ -66,7 +67,7 @@ public class MapTileLoader {
         isWorking.set(false);
         orders = new Array<>(true, mapTiles.getCapacity());
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
-        Log.info(log, "Number of processors: " + PROCESSOR_COUNT);
+        Log.info(sClass, "Number of processors: " + PROCESSOR_COUNT);
         queueProcessors = new CopyOnWriteArrayList<>();
         queueProcessorsAreStarted = false;
         byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.getData(), (Integer) o2.getData());
@@ -83,12 +84,12 @@ public class MapTileLoader {
                     if (!threadToCheck.isAlive()) {
                         // is down (?Exception)
                         abortAndNew = true;
-                        Log.info(log, "thread is down.");
+                        Log.info(sClass, "thread is down.");
                     }
                     if ((System.currentTimeMillis() - threadToCheck.startTime > 60000) && threadToCheck.isWorking) {
                         // is hanging (loading maptile for more than one minute) loading maptile
                         abortAndNew = true;
-                        Log.info(log, "thread is hanging.");
+                        Log.info(sClass, "thread is hanging.");
                     }
                     if (abortAndNew) {
                         try {
@@ -98,7 +99,7 @@ public class MapTileLoader {
                             newThread.setPriority(Thread.MIN_PRIORITY);
                             newThread.start();
                         } catch (Exception ex) {
-                            Log.err(log, "Start a new thread", ex);
+                            Log.err(sClass, "Start a new thread", ex);
                         }
                     }
                 }
@@ -143,14 +144,14 @@ public class MapTileLoader {
 
             // make a copy of the loaded tiles (worst case an already generated Tile will be created again)
             Array<Long> loadedTiles = mapTiles.getTilesHashCopy();
-            Log.trace(log, "Num loadedTiles: " + loadedTiles.size);
+            Log.trace(sClass, "Num loadedTiles: " + loadedTiles.size);
             for (Long loaded : loadedTiles) {
                 mapTilesInGeneration.removeValue(loaded, false);
             }
 
             // make a copy of the loaded overlaytiles
             Array<Long> loadedOverlayTiles = mapTiles.getOverlayTilesHashCopy();
-            Log.trace(log, "Num loadedOverlayTiles: " + loadedOverlayTiles.size);
+            Log.trace(sClass, "Num loadedOverlayTiles: " + loadedOverlayTiles.size);
             for (Long loaded : loadedOverlayTiles) {
                 overlayTilesInGeneration.removeValue(loaded, false);
             }
@@ -177,17 +178,17 @@ public class MapTileLoader {
             // Log.debug(log, "Num wanted: " + wantedTiles.size);
             for (Descriptor descriptor : wantedTiles) {
                 if (finishYourself.get()) {
-                    Log.info(log, "MapTileLoader finishMyself during tile ordering");
+                    Log.info(sClass, "MapTileLoader finishMyself during tile ordering");
                     return;
                 }
                 if (!loadedTiles.contains(descriptor.getHashCode(), false) && !mapTilesInGeneration.contains(descriptor.getHashCode(), false)) {
                     orders.add(new MultiThreadQueueProcessor.OrderData(descriptor, false, mapView));
                 } else {
-                    Log.trace(log, "Descriptor in loadedTiles: " + !loadedTiles.contains(descriptor.getHashCode(), false));
-                    Log.trace(log, "Descriptor in Generation : " + !mapTilesInGeneration.contains(descriptor.getHashCode(), false));
+                    Log.trace(sClass, "Descriptor in loadedTiles: " + !loadedTiles.contains(descriptor.getHashCode(), false));
+                    Log.trace(sClass, "Descriptor in Generation : " + !mapTilesInGeneration.contains(descriptor.getHashCode(), false));
                 }
                 if (finishYourself.get()) {
-                    Log.info(log, "MapTileLoader finishMyself after mapTiles ordered");
+                    Log.info(sClass, "MapTileLoader finishMyself after mapTiles ordered");
                     return;
                 }
                 if (mapTiles.getCurrentOverlayLayer() != null) {
@@ -217,7 +218,7 @@ public class MapTileLoader {
                     overlayTilesInGeneration.add(newOrder.descriptor.getHashCode());
                 else
                     mapTilesInGeneration.add(newOrder.descriptor.getHashCode());
-                Log.trace(log, "mapTilesInGeneration : " + mapTilesInGeneration.size);
+                Log.trace(sClass, "mapTilesInGeneration : " + mapTilesInGeneration.size);
                 return newOrder;
             }
             return null;
@@ -272,7 +273,6 @@ public class MapTileLoader {
         if (layer != mapTiles.getCurrentLayer()) {
             mapTilesInGeneration.clear();
             mapTiles.clearTiles();
-            Log.info(log, "set layer to " + layer.name);
             layer.prepareLayer(isCarMode);
             mapTiles.setCurrentLayer(layer);
             return true;

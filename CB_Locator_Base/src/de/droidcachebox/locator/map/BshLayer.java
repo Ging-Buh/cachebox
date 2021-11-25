@@ -5,12 +5,26 @@ import de.droidcachebox.locator.bsh.Interpreter;
 import de.droidcachebox.utils.FileIO;
 
 public class BshLayer extends Layer {
-    private Interpreter interpreter;
+    private final String pathAndName;
+    private final Interpreter interpreter;
 
+    /**
+     todo modify to input-stream + Android 11 Access
+     */
     public BshLayer(String filename) throws Exception {
         super(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, "B- " + FileIO.getFileNameWithoutExtension(filename), FileIO.getFileNameWithoutExtension(filename), "");
+        pathAndName = filename;
         interpreter = new Interpreter();
-        interpreter.source(filename);
+    }
+
+    @Override
+    public boolean prepareLayer(boolean isCarMode) {
+        try {
+            interpreter.source(pathAndName);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     @Override

@@ -17,12 +17,15 @@ package de.droidcachebox;
 
 import com.badlogic.gdx.utils.Clipboard;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.ViewID;
 import de.droidcachebox.settings.SettingBase;
+import de.droidcachebox.utils.StringReturner;
 import de.droidcachebox.utils.log.Log;
 
 /**
@@ -160,8 +163,12 @@ public class PlatformUIBase {
         return m.getFileProviderContentUrl(localFile);
     }
 
-    public static void getDirectoryAccess(String directory) {
-        m.getDirectoryAccess(directory);
+    public static void getDirectoryAccess(String directory, StringReturner stringReturner) {
+        m.getDirectoryAccess(directory, stringReturner);
+    }
+
+    public static void getDocumentAccess(String directory, StringReturner stringReturner) {
+        m.getDocumentAccess(directory, stringReturner);
     }
 
     public static boolean request_getLocationIfInBackground() {
@@ -194,6 +201,10 @@ public class PlatformUIBase {
 
     public static int getCacheCountInDB(String absolutePath) {
         return m.getCacheCountInDB(absolutePath);
+    }
+
+    public static InputStream getInputStream(String absolutePath) throws FileNotFoundException {
+        return m.getInputStream(absolutePath);
     }
 
     /**
@@ -257,7 +268,11 @@ public class PlatformUIBase {
 
         String getFileProviderContentUrl(String localFile);
 
-        void getDirectoryAccess(String directory);
+        void getDirectoryAccess(String directory, StringReturner value);
+
+        void getDocumentAccess(String directory, StringReturner value);
+
+        InputStream getInputStream(String absolutePath) throws FileNotFoundException;
 
         boolean request_getLocationIfInBackground();
 

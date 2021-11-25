@@ -56,7 +56,7 @@ public class MapsForgeLayer extends Layer {
     public static final String INTERNAL_THEME_OSMARENDER = "OsmaRender";
     public static final String INTERNAL_THEME_CAR = "Car";
     private static final float DEFAULT_TEXT_SCALE = 1;
-    private static final String log = "MapsForgeLayer";
+    private static final String sClass = "MapsForgeLayer";
     public static DisplayModel displayModel;
     private static MultiMapDataStore[] multiMapDataStores;
     private static DatabaseRenderer[] databaseRenderers;
@@ -73,21 +73,18 @@ public class MapsForgeLayer extends Layer {
     private boolean isSetRenderTheme;
     private int mDataStoreNumber;
 
-    MapsForgeLayer(String pathAndName) {
+    /**
+     todo modify to input-stream + Android 11 Access
+     */
+    public MapsForgeLayer(String pathAndName) {
         this.pathAndName = pathAndName;
-        setMapFile(); // create mapFile from pathAndName
-        MapFileInfo mapInfo = mapFile.getMapFileInfo();
-        mapType = Layer.MapType.MAPSFORGE;
-        if (mapInfo.comment != null && mapInfo.comment.contains("FZK")) {
-            mapType = Layer.MapType.FREIZEITKARTE;
-        }
         layerUsage = LayerUsage.normal;
         name = FileIO.getFileNameWithoutExtension(pathAndName);
         friendlyName = name;
         url = "";
-        storageType = Layer.StorageType.PNG;
+        storageType = StorageType.PNG;
         data = null;
-        languages = mapFile.getMapLanguages();
+        mapType = MapType.MAPSFORGE;
 
         mDataStoreNumber = -1;
         firstLevelTileCache = new InMemoryTileCache(128);
@@ -142,10 +139,10 @@ public class MapsForgeLayer extends Layer {
     @Override
     public String[] getAllLayerNames() {
         String[] ret = new String[additionalMapsForgeLayers.size() + 1];
-        ret[0] = getName();
+        ret[0] = pathAndName;
         int idx = 1;
-        for (Layer additionalLayer : additionalMapsForgeLayers) {
-            ret[idx] = additionalLayer.getName();
+        for (MapsForgeLayer additionalLayer : additionalMapsForgeLayers) {
+            ret[idx] = additionalLayer.pathAndName;
             idx++;
         }
         return ret;
@@ -168,24 +165,37 @@ public class MapsForgeLayer extends Layer {
         return sb.toString();
     }
 
-    public void prepareLayer(boolean isCarMode) {
-        try {
-            for (int i = 0; i < PROCESSOR_COUNT; i++) {
-                // Log.info(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
-                multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); //was  multiMapDataStores[i].clearMapDataStore();
-                multiMapDataStores[i].addMapDataStore(mapFile, false, false);
-                for (MapsForgeLayer mapsforgeLayer : additionalMapsForgeLayers) {
-                    multiMapDataStores[i].addMapDataStore(mapsforgeLayer.mapFile, false, false);
-                }
-                // last parameter of new DatabaseRenderer HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
-                databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true, null);
-            }
-            String additional = mapFile.getMapFileInfo().comment == null ? "" : " : " + mapFile.getMapFileInfo().comment;
-            Log.info(log, "prepareLayer " + getName() + additional);
-        } catch (Exception e) {
-            Log.err(log, "ERROR with Open MapsForge Map: " + getName(), e);
+    public boolean prepareLayer(boolean isCarMode) {
+        if (mapFile == null) {
+            setMapFile();
         }
-        initTheme(isCarMode);
+
+        if (mapFile != null) {
+            MapFileInfo mapInfo = mapFile.getMapFileInfo();
+            if (mapInfo.comment != null && mapInfo.comment.contains("FZK")) {
+                mapType = Layer.MapType.FREIZEITKARTE;
+            }
+
+            try {
+                for (int i = 0; i < PROCESSOR_COUNT; i++) {
+                    // Log.info(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
+                    multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); //was  multiMapDataStores[i].clearMapDataStore();
+                    multiMapDataStores[i].addMapDataStore(mapFile, false, false);
+                    for (MapsForgeLayer mapsforgeLayer : additionalMapsForgeLayers) {
+                        multiMapDataStores[i].addMapDataStore(mapsforgeLayer.mapFile, false, false);
+                    }
+                    // last parameter of new DatabaseRenderer HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
+                    databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true, null);
+                }
+                String additional = mapFile.getMapFileInfo().comment == null ? "" : " : " + mapFile.getMapFileInfo().comment;
+                Log.info(sClass, "prepareLayer " + getName() + additional);
+            } catch (Exception e) {
+                Log.err(sClass, "ERROR with Open MapsForge Map: " + getName(), e);
+            }
+            initTheme(isCarMode);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -214,7 +224,7 @@ public class MapsForgeLayer extends Layer {
                 }
 
             } catch (Exception ex) {
-                Log.err(log, "getTileGL", ex);
+                Log.err(sClass, "getTileGL", ex);
             }
         }
         // create bitmap from tile-definition
@@ -225,7 +235,7 @@ public class MapsForgeLayer extends Layer {
             RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[mDataStoreNumber], renderThemeFuture, displayModel, textScale, false, false);
             TileBitmap bitmap = databaseRenderers[mDataStoreNumber].executeJob(rendererJob);
             if (bitmap == null) {
-                Log.err(log, "MF step 2: " + desc);
+                Log.err(sClass, "MF step 2: " + desc);
                 return null;
             } else {
                 TileGL_Bmp mfTile = new TileGL_Bmp(desc, bitmap, TileGL.TileState.Present, Pixmap.Format.RGB565);
@@ -246,11 +256,11 @@ public class MapsForgeLayer extends Layer {
                             outAbstractFile.setLastModified(mapFile.getDataTimestamp(null));
                         }
                         catch (Exception ex) {
-                            Log.err(log,"bad write to disk ", ex);
+                            Log.err(sClass,"bad write to disk ", ex);
                             try {
                                 if (outAbstractFile != null) outAbstractFile.delete();
                             } catch (IOException e) {
-                                Log.err(log,"delete File after bad write to disk ", e);
+                                Log.err(sClass,"delete File after bad write to disk ", e);
                             }
                         }
                     }
@@ -258,30 +268,32 @@ public class MapsForgeLayer extends Layer {
                 return mfTile;
             }
         } catch (Exception ex) {
-            Log.err(log, "get mapsfore tile: ", ex);
+            Log.err(sClass, "get mapsfore tile: ", ex);
             return null;
         }
     }
 
     private void setMapFile() {
-        java.io.File file = new java.io.File(FileFactory.createFile(pathAndName).getAbsolutePath());
-        if (getLanguages() == null) {
-            mapFile = new MapFile(file);
-        } else {
-            String preferredLanguage = preferredMapLanguage.getValue();
-            if (preferredLanguage.length() > 0) {
-                for (String la : getLanguages()) {
-                    if (la.equals(preferredLanguage)) {
-                        mapFile = new MapFile(file, preferredLanguage);
-                        break;
+        AbstractFile file = FileFactory.createFile(pathAndName);
+        if (file.exists() && file.isFile()) {
+            try {
+                mapFile = new MapFile(file.getFileInputStream());
+                languages = mapFile.getMapLanguages();
+                if (languages != null) {
+                    String preferredLanguage = preferredMapLanguage.getValue();
+                    if (preferredLanguage.length() > 0) {
+                        for (String la : languages) {
+                            if (la.equals(preferredLanguage)) {
+                                mapFile = new MapFile(file.getFileInputStream(), preferredLanguage);
+                                break;
+                            }
+                        }
                     }
                 }
             }
-            if (mapFile == null) {
-                if (getLanguages().length > 0)
-                    mapFile = new MapFile(file, getLanguages()[0]);
-                else
-                    mapFile = new MapFile(file);
+            catch (Exception ex) {
+                Log.err(sClass, pathAndName, ex);
+                mapFile = null;
             }
         }
     }
@@ -314,11 +326,11 @@ public class MapsForgeLayer extends Layer {
                     java.io.File themeFile = new java.io.File(abstractFile.getAbsolutePath());
                     renderTheme = new ExternalRenderTheme(themeFile, new Xml_RenderThemeMenuCallback());
                 } else {
-                    Log.err(log, mapsforgeThemeName + " not found!");
+                    Log.err(sClass, mapsforgeThemeName + " not found!");
                     renderTheme = CB_InternalRenderTheme.DEFAULT;
                 }
             } catch (Exception e) {
-                Log.err(log, "Load RenderTheme", "Error loading RenderTheme!", e);
+                Log.err(sClass, "Load RenderTheme", "Error loading RenderTheme!", e);
                 renderTheme = CB_InternalRenderTheme.DEFAULT;
             }
         }
@@ -326,7 +338,7 @@ public class MapsForgeLayer extends Layer {
         try {
             RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), displayModel, renderTheme);
         } catch (Exception e) {
-            Log.err(log, "Error in checking RenderTheme " + mapsforgeThemeName, e);
+            Log.err(sClass, "Error in checking RenderTheme " + mapsforgeThemeName, e);
             renderTheme = CB_InternalRenderTheme.DEFAULT;
         }
 

@@ -13,36 +13,52 @@ import java.util.ArrayList;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.log.Log;
 
 public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
-
+    private static final String sClass = "MapPackLayer";
     public static boolean Cancel = false;
     long maxAge;
-    private String fileName;
+    private String pathAndName;
     private ArrayList<BoundingBox> BoundingBoxes = new ArrayList<>();
 
-    MapPackLayer(String file) throws Exception {
-        fileName = file;
-        AbstractFile queryAbstractFile = FileFactory.createFile(file);
-        FileInputStream stream = queryAbstractFile.getFileInputStream();
-        DataInputStream reader = new DataInputStream(stream);
-
-        name = readString(reader, 32);
-        friendlyName = readString(reader, 128);
-        url = readString(reader, 256);
+    /**
+     todo modify to input-stream + Android 11 Access
+     */
+    MapPackLayer(String file) {
+        pathAndName = file;
+        name = FileIO.getFileNameWithoutExtension(pathAndName); // temp
+        friendlyName = name;
+        url = "";
         mapType = MapType.MapPack;
         layerUsage = LayerUsage.normal;
         storageType = Layer.StorageType.PNG;
+    }
 
-        maxAge = Long.reverseBytes(reader.readLong());
+    public boolean prepareLayer(boolean isCarMode) {
+        AbstractFile queryAbstractFile = FileFactory.createFile(pathAndName);
+        try {
+            FileInputStream stream = queryAbstractFile.getFileInputStream();
 
-        int numBoundingBoxes = Integer.reverseBytes(reader.readInt());
-        for (int i = 0; i < numBoundingBoxes; i++)
-            BoundingBoxes.add(new BoundingBox(reader));
+            DataInputStream reader = new DataInputStream(stream);
 
-        reader.close();
-        stream.close();
+            name = readString(reader, 32);
+            friendlyName = readString(reader, 128);
+            url = readString(reader, 256);
 
+            maxAge = Long.reverseBytes(reader.readLong());
+
+            int numBoundingBoxes = Integer.reverseBytes(reader.readInt());
+            for (int i = 0; i < numBoundingBoxes; i++)
+                BoundingBoxes.add(new BoundingBox(reader));
+
+            reader.close();
+            stream.close();
+            return true;
+        } catch (IOException ex) {
+            Log.err(sClass, ex);
+            return false;
+        }
     }
 
     // make a new one from the existing BoundingBoxes
@@ -51,7 +67,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
         /*
          * FileStream stream = new FileStream(filename, FileMode.Create); BinaryWriter writer = new BinaryWriter(stream);
          */
-        FileOutputStream stream = new FileOutputStream(fileName + ".new");
+        FileOutputStream stream = new FileOutputStream(pathAndName + ".new");
         DataOutputStream writer = new DataOutputStream(stream);
 
         Write(writer);
@@ -59,7 +75,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
         writer.close();
 
         if (Cancel) {
-            AbstractFile abstractFile = FileFactory.createFile(fileName);
+            AbstractFile abstractFile = FileFactory.createFile(pathAndName);
             abstractFile.delete();
         }
     }
@@ -123,7 +139,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
     }
 
     public void generatePack(String fileName, long maxAge, int minZoom, int maxZoom, double minLat, double maxLat, double minLon, double maxLon) throws IOException {
-        this.fileName = fileName;
+        this.pathAndName = fileName;
         this.maxAge = maxAge;
 
         createBoudingBoxesFromBounds(minZoom, maxZoom, minLat, maxLat, minLon, maxLon);
@@ -233,7 +249,7 @@ public class MapPackLayer extends Layer implements Comparable<MapPackLayer> {
     }
 
     byte[] LoadFromBoundingBoxByteArray(BoundingBox bbox, Descriptor desc) {
-        return loadFromBoundingBoxByteArray(fileName, bbox, desc);
+        return loadFromBoundingBoxByteArray(pathAndName, bbox, desc);
     }
 
     @Override

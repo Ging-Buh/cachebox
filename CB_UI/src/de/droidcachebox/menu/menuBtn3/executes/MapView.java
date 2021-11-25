@@ -89,6 +89,7 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.map.Descriptor;
+import de.droidcachebox.locator.map.Layer;
 import de.droidcachebox.locator.map.LayerManager;
 import de.droidcachebox.locator.map.MapScale;
 import de.droidcachebox.locator.map.MapTileLoader;
@@ -277,7 +278,8 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         midVector2 = new Vector2((float) getMapIntWidth() / 2f, (float) getMapIntHeight() / 2f);
 
         if (MapTileLoader.getInstance().getCurrentLayer() == null) {
-            MapTileLoader.getInstance().setCurrentLayer(LayerManager.getInstance().getLayer(Settings.currentMapLayer.getValue()), isCarMode);
+            Layer currentLayer = LayerManager.getInstance().getLayer(Settings.currentMapLayer.getValue());
+            MapTileLoader.getInstance().setCurrentLayer(currentLayer, isCarMode);
         }
         String[] currentOverlayLayerName = new String[]{Settings.CurrentMapOverlayLayerName.getValue()};
         if (MapTileLoader.getInstance().getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
@@ -421,7 +423,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         try {
             center = new CoordinateGPS(Settings.mapInitLatitude.getValue(), Settings.mapInitLongitude.getValue());
         } catch (Exception ex) {
-            Log.err(sClass, "MapView/CoordinateGPS", ex);
+            Log.err(sClass, "MapView/CoordinateGPS" + ex.toString());
         }
 
         // update Info

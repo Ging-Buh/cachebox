@@ -13,6 +13,9 @@ import java.util.Map;
 public class TmsLayer extends Layer {
     private List<IRule<Map<String, String>>> ruleList;
 
+    /**
+     todo modify to input-stream + Android 11 Access
+     */
     public TmsLayer(String file) throws Exception {
         System.setProperty("sjxp.namespaces", "false");
         Map<String, String> values = new HashMap<>();
@@ -31,6 +34,15 @@ public class TmsLayer extends Layer {
         friendlyName = name;
         storageType = Layer.StorageType.PNG;
         data = null;
+    }
+
+    @Override
+    public boolean prepareLayer(boolean isCarMode) {
+        try {
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     private void createCustomMultiLayerMapSourceRules() {

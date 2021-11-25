@@ -24,7 +24,7 @@ import de.droidcachebox.utils.http.WebbUtils;
 import de.droidcachebox.utils.log.Log;
 
 public class Layer {
-    private static final String log = "Layer";
+    private static final String sClass = "Layer";
     protected String name = "";
     protected String url;
     protected Object data;
@@ -125,7 +125,8 @@ public class Layer {
         return friendlyName;
     }
 
-    public void prepareLayer(boolean isCarMode) {
+    public boolean prepareLayer(boolean isCarMode) {
+        return true;
     }
 
     TileGL getTileGL(Descriptor desc) {
@@ -165,7 +166,7 @@ public class Layer {
             }
 
         } catch (Exception ex) {
-            Log.err(log, "getTileGL", ex);
+            Log.err(sClass, "getTileGL", ex);
         }
         return null;
     }
@@ -240,11 +241,12 @@ public class Layer {
                     stream.close();
                     return true;
                 } catch (Exception ex) {
-                    Log.err(log, "Download from url (into cache) " + url, ex);
+                    Log.err(sClass, "Download from url (into cache) " + url, ex);
                     try {
                         FileFactory.createFile(filename).delete();
                     } catch (IOException e) {
-                        Log.err(log,"delete File after bad download ", e);;
+                        Log.err(sClass, "delete File after bad download ", e);
+                        ;
                     }
                     return false;
                 }

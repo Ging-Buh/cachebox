@@ -84,7 +84,7 @@ public class LayerManager {
         if (names[0].equals("OSM") || names[0].length() == 0)
             names[0] = "Mapnik";
         for (Layer layer : layers) {
-            if (layer.getName().equalsIgnoreCase(names[0])) {
+            if (layer.getAllLayerNames()[0].equalsIgnoreCase(names[0])) {
                 // add aditional
                 // todo : this adding is only necessary when setting from Config. Otherwise the adds are done directly to the layers additionalMapsforgeLayer.
                 // therefore checked on additionalMapsforgeLayer.add for duplicates. A bit
@@ -151,10 +151,15 @@ public class LayerManager {
         }
 
         Array<String> alreadyAdded = new Array<>(); // avoid same file in different directories
-        Log.info(log, "dirOwnMaps = " + MapPackFolderLocal.getValue());
+        Log.info(log, "dirMaps = " + MapPackFolderLocal.getValue()); // should depend on repository setting (own or global)
         addToLayers(MapPackFolderLocal.getValue(), alreadyAdded);
         Log.info(log, "dirGlobalMaps = " + MapPackFolder.getValue());
         addToLayers(MapPackFolder.getValue(), alreadyAdded);
+
+        // todo temp add the saved layer to layerlist
+        if (currentMapLayer.getValue()[0].startsWith("content")) {
+            layers.add(new MapsForgeLayer(currentMapLayer.getValue()[0]));
+        }
 
         Collections.sort(layers, (layer1, layer2) -> layer1.getName().toLowerCase().compareTo(layer2.getName().toLowerCase()));
 

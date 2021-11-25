@@ -52,6 +52,7 @@ import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.PlatformUIBase.UIBaseMethods;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.settings.SettingBase;
+import de.droidcachebox.utils.StringReturner;
 
 public class SimulatorMain {
 
@@ -231,7 +232,7 @@ public class SimulatorMain {
             }
 
             @Override
-            public void getDirectoryAccess(String _DirectoryToAccess) {            }
+            public void getDirectoryAccess(String _DirectoryToAccess, StringReturner returnUri) {            }
 
             @Override
             public boolean request_getLocationIfInBackground() {

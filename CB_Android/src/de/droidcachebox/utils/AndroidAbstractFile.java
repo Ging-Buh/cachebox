@@ -13,6 +13,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.utils.log.Log;
 
 
@@ -21,15 +22,25 @@ import de.droidcachebox.utils.log.Log;
  */
 public class AndroidAbstractFile extends AbstractFile {
     private static final String sKlasse = "AndroidFile";
+    private static final String content = "content";
 
     private java.io.File mFile;
+    private String contentFile;
+    boolean isContentFile;
 
     private AndroidAbstractFile(java.io.File file) {
         mFile = new java.io.File(file, "");
     }
 
     public AndroidAbstractFile(String path) {
-        mFile = new java.io.File(path);
+        if (path.startsWith(content)) {
+            contentFile = path;
+            isContentFile = true;
+        }
+        else {
+            mFile = new java.io.File(path);
+            isContentFile = false;
+        }
     }
 
     public AndroidAbstractFile(AbstractFile abstractFile) {
@@ -46,7 +57,10 @@ public class AndroidAbstractFile extends AbstractFile {
 
     @Override
     public boolean exists() {
-        return mFile.exists();
+        if (isContentFile)
+            return true; // todo
+        else
+            return mFile.exists();
     }
 
     @Override
@@ -76,7 +90,10 @@ public class AndroidAbstractFile extends AbstractFile {
 
     @Override
     public boolean isFile() {
-        return mFile.isFile();
+        if (isContentFile)
+            return true; // todo
+        else
+            return mFile.isFile();
     }
 
     @Override
@@ -260,7 +277,12 @@ public class AndroidAbstractFile extends AbstractFile {
 
     @Override
     public FileInputStream getFileInputStream() throws FileNotFoundException {
-        return new FileInputStream(mFile);
+        if (isContentFile) {
+            return (FileInputStream) PlatformUIBase.getInputStream(contentFile);
+        }
+        else {
+            return new FileInputStream(mFile);
+        }
     }
 
     @Override

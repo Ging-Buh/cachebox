@@ -19,8 +19,6 @@ import static de.droidcachebox.core.API_ErrorEventHandlerList.handleApiKeyError;
 import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.settings.Config_Core.br;
 
-import android.net.Uri;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -82,7 +80,6 @@ public class GlobalCore implements SolverCacheInterface {
     public static GlobalLocationReceiver receiver;
     public static boolean RunFromSplash = false;
     public static String firstSDCard, secondSDCard;
-    public static Uri selectedUri = null;
     private static GlobalCore globalCore;
     private static Cache selectedCache = null;
     private static boolean autoResort;

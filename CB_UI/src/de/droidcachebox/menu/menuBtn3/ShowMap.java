@@ -54,6 +54,7 @@ import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.ex_import.UnZip;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.SearchCoordinates;
@@ -85,6 +86,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.StringReturner;
 import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
@@ -217,6 +219,19 @@ public class ShowMap extends AbstractShowAction {
                 }
             }
         }
+        icm.addMenuItem("other", "", null, new GL_View_Base.OnClickListener() {
+            @Override
+            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
+                icm.close();
+                PlatformUIBase.getDocumentAccess(Settings.MapPackFolder.getValue(), new StringReturner() {
+                    @Override
+                    public void returnString(String returnUri) {
+                        selectLayer(new MapsForgeLayer(returnUri));
+                    }
+                });
+                return true;
+            }
+        });
 
         icm.show();
     }
