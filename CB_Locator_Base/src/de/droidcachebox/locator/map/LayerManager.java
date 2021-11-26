@@ -156,7 +156,6 @@ public class LayerManager {
         Log.info(log, "dirGlobalMaps = " + MapPackFolder.getValue());
         addToLayers(MapPackFolder.getValue(), alreadyAdded);
 
-        // todo temp add the saved layer to layerlist
         if (currentMapLayer.getValue()[0].startsWith("content")) {
             layers.add(new MapsForgeLayer(currentMapLayer.getValue()[0]));
         }

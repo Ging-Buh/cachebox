@@ -98,20 +98,20 @@ public class ShowMap extends AbstractShowAction {
     private static final String log = "ShowMap";
     private static ShowMap showMap;
     private static Router router;
-    private final Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
     public MapView normalMapView;
     private HashMap<String, String> RenderThemes;
     private String themesPath;
-    private FZKThemesInfo fzkThemesInfo;
     private ThemeIsFor whichCase;
     private Menu availableFZKThemesMenu;
+    private final Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
+    private FZKThemesInfo fzkThemesInfo;
     private SearchCoordinates searchCoordinates;
     private SpriteDrawable[] routeProfileIcons;
 
     private ShowMap() {
         super("Map");
         normalMapView = new MapView(ViewManager.leftTab.getContentRec(), MapMode.Normal);
-        normalMapView.SetZoom(Settings.lastZoomLevel.getValue());
+        normalMapView.setZoom(Settings.lastZoomLevel.getValue());
     }
 
     public static ShowMap getInstance() {
@@ -182,8 +182,9 @@ public class ShowMap extends AbstractShowAction {
 
     private void showMapLayerMenu() {
         Menu icm = new Menu("MapViewLayerMenuTitle");
+        Layer currentLayer = MapTileLoader.getInstance().getCurrentLayer();
+        Layer[] currentLayers = currentLayer.getAllLayers();
 
-        String[] currentLayerNames = MapTileLoader.getInstance().getCurrentLayer().getAllLayerNames();
         for (Layer layer : LayerManager.getInstance().getLayers()) {
             //set icon (Online, Mapsforge or Freizeitkarte)
             Sprite sprite = null;
@@ -212,8 +213,8 @@ public class ShowMap extends AbstractShowAction {
                     }); // == friendlyName == FileName !!! without translation
             mi.setData(layer);
             mi.setCheckable(true);
-            for (String str : currentLayerNames) {
-                if (str.equals(layer.getName())) {
+            for (Layer l : currentLayers) {
+                if (l.getName().equals(layer.getName())) {
                     mi.setChecked(true);
                     break;
                 }

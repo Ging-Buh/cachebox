@@ -79,7 +79,12 @@ public class MapsForgeLayer extends Layer {
     public MapsForgeLayer(String pathAndName) {
         this.pathAndName = pathAndName;
         layerUsage = LayerUsage.normal;
-        name = FileIO.getFileNameWithoutExtension(pathAndName);
+        if (pathAndName.startsWith("content")) {
+            name = this.pathAndName.substring(pathAndName.lastIndexOf("%2F")+3, pathAndName.length() - 4);
+        }
+        else {
+            name = FileIO.getFileNameWithoutExtension(pathAndName);
+        }
         friendlyName = name;
         url = "";
         storageType = StorageType.PNG;
@@ -143,6 +148,18 @@ public class MapsForgeLayer extends Layer {
         int idx = 1;
         for (MapsForgeLayer additionalLayer : additionalMapsForgeLayers) {
             ret[idx] = additionalLayer.pathAndName;
+            idx++;
+        }
+        return ret;
+    }
+
+    @Override
+    public Layer[] getAllLayers() {
+        Layer[] ret = new Layer[additionalMapsForgeLayers.size() + 1];
+        ret[0] = this;
+        int idx = 1;
+        for (MapsForgeLayer additionalLayer : additionalMapsForgeLayers) {
+            ret[idx] = additionalLayer;
             idx++;
         }
         return ret;

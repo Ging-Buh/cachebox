@@ -1182,7 +1182,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     public abstract void mapStateChangedToWP();
 
-    public void SetZoom(int newZoom) {
+    public void setZoom(int newZoom) {
 
         if (zoomBtn != null) {
             if (zoomBtn.getZoom() != newZoom) {

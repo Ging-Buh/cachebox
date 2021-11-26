@@ -108,6 +108,12 @@ public class Layer {
         return ret;
     }
 
+    public Layer[] getAllLayers() {
+        Layer[] ret = new Layer[1];
+        ret[0] = this;
+        return ret;
+    }
+
     @Override
     public String toString() {
         return "Layer [" + name + "]";
