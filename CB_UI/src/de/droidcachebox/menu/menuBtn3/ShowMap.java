@@ -219,7 +219,7 @@ public class ShowMap extends AbstractShowAction {
                 }
             }
         }
-        icm.addMenuItem("other", "", null, new GL_View_Base.OnClickListener() {
+        icm.addMenuItem("Other", "", null, new GL_View_Base.OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 icm.close();

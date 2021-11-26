@@ -533,7 +533,8 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             // Optionally, specify a URI for the directory that should be opened in the system file picker when it loads.
             // intent.putExtra(DocumentsContract.EXTRA_INFO, "Please, Bitte, " + _DirectoryToAccess);
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
-                if (handlingGetDocumentAccess == null)
+                if (handlingGetDocumentAccess == null) {
+                    Log.debug(sClass, "create resulthandler for Filepicker");
                     handlingGetDocumentAccess = new AndroidEventListener() {
                         @Override
                         public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
@@ -547,12 +548,23 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                                         mainActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                         stringReturner.returnString(uri.toString());
                                     }
+                                    else {
+                                        Log.debug(sClass, "Filepicker resultData = null");
+                                    }
+                                }
+                                else {
+                                    Log.debug(sClass, "Filepicker without result");
                                 }
                             }
                         }
                     };
+                }
+                Log.debug(sClass, "Start Filepicker");
                 androidApplication.addAndroidEventListener(handlingGetDocumentAccess);
                 mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT);
+            }
+            else {
+                Log.debug(sClass, "No PackageManager");
             }
         }
     }

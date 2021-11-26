@@ -30,6 +30,7 @@ public class AndroidAbstractFile extends AbstractFile {
 
     private AndroidAbstractFile(java.io.File file) {
         mFile = new java.io.File(file, "");
+        isContentFile = false;
     }
 
     public AndroidAbstractFile(String path) {
@@ -44,21 +45,30 @@ public class AndroidAbstractFile extends AbstractFile {
     }
 
     public AndroidAbstractFile(AbstractFile abstractFile) {
-        mFile = new java.io.File(abstractFile.getAbsolutePath());
+        this(abstractFile.getAbsolutePath());
     }
 
     public AndroidAbstractFile(AbstractFile abstractFile, String child) {
         mFile = new java.io.File(abstractFile.getAbsolutePath(), child);
+        isContentFile = false;
     }
 
     public AndroidAbstractFile(String parent, String child) {
         mFile = new java.io.File(parent, child);
+        isContentFile = false;
     }
 
     @Override
     public boolean exists() {
-        if (isContentFile)
-            return true; // todo
+        if (isContentFile) {
+            try {
+                PlatformUIBase.getInputStream(contentFile);
+                return true;
+            } catch (FileNotFoundException e) {
+                return false;
+            }
+
+        }
         else
             return mFile.exists();
     }
