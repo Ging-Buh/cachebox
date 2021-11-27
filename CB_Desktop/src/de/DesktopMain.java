@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.ShowViewMethods;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Listener_Interface;
@@ -144,6 +145,8 @@ public class DesktopMain {
             }
         };
         timer.schedule(task, 600);
+
+        PlatformUIBase.initShowViewMethods(new ShowViewMethods());
         PlatformUIBase.setClipboard(new DesktopClipboard());
         LocatorMethods.init(new DesktopLocatorMethods());
 

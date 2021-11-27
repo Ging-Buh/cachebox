@@ -61,7 +61,7 @@ class DCB {
         // todo set firstSDCard and secondSDCard somehow
         GlobalCore.firstSDCard = "C:/";
         GlobalCore.secondSDCard = "D:/";
-
+        GlobalCore.workPath = workPath;
         PlatformUIBase.init(new DesktopUIBaseMethods());
         SettingsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/Config.db3");
         DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");

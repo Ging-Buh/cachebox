@@ -297,8 +297,11 @@ public class CBDB extends Database_Core {
         int count = 0;
         try {
             reader = CBDB.cbdb.sql.rawQuery("select count(*) from caches", null);
-            reader.moveToFirst();
-            count = reader.getInt(0);
+            if (reader != null) {
+                reader.moveToFirst();
+                count = reader.getInt(0);
+            }
+            else count = 0;
         } catch (Exception e) {
             e.printStackTrace();
         }

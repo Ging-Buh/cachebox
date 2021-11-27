@@ -20,14 +20,15 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.FileIO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
 
 /**
  * @author Longri
@@ -111,7 +112,7 @@ public class Translation {
      */
     public String getTextFile(String Name, String overrideLangId) {
         String FilePath = "data/string_files/" + Name + "." + overrideLangId + ".txt";
-        FileHandle file = Gdx.files.getFileHandle(FilePath, FileType.Internal);
+        FileHandle file = Gdx.files.getFileHandle(FilePath, FileType.Classpath);
         return file.readString();
     }
 
