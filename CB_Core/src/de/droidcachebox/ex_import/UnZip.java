@@ -1,10 +1,5 @@
 package de.droidcachebox.ex_import;
 
-import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.log.Log;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -14,6 +9,11 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.log.Log;
 
 /**
  * @author Longri from => http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
@@ -65,7 +65,9 @@ public class UnZip {
             String currentEntry = entry.getName();
             AbstractFile destAbstractFile = FileFactory.createFile(newPath, currentEntry);
             if (destAbstractFile.exists()) {
-                destAbstractFile.delete();
+                if (destAbstractFile.isFile()) {
+                    destAbstractFile.delete();
+                }
             }
             Log.debug(log, "  zipEntry: " + destAbstractFile.getAbsolutePath());
 

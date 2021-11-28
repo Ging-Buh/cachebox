@@ -509,12 +509,13 @@ public class ShowMap extends AbstractShowAction {
                             GL.that.postAsync(() -> {
                                 ((MenuItem) v).setDisabled(false);
                                 GL.that.renderOnce();
-                                Download.download("http://download.openandromaps.org/themes/Elevate4.zip", target);
+                                // Download.download("http://download.openandromaps.org/themes/Elevate4.zip", target);
+                                Download.download("https://www.openandromaps.org/wp-content/users/tobias/Elevate.zip", target);
                                 try {
                                     UnZip.extractFolder(target, false);
                                 } catch (Exception ex) {
-                                    Log.err(log, "Unzip error: " + ex.toString());
-                                    MsgBox.show(ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
+                                    Log.err(log, target + ": Unzip error: " + ex.toString());
+                                    MsgBox.show(target + ": " + ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
                                 }
                                 Gdx.files.absolute(target).delete();
                                 ((MenuItem) v).setDisabled(true);
