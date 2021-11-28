@@ -528,10 +528,14 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
         final Intent intent;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.setType("application/octet-stream");
+            intent.setType("*/*"); // intent.setType("application/octet-stream");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            // Optionally, specify a URI for the directory that should be opened in the system file picker when it loads.
-            // intent.putExtra(DocumentsContract.EXTRA_INFO, "Please, Bitte, " + _DirectoryToAccess);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                // Optionally, specify a URI for the directory that should be opened in the system file picker when it loads.
+                if (_DirectoryToAccess.startsWith("content:")) {
+                    intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse(_DirectoryToAccess));
+                }
+            }
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
                 if (handlingGetDocumentAccess == null) {
                     Log.debug(sClass, "create resulthandler for Filepicker");
@@ -541,7 +545,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                             androidApplication.removeAndroidEventListener(handlingGetDocumentAccess);
                             if (requestCode == ACTION_OPEN_DOCUMENT) {
                                 if (resultCode == Activity.RESULT_OK) {
-                                    // The result data contains an Uri for the directory that the user selected.
+                                    // The result data contains an Uri for the file(document) that the user selected.
                                     if (resultData != null) {
                                         // Perform actions on result
                                         Uri uri = resultData.getData();
@@ -549,7 +553,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                                         stringReturner.returnString(uri.toString());
                                     }
                                     else {
-                                        Log.debug(sClass, "Filepicker resultData = null");
+                                        Log.debug(sClass, "Filepicker resultData = null (nothing selected?)");
                                     }
                                 }
                                 else {
@@ -564,7 +568,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                 mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT);
             }
             else {
-                Log.debug(sClass, "No PackageManager");
+                Log.debug(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT: " + intent);
             }
         }
     }
