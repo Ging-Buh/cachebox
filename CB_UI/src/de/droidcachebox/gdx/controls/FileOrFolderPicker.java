@@ -25,6 +25,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.FilenameFilter;
 import de.droidcachebox.utils.log.Log;
 
@@ -340,8 +341,19 @@ public class FileOrFolderPicker extends ActivityBase {
             });
             v.setOnLongClickListener((view, x, y, pointer, button) -> {
                 FileItem v1 = (FileItem) view;
-                String fileName = containedFoldersAndFiles.get(v1.getIndex());
-                if (!fileName.startsWith(DIRICON)) {
+                String fn = containedFoldersAndFiles.get(v1.getIndex());
+                final String fileName;
+                if (fn.startsWith(DIRICON)) {
+                    fileName = fn.substring(DIRICON.length());
+                    Menu fileModifications = new Menu(fileName, "");
+                    fileModifications.addMenuItem("delete", null, () -> {
+                        AbstractFile selected = FileFactory.createFile(currentFolder, fileName);
+                        FileIO.deleteDirectory(selected);
+                        onShow();
+                    });
+                    fileModifications.show();
+                } else {
+                    fileName = fn;
                     Menu fileModifications = new Menu(fileName, "");
                     fileModifications.addMenuItem("delete", null, () -> {
                         AbstractFile selected = FileFactory.createFile(currentFolder, fileName);
