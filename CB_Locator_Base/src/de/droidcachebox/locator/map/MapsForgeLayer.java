@@ -80,7 +80,13 @@ public class MapsForgeLayer extends Layer {
         this.pathAndName = pathAndName;
         layerUsage = LayerUsage.normal;
         if (pathAndName.startsWith("content")) {
-            name = this.pathAndName.substring(pathAndName.lastIndexOf("%2F")+3, pathAndName.length() - 4);
+            int lastIndex = pathAndName.lastIndexOf("%2F");
+            if (lastIndex == -1) {
+                name = "";
+            }
+            else {
+                name = this.pathAndName.substring(pathAndName.lastIndexOf("%2F")+3, pathAndName.length() - 4);
+            }
         }
         else {
             name = FileIO.getFileNameWithoutExtension(pathAndName);

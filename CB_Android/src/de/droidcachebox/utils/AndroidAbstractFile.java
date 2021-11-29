@@ -64,7 +64,7 @@ public class AndroidAbstractFile extends AbstractFile {
             try {
                 PlatformUIBase.getInputStream(contentFile);
                 return true;
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 return false;
             }
 

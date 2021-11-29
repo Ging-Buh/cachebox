@@ -98,12 +98,12 @@ public class ShowMap extends AbstractShowAction {
     private static final String log = "ShowMap";
     private static ShowMap showMap;
     private static Router router;
+    private final Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
     public MapView normalMapView;
     private HashMap<String, String> RenderThemes;
     private String themesPath;
     private ThemeIsFor whichCase;
     private Menu availableFZKThemesMenu;
-    private final Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
     private FZKThemesInfo fzkThemesInfo;
     private SearchCoordinates searchCoordinates;
     private SpriteDrawable[] routeProfileIcons;
@@ -227,7 +227,9 @@ public class ShowMap extends AbstractShowAction {
                 PlatformUIBase.getDocumentAccess(Settings.MapPackFolder.getValue(), new StringReturner() {
                     @Override
                     public void returnString(String returnUri) {
-                        selectLayer(new MapsForgeLayer(returnUri));
+                        MapsForgeLayer l = new MapsForgeLayer(returnUri);
+                        if (l.getName().length() > 0)
+                            selectLayer(l);
                     }
                 });
                 return true;

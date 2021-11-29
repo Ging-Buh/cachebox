@@ -579,7 +579,12 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
 
     @Override
     public InputStream getInputStream(String path) throws FileNotFoundException {
-        return mainActivity.getContentResolver().openInputStream(Uri.parse(path));
+        try {
+            return mainActivity.getContentResolver().openInputStream(Uri.parse(path));
+        } catch (Exception ex) {
+            Log.err(sClass, path, ex);
+            throw new FileNotFoundException("Can't get Input Stream!");
+        }
     }
 
     @Override

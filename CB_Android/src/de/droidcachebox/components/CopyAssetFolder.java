@@ -1,11 +1,19 @@
 package de.droidcachebox.components;
 
 import android.content.res.AssetManager;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
-
-import java.io.*;
-import java.util.ArrayList;
 
 // Kopiert die OrdnerStructur des Asset-Ordners auf die SD-Karte (Cachebox Arbeitsverzeichniss)
 public class CopyAssetFolder {
@@ -90,20 +98,18 @@ public class CopyAssetFolder {
     private void listDir(AssetManager assets, String dir, String[] excludeFolder) throws IOException {
         String[] files = assets.list(dir);
         if (files != null) {
-            for (int i = 0; i < files.length; i++) {
+            for (String file : files) {
                 boolean exclude = false;
                 for (String tmp : excludeFolder) {
-                    if (files[i].equals(tmp)) {
+                    if (file.equals(tmp)) {
                         exclude = true;
                         break;
                     }
                 }
                 if (!exclude) {
-                    String Entry = (dir.equals("")) ? files[i] : dir + "/" + files[i];
+                    String Entry = (dir.length() == 0) ? file : dir + "/" + file;
                     if (!Entry.contains(".")) {
-                        // System.out.print(" (Ordner)\n");
-                        listDir(assets, Entry, excludeFolder); // ruft sich selbst mit dem
-                        // Unterverzeichnis als Parameter auf
+                        listDir(assets, Entry, excludeFolder);
                     } else {
                         FileList.add(Entry);
 

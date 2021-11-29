@@ -123,7 +123,7 @@ public class FileOrFolderPicker extends ActivityBase {
         }
         btnPlus = new CB_Button("+");
         btnPlus.setClickHandler((view, x, y, pointer, button) -> {
-            (new InputString("ggg", true) {
+            (new InputString("newDirectory", true) {
                 public void callBack(String inputString) {
                     AbstractFile res = FileFactory.createFile(currentFolder, "/" + inputString);
                     res.mkdir();
@@ -368,7 +368,7 @@ public class FileOrFolderPicker extends ActivityBase {
                     fileModifications.addMenuItem("new", null, new Runnable() {
                         @Override
                         public void run() {
-                            (new InputString("ggg", true) {
+                            (new InputString("newDirectory", true) {
                                 public void callBack(String inputString) {
                                     AbstractFile selected = FileFactory.createFile(currentFolder, fileName + "/" + inputString);
                                     selected.mkdir();

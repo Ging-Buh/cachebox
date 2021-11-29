@@ -38,7 +38,6 @@ public class Translation {
     private Array<Translations> translations;
     private Array<Translations> references;
     private String mLangID;
-    private String langPath;
 
     /**
      * Constructor
@@ -79,7 +78,6 @@ public class Translation {
     /**
      * Write list of missing StringId's to debug.txt
      *
-     * @throws IOException
      */
     public static void writeMissingStringsToFile() {
         if (that != null)
@@ -105,8 +103,7 @@ public class Translation {
      * @param langPath ?
      */
     public void loadTranslation(String langPath) {
-        this.langPath = langPath;
-        readTranslationsFile(this.langPath);
+        readTranslationsFile(langPath);
     }
 
     /**
