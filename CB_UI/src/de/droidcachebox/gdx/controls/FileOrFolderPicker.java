@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.activities.InputString;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
@@ -49,6 +50,7 @@ public class FileOrFolderPicker extends ActivityBase {
     private final CB_Button btnSD1;
     private final CB_Button btnSD2;
     private final CB_Button btnParent;
+    private final CB_Button btnPlus;
     private final Spinner btnSort;
     private final String possibleExtensions;
     private final IReturnAbstractFile fileReturn;
@@ -119,6 +121,17 @@ public class FileOrFolderPicker extends ActivityBase {
                 return true;
             });
         }
+        btnPlus = new CB_Button("+");
+        btnPlus.setClickHandler((view, x, y, pointer, button) -> {
+            (new InputString("ggg", true) {
+                public void callBack(String inputString) {
+                    AbstractFile res = FileFactory.createFile(currentFolder, "/" + inputString);
+                    res.mkdir();
+                    onShow();
+                }
+            }).show();
+            return true;
+        });
         btnCancel = new ImageButton(Sprites.IconName.exit);
         btnCancel.setClickHandler((view, x, y, pointer, button) -> {
             finish();
@@ -161,6 +174,7 @@ public class FileOrFolderPicker extends ActivityBase {
         } else {
             addNext(btnSort);
         }
+        addNext(btnPlus);
         addLast(btnCancel);
         btnCancel.setText(Translation.get("cancel"));
         // btnCancel.setText("");
@@ -350,6 +364,19 @@ public class FileOrFolderPicker extends ActivityBase {
                         AbstractFile selected = FileFactory.createFile(currentFolder, fileName);
                         FileIO.deleteDirectory(selected);
                         onShow();
+                    });
+                    fileModifications.addMenuItem("new", null, new Runnable() {
+                        @Override
+                        public void run() {
+                            (new InputString("ggg", true) {
+                                public void callBack(String inputString) {
+                                    AbstractFile selected = FileFactory.createFile(currentFolder, fileName + "/" + inputString);
+                                    selected.mkdir();
+                                    currentFolder = selected;
+                                    onShow();
+                                }
+                            }).show();
+                        }
                     });
                     fileModifications.show();
                 } else {

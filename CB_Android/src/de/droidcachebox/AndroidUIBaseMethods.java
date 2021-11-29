@@ -503,7 +503,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             // Optionally, specify a URI for the directory that should be opened in the system file picker when it loads.
             // DocumentFile documentFile = DocumentFile.fromTreeUri(context, uri);
             // intent.putExtra(EXTRA_INITIAL_URI, documentFile.getUri());
-            intent.putExtra(DocumentsContract.EXTRA_INFO, "please select a dir for " + _DirectoryToAccess);
+            // intent.putExtra(DocumentsContract.EXTRA_INFO, "please select a dir for " + _DirectoryToAccess);
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
                 if (handlingGetDirectoryAccess == null)
                     handlingGetDirectoryAccess = (requestCode, resultCode, resultData) -> {
@@ -519,6 +519,9 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                     };
                 androidApplication.addAndroidEventListener(handlingGetDirectoryAccess);
                 mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT_TREE);
+            }
+            else {
+                Log.debug(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT_TREE: " + intent);
             }
         }
     }
@@ -569,6 +572,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             }
             else {
                 Log.debug(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT: " + intent);
+                getDirectoryAccess(_DirectoryToAccess, stringReturner);
             }
         }
     }

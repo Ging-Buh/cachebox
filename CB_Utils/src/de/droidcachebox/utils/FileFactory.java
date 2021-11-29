@@ -25,10 +25,15 @@ public abstract class FileFactory {
         if (Plattform.used == Plattform.Android) {
             return Gdx.files.internal(path);
         } else {
+            // classpath will work for desktop, but is not suitable for all use cases: for example skin creation
+            // without loss of functionality we can always use the internal
+            /*
             FileHandle ret = Gdx.files.classpath(path);
-            //try internal
-            if (ret != null && !ret.exists()) ret = Gdx.files.internal(path);
+            if (ret == null && !ret.exists()) ret = Gdx.files.internal(path);
             return ret;
+
+             */
+            return Gdx.files.internal(path);
         }
     }
 

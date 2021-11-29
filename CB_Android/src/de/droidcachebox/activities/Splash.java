@@ -362,7 +362,7 @@ public class Splash extends Activity {
         this.getFilesDir();// workaround for Android bug #10515463
         // String privateFilesDirectory = filesDirectory.getAbsolutePath(); // /data/data/de.droidcachebox/files
         Gdx.files = new DefaultAndroidFiles(this.getAssets(), this, true); // will be set automatically to this values in init of gdx's AndroidApplication
-        String languagePath = androidSetting.getString("Sel_LanguagePath", ""); // ""
+        String languagePath = androidSetting.getString("Sel_LanguagePath", "");
         if (languagePath.length() == 0) {
             // very  first start
             String locale = Locale.getDefault().getLanguage(); // en

@@ -16,8 +16,6 @@
 
 package de.droidcachebox.translation;
 
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
@@ -36,10 +34,9 @@ import de.droidcachebox.utils.FileIO;
 public class Translation {
     public static Translation that;
     public final Array<MissingTranslation> mMissingStringList;
+    private final String mWorkPath;
     private Array<Translations> translations;
     private Array<Translations> references;
-    private final String mWorkPath;
-    private FileType mFiletype;
     private String mLangID;
     private String langPath;
 
@@ -52,17 +49,6 @@ public class Translation {
         that = this;
         mWorkPath = workPath;
         mMissingStringList = new Array<>();
-        mFiletype = FileType.Internal;
-    }
-
-    /**
-     * Load the Translation from File
-     *
-     * @param langPath ?
-     */
-    public void loadTranslation(String langPath) {
-        this.langPath = langPath;
-        readTranslationsFile(this.langPath);
     }
 
     /**
@@ -70,7 +56,7 @@ public class Translation {
      * with params ??????
      *
      * @param StringId as String
-     * @param params  The occurences of {n} in the translation will be replaced by the n'th param
+     * @param params   The occurences of {n} in the translation will be replaced by the n'th param
      * @return String
      */
     public static String get(String StringId, String... params) {
@@ -105,18 +91,6 @@ public class Translation {
     }
 
     /**
-     * Return a String from File
-     *
-     * @param Name File Name
-     * @return String from File
-     */
-    public String getTextFile(String Name, String overrideLangId) {
-        String FilePath = "data/string_files/" + Name + "." + overrideLangId + ".txt";
-        FileHandle file = Gdx.files.getFileHandle(FilePath, FileType.Classpath);
-        return file.readString();
-    }
-
-    /**
      * Returns true if Translation initial and reference language is loaded
      *
      * @return boolean
@@ -125,13 +99,35 @@ public class Translation {
         return that != null && that.references != null;
     }
 
+    /**
+     * Load the Translation from File
+     *
+     * @param langPath ?
+     */
+    public void loadTranslation(String langPath) {
+        this.langPath = langPath;
+        readTranslationsFile(this.langPath);
+    }
+
+    /**
+     * Return a String from File
+     *
+     * @param Name File Name
+     * @return String from File
+     */
+    public String getTextFile(String Name, String overrideLangId) {
+        String FilePath = "data/string_files/" + Name + "." + overrideLangId + ".txt";
+        FileHandle file = FileFactory.getInternalFileHandle(FilePath);
+        return file.readString();
+    }
+
     // #######################################################################
     // Private access
     // #######################################################################
 
-    private String getLangNameFromFile(String FilePath) {
+    private String getLangNameFromFile(String filePath) {
 
-        FileHandle lang = Gdx.files.getFileHandle(FilePath, mFiletype);
+        FileHandle lang = FileFactory.getInternalFileHandle(filePath);
         String langRead = lang.readString();
 
         int pos1 = langRead.indexOf("lang=") + 5;
@@ -161,9 +157,9 @@ public class Translation {
         SelectedLangChangedEventList.Call();
     }
 
-    private Array<Translations> readFile(String FilePath, boolean asTranslation) {
+    private Array<Translations> readFile(String filePath, boolean asTranslation) {
         Array<Translations> result = new Array<>();
-        FileHandle file = Gdx.files.getFileHandle(FilePath, mFiletype);
+        FileHandle file = FileFactory.getInternalFileHandle(filePath);
 
         String text = file.readString("UTF-8");
 
@@ -253,8 +249,7 @@ public class Translation {
         if (retString.length() == 0) {
             if (translations == null || references == null)
                 retString = "Translation not initialized";
-        }
-        else {
+        } else {
             if (params != null && params.length > 0) {
                 retString = replaceParams(retString, params);
             }
@@ -274,42 +269,18 @@ public class Translation {
         return retString;
     }
 
-    public ArrayList<Lang> getLangs(String FilePath) {
+    public ArrayList<Lang> getLangs(String filePath) {
         ArrayList<Lang> langs = new ArrayList<>();
-
-        FileHandle directory = Gdx.files.getFileHandle(FilePath, mFiletype);
-        final FileHandle[] files;
-
-        if (directory.type() == FileType.Classpath) {
-            // Cannot list a classpath directory
-            // so we hardcoded the lang path
-            files = new FileHandle[]{ //
-                    Gdx.files.classpath("data/lang/cs"), //
-                    Gdx.files.classpath("data/lang/de"), //
-                    Gdx.files.classpath("data/lang/en-GB"), //
-                    Gdx.files.classpath("data/lang/fr"), //
-                    Gdx.files.classpath("data/lang/hu"), //
-                    Gdx.files.classpath("data/lang/nl"), //
-                    Gdx.files.classpath("data/lang/pl"), //
-                    Gdx.files.classpath("data/lang/pt-PT"),//
-            };
-        } else {
-            files = directory.list();
-        }
-
+        FileHandle directory = FileFactory.getInternalFileHandle(filePath);
+        FileHandle[] files = directory.list();
         for (FileHandle tmp : files) {
-
             String stringFile = tmp + "/strings.ini";
-
-            FileHandle langFile = Gdx.files.getFileHandle(stringFile, mFiletype);
-
+            FileHandle langFile = FileFactory.getInternalFileHandle(filePath);
             if (langFile.exists()) {
                 String tmpName = getLangNameFromFile(stringFile);
                 langs.add(new Lang(tmpName, stringFile));
             }
-
         }
-
         return langs;
     }
 

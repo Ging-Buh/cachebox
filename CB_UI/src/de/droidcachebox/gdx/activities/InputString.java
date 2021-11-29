@@ -3,7 +3,11 @@ package de.droidcachebox.gdx.activities;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.translation.Translation;
 
 public class InputString extends ActivityBase {
@@ -17,10 +21,17 @@ public class InputString extends ActivityBase {
         // output of a title is not yet implemented in ActivityBase
         super(title);
         this.title = title;
-        createControls();
+        createControls(false);
     }
 
-    private void createControls() {
+    public InputString(String title, boolean oneLine) {
+        // output of a title is not yet implemented in ActivityBase
+        super(title);
+        this.title = title;
+        createControls(true);
+    }
+
+    private void createControls(boolean oneLine) {
         btnOK = new CB_Button(Translation.get("ok"));
         btnCancel = new CB_Button(Translation.get("cancel"));
         this.initRow(BOTTOMUP);
@@ -35,8 +46,13 @@ public class InputString extends ActivityBase {
         CB_Label lblResult = new CB_Label(Translation.get(title));
         lblResult.setWidth(Fonts.Measure(lblResult.getText()).width);
         box.addLast(lblResult, FIXED);
-        edtResult = new EditTextField(this, "edtResult").setWrapType(WrapType.WRAPPED);
-        edtResult.setHeight(getHeight() / 2);
+        if (oneLine) {
+            edtResult = new EditTextField(this, "edtResult");
+        }
+        else {
+            edtResult = new EditTextField(this, "edtResult").setWrapType(WrapType.WRAPPED);
+            edtResult.setHeight(getHeight() / 2);
+        }
         box.addLast(edtResult);
 
         box.adjustHeight();
@@ -44,13 +60,14 @@ public class InputString extends ActivityBase {
 
         btnOK.setClickHandler((v, x, y, pointer, button) -> {
             btnOK.disable();
-            callBack(edtResult.getText());
+            if (edtResult.getText().length() > 0)
+                callBack(edtResult.getText());
             finish();
             return true;
         });
 
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
-            callBack("");
+            // no callBack
             finish();
             return true;
         });
