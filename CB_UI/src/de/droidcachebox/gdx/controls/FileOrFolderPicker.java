@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Locale;
 
 import de.droidcachebox.gdx.ActivityBase;
@@ -59,8 +58,6 @@ public class FileOrFolderPicker extends ActivityBase {
     private IReturnAbstractFile folderReturn;
     private AbstractFile currentFolder;
     private ArrayList<String> containedFoldersAndFiles;
-    private ArrayList<String> containedFolders;
-    private ArrayList<AbstractFile> containedFiles;
     private int sortType;
 
     public FileOrFolderPicker(String initialPath, String titleText, String selectFolderText, IReturnAbstractFile folderReturn) {
@@ -121,17 +118,41 @@ public class FileOrFolderPicker extends ActivityBase {
                 return true;
             });
         }
+
         btnPlus = new CB_Button("+");
         btnPlus.setClickHandler((view, x, y, pointer, button) -> {
-            (new InputString("newDirectory", true) {
-                public void callBack(String inputString) {
-                    AbstractFile res = FileFactory.createFile(currentFolder, "/" + inputString);
-                    res.mkdir();
-                    onShow();
-                }
-            }).show();
+            Menu btnPlusMenu = new Menu(currentFolder.getName(), "");
+            btnPlusMenu.addMenuItem("newDirectory", "", null,
+                    (view1, x1, y1, pointer1, button1) -> {
+                        btnPlusMenu.close();
+                        InputString is = new InputString("newDirectory", true) {
+                            public void callBack(String inputString) {
+                                AbstractFile res = FileFactory.createFile(currentFolder, "/" + inputString);
+                                res.mkdir();
+                                onShow();
+                            }
+                        };
+                        is.show();
+                        return false;
+                    }
+            );
+            btnPlusMenu.addMenuItem("newFile", "", null,
+                    (view1, x1, y1, pointer1, button1) -> {
+                        btnPlusMenu.close();
+                        InputString is = new InputString("newFile", true) {
+                            public void callBack(String inputString) {
+                                FileIO.createFile(currentFolder.getAbsolutePath() + "/" + inputString);
+                                onShow();
+                            }
+                        };
+                        is.show();
+                        return false;
+                    }
+            );
+            btnPlusMenu.show();
             return true;
         });
+
         btnCancel = new ImageButton(Sprites.IconName.exit);
         btnCancel.setClickHandler((view, x, y, pointer, button) -> {
             finish();
@@ -250,7 +271,7 @@ public class FileOrFolderPicker extends ActivityBase {
     private void loadFileList(AbstractFile path) {
         if (path == null) return;
         currentFolder = path;
-        containedFolders = new ArrayList<>();
+        ArrayList<String> containedFolders = new ArrayList<>();
 
         FilenameFilter filter = (dir, filename) -> {
             AbstractFile f = FileFactory.createFile(dir, filename);
@@ -278,7 +299,7 @@ public class FileOrFolderPicker extends ActivityBase {
 
         if (currentFolder.exists()) {
             AbstractFile[] tmpFileList = currentFolder.listFiles(filter);
-            containedFiles = new ArrayList<>();
+            ArrayList<AbstractFile> containedFiles = new ArrayList<>();
             if (tmpFileList != null) {
                 for (AbstractFile file : tmpFileList) {
                     if (file.isDirectory()) {
@@ -288,18 +309,15 @@ public class FileOrFolderPicker extends ActivityBase {
                     }
                 }
                 Collections.sort(containedFolders, String.CASE_INSENSITIVE_ORDER);
-                Collections.sort(containedFiles, new Comparator<AbstractFile>() {
-                    @Override
-                    public int compare(AbstractFile o1, AbstractFile o2) {
-                        if (sortType == 0) {
-                            return o1.getName().toLowerCase(Locale.ROOT).compareTo(o2.getName().toLowerCase(Locale.ROOT));
-                        } else if (sortType == 1) {
-                            return o2.getName().toLowerCase(Locale.ROOT).compareTo(o1.getName().toLowerCase(Locale.ROOT));
-                        } else if (sortType == 2) {
-                            return ((Long) o1.lastModified()).compareTo(o2.lastModified());
-                        } else
-                            return ((Long) o2.lastModified()).compareTo(o1.lastModified());
-                    }
+                Collections.sort(containedFiles, (o1, o2) -> {
+                    if (sortType == 0) {
+                        return o1.getName().toLowerCase(Locale.ROOT).compareTo(o2.getName().toLowerCase(Locale.ROOT));
+                    } else if (sortType == 1) {
+                        return o2.getName().toLowerCase(Locale.ROOT).compareTo(o1.getName().toLowerCase(Locale.ROOT));
+                    } else if (sortType == 2) {
+                        return Long.compare(o1.lastModified(), o2.lastModified());
+                    } else
+                        return Long.compare(o2.lastModified(), o1.lastModified());
                 });
                 containedFoldersAndFiles = new ArrayList<>();
                 containedFoldersAndFiles.addAll(containedFolders);
@@ -365,19 +383,21 @@ public class FileOrFolderPicker extends ActivityBase {
                         FileIO.deleteDirectory(selected);
                         onShow();
                     });
-                    fileModifications.addMenuItem("new", null, new Runnable() {
-                        @Override
-                        public void run() {
-                            (new InputString("newDirectory", true) {
-                                public void callBack(String inputString) {
-                                    AbstractFile selected = FileFactory.createFile(currentFolder, fileName + "/" + inputString);
-                                    selected.mkdir();
-                                    currentFolder = selected;
-                                    onShow();
-                                }
-                            }).show();
+                    fileModifications.addMenuItem("newDirectory", null, () -> (new InputString("newDirectory", true) {
+                        public void callBack(String inputString) {
+                            AbstractFile selected = FileFactory.createFile(currentFolder, fileName + "/" + inputString);
+                            selected.mkdir();
+                            currentFolder = selected;
+                            onShow();
                         }
-                    });
+                    }).show());
+                    fileModifications.addMenuItem("newFile", null, () -> (new InputString("newFile", true) {
+                        public void callBack(String inputString) {
+                            FileIO.createFile(currentFolder.getAbsolutePath() + "/" + fileName + "/" + inputString);
+                            currentFolder = FileFactory.createFile(currentFolder.getAbsolutePath() + "/" + fileName);
+                            onShow();
+                        }
+                    }).show());
                     fileModifications.show();
                 } else {
                     fileName = fn;

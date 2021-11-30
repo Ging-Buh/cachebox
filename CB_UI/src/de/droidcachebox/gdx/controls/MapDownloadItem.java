@@ -56,8 +56,7 @@ public class MapDownloadItem extends CB_View_Base {
         if (mapInfo.size > 0) {
             int s = mapInfo.size / 1024 / 1024;
             lblSize.setText(s + " MB");
-        }
-        else {
+        } else {
             lblSize.setText("??? MB");
         }
         lblSize.setHAlignment(HAlignment.RIGHT);
