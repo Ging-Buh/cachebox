@@ -5,6 +5,19 @@
 • Streichungen = -
 • Offen = •
 
+Version 3698 vom 2.Dezember 2021
+~ Überarbeitung der Einstellungsmenüs
++ Im Kartenmenü: Unter "Andere" kann eine Mapsforge map-Datei zur Kartendarstellung aus einem beliebigen Verzeichnis gewählt werden. (Berechtigung/Auswahl über den Android Filepicker)
+• Aufruf des Android Filepickers auf OnePlus Geräten kann fehlschlagen. Erstelle das Verzeichnis de.droidcachebox unter /Android/media und lege die map-Dateien dort ab.
+* Herunterladen der Themendateien: Im internen unzip wurde versucht ein nicht leeres Verzeichnis zu löschen, was eine Aktualisierung verhinderte.
+~ Herunterladen der OpenAndroMaps Themen: Quelle angepasst
+~ Erweiterung des internen Dateimanagers zum Löschen und Erstellen von Dateien und Verzeichnissen (mit File-API, "+" und Lang-Klick).
+* Logs laden nach DB-Wechsel
+
+Version 3682 vom 2.November 2021
+* Speicherung der eigenen Logs korrigiert.
+~ Im internen Dateimanager: Zum direkten Zugriff auf das Arbeitsverzeichnisses gibt es die Schaltfläche "Home". Die Schaltfläche "/" entfällt.
+
 Version 3674 vom 3.Oktober 2021
 * Abfrage "GPS einschalten" berücksichtigt wieder entsprechende Einstellung
 * Behandle "Placed by" kann in DB Null sein.

@@ -5,6 +5,19 @@
 • Deletions = -
 • Unsolved = •
 
+Version 3698 dated December 2, 2021
+~ Revision of the settings menu
++ In the map menu: Under "Other", a Mapsforge map file for the map display can be selected from any directory. (Authorization / selection via the Android filepicker)
+• Calling the Android Filepicker on OnePlus devices may fail. Create the directory de.droidcachebox under /Android/media and store the map files thereunder.
+* Downloading the rendering themes files: An attempt was made to delete a non-empty directory in the internal unzip, which prevented an update.
+~ Download the OpenAndroMaps themes: source adapted
+~ Extension of the internal file manager for deleting and creating files and directories (with file API, "+" and long-click).
+* Logs load after changing database
+
+Version 3682 from November 2, 2021
+* Correct saving of own logs.
+~ In the internal file manager: There is a "Home" button for direct access to the working directory. The "/" button is omitted.
+
 Version 3674 from October 3, 2021
 * The query "Switch on GPS" takes the corresponding setting into account again
 * Treat "Placed by" can be zero in DB.
