@@ -19,7 +19,6 @@ import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
@@ -103,7 +102,7 @@ public class ParkingMenu extends ButtonDialog {
 
             Settings.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
             Settings.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
             CacheListChangedListeners.getInstance().cacheListChanged();
 
             close();
@@ -123,7 +122,7 @@ public class ParkingMenu extends ButtonDialog {
         btDeleteP.setClickHandler((view, x, y, pointer, button) -> {
             Settings.ParkingLatitude.setValue(0.0);
             Settings.ParkingLongitude.setValue(0.0);
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
             CacheListChangedListeners.getInstance().cacheListChanged();
             close();
             return true;

@@ -14,7 +14,6 @@ import java.util.prefs.Preferences;
 import de.GcApiLogin;
 import de.droidcachebox.database.SQLiteClass;
 import de.droidcachebox.database.SQLiteInterface;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.SettingInt;
@@ -153,7 +152,7 @@ public class DesktopUIBaseMethods implements PlatformUIBase.UIBaseMethods {
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
             Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
             Log.debug(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
         System.exit(0);

@@ -82,7 +82,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -145,7 +144,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             }
 
             Settings.DeleteLogs.setValue(isChecked);
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
         }
     };
     private Timer mAnimationTimer;
@@ -579,7 +578,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "ImportDeleteLogsTitle", adapter, index -> {
             Settings.LogMaxMonthAge.setValue(index);
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
         });
 
         LogCollapseBox.addChild(spinner);
@@ -600,7 +599,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 @Override
                 public void returnValue(int value) {
                     Settings.LogMinCount.setValue(value);
-                    ViewManager.that.acceptChanges();
+                    Settings.getInstance().acceptChanges();
                     input.setText(String.valueOf(value));
                 }
 
@@ -725,7 +724,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             int value = Settings.LogMaxMonthAge.getValue();
             if (value > 6) {
                 Settings.LogMaxMonthAge.setValue(6);
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
             }
 
             spinner.setSelection(Settings.LogMaxMonthAge.getValue());
@@ -808,7 +807,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         Settings.ImportPQsFromGeocachingCom.setValue(checkImportPQfromGC.isChecked());
         Settings.ImportRatings.setValue(checkBoxGcVote.isChecked());
         Settings.CompactDB.setValue(checkBoxCompactDB.isChecked());
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
         String directoryPath = Settings.PocketQueryFolder.getValue();
         // chk exist import folder
         AbstractFile directory = FileFactory.createFile(directoryPath);

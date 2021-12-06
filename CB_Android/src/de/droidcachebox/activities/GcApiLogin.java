@@ -27,7 +27,6 @@ import de.droidcachebox.Global;
 import de.droidcachebox.Main;
 import de.droidcachebox.R;
 import de.droidcachebox.core.CB_Api;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.ActivityUtils;
 import de.droidcachebox.utils.log.Log;
@@ -264,7 +263,7 @@ public class GcApiLogin extends Activity {
                     String userNameOfAuthorization = fetchMyUserInfos().username;
                     Log.debug(sKlasse, "userNameOfAuthorization: " + userNameOfAuthorization);
                     Settings.GcLogin.setValue(userNameOfAuthorization);
-                    ViewManager.that.acceptChanges();
+                    Settings.getInstance().acceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }
             };

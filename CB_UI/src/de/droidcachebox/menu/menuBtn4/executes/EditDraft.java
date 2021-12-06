@@ -58,7 +58,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -385,7 +384,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                     }
                     Settings.TemplateLastUsedPath.setValue(abstractFile.getParent());
                     Settings.TemplateLastUsedName.setValue(abstractFile.getName());
-                    ViewManager.that.acceptChanges();
+                    Settings.getInstance().acceptChanges();
                 } catch (Exception ignored) {
                 }
                 try {

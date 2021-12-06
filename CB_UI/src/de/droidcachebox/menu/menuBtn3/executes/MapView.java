@@ -95,7 +95,6 @@ import de.droidcachebox.locator.map.MapScale;
 import de.droidcachebox.locator.map.MapTileLoader;
 import de.droidcachebox.locator.map.MapViewBase;
 import de.droidcachebox.locator.map.ZoomScale;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -293,7 +292,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
         if (Settings.mapViewDPIFaktor.getValue() == 1) {
             Settings.mapViewDPIFaktor.setValue(displayDensity);
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
         }
         iconFactor = Settings.mapViewDPIFaktor.getValue();
 
@@ -1013,7 +1012,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         // Log.debug(sKlasse, "setMapState :" + state);
 
         Settings.lastMapToggleBtnState.setValue(state.ordinal());
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
 
         boolean wasCarMode = isCarMode;
 
@@ -1170,7 +1169,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
                 if (Settings.mapViewDPIFaktor.getValue() == 1) {
                     Settings.mapViewDPIFaktor.setValue(displayDensity);
-                    ViewManager.that.acceptChanges();
+                    Settings.getInstance().acceptChanges();
                 }
                 iconFactor = Settings.mapViewDPIFaktor.getValue();
 

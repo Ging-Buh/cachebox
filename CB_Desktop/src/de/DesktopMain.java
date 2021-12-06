@@ -57,7 +57,7 @@ public class DesktopMain {
 
         CB_RectF rec = new CB_RectF(0, 0, ui.Window.width, ui.Window.height);
         CB_UI = new GL(ui.Window.width, ui.Window.height, new MainViewInit(rec), new ViewManager(rec));
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
 
         GL_View_Base.debug = debug;
         GL_View_Base.disableScissor = scissor;
@@ -66,10 +66,10 @@ public class DesktopMain {
 
             Settings.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
             Settings.newInstall.setValue(true);
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
         } else {
             Settings.newInstall.setValue(false);
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
         }
 
         int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;

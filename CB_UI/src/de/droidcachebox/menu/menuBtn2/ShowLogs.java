@@ -192,7 +192,7 @@ public class ShowLogs extends AbstractShowAction {
             String friends = GroundspeakAPI.fetchFriends();
             if (GroundspeakAPI.APIError == OK) {
                 Settings.friends.setValue(friends);
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
                 MsgBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
             } else {
                 MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);

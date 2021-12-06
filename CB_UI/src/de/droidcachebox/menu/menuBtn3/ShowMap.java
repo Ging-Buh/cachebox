@@ -287,7 +287,7 @@ public class ShowMap extends AbstractShowAction {
                             lsm.close();
                             String selectedLanguage = ((MenuItem) v).getTitle();
                             Settings.preferredMapLanguage.setValue(selectedLanguage);
-                            ViewManager.that.acceptChanges();
+                            Settings.getInstance().acceptChanges();
                             return true;
                         });
                     }
@@ -340,13 +340,13 @@ public class ShowMap extends AbstractShowAction {
 
     private void toggleSetting(SettingBool setting) {
         setting.setValue(!setting.getValue());
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
         normalMapView.setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
     }
 
     private void toggleSettingWithReload(SettingBool setting) {
         setting.setValue(!setting.getValue());
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
         normalMapView.setNewSettings(INITIAL_WP_LIST);
     }
 
@@ -392,7 +392,7 @@ public class ShowMap extends AbstractShowAction {
             tdMenu.mMsgBoxClickListener = (btnNumber, data) -> {
                 int newValue = (Integer) data;
                 Settings.TrackDistance.setValue(newValue);
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
                 showMenuTrackFunctions();
                 return true;
             };
@@ -536,7 +536,7 @@ public class ShowMap extends AbstractShowAction {
                             (btnNumber, data) -> {
                                 if (btnNumber == 1) { // change path
                                     RenderThemesFolder.setValue(RenderThemesFolder.getDefaultValue());
-                                    ViewManager.that.acceptChanges();
+                                    Settings.getInstance().acceptChanges();
                                 }
                                 return true;
                             }, Settings.RememberAsk_RenderThemePathWritable);
@@ -733,7 +733,7 @@ public class ShowMap extends AbstractShowAction {
             // p.ex.: internal Theme -> there is no style
             // style of Config will be ignored while setting of Theme
             setConfig(selectedThemePaN, "");
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
         }
     }
 
@@ -764,7 +764,7 @@ public class ShowMap extends AbstractShowAction {
                     mapStyleValues.append("\t").append("-").append(mi.getData());
             }
             setConfig(selectedThemePaN, mapStyleValues.toString());
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
             return true;
         };
 
@@ -773,7 +773,7 @@ public class ShowMap extends AbstractShowAction {
         } else {
             // save the values, there is perhaps no overlay
             setConfig(selectedThemePaN, mapStyleId);
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
         }
     }
 

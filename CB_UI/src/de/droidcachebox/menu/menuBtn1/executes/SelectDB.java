@@ -48,7 +48,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn5.ShowQuit;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -103,7 +102,7 @@ public class SelectDB extends ActivityBase {
                     Settings.MapPackFolderLocal.setValue(folder + "Maps");
                     Settings.SpoilerFolderLocal.setValue(folder + "Spoilers");
                     Settings.tileCacheFolderLocal.setValue(folder + "Cache");
-                    ViewManager.that.acceptChanges();
+                    Settings.getInstance().acceptChanges();
                     Log.debug(log,
                             NewDB_Name + " has own Repository:\n" + //
                                     Settings.DescriptionImageFolderLocal.getValue() + ", \n" + //
@@ -127,7 +126,7 @@ public class SelectDB extends ActivityBase {
                         );
                 }
 
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
 
                 CoreData.categories = new Categories();
                 CacheDAO.getInstance().updateCacheCountForGPXFilenames();
@@ -141,7 +140,7 @@ public class SelectDB extends ActivityBase {
                     return true;
                 DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
 
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
                 currentDBFile = FileFactory.createFile(database);
                 selectDB();
 
@@ -359,7 +358,7 @@ public class SelectDB extends ActivityBase {
         Settings.MultiDBAsk.setValue(autoStartTime >= 0);
 
         Settings.DatabaseName.setValue(currentDBFile.getName());
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
 
         finish();
 

@@ -88,7 +88,7 @@ public class ShowCompass extends AbstractShowAction {
 
     private void toggleSetting(SettingBool setting) {
         setting.setValue(!setting.getValue());
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
     }
 
 }

@@ -41,7 +41,6 @@ import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.QuickButtonItem;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.MapView;
 import de.droidcachebox.settings.API_Button;
@@ -195,7 +194,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             Settings.quickButtonList.setValue(ActionsString.toString());
 
             Settings.getInstance().saveToLastValue();
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
 
             // Notify QuickButtonList
             QuickButtonList.that.notifyDataSetChanged();

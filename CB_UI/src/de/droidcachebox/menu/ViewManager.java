@@ -364,7 +364,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                 boolean value = Settings.nightMode.getValue();
                 value = !value;
                 Settings.nightMode.setValue(value);
-                acceptChanges();
+                Settings.getInstance().acceptChanges();
             }
             GL.that.onStop();
             Sprites.loadSprites(true);
@@ -494,12 +494,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
     public boolean isInitialized() {
         return isInitial;
-    }
-
-    public void acceptChanges() {
-        if (Settings.getInstance().writeToDatabases()) {
-            MsgBox.show(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
-        }
     }
 
 }

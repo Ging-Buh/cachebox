@@ -5,6 +5,10 @@ import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Database_Core;
 import de.droidcachebox.database.SettingsDatabase;
+import de.droidcachebox.gdx.controls.messagebox.MsgBox;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.translation.Translation;
 
 public class Settings extends SettingsList implements AllSettings {
 
@@ -21,6 +25,12 @@ public class Settings extends SettingsList implements AllSettings {
             settings = new Settings();
         }
         return settings;
+    }
+
+    public void acceptChanges() {
+        if (writeToDatabases()) {
+            MsgBox.show(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+        }
     }
 
     @Override

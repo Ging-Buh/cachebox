@@ -240,13 +240,13 @@ public class MainViewInit extends MainViewBase {
             if (altValue.contains(GlobalCore.workPath)) {
                 String newValue = altValue.replace(GlobalCore.workPath + "/", "");
                 Settings.Sel_LanguagePath.setValue(newValue);
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
             }
 
             if (altValue.startsWith("/")) {
                 String newValue = altValue.substring(1);
                 Settings.Sel_LanguagePath.setValue(newValue);
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
             }
 
             Translation trans = new Translation(GlobalCore.workPath);

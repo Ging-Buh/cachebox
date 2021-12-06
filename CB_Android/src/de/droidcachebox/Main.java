@@ -505,7 +505,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     CacheListChangedListeners.getInstance().clear();
                     showViewListener.onDestroyWithFinishing();
 
-                    ViewManager.that.acceptChanges(); // same as Config.settings.writeToDatabases();
+                    Settings.getInstance().acceptChanges(); // same as Config.settings.writeToDatabases();
 
                     Sprites.destroyCache();
 

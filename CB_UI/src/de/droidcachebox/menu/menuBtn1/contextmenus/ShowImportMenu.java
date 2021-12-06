@@ -30,7 +30,6 @@ import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -131,7 +130,7 @@ public class ShowImportMenu extends AbstractShowAction {
 
         AbstractFile exportAbstractFile = FileFactory.createFile(exportPath);
         Settings.gpxExportFileName.setValue(exportAbstractFile.getPath());
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
 
         // Delete File if exist
         if (exportAbstractFile.exists())

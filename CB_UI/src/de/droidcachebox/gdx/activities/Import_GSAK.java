@@ -47,7 +47,6 @@ import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.main.MenuItemDivider;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -265,7 +264,7 @@ public class Import_GSAK extends ActivityBase {
                 Settings.GSAKLastUsedDatabasePath.setValue(mDatabasePath);
                 Settings.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
                 Settings.withLogImages.setValue(chkLogImages.isChecked());
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
                 CBDB.getInstance().beginTransaction();
 
                 int count = 0;
@@ -326,7 +325,7 @@ public class Import_GSAK extends ActivityBase {
                 Settings.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
                 Settings.GSAKLastUsedImageDatabaseName.setValue(mImageDatabaseName);
                 Settings.GSAKLastUsedImagesPath.setValue(mImagesPath);
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
             }
             CoreCursor c = sql.rawQuery("select count(*) from " + tableName, null);
             c.moveToFirst();

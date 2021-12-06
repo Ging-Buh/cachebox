@@ -7,7 +7,6 @@ import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.core.LiveMapQue;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.Settings;
 
@@ -29,7 +28,7 @@ public class LiveButton extends ImageButton {
     public void setActivated(boolean newState) {
         isActivated = newState;
         Settings.liveMapEnabled.setValue(newState);
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
         switchImage();
     }
 

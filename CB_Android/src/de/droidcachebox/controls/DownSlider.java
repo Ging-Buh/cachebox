@@ -55,7 +55,6 @@ import de.droidcachebox.locator.GPS;
 import de.droidcachebox.locator.GpsStateChangeEvent;
 import de.droidcachebox.locator.GpsStateChangeEventList;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ActivityUtils;
@@ -597,7 +596,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
                     QuickButtonHeight = 0;
                     Settings.quickButtonLastShow.setValue(false);
                 }
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
 
                 main.setQuickButtonHeight(QuickButtonHeight);
 

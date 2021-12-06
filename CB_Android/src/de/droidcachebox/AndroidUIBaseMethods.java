@@ -356,7 +356,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                     androidApplication.removeAndroidEventListener(handlingGetApiAuth);
                     if (requestCode == REQUEST_GET_APIKEY) {
                         GL.that.RunIfInitial(SettingsActivity::resortList);
-                        ViewManager.that.acceptChanges();
+                        Settings.getInstance().acceptChanges();
                     }
                 };
             androidApplication.addAndroidEventListener(handlingGetApiAuth);
@@ -415,7 +415,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             // speichere selektierten Cache, da nicht alles über die
             // SelectedCacheEventList läuft
             Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
             Log.info(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
         CBDB.getInstance().close();

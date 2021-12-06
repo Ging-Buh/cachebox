@@ -8,7 +8,6 @@ import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 
 public class RememberGeoCache extends AbstractAction {
@@ -31,7 +30,7 @@ public class RememberGeoCache extends AbstractAction {
             GlobalCore.setSelectedCache(rememberedCache);
         } else {
             Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
         }
     }
 
@@ -44,7 +43,7 @@ public class RememberGeoCache extends AbstractAction {
         return (view, x, y, pointer, button) -> {
             // forget remembered
             Settings.rememberedGeoCache.setValue("");
-            ViewManager.that.acceptChanges();
+            Settings.getInstance().acceptChanges();
             return true;
         };
     }

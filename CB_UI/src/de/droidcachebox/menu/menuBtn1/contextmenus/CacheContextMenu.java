@@ -32,7 +32,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.ShowTrackables;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
@@ -119,7 +118,7 @@ public class CacheContextMenu {
             MsgBox mb = MsgBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MsgBoxButton.AbortRetryIgnore, MsgBoxIcon.Question, null);
             mb.setPositiveClickListener((v, x, y, pointer, button) -> {
                 Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
                 return mb.finish();
             });
             mb.setMiddleNeutralClickListener((v, x, y, pointer, button) -> {
@@ -129,7 +128,7 @@ public class CacheContextMenu {
             });
             mb.setRightNegativeClickListener((v, x, y, pointer, button) -> {
                 Settings.rememberedGeoCache.setValue("");
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
                 return mb.finish();
             });
             mb.setButtonText("rememberGeoCache", "selectGeoCache", "forgetGeoCache");
@@ -220,7 +219,7 @@ public class CacheContextMenu {
                         Settings.CacheContextMenuShortClickToggle.setValue(false);
                     else
                         Settings.CacheContextMenuShortClickToggle.setValue(true);
-                    ViewManager.that.acceptChanges();
+                    Settings.getInstance().acceptChanges();
                     return true;
                 });
     }

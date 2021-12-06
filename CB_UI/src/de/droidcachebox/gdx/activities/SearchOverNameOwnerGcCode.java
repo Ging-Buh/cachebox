@@ -52,7 +52,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -262,7 +261,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         Settings.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
         Settings.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
 
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
 
         btnImport.disable();
 

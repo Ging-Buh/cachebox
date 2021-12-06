@@ -155,7 +155,7 @@ public class EditFilterSettings extends ActivityBase {
                     } else {
                         Settings.FilterNew.setValue(filter.toString());
                     }
-                    ViewManager.that.acceptChanges();
+                    Settings.getInstance().acceptChanges();
                 }
             }, 300);
             return true;
@@ -292,7 +292,7 @@ public class EditFilterSettings extends ActivityBase {
                 } else {
                     Settings.FilterNew.setValue(FilterInstances.getLastFilter().toString());
                 }
-                ViewManager.that.acceptChanges();
+                Settings.getInstance().acceptChanges();
             } catch (Exception ex) {
                 Log.err(log, "applyFilter", ex);
                 pd.dismis();
@@ -415,7 +415,7 @@ public class EditFilterSettings extends ActivityBase {
 
                         userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + SettingStringList.SPLITTER;
                         Settings.UserFilters.setValue(userFilters);
-                        ViewManager.that.acceptChanges();
+                        Settings.getInstance().acceptChanges();
                         presetView.fillPresetList();
                         presetView.notifyDataSetChanged();
                     }
@@ -519,7 +519,7 @@ public class EditFilterSettings extends ActivityBase {
                                                     newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");
                                                 else newUserEntries = userEntries.substring(0, p1);
                                                 Settings.UserFilters.setValue(newUserEntries);
-                                                ViewManager.that.acceptChanges();
+                                                Settings.getInstance().acceptChanges();
                                                 fillPresetList();
                                                 notifyDataSetChanged();
                                             } catch (Exception ex) {

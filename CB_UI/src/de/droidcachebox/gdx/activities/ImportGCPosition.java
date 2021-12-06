@@ -55,7 +55,6 @@ import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -442,7 +441,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         Settings.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
         Settings.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
         Settings.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
-        ViewManager.that.acceptChanges();
+        Settings.getInstance().acceptChanges();
 
         Date tmpDate;
         try {
@@ -477,7 +476,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                                 if (Settings.ImperialUnits.getValue())
                                     radius = UnitFormatter.getKilometer(radius);
                                 Settings.lastSearchRadius.setValue(radius);
-                                ViewManager.that.acceptChanges();
+                                Settings.getInstance().acceptChanges();
                                 q.searchInCircle(actSearchPos, radius * 1000);
                             } catch (NumberFormatException nex) {
                                 q.searchInCircle(actSearchPos, Settings.lastSearchRadius.getValue() * 1000);

@@ -10,7 +10,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.QuickAction;
 import de.droidcachebox.menu.QuickButtonItem;
-import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.MoveableList;
 import de.droidcachebox.utils.log.Log;
@@ -170,7 +169,7 @@ public class QuickButtonList extends H_ListView {
                         counter++;
                     }
                     Settings.quickButtonList.setValue(ActionsString.toString());
-                    ViewManager.that.acceptChanges();
+                    Settings.getInstance().acceptChanges();
                 }
             }
         }
