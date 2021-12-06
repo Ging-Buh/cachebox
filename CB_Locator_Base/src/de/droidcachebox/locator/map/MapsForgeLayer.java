@@ -124,13 +124,18 @@ public class MapsForgeLayer extends Layer {
 
     }
 
+    public MapFile getMapFile() {
+        if (mapFile == null) prepareMapFile();
+        return mapFile;
+    }
+
     @Override
     public void addAdditionalMap(Layer layer) {
         MapsForgeLayer additionalMapsForgeLayer = (MapsForgeLayer) layer;
         if (!additionalMapsForgeLayers.contains(additionalMapsForgeLayer)) {
             additionalMapsForgeLayers.add(additionalMapsForgeLayer);
             for (MultiMapDataStore mmds : multiMapDataStores) {
-                mmds.addMapDataStore(additionalMapsForgeLayer.mapFile, false, false);
+                mmds.addMapDataStore(additionalMapsForgeLayer.getMapFile(), false, false);
             }
         }
     }
@@ -138,7 +143,7 @@ public class MapsForgeLayer extends Layer {
     @Override
     public void clearAdditionalMaps() {
         for (MapsForgeLayer additionalMapsForgeLayer : additionalMapsForgeLayers) {
-            additionalMapsForgeLayer.mapFile.close();
+            additionalMapsForgeLayer.getMapFile().close();
         }
         for (MultiMapDataStore mmds : multiMapDataStores) {
             mmds = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE);
@@ -190,7 +195,7 @@ public class MapsForgeLayer extends Layer {
 
     public boolean prepareLayer(boolean isCarMode) {
         if (mapFile == null) {
-            setMapFile();
+            prepareMapFile();
         }
 
         if (mapFile != null) {
@@ -296,7 +301,7 @@ public class MapsForgeLayer extends Layer {
         }
     }
 
-    private void setMapFile() {
+    private void prepareMapFile() {
         AbstractFile file = FileFactory.createFile(pathAndName);
         if (file.exists() && file.isFile()) {
             try {
