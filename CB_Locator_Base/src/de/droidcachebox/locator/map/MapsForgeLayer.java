@@ -210,7 +210,7 @@ public class MapsForgeLayer extends Layer {
                     multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); //was  multiMapDataStores[i].clearMapDataStore();
                     multiMapDataStores[i].addMapDataStore(mapFile, false, false);
                     for (MapsForgeLayer mapsforgeLayer : additionalMapsForgeLayers) {
-                        multiMapDataStores[i].addMapDataStore(mapsforgeLayer.mapFile, false, false);
+                        multiMapDataStores[i].addMapDataStore(mapsforgeLayer.getMapFile(), false, false);
                     }
                     // last parameter of new DatabaseRenderer HillsRenderConfig hillsRenderConfig = null; // new HillsRenderConfig(....);
                     databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true, null);

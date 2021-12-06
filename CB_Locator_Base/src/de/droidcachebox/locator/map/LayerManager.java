@@ -49,7 +49,7 @@ import de.droidcachebox.utils.log.Log;
  */
 public class LayerManager {
 
-    private static final String log = "LayerManager";
+    private static final String sClass = "LayerManager";
     private static LayerManager manager;
     private final ArrayList<Layer> fixedLayers;
     private final ArrayList<Layer> layers;
@@ -90,8 +90,10 @@ public class LayerManager {
                 // therefore checked on additionalMapsforgeLayer.add for duplicates. A bit
                 if (names.length > 1) {
                     for (int i = 1; i < names.length; i++) {
+                        Log.info(sClass, "check mapLayer add: " + names[i]);
                         for (Layer additionalLayer : layers) {
-                            if (additionalLayer.getName().equalsIgnoreCase(names[i])) {
+                            if (names[i].contains(additionalLayer.getName())) {
+                                Log.info(sClass, "done mapLayer add: ");
                                 layer.addAdditionalMap(additionalLayer);
                             }
                         }
@@ -138,7 +140,7 @@ public class LayerManager {
             }
             layers.add(getUserMap(url, "UserMap1"));
         } catch (Exception e) {
-            Log.err(log, "Init UserMap1", e);
+            Log.err(sClass, "Init UserMap1", e);
         }
 
         try {
@@ -147,13 +149,13 @@ public class LayerManager {
                 layers.add(getUserMap(url, "UserMap2"));
             }
         } catch (Exception e) {
-            Log.err(log, "Init UserMap2", e);
+            Log.err(sClass, "Init UserMap2", e);
         }
 
         Array<String> alreadyAdded = new Array<>(); // avoid same file in different directories
-        Log.info(log, "dirMaps = " + MapPackFolderLocal.getValue()); // should depend on repository setting (own or global)
+        Log.info(sClass, "dirMaps = " + MapPackFolderLocal.getValue()); // should depend on repository setting (own or global)
         addToLayers(MapPackFolderLocal.getValue(), alreadyAdded);
-        Log.info(log, "dirGlobalMaps = " + MapPackFolder.getValue());
+        Log.info(sClass, "dirGlobalMaps = " + MapPackFolder.getValue());
         addToLayers(MapPackFolder.getValue(), alreadyAdded);
 
         if (currentMapLayer.getValue()[0].startsWith("content")) {
@@ -185,10 +187,10 @@ public class LayerManager {
                         layers.add(layer);
                         alreadyAdded.add(fileName);
                     } catch (Exception ex) {
-                        Log.err(log, "addToLayers: " + directoryName + "/" + fileName + ex.toString());
+                        Log.err(sClass, "addToLayers: " + directoryName + "/" + fileName + ex.toString());
                     }
                 } else {
-                    Log.err(log, "addToLayers: " + directoryName + "/" + fileName + " already entered");
+                    Log.err(sClass, "addToLayers: " + directoryName + "/" + fileName + " already entered");
                 }
             }
         }
@@ -214,7 +216,7 @@ public class LayerManager {
             }
             return new Layer(MapType.ONLINE, LayerUsage.normal, storageType, name, "", url);
         } catch (Exception e) {
-            Log.err(log, "Err while getUserMap: url=" + url + " Name=" + name + " Err=" + e.getLocalizedMessage());
+            Log.err(sClass, "Err while getUserMap: url=" + url + " Name=" + name + " Err=" + e.getLocalizedMessage());
             return new Layer(MapType.ONLINE, LayerUsage.normal, Layer.StorageType.PNG, name, "", url);
         }
     }
