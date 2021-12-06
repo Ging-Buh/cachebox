@@ -13,7 +13,7 @@ import de.droidcachebox.database.Database_Core;
 import de.droidcachebox.utils.log.Log;
 
 public abstract class SettingsList extends ArrayList<SettingBase<?>> {
-    private static final String log = "SettingsList";
+    private static final String sClass = "SettingsList";
     private static final long serialVersionUID = -969846843815877942L;
     private static SettingsList that;
     private boolean isLoaded = false;
@@ -54,13 +54,13 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
     protected abstract SettingsDAO createSettingsDAO();
 
     protected abstract boolean canNotUsePlatformSettings();
+
     /**
      * Return true, if setting changes need restart
      *
      * @return ?
      */
     public boolean writeToDatabases() {
-        // Write into DB
         getSettingsDB().beginTransaction();
         SettingsDAO dao = createSettingsDAO();
         // if used from Splash, DataDB is not possible = Data == null
@@ -73,40 +73,40 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
         }
 
         boolean needRestart = false;
-
+        String currentSettingName = "";
         try {
             for (SettingBase<?> setting : this) {
-                if (!setting.isDirty())
-                    continue; // is not changed -> do not
+                if (setting.isDirty()) {
+                    currentSettingName = setting.name;
 
-                if (Local == setting.getStoreType()) {
-                    if (Data != null)
-                        dao.writeSetting(Data, setting);
-                } else if (Global == setting.getStoreType() || (canNotUsePlatformSettings() && Platform == setting.getStoreType())) {
-                    dao.writeSetting(getSettingsDB(), setting);
-                } else if (Platform == setting.getStoreType()) {
-                    dao.writePlatformSetting(setting);
-                    dao.writeSetting(getSettingsDB(), setting);
+                    if (Local == setting.getStoreType()) {
+                        if (Data != null)
+                            dao.writeSetting(Data, setting);
+                    } else if (Global == setting.getStoreType() || (canNotUsePlatformSettings() && Platform == setting.getStoreType())) {
+                        dao.writeSetting(getSettingsDB(), setting);
+                    } else if (Platform == setting.getStoreType()) {
+                        dao.writePlatformSetting(setting);
+                        dao.writeSetting(getSettingsDB(), setting);
+                    }
+
+                    if (setting.needRestart) {
+                        needRestart = true;
+                    }
+                    setting.clearDirty();
                 }
-
-                if (setting.needRestart) {
-                    needRestart = true;
-                }
-
-                setting.clearDirty();
-
             }
+            // all changes successful
             if (Data != null)
                 Data.setTransactionSuccessful();
             getSettingsDB().setTransactionSuccessful();
-
-            return needRestart;
+        } catch (Exception ex) {
+            Log.err(sClass, currentSettingName, ex);
         } finally {
             getSettingsDB().endTransaction();
             if (Data != null)
                 Data.endTransaction();
         }
-
+        return needRestart;
     }
 
     public void readFromDB() {
@@ -183,11 +183,11 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                 }
                 tryCount.set(100);
             } catch (Exception e) {
-                Log.err(log, "Error read settings, try again");
+                Log.err(sClass, "Error read settings, try again");
             }
 
         }
-        Log.debug(log, "Settings are loaded");
+        Log.debug(sClass, "Settings are loaded");
         isLoaded = true;
     }
 

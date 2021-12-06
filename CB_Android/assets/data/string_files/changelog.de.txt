@@ -26,4 +26,4 @@ Version 3674 vom 3.Oktober 2021
 
 Version 3671 vom 29.September 2021
 + Nach nun mehr als einem Jahr gibt es eine neue Version im Playstore.
-+ Es wird Zeit von Google vorgegebenen Änderungen für Android 11 umzusetzen.
++ Es wird Zeit von Google vorgegebene Änderungen für Android 11 umzusetzen.
