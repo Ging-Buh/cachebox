@@ -1,16 +1,18 @@
 package de.droidcachebox.utils;
 
-import de.droidcachebox.utils.log.Log;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import de.droidcachebox.utils.log.Log;
 
 /**
  * Created by Longri on 17.02.2016.
  */
 public class DesktopFileFactory extends FileFactory {
+
     @Override
     protected AbstractFile createPlatformFile(String path) {
         return new DesktopAbstractFile(path);
@@ -76,7 +78,7 @@ public class DesktopFileFactory extends FileFactory {
                 return ThumbPath;
             }
         } catch (IOException e) {
-            Log.err("DesktopFileFactory:createPlatformThumb"," for " + Path);
+            Log.err("DesktopFileFactory:createPlatformThumb", " for " + Path);
             e.printStackTrace();
             return null;
         }

@@ -74,6 +74,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AndroidFileFactory;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.StringH;
 import de.droidcachebox.utils.log.CB_SLF4J;
 import de.droidcachebox.utils.log.Log;
@@ -87,7 +88,7 @@ import de.droidcachebox.utils.log.LogLevel;
  * + at last starting the gdx AndroidApplication Main
  */
 public class Splash extends Activity {
-    private static final String log = "CB2 Splash";
+    private static final String sClass = "CB2 Splash";
     private boolean logIsInitialized;
     private Bitmap bitmap;
     private AlertDialog pleaseWaitDialog;
@@ -100,11 +101,12 @@ public class Splash extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Plattform.used = Plattform.Android;
         androidSetting = getSharedPreferences(Global.PreferencesNAME, MODE_PRIVATE);
         logIsInitialized = false;
         if (!FileFactory.isInitialized()) {
             // so Main has not been started
-            new AndroidFileFactory(); // used by CB_SLF4J
+            new AndroidFileFactory(); // used by CB_SLF4J, Translation, ...
         }
         // read workpath from Android Preferences (defValue = none)
         workPath = androidSetting.getString("WorkPath", "none");
@@ -135,7 +137,7 @@ public class Splash extends Activity {
 
     private void info(String text) {
         if (logIsInitialized) {
-            Log.info(log, text);
+            Log.info(sClass, text);
         }
     }
 
@@ -158,10 +160,10 @@ public class Splash extends Activity {
         GlobalCore.RunFromSplash = true;
         Intent mainIntent;
         if (main == null) {
-            Log.info(log, "Start Main");
+            Log.info(sClass, "Start Main");
             mainIntent = new Intent().setClass(this, Main.class);
         } else {
-            Log.info(log, "Connect to Main to onNewIntent(Intent)");
+            Log.info(sClass, "Connect to Main to onNewIntent(Intent)");
             mainIntent = main.getIntent();
         }
         int width = frame.getMeasuredWidth();
@@ -206,7 +208,7 @@ public class Splash extends Activity {
 
         final Uri uri = getIntent().getData();
         if (uri != null) {
-            Log.info(log, "Intent Data:" + uri.toString());
+            Log.info(sClass, "Intent Data:" + uri.toString());
             String scheme = uri.getScheme();
             if (scheme != null) {
                 scheme = scheme.toLowerCase();
@@ -298,7 +300,7 @@ public class Splash extends Activity {
             int height = frame.getMeasuredHeight();
             DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
             if (height == 0 || width == 0) {
-                Log.info(log, "Width/Height still 0, so calc from displaymetrics");
+                Log.info(sClass, "Width/Height still 0, so calc from displaymetrics");
                 height = displaymetrics.heightPixels;
                 width = displaymetrics.widthPixels;
                 int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -328,7 +330,7 @@ public class Splash extends Activity {
             // class GL_UISizes
             GL_UISizes.defaultDPI = displaymetrics.density;
 
-            Log.info(log, "Screen width/height: " + ui.Window.width + "/" + ui.Window.height);
+            Log.info(sClass, "Screen width/height: " + ui.Window.width + "/" + ui.Window.height);
         }
     }
 
@@ -376,7 +378,9 @@ public class Splash extends Activity {
 
         try {
             new Translation(workPath).loadTranslation(languagePath);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            info(workPath);
+            info(languagePath);
         }
 
         if (workPath.equals("none") || androidSetting.getBoolean("AskAgain", false) || !FileIO.directoryExists(workPath))
@@ -409,7 +413,7 @@ public class Splash extends Activity {
             btnCreateWorkpath.setVisibility(Button.INVISIBLE);
             dialog.show();
         } catch (Exception ex) {
-            Log.err(log, "askForWorkPath Dialogs", ex);
+            Log.err(sClass, "askForWorkPath Dialogs", ex);
         }
     }
 
@@ -494,7 +498,7 @@ public class Splash extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.debug(log, "onDestroy");
+        Log.debug(sClass, "onDestroy");
         if (isFinishing()) {
             releaseImages();
         }
@@ -570,7 +574,7 @@ public class Splash extends Activity {
     private void finishInitializationAndStartMain() {
         saveWorkPathToPreferences();
 
-        Log.info(log, "Initialized for use with " + workPath);
+        Log.info(sClass, "Initialized for use with " + workPath);
 
         if (pleaseWaitDialog == null)
             runOnUiThread(this::showPleaseWaitDialog);
@@ -581,15 +585,15 @@ public class Splash extends Activity {
 
         boolean workPathFolderExists = FileIO.createDirectory(workPath);
         if (!workPathFolderExists) {
-            Log.err(log, "Can't write to " + workPath);
+            Log.err(sClass, "Can't write to " + workPath);
             this.finishAffinity();
             return;
         }
 
-        Log.info(log, "start Settings Database " + workPath + "/User/Config.db3");
+        Log.info(sClass, "start Settings Database " + workPath + "/User/Config.db3");
         boolean userFolderExists = FileIO.createDirectory(workPath + "/User");
         if (!userFolderExists) {
-            Log.err(log, "Can't create " + workPath + "/User");
+            Log.err(sClass, "Can't create " + workPath + "/User");
             this.finishAffinity();
             return;
         }
@@ -600,10 +604,10 @@ public class Splash extends Activity {
         if (SettingsDatabase.getInstance().isDatabaseNew()) {
             Settings.getInstance().loadAllDefaultValues();
             Settings.getInstance().writeToDatabases();
-            Log.info(log, "Default Settings written to new configDB.");
+            Log.info(sClass, "Default Settings written to new configDB.");
         } else {
             Settings.getInstance().readFromDB();
-            Log.info(log, "Settings read from configDB.");
+            Log.info(sClass, "Settings read from configDB.");
         }
         Settings.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue()));
 
@@ -630,10 +634,10 @@ public class Splash extends Activity {
                 Settings.newInstall.setValue(false);
             }
         } catch (Exception e) {
-            Log.err(log, "Copy Asset", e);
+            Log.err(sClass, "Copy Asset", e);
         }
 
-        Log.info(log, GlobalCore.getInstance().getVersionString());
+        Log.info(sClass, GlobalCore.getInstance().getVersionString());
 
         if (pleaseWaitDialog != null) {
             pleaseWaitDialog.dismiss();
@@ -666,17 +670,17 @@ public class Splash extends Activity {
     private void mediaInfo() {
         //<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"></uses-permission> is only for system apps
         try {
-            Log.info(log, "android.os.Build.VERSION.SDK_INT= " + android.os.Build.VERSION.SDK_INT);
-            Log.info(log, "workPath set to " + workPath);
-            Log.info(log, "getFilesDir()= " + getFilesDir());// user invisible
-            Log.info(log, "Environment.getExternalStoragePublicDirectory()= " + Environment.getExternalStoragePublicDirectory("").getAbsolutePath());
-            Log.info(log, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
-            Log.info(log, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
+            Log.info(sClass, "android.os.Build.VERSION.SDK_INT= " + android.os.Build.VERSION.SDK_INT);
+            Log.info(sClass, "workPath set to " + workPath);
+            Log.info(sClass, "getFilesDir()= " + getFilesDir());// user invisible
+            Log.info(sClass, "Environment.getExternalStoragePublicDirectory()= " + Environment.getExternalStoragePublicDirectory("").getAbsolutePath());
+            Log.info(sClass, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
+            Log.info(sClass, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
 
             // normally [0] is the internal SD, [1] is the external SD
             File[] dirs = getExternalFilesDirs(null);
             for (int i = 0; i < dirs.length; i++) {
-                Log.info(log, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
+                Log.info(sClass, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
             }
             // will be automatically created
 				/*
@@ -688,7 +692,7 @@ public class Splash extends Activity {
 				}
 				*/
         } catch (Exception e) {
-            Log.err(log, e.getLocalizedMessage());
+            Log.err(sClass, e.getLocalizedMessage());
         }
     }
 

@@ -19,22 +19,7 @@ public abstract class FileFactory {
     }
 
     public static FileHandle getInternalFileHandle(String path) {
-        if (Plattform.used == Plattform.undef)
-            throw new IllegalArgumentException("Platform not def");
-
-        if (Plattform.used == Plattform.Android) {
-            return Gdx.files.internal(path);
-        } else {
-            // classpath will work for desktop, but is not suitable for all use cases: for example skin creation
-            // without loss of functionality we can always use the internal
-            /*
-            FileHandle ret = Gdx.files.classpath(path);
-            if (ret == null && !ret.exists()) ret = Gdx.files.internal(path);
-            return ret;
-
-             */
-            return Gdx.files.internal(path);
-        }
+        return Gdx.files.internal(path);
     }
 
     public static AbstractFile createFile(String path) {

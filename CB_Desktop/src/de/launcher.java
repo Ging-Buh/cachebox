@@ -42,6 +42,7 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.DesktopFileFactory;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.log.CB_SLF4J;
 import de.droidcachebox.utils.log.LogLevel;
 
@@ -50,7 +51,7 @@ class DCB {
     public static void main(String[] args) {
 
         DisplayModel.setDeviceScaleFactor(1f);
-
+        Plattform.used = Plattform.DesktopWin;
         new DesktopFileFactory();
         File forWorkPathTest = new File("C:/Daten/_WCB");
         if (!forWorkPathTest.exists())

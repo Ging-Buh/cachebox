@@ -12,6 +12,7 @@ import java.io.IOException;
  * Created by Longri on 17.02.2016.
  */
 public class AndroidFileFactory extends FileFactory {
+
     @Override
     protected AbstractFile createPlatformFile(String path) {
         return new AndroidAbstractFile(path);

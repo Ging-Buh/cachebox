@@ -5,22 +5,52 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.DesktopFileFactory;
-import de.droidcachebox.utils.FileFactory;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Vector;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Vector;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.DesktopFileFactory;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.Plattform;
 
 public class launch extends JFrame {
 
@@ -37,11 +67,11 @@ public class launch extends JFrame {
     protected JTree m_tree;
     protected DefaultTreeModel m_model;
     protected JTextField m_display;
-    private JDesktopPane jDesktopPane1;
-    private JButton btnPackNow;
+    private final JDesktopPane jDesktopPane1;
+    private final JButton btnPackNow;
     private String selectedPath = "";
-    private JScrollPane jScrollPane1;
-    private JTextArea jTextArea1;
+    private final JScrollPane jScrollPane1;
+    private final JTextArea jTextArea1;
 
     {
         // Set Look & Feel
@@ -163,6 +193,7 @@ public class launch extends JFrame {
 
     private void run() {
 
+        Plattform.used = Plattform.DesktopWin;
         new DesktopFileFactory();
 
         Thread t = new Thread() {
@@ -299,9 +330,7 @@ public class launch extends JFrame {
                 @Override
                 public boolean accept(File pathname) {
                     if (pathname.getName().endsWith(".spp.atlas")) {
-                        if (pathname.getName().endsWith("_MipMap.spp.atlas"))
-                            return false;
-                        return true;
+                        return !pathname.getName().endsWith("_MipMap.spp.atlas");
                     }
                     return false;
                 }
@@ -476,11 +505,7 @@ public class launch extends JFrame {
                     // File defaultFolder = new File(selectedPath + "/Icons/default");
                     // File smallFolder = new File(selectedPath + "/Icons/small");
                     File Folder = new File(selectedPath + "/Icons");
-                    if (Folder.isDirectory()) {
-                        btnPackNow.setEnabled(true);
-                    } else {
-                        btnPackNow.setEnabled(false);
-                    }
+                    btnPackNow.setEnabled(Folder.isDirectory());
                 } else {
                     btnPackNow.setEnabled(false);
                 }
