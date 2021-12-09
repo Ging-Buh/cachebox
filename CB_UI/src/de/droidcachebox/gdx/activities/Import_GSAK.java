@@ -74,7 +74,7 @@ public class Import_GSAK extends ActivityBase {
 
     public Import_GSAK() {
         super("Import_GSAK");
-        progressBar = new ProgressBar(UiSizes.getInstance().getButtonRectF(), "ProgressBar");
+        progressBar = new ProgressBar(UiSizes.getInstance().getButtonRectF());
         addLast(progressBar);
         bOK = new CB_Button(Translation.get("import"));
         bCancel = new CB_Button(Translation.get("cancel"));
@@ -241,7 +241,7 @@ public class Import_GSAK extends ActivityBase {
 
         chkLogImages.setChecked(Settings.withLogImages.getValue());
 
-        progressBar.setProgress(0, "");
+        progressBar.setValues(0, "");
     }
 
 
@@ -275,7 +275,7 @@ public class Import_GSAK extends ActivityBase {
                 reader.moveToFirst();
                 while (!reader.isAfterLast() && !isCanceled) {
                     count++;
-                    progressBar.setProgress(count * 100 / anz, count + "/" + anz);
+                    progressBar.setValues(count * 100 / anz, count + "/" + anz);
                     String GcCode = "";
                     try {
                         GcCode = reader.getString("Code");
@@ -331,13 +331,13 @@ public class Import_GSAK extends ActivityBase {
             c.moveToFirst();
             int anz = c.getInt(0);
             int count = 0;
-            progressBar.resetProgress("Wait for Images query");
+            progressBar.setValues(0,"Wait for Images query");
             String cmd = "select iCode,iName,iDescription,iGuid,iImage from " + tableName;
             CoreCursor imagesReader = sql.rawQuery(cmd, null);
             imagesReader.moveToFirst();
             while (!imagesReader.isAfterLast() && !isCanceled) {
                 count++;
-                progressBar.setProgress(count * 100 / anz, count + "/" + anz);
+                progressBar.setValues(count * 100 / anz, count + "/" + anz);
                 String link = imagesReader.getString("iImage");
                 CoreCursor imageLinkReader = sqlImageLink.rawQuery("select Fname from files where link=\"" + link + "\"", null);
                 imageLinkReader.moveToFirst();
@@ -349,7 +349,7 @@ public class Import_GSAK extends ActivityBase {
                         imageEntry.setDescription(imagesReader.getString("iName"));
                         if (imageEntry.getDescription() == null) imageEntry.setDescription("");
                         imageEntry.setImageUrl(link);
-                        progressBar.setProgress(count * 100 / anz, count + "/" + anz); // fName
+                        progressBar.setValues(count * 100 / anz, count + "/" + anz); // fName
                         copyImage(mImagesPath + "/" + fName, imageEntry);
                     }
                 }
@@ -413,13 +413,13 @@ public class Import_GSAK extends ActivityBase {
         c.moveToFirst();
         int anz = c.getInt(0);
         int count = 0;
-        progressBar.resetProgress("Wait for Logs query");
+        progressBar.setValues(0,"Wait for Logs query");
         String cmd = "select Logs.lLogId,Logs.lParent,lType,lBy,lDate,LogMemo.lText as lText from Logs inner join LogMemo on LogMemo.lLogId = Logs.lLogId";
         CoreCursor LogsReader = sql.rawQuery(cmd, null);
         LogsReader.moveToFirst();
         while (!LogsReader.isAfterLast() && !isCanceled) {
             count++;
-            progressBar.setProgress(count * 100 / anz, count + "/" + anz);
+            progressBar.setValues(count * 100 / anz, count + "/" + anz);
             LogEntry logEntry = new LogEntry();
             logEntry.cacheId = Cache.generateCacheId(LogsReader.getString("lParent"));
             logEntry.logText = LogsReader.getString("lText");

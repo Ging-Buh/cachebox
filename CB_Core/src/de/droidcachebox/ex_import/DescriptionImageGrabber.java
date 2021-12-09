@@ -19,7 +19,6 @@ import static de.droidcachebox.core.GroundspeakAPI.APIError;
 import static de.droidcachebox.core.GroundspeakAPI.ERROR;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.downloadImageListForGeocache;
-import static de.droidcachebox.utils.http.Download.download;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -41,6 +40,7 @@ import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.FilenameFilter;
 import de.droidcachebox.utils.SDBM_Hash;
+import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.log.Log;
 
 public class DescriptionImageGrabber {
@@ -139,11 +139,11 @@ public class DescriptionImageGrabber {
     }
 
     /**
-     * @param Cache ?
-     * @param html ?
+     * @param Cache                 ?
+     * @param html                  ?
      * @param suppressNonLocalMedia ?
-     * @param NonLocalImages ?
-     * @param NonLocalImagesUrl ?
+     * @param NonLocalImages        ?
+     * @param NonLocalImagesUrl     ?
      * @return ?
      */
     public static String resolveImages(Cache Cache, String html, boolean suppressNonLocalMedia, LinkedList<String> NonLocalImages, LinkedList<String> NonLocalImagesUrl) {
@@ -293,7 +293,8 @@ public class DescriptionImageGrabber {
                 ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                 // direkt download
-                if (download(uri.toString(), local)) {
+                Download download = new Download(null);
+                if (download.download(uri.toString(), local)) {
                     // there could be an pseudo image indicating a previous error
                     // this file must be deleted
                     DeleteMissingImageInformation(local);
@@ -360,7 +361,8 @@ public class DescriptionImageGrabber {
                             continue; // dieser Spoiler muss jetzt nicht mehr geladen werden da er schon vorhanden ist.
                         }
                         // todo first look for an image from gsak
-                        if (download(imageEntry.getImageUrl(), imageEntry.getLocalPath())) {
+                        Download download = new Download(null);
+                        if (download.download(imageEntry.getImageUrl(), imageEntry.getLocalPath())) {
                             // there could be an pseudo image indicating a pprevious error
                             // this file must be deleted
                             DeleteMissingImageInformation(imageEntry.getLocalPath());
@@ -413,10 +415,7 @@ public class DescriptionImageGrabber {
             FilenameFilter filter = (dir1, filename) -> {
 
                 filename = filename.toLowerCase();
-                if (filename.indexOf(GcCode.toLowerCase()) == 0) {
-                    return true;
-                }
-                return false;
+                return filename.indexOf(GcCode.toLowerCase()) == 0;
             };
             String[] files = dir.list(filter);
             return files;

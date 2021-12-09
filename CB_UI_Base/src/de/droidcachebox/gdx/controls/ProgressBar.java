@@ -2,32 +2,32 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import de.droidcachebox.gdx.CB_View_Base;
-import de.droidcachebox.gdx.GL;
+
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.math.CB_RectF;
 
-public class ProgressBar extends CB_View_Base {
-    private final CB_Label label;
+public class ProgressBar extends CB_Label {
     private float progressDrawWidth = 0;
-    private int currentPogress;
+    private int currentPercent;
     private Drawable progressFill, progressFillDisabled;
-    private String msg = "";
     private boolean isDisabled = false;
+    private String message;
 
-    public ProgressBar(CB_RectF rec, String Name) {
-        super(rec, Name);
-        label = new CB_Label(this);
-        label.setHAlignment(HAlignment.CENTER);
-        this.addChild(label);
-        currentPogress = 0;
+    public ProgressBar(CB_RectF rec) {
+        super(rec);
+        init();
     }
 
-    @Override
-    public void setWidth(float width) {
-        super.setWidth(width);
-        label.setWidth(width);
+    public ProgressBar() {
+        super();
+        init();
+    }
+
+    private void init() {
+        mHAlignment = HAlignment.CENTER;
+        mVAlignment = VAlignment.TOP; // looks better
+        currentPercent = 0;
+        message = "";
     }
 
     @Override
@@ -43,86 +43,40 @@ public class ProgressBar extends CB_View_Base {
         if (progressFillDisabled == null) {
             progressFillDisabled = Sprites.progressDisabled;
         }
-
-        GL.that.renderOnce();
     }
 
     /**
-     * @param newProgress ?
-     *  set progressDrawWidth, renders the pos of Progress
+     * @param newPercent ?
+     *                   set progressDrawWidth, renders the pos of Progress
      */
-    public void setPogress(int newProgress) {
-        if (!isDisposed()) {
-            if (newProgress > currentPogress) {
-                currentPogress = newProgress;
-                if (currentPogress > 100)
-                    currentPogress = 100;
-                progressDrawWidth = (getWidth() / 100) * currentPogress;
-                GL.that.renderOnce();
-            }
+    public void fillBarAt(int newPercent) {
+        if (newPercent != currentPercent) {
+            currentPercent = newPercent;
+            if (currentPercent > 100)
+                currentPercent = 100;
+            progressDrawWidth = (getWidth() / 100) * currentPercent;
         }
     }
 
     /**
-     * @param newProgress ?
-     * @param Msg ?
-     * renders the pos of Progress
+     * @param newPercent ?
+     * @param newMessage ?
      */
-    public void setProgress(int newProgress, final String Msg) {
+    public void setValues(int newPercent, final String newMessage) {
         if (!isDisposed()) {
-            if (newProgress > currentPogress) {
-                setPogress(newProgress);
-                if (!msg.equals(Msg)) {
-                    msg = Msg;
-                    GL.that.RunOnGL(() -> label.setText(msg));
-                }
+            fillBarAt(newPercent);
+            if (!newMessage.equals(message)) {
+                setText(newMessage);
             }
         }
-    }
-
-    public void resetProgress(final String Msg) {
-        currentPogress = 0;
-        GL.that.RunOnGL(() -> label.setText(Msg));
     }
 
     public void setProgressFill(Drawable drawable) {
         progressFill = drawable;
     }
 
-    @Override
-    protected void render(Batch batch) {
-        if (this.isDisposed())
-            return;
-        if (progressFill == null || progressFillDisabled == null)
-            initialize();
-
-        if (!isDisabled) {
-            if (progressFill != null) {
-                float patch = progressFill.getLeftWidth() + progressFill.getRightWidth();
-                if (progressDrawWidth >= patch) {
-                    progressFill.draw(batch, 0, 0, progressDrawWidth, getHeight());
-                }
-            }
-        } else {
-            if (progressFillDisabled != null) {
-                float patch = progressFillDisabled.getLeftWidth() + progressFillDisabled.getRightWidth();
-                if (progressDrawWidth >= patch) {
-                    progressFillDisabled.draw(batch, 0, 0, progressDrawWidth, getHeight());
-                }
-            }
-        }
-        super.render(batch);
-    }
-
-    public void setText(String message) {
-        if (isDisposed())
-            return;
-        msg = message;
-        label.setText(msg);
-    }
-
-    public int getCurrentPogress() {
-        return currentPogress;
+    public int getCurrentPercent() {
+        return currentPercent;
     }
 
     public void enable() {
@@ -140,4 +94,36 @@ public class ProgressBar extends CB_View_Base {
     public float getProgressDrawWidth() {
         return progressDrawWidth;
     }
+
+    @Override
+    protected void render(Batch batch) {
+        if (this.isDisposed())
+            return;
+        if (progressFill == null || progressFillDisabled == null)
+            initialize();
+
+        if (isDisabled) {
+            if (progressFillDisabled != null) {
+                float patch = progressFillDisabled.getLeftWidth() + progressFillDisabled.getRightWidth();
+                if (progressDrawWidth >= patch) {
+                    progressFillDisabled.draw(batch, 0, 0, progressDrawWidth, getHeight());
+                    super.render(batch);
+                }
+            }
+        } else {
+            if (progressFill != null) {
+                float patch = progressFill.getLeftWidth() + progressFill.getRightWidth();
+                if (progressDrawWidth >= patch) {
+                    progressFill.draw(batch, 0, 0, progressDrawWidth, getHeight());
+                    super.render(batch);
+                }
+            }
+        }
+
+        if (!message.equals(getText())) {
+            super.render(batch);
+            message = getText();
+        }
+    }
+
 }

@@ -1,21 +1,30 @@
 package de.droidcachebox.utils.http;
 
-import de.droidcachebox.utils.AbstractFile;
-import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.log.Log;
-
 import java.io.BufferedOutputStream;
 import java.io.InputStream;
 
-public class Download {
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.ProgressChangedEvent;
+import de.droidcachebox.utils.log.Log;
 
-    public static boolean download(String remote, String local) {
+public class Download {
+    private static final String sClass = "Download";
+    private ProgressChangedEvent progressIndicator;
+    private boolean canceled;
+
+    public Download(ProgressChangedEvent progressIndicator) {
+        this.progressIndicator = progressIndicator;
+        canceled = false;
+    }
+
+    public boolean download(String remote, String local) {
         boolean err = false;
-        AbstractFile localAbstractFile = FileFactory.createFile(local);
+        AbstractFile localFile = FileFactory.createFile(local);
         /* create parent directories, if necessary */
-        final AbstractFile parent = localAbstractFile.getParentFile();
-        if ((parent != null) && !parent.exists()) {
-            parent.mkdirs();
+        final AbstractFile directory = localFile.getParentFile();
+        if ((directory != null) && !directory.exists()) {
+            directory.mkdirs();
         }
         InputStream inStream = null;
         BufferedOutputStream outStream = null;
@@ -32,8 +41,19 @@ public class Download {
                         .ensureSuccess()
                         .asStream();
                 inStream = response.getBody();
-                outStream = new BufferedOutputStream(localAbstractFile.getFileOutputStream());
-                WebbUtils.copyStream(inStream, outStream);
+                outStream = new BufferedOutputStream(localFile.getFileOutputStream());
+
+                byte[] buffer = new byte[1024];
+                int count;
+                int kiloByteCount = 0;
+                while ((count = inStream.read(buffer)) != -1) {
+                    outStream.write(buffer, 0, count);
+                    kiloByteCount = kiloByteCount + 1;
+                    if (progressIndicator != null)
+                        progressIndicator.progressChanged("", "", kiloByteCount);
+                    if (canceled)
+                        throw new Exception("canceled");
+                }
             } catch (Exception ex) {
                 if (ex instanceof WebbException) {
                     WebbException we = (WebbException) ex;
@@ -52,7 +72,10 @@ public class Download {
                         }
                     }
                 } else {
-                    Log.err("Download", remote + " to " + local, ex);
+                    if (canceled)
+                        Log.info(sClass, "canceled");
+                    else
+                        Log.err(sClass, remote + " to " + local, ex);
                     err = true;
                 }
             } finally {
@@ -69,13 +92,16 @@ public class Download {
 
         if (err) {
             try {
-                localAbstractFile.delete();
-            } catch (Exception e) {
-                // wie egal
+                localFile.delete();
+            } catch (Exception ignored) {
             }
             return false;
         } else {
-            return localAbstractFile.exists();
+            return localFile.exists();
         }
+    }
+
+    public void cancelDownload() {
+        canceled = true;
     }
 }

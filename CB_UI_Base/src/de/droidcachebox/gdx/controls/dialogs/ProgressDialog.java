@@ -24,9 +24,9 @@ public class ProgressDialog extends MsgBox implements ProgressChangedEvent {
     private static String titleText;
     private static ProgressDialog that;
     public float measuredLabelHeight = 0;
-    private CB_Label messageTextView;
-    private CB_Label progressMessageTextView;
-    private ProgressBar progressBar;
+    private final CB_Label messageTextView;
+    private final CB_Label progressMessageTextView;
+    private final ProgressBar progressBar;
     private AnimationBase animation;
     private boolean isCanceld = false;
     private ICancelListener mCancelListener;
@@ -57,8 +57,8 @@ public class ProgressDialog extends MsgBox implements ProgressChangedEvent {
 
         CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().getWidth(), UiSizes.getInstance().getButtonHeight() * 0.75f);
 
-        progressBar = new ProgressBar(rec, "");
-        progressBar.setPogress(0);
+        progressBar = new ProgressBar(rec);
+        progressBar.fillBarAt(0);
         this.addChild(progressBar);
 
         messageTextView = new CB_Label(this.name + " messageTextView", leftBorder, progressBar.getMaxY() + margin, innerWidth, measuredLabelHeight);
@@ -125,8 +125,8 @@ public class ProgressDialog extends MsgBox implements ProgressChangedEvent {
     }
 
     @Override
-    public void progressChanged(String Message, String ProgressMessage, int Progress) {
-        setProgress(Message, ProgressMessage, Progress);
+    public void progressChanged(String message, String progressMessage, int progress) {
+        setProgress(message, progressMessage, progress);
     }
 
     @Override
@@ -151,7 +151,6 @@ public class ProgressDialog extends MsgBox implements ProgressChangedEvent {
 
     @Override
     public void onHide() {
-        // l�sche Registrierung Progress Changed Event
         ProgresssChangedEventList.remove(this);
     }
 
@@ -159,7 +158,7 @@ public class ProgressDialog extends MsgBox implements ProgressChangedEvent {
         GL.that.RunOnGL(() -> {
             if (ProgressDialog.this.isDisposed())
                 return;
-            progressBar.setPogress(value);
+            progressBar.fillBarAt(value);
             progressMessageTextView.setText(ProgressMessage);
             if (!Msg.equals(""))
                 messageTextView.setText(Msg);
@@ -167,7 +166,7 @@ public class ProgressDialog extends MsgBox implements ProgressChangedEvent {
     }
 
     public interface ICancelListener {
-        public void isCanceled();
+        void isCanceled();
     }
 
 }

@@ -10,11 +10,9 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -38,29 +36,27 @@ import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.ProgressChangedEvent;
-import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
 
-public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
-    private static final String log = "MapDownload";
+public class FZKDownload extends ActivityBase {
+    private static final String sClass = "MapDownload";
     private static final String URL_repositoryFREIZEITKARTE = "http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml";
     private static FZKDownload fzkDownload;
-    private boolean downloadIsCompleted = false;
+    private final Array<MapRepositoryInfo> mapRepositoryInfos = new Array<>();
+    private final Array<MapDownloadItem> mapDownloadItems = new Array<>();
+    private final ScrollBox scrollBox;
+    private boolean areAllDownloadsCompleted = false;
     private int allProgress = 0;
-    private final Array<MapRepositoryInfo> mapInfoList = new Array<>();
-    private final Array<MapDownloadItem> mapInfoItemList = new Array<>();
     private MapRepositoryInfo actMapRepositoryInfo;
     private CB_Button btnOK, btnCancel;
     private CB_Label lblProgressMsg;
     private ProgressBar progressBar;
     private boolean importStarted = false;
-    private final ScrollBox scrollBox;
     private ImportAnimation importAnimation;
     private String repository_freizeitkarte_android;
     private boolean canceled = false;
-    private boolean isChkRepository = false;
+    private boolean repositoryXMLisDownloading = false;
     private boolean doImportByUrl;
 
     private FZKDownload() {
@@ -73,6 +69,7 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         scrollBox.setHeight(lblProgressMsg.getY() - btnOK.getMaxY() - margin - margin);
         scrollBox.setY(btnOK.getMaxY() + margin);
         scrollBox.setBackground(getBackground());
+        doImportByUrl = false;
     }
 
     public static FZKDownload getInstance() {
@@ -85,14 +82,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
 
     @Override
     public void onShow() {
-        ProgresssChangedEventList.add(this);
         if (!doImportByUrl)
             chkRepository();
-    }
-
-    @Override
-    public void onHide() {
-        ProgresssChangedEventList.remove(this);
     }
 
     private void createOkCancelBtn() {
@@ -133,66 +124,44 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createTitleLine() {
-        // Title+Progressbar
-
+        // Title+Progressbar+lblProgressMsg
         float lineHeight = UiSizes.getInstance().getButtonHeight() * 0.75f;
-
         CB_Label lblTitle = new CB_Label(name + " lblTitle", leftBorder + margin, getHeight() - getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
         lblTitle.setFont(Fonts.getBig());
         float lblWidth = lblTitle.setText(Translation.get("import")).getTextWidth();
         addChild(lblTitle);
 
         CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth, lineHeight);
-
-        progressBar = new ProgressBar(rec, "ProgressBar");
-
-        progressBar.setProgress(0, "");
+        progressBar = new ProgressBar(rec);
+        progressBar.setValues(0, "");
+        addChild(progressBar);
 
         float SmallLineHeight = Fonts.measureForSmallFont("Tg").height;
-
         lblProgressMsg = new CB_Label(name + " lblProgressMsg", leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight);
-
         lblProgressMsg.setFont(Fonts.getSmall());
-
-        addChild(progressBar);
         addChild(lblProgressMsg);
-
-    }
-
-    @Override
-    public void progressChanged(final String message, final String progressMessage, final int progress) {
-        GL.that.RunOnGL(() -> {
-            progressBar.setPogress(progress);
-            lblProgressMsg.setText(progressMessage);
-            if (message.length() > 0)
-                progressBar.setText(message);
-        });
     }
 
     public void importByUrl(String url) {
-        mapInfoList.clear();
+        mapRepositoryInfos.clear();
         MapRepositoryInfo mapRepositoryInfo = new MapRepositoryInfo();
         mapRepositoryInfo.url = url;
         int slashPos = mapRepositoryInfo.url.lastIndexOf("/");
         mapRepositoryInfo.description = mapRepositoryInfo.url.substring(slashPos + 1);
         mapRepositoryInfo.size = -1; // ??? MB
-        mapInfoList.add(mapRepositoryInfo);
+        mapRepositoryInfos.add(mapRepositoryInfo);
         fillRepositoryList();
-        for (MapDownloadItem item : mapInfoItemList) {
+        for (MapDownloadItem item : mapDownloadItems) {
             item.check();
         }
         doImportByUrl = true;
-    }
-
-    public void importByUrlFinished() {
-        doImportByUrl = false;
     }
 
     private void ImportNow() {
         if (importStarted)
             return;
 
-        downloadIsCompleted = false;
+        areAllDownloadsCompleted = false;
 
         // disable btn
         btnOK.disable();
@@ -206,37 +175,33 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
 
         canceled = false;
         importStarted = true;
-        for (int i = 0; i < mapInfoItemList.size; i++) {
-            MapDownloadItem item = mapInfoItemList.get(i);
+        for (MapDownloadItem item : mapDownloadItems) {
             item.beginDownload();
         }
-
         Thread dlProgressChecker = new Thread(() -> {
 
-            while (!downloadIsCompleted) {
+            while (!areAllDownloadsCompleted) {
                 if (canceled) {
-                    for (int i = 0; i < mapInfoItemList.size; i++) {
-                        MapDownloadItem item = mapInfoItemList.get(i);
+                    for (MapDownloadItem item : mapDownloadItems) {
                         item.cancelDownload();
                     }
                 }
 
                 int calcAll = 0;
                 int downloadCount = 0;
-                for (int i = 0; i < mapInfoItemList.size; i++) {
-                    MapDownloadItem item = mapInfoItemList.get(i);
+                for (MapDownloadItem item : mapDownloadItems) {
                     int actPro = item.getDownloadProgress();
                     if (actPro > -1) {
                         calcAll += actPro;
                         downloadCount++;
                     }
-
                 }
+
                 int newAllProgress = downloadCount != 0 ? calcAll / downloadCount : 0;
 
                 if (allProgress != newAllProgress) {
                     allProgress = newAllProgress;
-                    progressBar.setPogress(allProgress);
+                    progressBar.fillBarAt(allProgress);
                     lblProgressMsg.setText(allProgress + " %");
                 }
 
@@ -247,18 +212,17 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
                 }
 
                 // chk download ready
-                boolean chk = true;
-                for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
-                    MapDownloadItem item = mapInfoItemList.get(i);
+                boolean areAllDownloadsReady = true;
+                for (MapDownloadItem item : mapDownloadItems) {
                     if (!item.isFinished()) {
-                        chk = false;
+                        areAllDownloadsReady = false;
                         break;
                     }
                 }
 
-                if (chk) {
+                if (areAllDownloadsReady) {
                     // all downloads ready
-                    downloadIsCompleted = true;
+                    areAllDownloadsCompleted = true;
                     finishImport();
                 }
 
@@ -272,57 +236,8 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
     private void finishImport() {
         canceled = true;
         importStarted = false;
-        fillDownloadList();
-        if (importAnimation != null) {
-            removeChildDirect(importAnimation);
-            importAnimation.dispose();
-            importAnimation = null;
-        }
-        progressBar.setPogress(0);
 
-        if (downloadIsCompleted) {
-            lblProgressMsg.setText("");
-            btnCancel.setText(Translation.get("ok"));
-            // to prevent download again. On next start you must check again
-            for (int i = 0, n = mapInfoItemList.size; i < n; i++) {
-                MapDownloadItem item = mapInfoItemList.get(i);
-                item.enable();
-            }
-        } else
-            lblProgressMsg.setText(Translation.get("DownloadCanceld"));
-
-        btnOK.enable();
-    }
-
-    private void chkRepository() {
-        if (repository_freizeitkarte_android.length() == 0) {
-            // Download and Parse
-            // disable UI
-            importAnimation = new ImportAnimation(scrollBox);
-            importAnimation.setBackground(getBackground());
-            importAnimation.setAnimationType(AnimationType.Download);
-            lblProgressMsg.setText(Translation.get("ChkAvailableMaps"));
-            addChild(importAnimation, false);
-            btnOK.disable();
-
-            if (!isChkRepository)
-                readRepository();
-
-        }
-    }
-
-    private void readRepository() {
-        isChkRepository = true;
-        GL.that.postAsync(() -> {
-            // Read XML
-            repository_freizeitkarte_android = Webb.create()
-                    .get(URL_repositoryFREIZEITKARTE)
-                    .connectTimeout(Settings.connection_timeout.getValue())
-                    .readTimeout(Settings.socket_timeout.getValue())
-                    .ensureSuccess()
-                    .asString()
-                    .getBody();
-
+        if (!doImportByUrl) {
             fillDownloadList();
 
             if (importAnimation != null) {
@@ -330,28 +245,74 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
                 importAnimation.dispose();
                 importAnimation = null;
             }
-            btnOK.enable();
-            isChkRepository = false;
-            lblProgressMsg.setText("");
+        }
 
-        });
+        progressBar.fillBarAt(0);
+
+        if (areAllDownloadsCompleted) {
+            lblProgressMsg.setText("");
+            btnCancel.setText(Translation.get("ok"));
+            // to prevent download again. On next start you must check again
+            for (MapDownloadItem item : mapDownloadItems) {
+                item.enable();
+            }
+        } else {
+            lblProgressMsg.setText(Translation.get("DownloadCanceld"));
+        }
+
+        btnOK.enable();
+    }
+
+    private void chkRepository() {
+        if (repository_freizeitkarte_android.length() == 0) {
+            // Download and Parse, disable UI
+            importAnimation = new ImportAnimation(scrollBox);
+            importAnimation.setBackground(getBackground());
+            importAnimation.setAnimationType(AnimationType.Download);
+            lblProgressMsg.setText(Translation.get("ChkAvailableMaps"));
+            addChild(importAnimation, false);
+            btnOK.disable();
+
+            if (!repositoryXMLisDownloading) {
+                repositoryXMLisDownloading = true;
+                GL.that.postAsync(() -> {
+                    // Read XML
+                    repository_freizeitkarte_android = Webb.create()
+                            .get(URL_repositoryFREIZEITKARTE)
+                            .connectTimeout(Settings.connection_timeout.getValue())
+                            .readTimeout(Settings.socket_timeout.getValue())
+                            .ensureSuccess()
+                            .asString()
+                            .getBody();
+
+                    fillDownloadList();
+
+                    if (importAnimation != null) {
+                        removeChildDirect(importAnimation);
+                        importAnimation.dispose();
+                        importAnimation = null;
+                    }
+                    btnOK.enable();
+                    repositoryXMLisDownloading = false;
+                    lblProgressMsg.setText("");
+
+                });
+            }
+
+        }
     }
 
     private void fillDownloadList() {
         scrollBox.removeChilds();
+        mapRepositoryInfos.clear();
 
-        Map<String, String> values = new HashMap<>();
         System.setProperty("sjxp.namespaces", "false");
-        List<IRule<Map<String, String>>> ruleList = createRepositoryRules(new ArrayList<>());
-
-        XMLParser<Map<String, String>> parserCache = new XMLParser<>(ruleList.toArray(new IRule[0]));
-
-        InputStream stream = new ByteArrayInputStream(repository_freizeitkarte_android.getBytes());
-        parserCache.parse(stream, values);
+        XMLParser<Map<String, String>> parser = new XMLParser<>(createRepositoryRules().toArray(new IRule[0]));
+        parser.parse(new ByteArrayInputStream(repository_freizeitkarte_android.getBytes()), new HashMap<>());
 
         if (ShowMap.getInstance().normalMapView.center.isValid()) {
             MapComparator mapComparator = new MapComparator(ShowMap.getInstance().normalMapView.center);
-            mapInfoList.sort(mapComparator);
+            mapRepositoryInfos.sort(mapComparator);
         }
 
         fillRepositoryList();
@@ -360,18 +321,16 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
 
     private void fillRepositoryList() {
         // Create possible download List
+        mapDownloadItems.clear();
         float yPos = 0;
         String workPath = getPathForMapFile();
-        int n = mapInfoList.size - 1;
-        for (int i = n; i > -1; i--) {
-            MapRepositoryInfo map = mapInfoList.get(i);
+        for (MapRepositoryInfo map : mapRepositoryInfos) {
             MapDownloadItem item = new MapDownloadItem(map, workPath, innerWidth);
             item.setY(yPos);
             scrollBox.addChild(item);
-            mapInfoItemList.add(item);
+            mapDownloadItems.add(item);
             yPos += item.getHeight() + margin;
         }
-
         scrollBox.setVirtualHeight(yPos);
     }
 
@@ -385,20 +344,23 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
         else
             isWritable = false;
         if (isWritable)
-            Log.info(log, "Download to " + pathForMapFile);
+            Log.info(sClass, "Download to " + pathForMapFile);
         else {
-            Log.err(log, "Download to " + pathForMapFile + " is not possible!");
+            Log.err(sClass, "Download to " + pathForMapFile + " is not possible!");
             // don't use SettingsClass.MapPackFolder.getDefaultValue()
             // because it doesn't reflect own repository
             // own or global repository is writable by default, but do check again
             pathForMapFile = Settings.MapPackFolderLocal.getValue();
             isWritable = FileIO.canWrite(pathForMapFile);
-            Log.info(log, "Download to " + pathForMapFile + " is possible? " + isWritable);
+            Log.info(sClass, "Download to " + pathForMapFile + " is possible? " + isWritable);
         }
         return pathForMapFile;
     }
 
-    private List<IRule<Map<String, String>>> createRepositoryRules(List<IRule<Map<String, String>>> ruleList) {
+    private ArrayList<IRule<Map<String, String>>> createRepositoryRules() {
+
+        ArrayList<IRule<Map<String, String>>> ruleList = new ArrayList<>();
+
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/Name") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
@@ -479,11 +441,12 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
                 if (isStartTag) {
                     actMapRepositoryInfo = new MapRepositoryInfo();
                 } else {
-                    mapInfoList.add(actMapRepositoryInfo);
+                    mapRepositoryInfos.add(actMapRepositoryInfo);
                 }
 
             }
         });
+
         return ruleList;
     }
 
@@ -537,12 +500,12 @@ public class FZKDownload extends ActivityBase implements ProgressChangedEvent {
                     double bd = b.getBoundingBox().getCenterPoint().distance(centre) / b.getMin().distance(b.getMax());
                     if (!a.description.startsWith("*")) a.description = "*" + a.description;
                     if (!b.description.startsWith("*")) b.description = "*" + b.description;
-                    return (int) ((ad - bd) * 1000);
+                    return (int) ((bd - ad) * 1000);
                 } else {
                     if (aIsIn) {
-                        return -1;
-                    } else if (bIsIn) {
                         return 1;
+                    } else if (bIsIn) {
+                        return -1;
                     }
                     // don't need this map
                     return 0;

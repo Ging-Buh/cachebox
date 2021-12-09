@@ -207,6 +207,7 @@ public class ShowMap extends AbstractShowAction {
                     (sprite == null) ? null : new SpriteDrawable(sprite),
                     (v, x, y, pointer, button) -> {
                         icm.close();
+                        LayerManager.getInstance().activateNewList();
                         selectLayer(layer);
                         showLanguageSelectionMenu(layer);
                         return true;
@@ -228,8 +229,10 @@ public class ShowMap extends AbstractShowAction {
                     @Override
                     public void returnString(String returnUri) {
                         MapsForgeLayer l = new MapsForgeLayer(returnUri);
-                        if (l.getName().length() > 0)
+                        if (l.getName().length() > 0) {
+                            LayerManager.getInstance().activateNewList();
                             selectLayer(l);
+                        }
                     }
                 });
                 return true;
@@ -512,7 +515,8 @@ public class ShowMap extends AbstractShowAction {
                                 ((MenuItem) v).setDisabled(false);
                                 GL.that.renderOnce();
                                 // Download.download("http://download.openandromaps.org/themes/Elevate4.zip", target);
-                                Download.download("https://www.openandromaps.org/wp-content/users/tobias/Elevate.zip", target);
+                                Download download = new Download(null);
+                                download.download("https://www.openandromaps.org/wp-content/users/tobias/Elevate.zip", target);
                                 try {
                                     UnZip.extractFolder(target, false);
                                 } catch (Exception ex) {
@@ -578,8 +582,8 @@ public class ShowMap extends AbstractShowAction {
                             GL.that.renderOnce();
                             String zipFile = fzkThemesInfo.Url.substring(fzkThemesInfo.Url.lastIndexOf("/") + 1);
                             String target = themesPath + "/" + zipFile;
-
-                            Download.download(fzkThemesInfo.Url, target);
+                            Download download = new Download(null);
+                            download.download(fzkThemesInfo.Url, target);
                             try {
                                 UnZip.extractHere(target);
                             } catch (Exception ex) {

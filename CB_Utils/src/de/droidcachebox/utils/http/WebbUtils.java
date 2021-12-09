@@ -4,17 +4,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+
+import de.droidcachebox.utils.ProgressChangedEvent;
 
 /**
  * Static utility method and tools for HTTP traffic parsing and encoding.
@@ -115,6 +126,8 @@ public class WebbUtils {
         return baos.toByteArray();
     }
 
+    public static ProgressChangedEvent streamBufferWritten;
+
     /**
      * Copy complete content of <code>InputStream</code> to <code>OutputStream</code> until EOF.
      * <br>
@@ -127,8 +140,12 @@ public class WebbUtils {
     public static void copyStream(InputStream input, OutputStream output) throws IOException {
         byte[] buffer = new byte[1024];
         int count;
+        int kiloByteCount = 0;
         while ((count = input.read(buffer)) != -1) {
             output.write(buffer, 0, count);
+            kiloByteCount = kiloByteCount + 1;
+            if (streamBufferWritten != null)
+                streamBufferWritten.progressChanged("", "", kiloByteCount);
         }
     }
 

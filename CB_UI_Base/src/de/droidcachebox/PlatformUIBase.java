@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Clipboard;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import de.droidcachebox.database.SQLiteInterface;
@@ -207,6 +208,10 @@ public class PlatformUIBase {
         return m.getInputStream(absolutePath);
     }
 
+    public static OutputStream getOutputStream(String contentFile) throws FileNotFoundException {
+        return m.getOutputStream(contentFile);
+    }
+
     /**
      these methods need platform specific implementations
      */
@@ -273,6 +278,8 @@ public class PlatformUIBase {
         void getDocumentAccess(String directory, StringReturner value);
 
         InputStream getInputStream(String absolutePath) throws FileNotFoundException;
+
+        OutputStream getOutputStream(String contentFile) throws FileNotFoundException;
 
         boolean request_getLocationIfInBackground();
 

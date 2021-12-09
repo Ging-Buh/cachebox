@@ -193,7 +193,7 @@ public class MapTileLoader {
                 }
                 if (mapTiles.getCurrentOverlayLayer() != null) {
                     if (!loadedOverlayTiles.contains(descriptor.getHashCode(), false) && !overlayTilesInGeneration.contains(descriptor.getHashCode(), false)) {
-                        orders.add(new MultiThreadQueueProcessor.OrderData(descriptor, false, mapView));
+                        orders.add(new MultiThreadQueueProcessor.OrderData(descriptor, true, mapView));
                     }
                 }
             }

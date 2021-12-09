@@ -7,6 +7,10 @@ public class ProgresssChangedEventList {
         listeners.add(listener);
     }
 
+    public static void remove(ProgressChangedEvent listener) {
+        listeners.remove(listener);
+    }
+
     public static void progressChanged(String Msg, String ProgressMessage, int Progress) {
         for (ProgressChangedEvent listener : listeners) {
             listener.progressChanged(Msg, ProgressMessage, Progress);
@@ -17,10 +21,6 @@ public class ProgresssChangedEventList {
         for (ProgressChangedEvent listener : listeners) {
             listener.progressChanged("", ProgressMessage, Progress);
         }
-    }
-
-    public static void remove(ProgressChangedEvent listener) {
-        listeners.remove(listener);
     }
 
 }

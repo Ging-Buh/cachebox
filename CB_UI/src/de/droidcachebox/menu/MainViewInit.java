@@ -42,7 +42,6 @@ import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.Image;
@@ -94,34 +93,34 @@ public class MainViewInit extends MainViewBase {
                     break;
                 case 1:
                     ini_Progressbar();
-                    progress.setProgress(10, "Read Config");
+                    progress.setValues(10, "Read Config");
                     break;
                 case 2:
                     ini_Config();
-                    progress.setProgress(15, "Load Translations");
+                    progress.setValues(15, "Load Translations");
                     break;
                 case 3:
                     ini_Translations();
-                    progress.setProgress(20, "Load Sprites");
+                    progress.setValues(20, "Load Sprites");
                     break;
                 case 4:
                     ini_Sprites();
-                    progress.setProgress(30, "check directories");
+                    progress.setValues(30, "check directories");
                     break;
                 case 5:
                     ini_Dirs();
-                    progress.setProgress(40, "Select DB");
+                    progress.setValues(40, "Select DB");
                     break;
                 case 6:
                     ini_SelectDB();
-                    progress.setProgress(60, "Load Caches");
+                    progress.setValues(60, "Load Caches");
                     break;
                 case 7:
                     ini_CacheDB();
-                    progress.setProgress(80, "initial Map layer");
+                    progress.setValues(80, "initial Map layer");
                     break;
                 case 8:
-                    progress.setProgress(100, "Run");
+                    progress.setValues(100, "Run");
                     break;
                 case 100:
                     ini_TabMainView();
@@ -158,23 +157,22 @@ public class MainViewInit extends MainViewBase {
         descTextView.setHeight(descTextView.getTextHeight());
         this.addLast(descTextView);
 
-        Drawable progressBack = new NinePatchDrawable(atlas.createPatch(IconName.btnNormal.name()));
+        // cause Sprites are not yet initialised, do it here manually
+        Drawable progressBack = new NinePatchDrawable(atlas.createPatch(Sprites.IconName.btnNormal.name()));
         Drawable progressFill = new NinePatchDrawable(atlas.createPatch("progress"));
-        float progressHeight = Math.max(progressBack.getBottomHeight() + progressBack.getTopHeight(), ref / 1.5f);
-        progress = new ProgressBar(new CB_RectF(0, 0, this.getWidth(), progressHeight), "Splash.ProgressBar");
+        progress = new ProgressBar();
         progress.setBackground(progressBack);
         progress.setProgressFill(progressFill);
-        this.addChild(progress);
+        this.initRow(BOTTOMUP);
+        this.addLast(progress);
 
         float logoCalcRef = ref * 1.5f;
-
         CB_RectF rec_GC_Logo = new CB_RectF(20, 50, logoCalcRef, logoCalcRef);
         CB_RectF rec_Mapsforge_Logo = new CB_RectF(200, 50, logoCalcRef, logoCalcRef / 1.142f);
         CB_RectF rec_FX2_Logo = new CB_RectF(rec_Mapsforge_Logo);
         CB_RectF rec_LibGdx_Logo = new CB_RectF(20, 50, logoCalcRef * 4.17f * 0.8f, logoCalcRef * 0.8f);
         CB_RectF rec_OSM = new CB_RectF(rec_Mapsforge_Logo);
         CB_RectF rec_Route = new CB_RectF(rec_Mapsforge_Logo);
-
         rec_FX2_Logo.setX(400);
 
         GC_Logo = new Image(rec_GC_Logo, "GC_Logo", false);

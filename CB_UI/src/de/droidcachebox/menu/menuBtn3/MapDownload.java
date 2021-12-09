@@ -23,7 +23,7 @@ public class MapDownload extends AbstractAction {
     @Override
     public void execute() {
         Menu downloadMenu = new Menu("MapDownload");
-        downloadMenu.addMenuItem("LoadMapFreizeitkarteMenuTitle", Sprites.getSprite(Sprites.IconName.freizeit.name()), FZKDownload.getInstance()::show);
+        downloadMenu.addMenuItem("LoadMapFreizeitkarteMenuTitle", Sprites.getSprite(Sprites.IconName.freizeit.name()), this::callFZKDownload);
         downloadMenu.addMenuItem("LoadMapFromOpenAndroMapsMenuTitle", Sprites.getSprite(Sprites.IconName.mapsforge_logo.name()),
                 () -> callMapUrl("https://www.openandromaps.org/downloads/deutschland"));
         downloadMenu.addMenuItem("LoadMapFromFreizeitkarteMenuTitle", Sprites.getSprite(Sprites.IconName.freizeit.name()),
@@ -38,7 +38,12 @@ public class MapDownload extends AbstractAction {
         return Sprites.getSprite(Sprites.IconName.download.name());
     }
 
-    public void callMapUrl(String url) {
+    private void callFZKDownload() {
+        FZKDownload instance = FZKDownload.getInstance();
+        instance.show();
+    }
+
+    private void callMapUrl(String url) {
         try {
             PlatformUIBase.callUrl(url);
         } catch (Exception ignored) {

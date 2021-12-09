@@ -1,21 +1,14 @@
 package de.droidcachebox.utils;
 
-import de.droidcachebox.utils.log.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class UnitFormatter {
-    private static final String log = "UnitFormatter";
     private final static String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final static String ROT13_LOOKUP = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
     private final static String WRONG_DATE = "??.??.??";
     private static boolean mUseImperialUnits = false;
-
-    public static boolean getUseImperialUnits() {
-        return mUseImperialUnits;
-    }
 
     public static int getKilometer(int miles) {
         return (int) Math.ceil(miles * 1.609343502101154);
@@ -26,7 +19,6 @@ public class UnitFormatter {
     }
 
     // / <summary>
-    // / Erzeugt eine f�r den Menschen lesbare Form der Distanz
     // / </summary>
     // / <param name="distance"></param>
     // / <returns></returns>
@@ -34,15 +26,14 @@ public class UnitFormatter {
         if (mUseImperialUnits)
             return DistanceStringImperial(distance);
         else
-            return DistanceStringMetric(distance);
+            return distanceStringMetric(distance);
     }
 
     // / <summary>
-    // / Erzeugt eine f�r den Menschen lesbare Form der Distanz
     // / </summary>
     // / <param name="distance"></param>
     // / <returns></returns>
-    public static String DistanceStringMetric(float distance) {
+    public static String distanceStringMetric(float distance) {
 
         if (distance <= 500)
             return String.format("%.0f", distance) + " m";
@@ -54,7 +45,6 @@ public class UnitFormatter {
     }
 
     // / <summary>
-    // / Erzeugt eine f�r den Menschen lesbare Form der Distanz
     // / </summary>
     // / <param name="distance"></param>
     // / <returns></returns>
@@ -146,15 +136,11 @@ public class UnitFormatter {
     public static String getReadableDate(Date date) {
         if (date == null)
             return WRONG_DATE;
-
-        String dateString = WRONG_DATE;
         try {
-            SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
-            dateString = postFormater.format(date);
+            return new SimpleDateFormat("dd.MM.yy", Locale.getDefault()).format(date);
         } catch (Exception e) {
-            Log.err(log, "getReadableDate", e);
+            return WRONG_DATE;
         }
-        return dateString;
     }
 
 }

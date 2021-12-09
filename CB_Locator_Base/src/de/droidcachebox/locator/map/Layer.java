@@ -48,7 +48,8 @@ public class Layer {
     }
 
     boolean downloadTile(Descriptor desc) {
-        return Download.download(getUrl(desc), getLocalFilename(desc));
+        Download download = new Download(null);
+        return download.download(getUrl(desc), getLocalFilename(desc));
     }
 
     public String getUrl(Descriptor desc) {

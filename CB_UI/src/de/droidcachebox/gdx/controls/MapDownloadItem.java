@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.ex_import.UnZip;
 import de.droidcachebox.gdx.CB_View_Base;
-import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -18,77 +17,60 @@ import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.log.Log;
 
 public class MapDownloadItem extends CB_View_Base {
-    private static final String log = "MapDownloadItem";
+    private static final String sClass = "MapDownloadItem";
+    private final CB_CheckBox doDownloadMap;
+    private final ProgressBar progressBar;
     private final MapRepositoryInfo mapInfo;
-    private final CB_CheckBox checkBoxMap;
-    private final float margin;
-    private final CB_Label lblName, lblSize;
     private final String pathForMapFile;
-    private final AtomicBoolean downloadIsRunning = new AtomicBoolean(false);
     private int lastProgress = 0;
-    private ProgressBar progressBar;
-    private boolean canceld = false;
+    private boolean canceled = false;
+    private final AtomicBoolean downloadIsRunning = new AtomicBoolean(false);
+    private final Download download;
 
-    public MapDownloadItem(MapRepositoryInfo _mapInfo, String _pathForMapFile, float ItemWidth) {
+    public MapDownloadItem(MapRepositoryInfo _mapInfo, String _pathForMapFile, float _itemWidth) {
         super(_mapInfo.name);
         mapInfo = _mapInfo;
         pathForMapFile = _pathForMapFile;
-        margin = UiSizes.getInstance().getMargin();
-
-        checkBoxMap = new CB_CheckBox();
-        this.setHeight(checkBoxMap.getHeight() + (margin * 2));
-        this.setWidth(ItemWidth);
-        checkBoxMap.setX(margin);
-
-        checkBoxMap.setY(margin);
-
-        lblName = new CB_Label(this.name + " lblName", checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight());
-        lblName.setFont(Fonts.getNormal());
-
-        // Cut "Freizeitkarte"
-        String Name = mapInfo.description.replace("Freizeitkarte ", "");
-        lblName.setText(Name);
-
-        lblSize = new CB_Label(this.name + " lblSize", checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight());
-        lblSize.setFont(Fonts.getNormal());
-
-        // Format Size
+        doDownloadMap = new CB_CheckBox();
+        float progressHeight;
+        if (mapInfo.size > -1) {
+            progressHeight = (Sprites.progressBack.getBottomHeight() + Sprites.progressBack.getTopHeight());
+        } else {
+            progressHeight = UiSizes.getInstance().getButtonHeight();
+        }
+        setHeight(doDownloadMap.getHeight() + progressHeight + 2 * UiSizes.getInstance().getMargin());
+        setWidth(_itemWidth);
+        Box rightBox = new Box(getWidth(), getHeight());
+        String name = mapInfo.description.replace("Freizeitkarte", "").trim();
+        name = name.replace("freizeitkarte_", "");
+        CB_Label lblName = new CB_Label(name);
+        CB_Label lblSize;
         if (mapInfo.size > 0) {
             int s = mapInfo.size / 1024 / 1024;
-            lblSize.setText(s + " MB");
+            lblSize = new CB_Label(s + " MB");
         } else {
-            lblSize.setText("??? MB");
+            lblSize = new CB_Label("??? MB");
         }
         lblSize.setHAlignment(HAlignment.RIGHT);
-
-        this.addChild(checkBoxMap);
-        this.addChild(lblName);
-        this.addChild(lblSize);
+        addNext(doDownloadMap, FIXED);
+        addLast(rightBox);
+        doDownloadMap.setY((getHeight() - doDownloadMap.getHeight()) / 2);
+        rightBox.addNext(lblName);
+        rightBox.addLast(lblSize, -0.20f);
+        progressBar = new ProgressBar(new CB_RectF(0, 0, 0, progressHeight));
+        rightBox.addLast(progressBar);
+        adjustHeight();
 
         chkExists();
-    }
 
-    private static void deleteDirectory(AbstractFile directory) {
-        if (directory.exists()) {
-            AbstractFile[] abstractFiles = directory.listFiles();
-            if (null != abstractFiles) {
-                for (AbstractFile abstractFile : abstractFiles) {
-                    if (abstractFile.isDirectory()) {
-                        deleteDirectory(abstractFile);
-                    } else {
-                        try {
-                            abstractFile.delete();
-                        } catch (IOException e) {
-                            Log.err(log, e.getLocalizedMessage());
-                        }
-                    }
-                }
+        download = new Download((message, progressMessage, progress) -> {
+            if (mapInfo.size > -1) {
+                progressBar.setValues(((progress) * 100) / (mapInfo.size / 1024), "");
+            } else {
+                progressBar.setValues(100, progress / 1024 + " MB");
             }
-        }
-        try {
-            directory.delete();
-        } catch (IOException ignored) {
-        }
+        });
+
     }
 
     private void chkExists() {
@@ -99,14 +81,14 @@ public class MapDownloadItem extends CB_View_Base {
 
         AbstractFile abstractFile = FileFactory.createFile(pathForMapFile + "/" + FileString);
         if (abstractFile.exists()) {
-            checkBoxMap.setChecked(true);
-            checkBoxMap.disable();
-            checkBoxMap.setClickHandler((view, x, y, pointer, button) -> {
-                if (checkBoxMap.isDisabled()) {
-                    checkBoxMap.enable();
+            doDownloadMap.setChecked(true);
+            doDownloadMap.disable();
+            doDownloadMap.setClickHandler((view, x, y, pointer, button) -> {
+                if (doDownloadMap.isDisabled()) {
+                    doDownloadMap.enable();
                 } else {
-                    checkBoxMap.setChecked(true);
-                    checkBoxMap.disable();
+                    doDownloadMap.setChecked(true);
+                    doDownloadMap.disable();
                 }
                 return true;
             });
@@ -114,23 +96,14 @@ public class MapDownloadItem extends CB_View_Base {
     }
 
     public void beginDownload() {
-        canceld = false;
+        canceled = false;
 
-        if (!checkBoxMap.isChecked() || checkBoxMap.isDisabled()) {
+        if (!doDownloadMap.isChecked() || doDownloadMap.isDisabled()) {
             lastProgress = -1;
             return;
         }
 
         downloadIsRunning.set(true);
-        float ProgressHeight = (Sprites.progressBack.getBottomHeight() + Sprites.progressBack.getTopHeight());
-        CB_RectF rec = new CB_RectF(checkBoxMap.getMaxX() + margin, 0, innerWidth - margin * 3 - checkBoxMap.getWidth(), ProgressHeight);
-
-        if (progressBar == null) {
-            progressBar = new ProgressBar(rec, "");
-            this.addChild(progressBar);
-            lblName.setY(progressBar.getHalfHeight() - margin);
-            lblSize.setY(progressBar.getHalfHeight() - margin);
-        }
 
         lastProgress = 0;
 
@@ -138,40 +111,46 @@ public class MapDownloadItem extends CB_View_Base {
             int slashPos = mapInfo.url.lastIndexOf("/");
             String zipFile = mapInfo.url.substring(slashPos + 1);
             String target = pathForMapFile + "/" + zipFile;
-
-            progressBar.setProgress(lastProgress, lastProgress + " %");
-
-            if (Download.download(mapInfo.url, target)) {
+            progressBar.setValues(lastProgress, lastProgress + " %");
+            if (download.download(mapInfo.url, target)) {
                 if (target.endsWith(".zip")) {
-                    Log.info(log, "Unzip " + target + " start.");
+                    if (mapInfo.size == -1)
+                        progressBar.setValues(100, "Unzip " + FileIO.getFileName(target) + " start.");
+                    Log.info(sClass, "Unzip " + target + " start.");
                     try {
                         UnZip.extractHere(target);
+                        if (mapInfo.size == -1)
+                            progressBar.setValues(100, "Unzip " + FileIO.getFileName(target) + " end.");
                     } catch (Exception ex) {
-                        Log.err(log, "Unzip error: " + ex.toString());
+                        Log.err(sClass, "Unzip error: " + ex.toString());
+                        if (mapInfo.size == -1)
+                            progressBar.setValues(100, "Unzip " + FileIO.getFileName(target) + " error.");
                     }
-                    Log.info(log, "Unzip " + target + " end.");
+                    Log.info(sClass, "Unzip " + target + " end.");
                 }
             }
-
+            // delete downloaded file
             if (target.endsWith(".zip")) {
                 try {
                     FileFactory.createFile(target).delete();
-                    Log.info(log, "Deleted " + target);
+                    Log.info(sClass, "Deleted " + target);
                 } catch (IOException e) {
-                    Log.err(log, e.getLocalizedMessage());
+                    progressBar.setValues(100, FileIO.getFileName(target) + "not deleted.");
+                    Log.err(sClass, target, e);
                 }
             }
 
-            lastProgress = canceld ? 0 : 100;
-            progressBar.setProgress(lastProgress, lastProgress + " %");
+            lastProgress = canceled ? 0 : 100;
+            progressBar.setValues(lastProgress, lastProgress + " %");
             downloadIsRunning.set(false);
-            Log.info(log, "Download everything ready");
+            Log.info(sClass, "Download everything ready");
         }).start();
 
     }
 
     public void cancelDownload() {
-        canceld = true;
+        canceled = true;
+        download.cancelDownload();
     }
 
     public int getDownloadProgress() {
@@ -183,14 +162,14 @@ public class MapDownloadItem extends CB_View_Base {
     }
 
     public void enable() {
-        if (checkBoxMap.isChecked())
-            checkBoxMap.disable();
+        if (doDownloadMap.isChecked())
+            doDownloadMap.disable();
         else
-            checkBoxMap.enable();
+            doDownloadMap.enable();
     }
 
     public void check() {
-        checkBoxMap.enable();
-        checkBoxMap.setChecked(true);
+        doDownloadMap.enable();
+        doDownloadMap.setChecked(true);
     }
 }

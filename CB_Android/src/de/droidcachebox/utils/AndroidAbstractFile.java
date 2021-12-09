@@ -67,7 +67,6 @@ public class AndroidAbstractFile extends AbstractFile {
             } catch (Exception e) {
                 return false;
             }
-
         }
         else
             return mFile.exists();
@@ -282,7 +281,12 @@ public class AndroidAbstractFile extends AbstractFile {
 
     @Override
     public FileOutputStream getFileOutputStream() throws FileNotFoundException {
-        return new FileOutputStream(mFile);
+        if (isContentFile) {
+            return (FileOutputStream) PlatformUIBase.getOutputStream(contentFile);
+        }
+        else {
+            return new FileOutputStream(mFile);
+        }
     }
 
     @Override

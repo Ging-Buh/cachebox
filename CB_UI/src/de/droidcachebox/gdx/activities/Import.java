@@ -309,9 +309,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth, lineHeight);
 
-        pgBar = new ProgressBar(rec, "ProgressBar");
+        pgBar = new ProgressBar(rec);
 
-        pgBar.setProgress(0, "");
+        pgBar.setValues(0, "");
 
         float progressLineHeight = Fonts.measureForSmallFont("Tg").height * 3;
 
@@ -1096,15 +1096,13 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     @Override
-    public void progressChanged(final String Message, final String ProgressMessage, final int Progress) {
-
+    public void progressChanged(final String message, final String progressMessage, final int percent) {
         GL.that.RunOnGL(() -> {
-            pgBar.setPogress(Progress);
-            lblProgressMsg.setText(ProgressMessage);
-            if (!Message.equals(""))
-                pgBar.setText(Message);
+            pgBar.fillBarAt(percent);
+            lblProgressMsg.setText(progressMessage);
+            if (!message.equals(""))
+                pgBar.setText(message);
         });
-
     }
 
     private void copyGPX2PQ_Folder(final AbstractFile abstractFile) {

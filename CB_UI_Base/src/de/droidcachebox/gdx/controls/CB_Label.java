@@ -57,8 +57,8 @@ public class CB_Label extends CB_View_Base {
     String mText;
     BitmapFont mFont = Fonts.getNormal();
     Color mColor = COLOR.getFontColor();
-    HAlignment mHAlignment = HAlignment.LEFT;
-    VAlignment mVAlignment = VAlignment.CENTER;
+    protected HAlignment mHAlignment = HAlignment.LEFT;
+    protected VAlignment mVAlignment = VAlignment.CENTER;
     private WrapType mWrapType = WrapType.SINGLELINE;
     private int ErrorCount = 0;
     private int scrollPos = 0;
@@ -81,18 +81,18 @@ public class CB_Label extends CB_View_Base {
     /**
      * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
      **/
-    public CB_Label(String Text) {
+    public CB_Label(String text) {
         super(0, 0, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight(), "Label");
-        mText = Text == null ? "" : Text.replace("\r\n", "\n");
+        mText = text == null ? "" : text.replace("\r\n", "\n");
         setText();
     }
 
     /**
      * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
      **/
-    public CB_Label(String Text, BitmapFont Font, Color fontColor, WrapType WrapType) {
+    public CB_Label(String text, BitmapFont Font, Color fontColor, WrapType WrapType) {
         super(0, 0, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight(), "Label");
-        mText = (Text == null ? "" : Text.replace("\r\n", "\n"));
+        mText = (text == null ? "" : text.replace("\r\n", "\n"));
         if (Font != null)
             mFont = Font;
         if (fontColor != null)
@@ -385,7 +385,8 @@ public class CB_Label extends CB_View_Base {
                 yPosition = innerHeight - topBorder - mFont.getAscent();
                 break;
             case CENTER:
-                yPosition = (innerHeight + bounds.height) / 2f;
+                // bounds.height == mFont.getCapHeight()
+                yPosition = (innerHeight + mFont.getCapHeight()) / 2f; //  - mFont.getDescent()
                 break;
             case BOTTOM:
                 yPosition = bottomBorder + mFont.getCapHeight() - mFont.getDescent();
@@ -400,6 +401,7 @@ public class CB_Label extends CB_View_Base {
             if (ErrorCount < 5)
                 GL.that.RunOnGL(this::setTextPosition);
         }
+        GL.that.renderOnce();
     }
 
     /**

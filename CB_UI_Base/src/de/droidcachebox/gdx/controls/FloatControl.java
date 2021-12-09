@@ -12,7 +12,7 @@ public class FloatControl extends CB_View_Base {
     public FloatControl(CB_RectF rec, String Name, iValueChanged listener) {
         super(rec, Name);
         changeListener = listener;
-        progressbar = new ProgressBar(rec, "");
+        progressbar = new ProgressBar(rec);
         progressbar.setHeight(this.getHeight() * 0.75f);
         progressbar.setText("");
         progressbar.setZeroPos();
@@ -26,7 +26,7 @@ public class FloatControl extends CB_View_Base {
     }
 
     public void setProgress(int value) {
-        progressbar.setPogress(value);
+        progressbar.fillBarAt(value);
         float ButtonPos = progressbar.getProgressDrawWidth() - slideButton.getHalfWidth();
         if (ButtonPos < 0)
             ButtonPos = 0;
@@ -60,7 +60,7 @@ public class FloatControl extends CB_View_Base {
         if (slideButton.isDisabled())
             return false;
         if (changeListener != null)
-            changeListener.ValueChanged(progressbar.getCurrentPogress());
+            changeListener.ValueChanged(progressbar.getCurrentPercent());
         return true;
     }
 

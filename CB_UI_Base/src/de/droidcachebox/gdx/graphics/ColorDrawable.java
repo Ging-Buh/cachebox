@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 
@@ -21,6 +22,10 @@ public class ColorDrawable extends EmptyDrawable {
 
     public ColorDrawable(HSV_Color color) {
         setColor(color);
+    }
+
+    public ColorDrawable(Color color) {
+        setColor(new HSV_Color(color));
     }
 
     @Override

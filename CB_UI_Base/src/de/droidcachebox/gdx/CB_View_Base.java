@@ -205,16 +205,16 @@ public class CB_View_Base extends GL_View_Base {
      * * Add the object at the end of the current row. the current row will be
      * ended after the object is added.
      **/
-    public void addLast(GL_View_Base c, float Weight) {
-        c.weight = Weight;
+    public void addLast(GL_View_Base c, float weight) {
+        c.weight = weight;
         addMe(c, true);
     }
 
     /**
      * Add the object at the end of the current row.
      **/
-    public void addNext(GL_View_Base c, float Weight) {
-        c.weight = Weight;
+    public void addNext(GL_View_Base c, float weight) {
+        c.weight = weight;
         addMe(c, false);
     }
 

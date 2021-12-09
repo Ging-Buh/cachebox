@@ -52,11 +52,11 @@ public class LayerManager {
     private static final String sClass = "LayerManager";
     private static LayerManager manager;
     private final ArrayList<Layer> fixedLayers;
-    private final ArrayList<Layer> layers;
     private final ArrayList<Layer> overlayLayers;
+    private ArrayList<Layer> layers;
+    private ArrayList<Layer> newLayerList;
 
     private LayerManager() {
-        layers = new ArrayList<>();
         fixedLayers = new ArrayList<>();
         initFixedLayers();
         overlayLayers = new ArrayList<>();
@@ -79,7 +79,7 @@ public class LayerManager {
 
     public Layer getLayer(String[] names) {
 
-        fillLayerList();
+        layers = fillLayerList();
 
         if (names[0].equals("OSM") || names[0].length() == 0)
             names[0] = "Mapnik";
@@ -128,17 +128,17 @@ public class LayerManager {
         // fixedLayers.add(new Layer(MapType.ONLINE, Type.normal, "Google Hybrid", "", "http://mt0.google.com/vt/lyrs=y@142&x={x}&y={y}&z={z}"));
     }
 
-    private void fillLayerList() {
+    private ArrayList<Layer> fillLayerList() {
         // after selection of Database
-        layers.clear();
-        layers.addAll(fixedLayers);
+        newLayerList = new ArrayList<>();
+        newLayerList.addAll(fixedLayers);
 
         try {
             String url = UserMap1.getValue();
             if (url.length() == 0) {
                 url = UserMap1.getDefaultValue();
             }
-            layers.add(getUserMap(url, "UserMap1"));
+            newLayerList.add(getUserMap(url, "UserMap1"));
         } catch (Exception e) {
             Log.err(sClass, "Init UserMap1", e);
         }
@@ -146,7 +146,7 @@ public class LayerManager {
         try {
             String url = UserMap2.getValue();
             if (url.length() > 0) {
-                layers.add(getUserMap(url, "UserMap2"));
+                newLayerList.add(getUserMap(url, "UserMap2"));
             }
         } catch (Exception e) {
             Log.err(sClass, "Init UserMap2", e);
@@ -154,19 +154,21 @@ public class LayerManager {
 
         Array<String> alreadyAdded = new Array<>(); // avoid same file in different directories
         Log.info(sClass, "dirMaps = " + MapPackFolderLocal.getValue()); // should depend on repository setting (own or global)
-        addToLayers(MapPackFolderLocal.getValue(), alreadyAdded);
+        addToLayers(MapPackFolderLocal.getValue(), alreadyAdded, newLayerList);
         Log.info(sClass, "dirGlobalMaps = " + MapPackFolder.getValue());
-        addToLayers(MapPackFolder.getValue(), alreadyAdded);
+        addToLayers(MapPackFolder.getValue(), alreadyAdded, newLayerList);
 
         if (currentMapLayer.getValue()[0].startsWith("content")) {
-            layers.add(new MapsForgeLayer(currentMapLayer.getValue()[0]));
+            newLayerList.add(new MapsForgeLayer(currentMapLayer.getValue()[0]));
         }
 
-        Collections.sort(layers, (layer1, layer2) -> layer1.getName().toLowerCase().compareTo(layer2.getName().toLowerCase()));
+        Collections.sort(newLayerList, (layer1, layer2) -> layer1.getName().toLowerCase().compareTo(layer2.getName().toLowerCase()));
+
+        return newLayerList;
 
     }
 
-    private void addToLayers(String directoryName, Array<String> alreadyAdded) {
+    private void addToLayers(String directoryName, Array<String> alreadyAdded, ArrayList<Layer> newLayerList) {
         String[] fileNames = FileFactory.createFile(directoryName).list();
         if (fileNames != null && fileNames.length > 0) {
             for (String fileName : fileNames) {
@@ -184,7 +186,7 @@ public class LayerManager {
                         } else if (lowerCaseFileName.endsWith("bsh")) {
                             layer = new BshLayer(pathAndName);
                         } else continue;
-                        layers.add(layer);
+                        newLayerList.add(layer);
                         alreadyAdded.add(fileName);
                     } catch (Exception ex) {
                         Log.err(sClass, "addToLayers: " + directoryName + "/" + fileName + ex.toString());
@@ -222,7 +224,12 @@ public class LayerManager {
     }
 
     public ArrayList<Layer> getLayers() {
-        return layers;
+        // todo check if new list is necessary (cause never accessed again)
+        return fillLayerList();
+    }
+
+    public void activateNewList() {
+        layers = newLayerList;
     }
 
     public ArrayList<Layer> getOverlayLayers() {

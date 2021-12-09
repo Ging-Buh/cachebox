@@ -40,6 +40,7 @@ import com.badlogic.gdx.backends.android.AndroidEventListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -472,7 +473,6 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                     mainActivity.getIntent().removeExtra("MapDownloadPath");
                     FZKDownload.getInstance().importByUrl(externalRequestMapDownloadPath);
                     GL.that.showActivity(FZKDownload.getInstance());
-                    FZKDownload.getInstance().importByUrlFinished();
                 }
                 String externalRequestName = extras.getString("Name");
                 if (externalRequestName != null) {
@@ -584,6 +584,16 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
         } catch (Exception ex) {
             Log.err(sClass, path, ex);
             throw new FileNotFoundException("Can't get Input Stream!");
+        }
+    }
+
+    @Override
+    public OutputStream getOutputStream(String contentFile) throws FileNotFoundException {
+        try {
+            return mainActivity.getContentResolver().openOutputStream(Uri.parse(contentFile));
+        } catch (Exception ex) {
+            Log.err(sClass, contentFile, ex);
+            throw new FileNotFoundException("Can't get Output Stream!");
         }
     }
 
