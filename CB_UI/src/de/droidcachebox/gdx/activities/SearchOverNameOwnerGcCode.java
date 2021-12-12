@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.Category;
 import de.droidcachebox.database.GpxFilename;
-import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -337,7 +337,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             if (geoCacheRelateds.size() > 0) {
                                 try {
                                     importAnimation.setAnimationType(AnimationType.Work);
-                                    WriteIntoDB.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
+                                    CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
                                 } catch (InterruptedException e) {
                                     Log.err(log, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
                                 }

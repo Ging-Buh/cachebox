@@ -19,6 +19,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import java.text.NumberFormat;
+
 import de.droidcachebox.InvalidateTextureListeners;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
@@ -26,8 +29,6 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.log.Log;
-
-import java.text.NumberFormat;
 
 public class MapScale extends CB_View_Base implements InvalidateTextureListeners.InvalidateTextureListener {
     private static final String log = "MapScale";
@@ -46,16 +47,16 @@ public class MapScale extends CB_View_Base implements InvalidateTextureListeners
     private float pixelsPerMeter;
     private int generatedZomm = -1;
     private BitmapFontCache fontCache;
-    private float sollwidth;
+    private final float wantedWidth;
     private Drawable CachedScaleDrawable;
     private float drawableWidth = 0;
     private String distanceString;
-    private boolean imperialunits;
+    private final boolean imperialUnits;
 
     public MapScale(CB_RectF rec, String Name, MapViewBase mapInstanz, boolean useImperialUnits) {
         super(rec, Name);
-        imperialunits = useImperialUnits;
-        sollwidth = rec.getWidth();
+        imperialUnits = useImperialUnits;
+        wantedWidth = rec.getWidth();
         this.mapInstanz = mapInstanz;
         CachedScaleDrawable = null;
         fontCache = new BitmapFontCache(Fonts.getNormal());
@@ -92,8 +93,8 @@ public class MapScale extends CB_View_Base implements InvalidateTextureListeners
             int multiplyer = 1;
             double scaleSize = 0;
             int idx = 0;
-            while (scaleSize < (sollwidth * 0.45)) {
-                scaleLength = multiplyer * scaleSteps[idx] * ((imperialunits) ? 1.6093 : 1);
+            while (scaleSize < (wantedWidth * 0.45)) {
+                scaleLength = multiplyer * scaleSteps[idx] * ((imperialUnits) ? 1.6093 : 1);
                 scaleUnits = scaleNumUnits[idx];
 
                 scaleSize = pixelsPerMeter * scaleLength;
@@ -108,7 +109,7 @@ public class MapScale extends CB_View_Base implements InvalidateTextureListeners
             Log.err(log, "MapView.zoomChanged()", "", exc);
         }
 
-        if (imperialunits) {
+        if (imperialUnits) {
             nf.setMaximumFractionDigits(2);
             distanceString = nf.format(scaleLength / 1609.3) + "mi";
         } else if (scaleLength <= 500) {

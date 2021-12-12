@@ -68,7 +68,7 @@ import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
 import de.droidcachebox.menu.menuBtn2.ShowWaypoints;
 import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
-import de.droidcachebox.menu.menuBtn3.MapDownload;
+import de.droidcachebox.menu.menuBtn3.MapDownloadMenu;
 import de.droidcachebox.menu.menuBtn3.ShowCompass;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.ShowTracks;
@@ -298,7 +298,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         PlatformAction actionNavigateTo = new PlatformAction("NavigateTo", ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
         mainBtn3.addAction(actionNavigateTo, false, GestureDirection.Down);
         mainBtn3.addAction(ShowTracks.getInstance(), false, GestureDirection.Left);
-        mainBtn3.addAction(MapDownload.getInstance(), false);
+        mainBtn3.addAction(MapDownloadMenu.getInstance(), false);
 
         mainBtn4.addAction(ShowDrafts.getInstance(), Settings.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
         mainBtn4.addAction(ShowSolver1.getInstance(), false, GestureDirection.Left);

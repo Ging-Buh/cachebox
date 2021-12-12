@@ -49,11 +49,11 @@ import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.core.LiveMapQue;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Cache;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
-import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -362,7 +362,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(bubblesCache);
                         if (geoCacheRelateds.size() > 0) {
                             try {
-                                WriteIntoDB.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
+                                CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                             } catch (InterruptedException ex) {
                                 Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
                             }

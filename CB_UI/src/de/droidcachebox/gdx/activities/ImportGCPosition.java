@@ -34,9 +34,9 @@ import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.Category;
 import de.droidcachebox.database.GpxFilename;
-import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
@@ -506,7 +506,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
                         if (geoCacheRelateds.size() > 0) {
                             try {
-                                WriteIntoDB.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
+                                CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
                             } catch (InterruptedException e) {
                                 Log.err(log, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
                             }

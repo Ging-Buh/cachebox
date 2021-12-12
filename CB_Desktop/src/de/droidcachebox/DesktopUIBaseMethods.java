@@ -3,6 +3,7 @@ package de.droidcachebox;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -188,6 +189,11 @@ public class DesktopUIBaseMethods implements PlatformUIBase.UIBaseMethods {
     public InputStream getInputStream(String absolutePath) throws FileNotFoundException {
         // will never be used ?
         return  FileFactory.createFile(absolutePath).getFileInputStream();
+    }
+
+    @Override
+    public OutputStream getOutputStream(String contentFile) throws FileNotFoundException {
+        return FileFactory.createFile(contentFile).getFileOutputStream();
     }
 
     @Override

@@ -118,10 +118,10 @@ public class SQLiteClass implements SQLiteInterface {
     }
 
     @Override
-    public long insert(String tablename, HashMap<String, Object> val) {
+    public long insert(String tableName, HashMap<String, Object> val) {
         long ret = -1;
         try {
-            return myDB.insert(tablename, null, getContentValues(val));
+            return myDB.insert(tableName, null, getContentValues(val));
         } catch (Exception ex) {
             Log.err(log, "insert: ", ex);
         }
@@ -130,9 +130,9 @@ public class SQLiteClass implements SQLiteInterface {
     }
 
     @Override
-    public long update(String tablename, HashMap<String, Object> val, String whereClause, String[] whereArgs) {
+    public long update(String tableName, HashMap<String, Object> val, String whereClause, String[] whereArgs) {
         try {
-            return myDB.update(tablename, getContentValues(val), whereClause, whereArgs);
+            return myDB.update(tableName, getContentValues(val), whereClause, whereArgs);
         } catch (Exception ex) {
             Log.err(log, "update: ", ex);
             return 0;
@@ -140,8 +140,8 @@ public class SQLiteClass implements SQLiteInterface {
     }
 
     @Override
-    public long delete(String tablename, String whereClause, String[] whereArgs) {
-        return myDB.delete(tablename, whereClause, whereArgs);
+    public long delete(String tableName, String whereClause, String[] whereArgs) {
+        return myDB.delete(tableName, whereClause, whereArgs);
     }
 
     @Override
@@ -163,13 +163,13 @@ public class SQLiteClass implements SQLiteInterface {
     }
 
     @Override
-    public long insertWithConflictReplace(String tablename, HashMap<String, Object> val) {
-        return myDB.insertWithOnConflict(tablename, null, getContentValues(val), SQLiteDatabase.CONFLICT_REPLACE);
+    public void insertWithConflictReplace(String tableName, HashMap<String, Object> val) {
+        myDB.insertWithOnConflict(tableName, null, getContentValues(val), SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     @Override
-    public long insertWithConflictIgnore(String tablename, HashMap<String, Object> val) {
-        return myDB.insertWithOnConflict(tablename, null, getContentValues(val), SQLiteDatabase.CONFLICT_IGNORE);
+    public void insertWithConflictIgnore(String tableName, HashMap<String, Object> val) {
+        myDB.insertWithOnConflict(tableName, null, getContentValues(val), SQLiteDatabase.CONFLICT_IGNORE);
     }
 
     @Override

@@ -31,7 +31,6 @@ import de.droidcachebox.database.LogType;
 import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.database.Waypoint;
-import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
@@ -286,7 +285,7 @@ public class Import_GSAK extends ActivityBase {
                             addWayPoints(cache);
                             // GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
                             GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, new ArrayList<>(), new ArrayList<>());
-                            WriteIntoDB.writeCacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
+                            CacheDAO.getInstance().writeCacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
                         }
                     } catch (Exception ex) {
                         Log.err(sKlasse, "Import " + GcCode, ex);

@@ -20,7 +20,6 @@ import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
-import de.droidcachebox.database.WriteIntoDB;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -147,7 +146,7 @@ public class CacheContextMenu {
                     ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
                     if (geoCacheRelateds.size() > 0) {
                         try {
-                            WriteIntoDB.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
+                            CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                         } catch (InterruptedException ex) {
                             Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
                         }

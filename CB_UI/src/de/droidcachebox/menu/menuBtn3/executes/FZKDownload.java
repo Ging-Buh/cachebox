@@ -10,21 +10,27 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.ex_import.BreakawayImportThread;
+import de.droidcachebox.ex_import.UnZip;
 import de.droidcachebox.gdx.ActivityBase;
+import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.ImportAnimation;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
-import de.droidcachebox.gdx.controls.MapDownloadItem;
 import de.droidcachebox.gdx.controls.ProgressBar;
 import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
@@ -35,7 +41,10 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
+import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
 
@@ -43,12 +52,11 @@ public class FZKDownload extends ActivityBase {
     private static final String sClass = "MapDownload";
     private static final String URL_repositoryFREIZEITKARTE = "http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml";
     private static FZKDownload fzkDownload;
-    private final Array<MapRepositoryInfo> mapRepositoryInfos = new Array<>();
+    private final Array<MapInfo> mapInfos = new Array<>();
     private final Array<MapDownloadItem> mapDownloadItems = new Array<>();
     private final ScrollBox scrollBox;
     private boolean areAllDownloadsCompleted = false;
     private int allProgress = 0;
-    private MapRepositoryInfo actMapRepositoryInfo;
     private CB_Button btnOK, btnCancel;
     private CB_Label lblProgressMsg;
     private ProgressBar progressBar;
@@ -58,6 +66,7 @@ public class FZKDownload extends ActivityBase {
     private boolean canceled = false;
     private boolean repositoryXMLisDownloading = false;
     private boolean doImportByUrl;
+    private MapInfo currentMapInfo;
 
     private FZKDownload() {
         super("mapDownloadActivity");
@@ -143,13 +152,13 @@ public class FZKDownload extends ActivityBase {
     }
 
     public void importByUrl(String url) {
-        mapRepositoryInfos.clear();
-        MapRepositoryInfo mapRepositoryInfo = new MapRepositoryInfo();
-        mapRepositoryInfo.url = url;
-        int slashPos = mapRepositoryInfo.url.lastIndexOf("/");
-        mapRepositoryInfo.description = mapRepositoryInfo.url.substring(slashPos + 1);
-        mapRepositoryInfo.size = -1; // ??? MB
-        mapRepositoryInfos.add(mapRepositoryInfo);
+        mapInfos.clear();
+        MapInfo MapInfo = new MapInfo();
+        MapInfo.url = url;
+        int slashPos = MapInfo.url.lastIndexOf("/");
+        MapInfo.description = MapInfo.url.substring(slashPos + 1);
+        MapInfo.size = -1; // ??? MB
+        mapInfos.add(MapInfo);
         fillRepositoryList();
         for (MapDownloadItem item : mapDownloadItems) {
             item.check();
@@ -304,15 +313,15 @@ public class FZKDownload extends ActivityBase {
 
     private void fillDownloadList() {
         scrollBox.removeChilds();
-        mapRepositoryInfos.clear();
+        mapInfos.clear();
 
         System.setProperty("sjxp.namespaces", "false");
-        XMLParser<Map<String, String>> parser = new XMLParser<>(createRepositoryRules().toArray(new IRule[0]));
+        XMLParser<Map<String, String>> parser = new XMLParser<>(createFZKRules().toArray(new IRule[0]));
         parser.parse(new ByteArrayInputStream(repository_freizeitkarte_android.getBytes()), new HashMap<>());
 
         if (ShowMap.getInstance().normalMapView.center.isValid()) {
             MapComparator mapComparator = new MapComparator(ShowMap.getInstance().normalMapView.center);
-            mapRepositoryInfos.sort(mapComparator);
+            mapInfos.sort(mapComparator);
         }
 
         fillRepositoryList();
@@ -324,7 +333,7 @@ public class FZKDownload extends ActivityBase {
         mapDownloadItems.clear();
         float yPos = 0;
         String workPath = getPathForMapFile();
-        for (MapRepositoryInfo map : mapRepositoryInfos) {
+        for (MapInfo map : mapInfos) {
             MapDownloadItem item = new MapDownloadItem(map, workPath, innerWidth);
             item.setY(yPos);
             scrollBox.addChild(item);
@@ -357,14 +366,13 @@ public class FZKDownload extends ActivityBase {
         return pathForMapFile;
     }
 
-    private ArrayList<IRule<Map<String, String>>> createRepositoryRules() {
-
+    private ArrayList<IRule<Map<String, String>>> createFZKRules() {
         ArrayList<IRule<Map<String, String>>> ruleList = new ArrayList<>();
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/Name") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                actMapRepositoryInfo.name = text;
+                currentMapInfo.name = text;
             }
         });
 
@@ -373,14 +381,14 @@ public class FZKDownload extends ActivityBase {
             ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/DescriptionGerman") {
                 @Override
                 public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                    actMapRepositoryInfo.description = text;
+                    currentMapInfo.description = text;
                 }
             });
         } else {
             ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/DescriptionEnglish") {
                 @Override
                 public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                    actMapRepositoryInfo.description = text;
+                    currentMapInfo.description = text;
                 }
             });
         }
@@ -388,69 +396,101 @@ public class FZKDownload extends ActivityBase {
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/Url") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                actMapRepositoryInfo.url = text;
+                currentMapInfo.url = text;
             }
         });
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/Size") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                actMapRepositoryInfo.size = Integer.parseInt(text);
+                currentMapInfo.size = Integer.parseInt(text);
             }
         });
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/Checksum") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                actMapRepositoryInfo.md5 = text;
+                currentMapInfo.md5 = text;
             }
         });
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/MapsforgeBoundingBoxMinLat") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                actMapRepositoryInfo.minLat = Integer.parseInt(text) / 1000000f;
+                currentMapInfo.minLat = Integer.parseInt(text) / 1000000f;
             }
         });
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/MapsforgeBoundingBoxMinLon") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                actMapRepositoryInfo.minLon = Integer.parseInt(text) / 1000000f;
+                currentMapInfo.minLon = Integer.parseInt(text) / 1000000f;
             }
         });
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/MapsforgeBoundingBoxMaxLat") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                actMapRepositoryInfo.maxLat = Integer.parseInt(text) / 1000000f;
+                currentMapInfo.maxLat = Integer.parseInt(text) / 1000000f;
             }
         });
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/Freizeitkarte/Map/MapsforgeBoundingBoxMaxLon") {
             @Override
             public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
-                actMapRepositoryInfo.maxLon = Integer.parseInt(text) / 1000000f;
+                currentMapInfo.maxLon = Integer.parseInt(text) / 1000000f;
             }
         });
 
         ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/Freizeitkarte/Map") {
             @Override
             public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values) {
-
                 if (isStartTag) {
-                    actMapRepositoryInfo = new MapRepositoryInfo();
+                    currentMapInfo = new MapInfo();
                 } else {
-                    mapRepositoryInfos.add(actMapRepositoryInfo);
+                    mapInfos.add(currentMapInfo);
                 }
-
             }
         });
 
         return ruleList;
     }
 
-    public static class MapRepositoryInfo {
+    static class MapComparator implements Comparator<MapInfo> {
+        LatLong centre;
+
+        public MapComparator(LatLong centre) {
+            this.centre = centre;
+        }
+
+        @Override
+        public int compare(MapInfo a, MapInfo b) {
+            if ((a == null) || (b == null)) {
+                return 0;
+            } else {
+                boolean aIsIn = a.getBoundingBox().contains(centre);
+                boolean bIsIn = b.getBoundingBox().contains(centre);
+                if (aIsIn && bIsIn) {
+                    // simplifying by comparing the diagonal of the BoundingBox.
+                    double ad = a.getBoundingBox().getCenterPoint().distance(centre) / a.getMin().distance(a.getMax());
+                    double bd = b.getBoundingBox().getCenterPoint().distance(centre) / b.getMin().distance(b.getMax());
+                    if (!a.description.startsWith("*")) a.description = "*" + a.description;
+                    if (!b.description.startsWith("*")) b.description = "*" + b.description;
+                    return (int) ((bd - ad) * 1000);
+                } else {
+                    if (aIsIn) {
+                        return 1;
+                    } else if (bIsIn) {
+                        return -1;
+                    }
+                    // don't need this map
+                    return 0;
+                }
+            }
+        }
+    }
+
+    private class MapInfo {
         public String name;
         public String description;
         public String url;
@@ -480,37 +520,161 @@ public class FZKDownload extends ActivityBase {
         }
     }
 
-    static class MapComparator implements Comparator<MapRepositoryInfo> {
-        LatLong centre;
+    private class MapDownloadItem extends CB_View_Base {
+        private static final String sClass = "MapDownloadItem";
+        private final CB_CheckBox doDownloadMap;
+        private final ProgressBar progressBar;
+        private final MapInfo mapInfo;
+        private final String pathForMapFile;
+        private final AtomicBoolean downloadIsRunning = new AtomicBoolean(false);
+        private final Download download;
+        private int lastProgress = 0;
+        private boolean canceled = false;
 
-        public MapComparator(LatLong centre) {
-            this.centre = centre;
+        public MapDownloadItem(MapInfo _mapInfo, String _pathForMapFile, float _itemWidth) {
+            super(_mapInfo.name);
+            mapInfo = _mapInfo;
+            pathForMapFile = _pathForMapFile;
+            doDownloadMap = new CB_CheckBox();
+            float progressHeight;
+            if (mapInfo.size > -1) {
+                progressHeight = (Sprites.progressBack.getBottomHeight() + Sprites.progressBack.getTopHeight());
+            } else {
+                progressHeight = UiSizes.getInstance().getButtonHeight();
+            }
+            setHeight(doDownloadMap.getHeight() + progressHeight + 2 * UiSizes.getInstance().getMargin());
+            setWidth(_itemWidth);
+            Box rightBox = new Box(getWidth(), getHeight());
+            String name = mapInfo.description.replace("Freizeitkarte", "").trim();
+            name = name.replace("freizeitkarte_", "");
+            CB_Label lblName = new CB_Label(name);
+            CB_Label lblSize;
+            if (mapInfo.size > 0) {
+                int s = mapInfo.size / 1024 / 1024;
+                lblSize = new CB_Label(s + " MB");
+            } else {
+                lblSize = new CB_Label("??? MB");
+            }
+            lblSize.setHAlignment(CB_Label.HAlignment.RIGHT);
+            addNext(doDownloadMap, FIXED);
+            addLast(rightBox);
+            doDownloadMap.setY((getHeight() - doDownloadMap.getHeight()) / 2);
+            rightBox.addNext(lblName);
+            rightBox.addLast(lblSize, -0.20f);
+            progressBar = new ProgressBar(new CB_RectF(0, 0, 0, progressHeight));
+            rightBox.addLast(progressBar);
+            adjustHeight();
+
+            chkExists();
+
+            download = new Download((message, progressMessage, progress) -> {
+                if (mapInfo.size > -1) {
+                    progressBar.setValues(((progress) * 100) / (mapInfo.size / 1024), "");
+                } else {
+                    progressBar.setValues(100, progress / 1024 + " MB");
+                }
+            });
+
         }
 
-        @Override
-        public int compare(MapRepositoryInfo a, MapRepositoryInfo b) {
-            if ((a == null) || (b == null)) {
-                return 0;
-            } else {
-                boolean aIsIn = a.getBoundingBox().contains(centre);
-                boolean bIsIn = b.getBoundingBox().contains(centre);
-                if (aIsIn && bIsIn) {
-                    // simplifying by comparing the diagonal of the BoundingBox.
-                    double ad = a.getBoundingBox().getCenterPoint().distance(centre) / a.getMin().distance(a.getMax());
-                    double bd = b.getBoundingBox().getCenterPoint().distance(centre) / b.getMin().distance(b.getMax());
-                    if (!a.description.startsWith("*")) a.description = "*" + a.description;
-                    if (!b.description.startsWith("*")) b.description = "*" + b.description;
-                    return (int) ((bd - ad) * 1000);
-                } else {
-                    if (aIsIn) {
-                        return 1;
-                    } else if (bIsIn) {
-                        return -1;
+        private void chkExists() {
+            int slashPos = mapInfo.url.lastIndexOf("/");
+            String zipFile = mapInfo.url.substring(slashPos);
+
+            String FileString = FileIO.getFileNameWithoutExtension(zipFile);
+
+            AbstractFile abstractFile = FileFactory.createFile(pathForMapFile + "/" + FileString);
+            if (abstractFile.exists()) {
+                doDownloadMap.setChecked(true);
+                doDownloadMap.disable();
+                doDownloadMap.setClickHandler((view, x, y, pointer, button) -> {
+                    if (doDownloadMap.isDisabled()) {
+                        doDownloadMap.enable();
+                    } else {
+                        doDownloadMap.setChecked(true);
+                        doDownloadMap.disable();
                     }
-                    // don't need this map
-                    return 0;
-                }
+                    return true;
+                });
             }
+        }
+
+        public void beginDownload() {
+            canceled = false;
+
+            if (!doDownloadMap.isChecked() || doDownloadMap.isDisabled()) {
+                lastProgress = -1;
+                return;
+            }
+
+            downloadIsRunning.set(true);
+
+            lastProgress = 0;
+
+            new Thread(() -> {
+                int slashPos = mapInfo.url.lastIndexOf("/");
+                String zipFile = mapInfo.url.substring(slashPos + 1);
+                String target = pathForMapFile + "/" + zipFile;
+                progressBar.setValues(lastProgress, lastProgress + " %");
+                if (download.download(mapInfo.url, target)) {
+                    if (target.endsWith(".zip")) {
+                        if (mapInfo.size == -1)
+                            progressBar.setValues(100, "Unzip " + FileIO.getFileName(target) + " start.");
+                        Log.info(sClass, "Unzip " + target + " start.");
+                        try {
+                            UnZip.extractHere(target);
+                            if (mapInfo.size == -1)
+                                progressBar.setValues(100, "Unzip " + FileIO.getFileName(target) + " end.");
+                        } catch (Exception ex) {
+                            Log.err(sClass, "Unzip error: " + ex.toString());
+                            if (mapInfo.size == -1)
+                                progressBar.setValues(100, "Unzip " + FileIO.getFileName(target) + " error.");
+                        }
+                        Log.info(sClass, "Unzip " + target + " end.");
+                    }
+                }
+                // delete downloaded file
+                if (target.endsWith(".zip")) {
+                    try {
+                        FileFactory.createFile(target).delete();
+                        Log.info(sClass, "Deleted " + target);
+                    } catch (IOException e) {
+                        progressBar.setValues(100, FileIO.getFileName(target) + "not deleted.");
+                        Log.err(sClass, target, e);
+                    }
+                }
+
+                lastProgress = canceled ? 0 : 100;
+                progressBar.setValues(lastProgress, lastProgress + " %");
+                downloadIsRunning.set(false);
+                Log.info(sClass, "Download everything ready");
+            }).start();
+
+        }
+
+        public void cancelDownload() {
+            canceled = true;
+            download.cancelDownload();
+        }
+
+        public int getDownloadProgress() {
+            return lastProgress;
+        }
+
+        public boolean isFinished() {
+            return !downloadIsRunning.get();
+        }
+
+        public void enable() {
+            if (doDownloadMap.isChecked())
+                doDownloadMap.disable();
+            else
+                doDownloadMap.enable();
+        }
+
+        public void check() {
+            doDownloadMap.enable();
+            doDownloadMap.setChecked(true);
         }
     }
 

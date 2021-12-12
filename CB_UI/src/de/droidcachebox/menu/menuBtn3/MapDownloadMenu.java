@@ -8,16 +8,16 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.menuBtn3.executes.FZKDownload;
 
-public class MapDownload extends AbstractAction {
-    private static MapDownload that;
+public class MapDownloadMenu extends AbstractAction {
+    private static MapDownloadMenu mapDownloadMenu;
 
-    private MapDownload() {
+    private MapDownloadMenu() {
         super("MapDownload");
     }
 
-    public static MapDownload getInstance() {
-        if (that == null) that = new MapDownload();
-        return that;
+    public static MapDownloadMenu getInstance() {
+        if (mapDownloadMenu == null) mapDownloadMenu = new MapDownloadMenu();
+        return mapDownloadMenu;
     }
 
     @Override

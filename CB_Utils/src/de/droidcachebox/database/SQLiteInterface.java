@@ -16,9 +16,9 @@ public interface SQLiteInterface {
 
     long insert(String table, HashMap<String, Object> parameters);
 
-    long insertWithConflictReplace(String table, HashMap<String, Object> parameters);
+    void insertWithConflictReplace(String table, HashMap<String, Object> parameters);
 
-    long insertWithConflictIgnore(String table, HashMap<String, Object> parameters);
+    void insertWithConflictIgnore(String table, HashMap<String, Object> parameters);
 
     long update(String table, HashMap<String, Object> parameters, String whereClause, String[] whereArgs);
 

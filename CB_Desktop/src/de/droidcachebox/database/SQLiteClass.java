@@ -362,9 +362,9 @@ public class SQLiteClass implements SQLiteInterface {
     }
 
     @Override
-    public long insertWithConflictReplace(String tablename, HashMap<String, Object> val) {
+    public void insertWithConflictReplace(String tablename, HashMap<String, Object> val) {
         if (myDB == null)
-            return 0;
+            return;
 
         Log.trace(log, "insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
         StringBuilder sql = new StringBuilder();
@@ -404,10 +404,9 @@ public class SQLiteClass implements SQLiteInterface {
                 st.setObject(j, entry.getValue());
             }
 
-            return st.executeUpdate();
+            st.executeUpdate();
 
         } catch (SQLException e) {
-            return 0;
         } finally {
             try {
                 st.close();
@@ -420,9 +419,9 @@ public class SQLiteClass implements SQLiteInterface {
     }
 
     @Override
-    public long insertWithConflictIgnore(String tablename, HashMap<String, Object> val) {
+    public void insertWithConflictIgnore(String tablename, HashMap<String, Object> val) {
         if (myDB == null)
-            return 0;
+            return;
 
         Log.trace(log, "insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
 
@@ -463,10 +462,9 @@ public class SQLiteClass implements SQLiteInterface {
                 st.setObject(j, entry.getValue());
             }
 
-            return st.executeUpdate();
+            st.executeUpdate();
 
         } catch (SQLException e) {
-            return 0;
         } finally {
             try {
                 st.close();
