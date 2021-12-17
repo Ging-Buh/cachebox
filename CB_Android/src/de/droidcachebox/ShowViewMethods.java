@@ -55,6 +55,7 @@ import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
+import de.droidcachebox.menu.menuBtn3.executes.TrackRecorder;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;

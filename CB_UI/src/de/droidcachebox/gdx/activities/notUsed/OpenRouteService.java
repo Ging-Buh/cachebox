@@ -1,7 +1,6 @@
 package de.droidcachebox.gdx.activities.notUsed;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.TrackList;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.IRunOnGL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
@@ -15,6 +14,7 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;

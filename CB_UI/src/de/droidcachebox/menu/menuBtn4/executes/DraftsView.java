@@ -30,7 +30,6 @@ import java.util.TimeZone;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -292,13 +291,13 @@ public class DraftsView extends V_ListView {
                 if (!cache.isFound())
                     newDraft.foundNumber++;
                 if (newDraft.comment.length() == 0)
-                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Settings.FoundTemplate.getValue(), newDraft);
+                    newDraft.comment = TemplateFormatter.replaceTemplate(Settings.FoundTemplate.getValue(), newDraft);
                 break;
             case attended:
                 if (!cache.isFound())
                     newDraft.foundNumber++; //
                 if (newDraft.comment.length() == 0)
-                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Settings.AttendedTemplate.getValue(), newDraft);
+                    newDraft.comment = TemplateFormatter.replaceTemplate(Settings.AttendedTemplate.getValue(), newDraft);
                 // wenn eine Draft Found erzeugt werden soll und der Cache noch
                 // nicht gefunden war -> foundNumber um 1 erhöhen
                 break;
@@ -306,21 +305,21 @@ public class DraftsView extends V_ListView {
                 if (!cache.isFound())
                     newDraft.foundNumber++; //
                 if (newDraft.comment.length() == 0)
-                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Settings.WebcamTemplate.getValue(), newDraft);
+                    newDraft.comment = TemplateFormatter.replaceTemplate(Settings.WebcamTemplate.getValue(), newDraft);
                 // wenn eine Draft Found erzeugt werden soll und der Cache noch
                 // nicht gefunden war -> foundNumber um 1 erhöhen
                 break;
             case didnt_find:
                 if (newDraft.comment.length() == 0)
-                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Settings.DNFTemplate.getValue(), newDraft);
+                    newDraft.comment = TemplateFormatter.replaceTemplate(Settings.DNFTemplate.getValue(), newDraft);
                 break;
             case needs_maintenance:
                 if (newDraft.comment.length() == 0)
-                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Settings.NeedsMaintenanceTemplate.getValue(), newDraft);
+                    newDraft.comment = TemplateFormatter.replaceTemplate(Settings.NeedsMaintenanceTemplate.getValue(), newDraft);
                 break;
             case note:
                 if (newDraft.comment.length() == 0)
-                    newDraft.comment = TemplateFormatter.ReplaceTemplate(Settings.AddNoteTemplate.getValue(), newDraft);
+                    newDraft.comment = TemplateFormatter.replaceTemplate(Settings.AddNoteTemplate.getValue(), newDraft);
                 break;
             default:
                 break;

@@ -34,7 +34,6 @@ import java.util.TimerTask;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CacheDAO;
@@ -400,7 +399,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
     private void setupLogText(String text) {
         // todo for ##owner## the cache must be selected (if not first log)
-        text = TemplateFormatter.ReplaceTemplate(text, currentDraft);
+        text = TemplateFormatter.replaceTemplate(text, currentDraft);
         switch (btnHow.getText()) {
             case "=":
                 currentDraft.comment = text;

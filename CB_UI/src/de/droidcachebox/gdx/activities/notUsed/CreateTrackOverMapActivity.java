@@ -27,7 +27,6 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Date;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.TrackList;
 import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.gdx.ActivityBase;
@@ -46,6 +45,7 @@ import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.menuBtn3.executes.MapView;
 import de.droidcachebox.menu.menuBtn3.executes.MapView.MapMode;
+import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.MoveableList;

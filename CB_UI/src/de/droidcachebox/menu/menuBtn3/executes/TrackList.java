@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox;
+package de.droidcachebox.menu.menuBtn3.executes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
+import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.DrawUtils;
 import de.droidcachebox.gdx.Fonts;
@@ -35,7 +36,6 @@ import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.locator.map.PolylineReduction;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
-import de.droidcachebox.menu.menuBtn3.executes.MapView;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 

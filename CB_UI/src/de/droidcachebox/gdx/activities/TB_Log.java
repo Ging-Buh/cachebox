@@ -24,7 +24,6 @@ import static de.droidcachebox.settings.Config_Core.br;
 import java.util.Date;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Draft;
@@ -52,6 +51,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.menuBtn1.executes.Trackables;
+import de.droidcachebox.menu.menuBtn4.executes.TemplateFormatter;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
@@ -205,23 +205,23 @@ public class TB_Log extends ActivityBase {
         switch (this.LT) {
             case discovered:
                 btnAction.setImage(Sprites.getSprite(IconName.TBDISCOVER.name()));
-                edit.setText(TemplateFormatter.ReplaceTemplate(Settings.DiscoverdTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.DiscoverdTemplate.getValue(), TB));
                 break;
             case visited:
                 btnAction.setImage(Sprites.getSprite(IconName.TBVISIT.name()));
-                edit.setText(TemplateFormatter.ReplaceTemplate(Settings.VisitedTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.VisitedTemplate.getValue(), TB));
                 break;
             case dropped_off:
                 btnAction.setImage(Sprites.getSprite(IconName.TBDROP.name()));
-                edit.setText(TemplateFormatter.ReplaceTemplate(Settings.DroppedTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.DroppedTemplate.getValue(), TB));
                 break;
             case grab_it:
                 btnAction.setImage(Sprites.getSprite(IconName.TBGRAB.name()));
-                edit.setText(TemplateFormatter.ReplaceTemplate(Settings.GrabbedTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.GrabbedTemplate.getValue(), TB));
                 break;
             case retrieve:
                 btnAction.setImage(Sprites.getSprite(IconName.TBPICKED.name()));
-                edit.setText(TemplateFormatter.ReplaceTemplate(Settings.PickedTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.PickedTemplate.getValue(), TB));
                 break;
             case note:
                 btnAction.setImage(Sprites.getSprite(IconName.TBNOTE.name()));

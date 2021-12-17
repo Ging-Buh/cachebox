@@ -14,7 +14,6 @@ import java.awt.event.WindowListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.droidcachebox.TrackList;
 import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.CBLocation.ProviderType;
 import de.droidcachebox.locator.Coordinate;
@@ -25,6 +24,7 @@ import de.droidcachebox.locator.GpsStrength;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.AbstractFile;

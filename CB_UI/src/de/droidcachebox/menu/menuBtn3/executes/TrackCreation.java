@@ -6,7 +6,6 @@ import java.util.Date;
 
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.TrackList;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.ProjectionCoordinate;

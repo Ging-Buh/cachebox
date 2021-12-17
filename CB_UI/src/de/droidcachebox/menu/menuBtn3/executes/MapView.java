@@ -41,7 +41,6 @@ import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Energy;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.OnResumeListeners;
-import de.droidcachebox.TrackList;
 import de.droidcachebox.WaypointListChangedEventList;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;

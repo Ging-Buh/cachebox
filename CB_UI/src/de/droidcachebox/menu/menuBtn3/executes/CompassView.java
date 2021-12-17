@@ -26,7 +26,6 @@ import java.util.TimeZone;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.InvalidateTextureListeners;
-import de.droidcachebox.SunMoonCalculator;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Waypoint;

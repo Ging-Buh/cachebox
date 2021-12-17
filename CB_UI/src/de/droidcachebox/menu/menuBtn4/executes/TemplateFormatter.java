@@ -1,15 +1,16 @@
-package de.droidcachebox;
+package de.droidcachebox.menu.menuBtn4.executes;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.droidcachebox.GlobalCore;
 import de.droidcachebox.database.Draft;
 import de.droidcachebox.database.Trackable;
 import de.droidcachebox.settings.Settings;
 
 public class TemplateFormatter {
-    public static String ReplaceTemplate(String template, Draft draft) {
+    public static String replaceTemplate(String template, Draft draft) {
         template = template.replace("##finds##", String.valueOf(draft.foundNumber));
         DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
         String stime = iso8601Format.format(draft.timestamp);
@@ -30,11 +31,11 @@ public class TemplateFormatter {
         return template;
     }
 
-    public static String ReplaceTemplate(String template, Trackable TB) {
-        return ReplaceTemplate(template, new Date());
+    public static String replaceTemplate(String template, Trackable trackable) {
+        return replaceTemplate(template, new Date());
     }
 
-    public static String ReplaceTemplate(String template, Date timestamp) {
+    public static String replaceTemplate(String template, Date timestamp) {
         DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
         String stime = iso8601Format.format(timestamp);
         iso8601Format = new SimpleDateFormat("dd-MM-yyyy");

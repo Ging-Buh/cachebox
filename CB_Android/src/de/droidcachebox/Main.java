@@ -85,6 +85,7 @@ import de.droidcachebox.maps.BRouter;
 import de.droidcachebox.menu.MainViewInit;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.menu.menuBtn3.executes.TrackRecorder;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ActivityUtils;

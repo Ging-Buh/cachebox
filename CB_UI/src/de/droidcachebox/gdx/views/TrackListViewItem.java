@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import de.droidcachebox.TrackList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -31,6 +30,7 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;

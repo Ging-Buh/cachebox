@@ -9,7 +9,6 @@ import static de.droidcachebox.core.GroundspeakAPI.uploadTrackableLog;
 import java.util.Date;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.TemplateFormatter;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CoreCursor;
@@ -35,6 +34,7 @@ import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.TrackableListViewItem;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn4.executes.TemplateFormatter;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ICancelRunnable;
@@ -189,17 +189,17 @@ public class Trackables extends V_ListView {
         cm.addMenuItem("RefreshInventory", null, this::refreshTbList);
         cm.addMenuItem("all_note", "", Sprites.getSprite(IconName.TBNOTE.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.note), TemplateFormatter.ReplaceTemplate(Settings.AddNoteTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.note), TemplateFormatter.replaceTemplate(Settings.AddNoteTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_visit", "", Sprites.getSprite(IconName.TBVISIT.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.visited), TemplateFormatter.ReplaceTemplate(Settings.VisitedTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.visited), TemplateFormatter.replaceTemplate(Settings.VisitedTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_dropped", "", Sprites.getSprite(IconName.TBDROP.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.dropped_off), TemplateFormatter.ReplaceTemplate(Settings.DroppedTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.dropped_off), TemplateFormatter.replaceTemplate(Settings.DroppedTemplate.getValue(), new Date()));
             refreshTbList();
             return true;
         });

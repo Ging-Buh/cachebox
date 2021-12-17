@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.TrackList;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.list.Adapter;
