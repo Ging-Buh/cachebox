@@ -97,10 +97,10 @@ import de.droidcachebox.locator.map.ZoomScale;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.PointL;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
 public class MapView extends MapViewBase implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
@@ -350,7 +350,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
             if (infoBubble.saveButtonClicked(x, y)) {
                 wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
 
-                }, new ICancelRunnable() {
+                }, new TestCancelRunnable() {
 
                     @Override
                     public void run() {

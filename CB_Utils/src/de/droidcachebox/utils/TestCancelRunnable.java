@@ -20,6 +20,6 @@ package de.droidcachebox.utils;
  *
  * @author Longri
  */
-public interface ICancelRunnable extends ICancel {
+public interface TestCancelRunnable extends TestCancel {
     void run();
 }

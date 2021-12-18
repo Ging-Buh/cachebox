@@ -15,6 +15,6 @@
  */
 package de.droidcachebox.utils;
 
-public interface ICancel {
+public interface TestCancel {
     boolean doCancel();
 }

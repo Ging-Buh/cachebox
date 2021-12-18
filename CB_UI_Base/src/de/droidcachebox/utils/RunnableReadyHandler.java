@@ -5,7 +5,7 @@ package de.droidcachebox.utils;
  *
  * @author Longri
  */
-public abstract class RunnableReadyHandler implements ICancelRunnable {
+public abstract class RunnableReadyHandler implements TestCancelRunnable {
 
     private Thread mRunThread;
     private boolean isCanceled = false;

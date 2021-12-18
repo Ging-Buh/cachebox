@@ -17,8 +17,8 @@ import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.MathUtils;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.UnitFormatter;
 
 public class OpenRouteService {
@@ -64,7 +64,7 @@ public class OpenRouteService {
                                     // TODO Handle Cancel Clicket
 
                                 }
-                            }, new ICancelRunnable() {
+                            }, new TestCancelRunnable() {
 
                                 @Override
                                 public void run() {

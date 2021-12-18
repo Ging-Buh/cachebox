@@ -34,50 +34,50 @@ import de.droidcachebox.utils.ProgressChangedEvent;
  */
 public class WebbUtils {
 
-    protected WebbUtils() {}
-
     /**
      * Convert a Map to a query string.
+     *
      * @param values the map with the values
      *               <code>null</code> will be encoded as empty string, all other objects are converted to
      *               String by calling its <code>toString()</code> method.
      * @return e.g. "key1=value&amp;key2=&amp;email=max%40example.com"
      */
     public static String queryString(Map<String, Object> values) {
-        StringBuilder sbuf = new StringBuilder();
+        StringBuilder sBuf = new StringBuilder();
         String separator = "";
 
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             Object entryValue = entry.getValue();
             if (entryValue instanceof Object[]) {
                 for (Object value : (Object[]) entryValue) {
-                    appendParam(sbuf, separator, entry.getKey(), value);
+                    appendParam(sBuf, separator, entry.getKey(), value);
                     separator = "&";
                 }
             } else if (entryValue instanceof Iterable) {
-                for (Object multiValue : (Iterable) entryValue) {
-                    appendParam(sbuf, separator, entry.getKey(), multiValue);
+                for (Object multiValue : (Iterable<?>) entryValue) {
+                    appendParam(sBuf, separator, entry.getKey(), multiValue);
                     separator = "&";
                 }
             } else {
-                appendParam(sbuf, separator, entry.getKey(), entryValue);
+                appendParam(sBuf, separator, entry.getKey(), entryValue);
                 separator = "&";
             }
         }
 
-        return sbuf.toString();
+        return sBuf.toString();
     }
 
-    private static void appendParam(StringBuilder sbuf, String separator, String entryKey, Object value) {
+    private static void appendParam(StringBuilder sBuf, String separator, String entryKey, Object value) {
         String sValue = value == null ? "" : String.valueOf(value);
-        sbuf.append(separator);
-        sbuf.append(urlEncode(entryKey));
-        sbuf.append('=');
-        sbuf.append(urlEncode(sValue));
+        sBuf.append(separator);
+        sBuf.append(urlEncode(entryKey));
+        sBuf.append('=');
+        sBuf.append(urlEncode(sValue));
     }
 
     /**
      * Convert a byte array to a JSONObject.
+     *
      * @param bytes a UTF-8 encoded string representing a JSON object.
      * @return the parsed object
      * @throws WebbException in case of error (usually a parsing error due to invalid JSON)
@@ -94,6 +94,7 @@ public class WebbUtils {
 
     /**
      * Convert a byte array to a JSONArray.
+     *
      * @param bytes a UTF-8 encoded string representing a JSON array.
      * @return the parsed JSON array
      * @throws WebbException in case of error (usually a parsing error due to invalid JSON)
@@ -121,23 +122,21 @@ public class WebbUtils {
         if (is == null) {
             return null;
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        copyStream(is, baos);
-        return baos.toByteArray();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        copyStream(is, byteArrayOutputStream, null);
+        return byteArrayOutputStream.toByteArray();
     }
-
-    public static ProgressChangedEvent streamBufferWritten;
 
     /**
      * Copy complete content of <code>InputStream</code> to <code>OutputStream</code> until EOF.
      * <br>
      * Does not close the InputStream nor OutputStream!
      *
-     * @param input the stream to read the bytes from
+     * @param input  the stream to read the bytes from
      * @param output the stream to write the bytes to
      * @throws IOException when read or write operation fails
      */
-    public static void copyStream(InputStream input, OutputStream output) throws IOException {
+    public static void copyStream(InputStream input, OutputStream output, ProgressChangedEvent streamBufferWritten) throws IOException {
         byte[] buffer = new byte[1024];
         int count;
         int kiloByteCount = 0;
@@ -156,6 +155,7 @@ public class WebbUtils {
      * <br>
      * If you have to deal with dates in this format with JavaScript, it's easy, because the JavaScript
      * Date object has a constructor for strings formatted this way.
+     *
      * @return a new instance
      */
     public static DateFormat getRfc1123DateFormat() {
@@ -210,7 +210,7 @@ public class WebbUtils {
             HttpURLConnection connection,
             Request request,
             boolean compress,
-            int jsonIndentFactor) throws JSONException, UnsupportedEncodingException {
+            int jsonIndentFactor) throws JSONException {
 
         byte[] requestBody = null;
         String bodyStr = null;
@@ -303,7 +303,10 @@ public class WebbUtils {
             throw new WebbException(e);
         } finally {
             if (gzipOS != null) {
-                try { gzipOS.close(); } catch (Exception ignored) {}
+                try {
+                    gzipOS.close();
+                } catch (Exception ignored) {
+                }
             }
         }
     }
@@ -322,7 +325,7 @@ public class WebbUtils {
     }
 
     static <T> void parseResponseBody(Class<T> clazz, Response<T> response, InputStream responseBodyStream)
-            throws UnsupportedEncodingException, IOException {
+            throws IOException {
 
         if (responseBodyStream == null || clazz == Void.class) {
             return;
@@ -346,7 +349,7 @@ public class WebbUtils {
     }
 
     static <T> void parseErrorResponse(Class<T> clazz, Response<T> response, InputStream responseBodyStream)
-            throws UnsupportedEncodingException, IOException {
+            throws IOException {
 
         if (responseBodyStream == null) {
             return;

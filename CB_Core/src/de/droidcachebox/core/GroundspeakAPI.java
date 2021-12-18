@@ -66,7 +66,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.DLong;
 import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.http.Request;
 import de.droidcachebox.utils.http.Response;
 import de.droidcachebox.utils.http.Webb;
@@ -127,7 +127,7 @@ public class GroundspeakAPI {
         // Alternate: implement own RetryManager for 429
         if (ex instanceof WebbException) {
             WebbException we = (WebbException) ex;
-            Response re = we.getResponse();
+            Response<?> re = we.getResponse();
             if (re != null) {
                 JSONObject ej;
                 APIError = re.getStatusCode();
@@ -378,7 +378,6 @@ public class GroundspeakAPI {
                             if (APIError == 404) {
                                 // one bad GCCode (not starting with GC) causes Error 404: will hopefully be changed in an update after 11.26.2018
                                 // a not existing GCCode seems to be ignored, what is ok
-                                doRetry = false;
                                 Log.err(sKlasse, "searchGeoCaches - skipped block cause: " + LastAPIError);
                             } else {
                                 fetchMyCacheLimits();
@@ -503,10 +502,9 @@ public class GroundspeakAPI {
                     .asStream()
                     .getBody();
             String dateString = new SimpleDateFormat("yyyyMMddHHmmss").format(pocketQuery.lastGenerated);
-            String local = pqFolder + "/" + pocketQuery.GUID + ".zip";
-            FileOutputStream localFile = new FileOutputStream(local);
+            FileOutputStream localFile = new FileOutputStream(pqFolder + "/" + pocketQuery.GUID + ".zip");
             outStream = new BufferedOutputStream(localFile);
-            WebbUtils.copyStream(inStream, outStream);
+            WebbUtils.copyStream(inStream, outStream, null);
             APIError = OK;
         } catch (Exception e) {
             Log.err(sKlasse, "fetchPocketQuery", e);
@@ -581,7 +579,7 @@ public class GroundspeakAPI {
         }
     }
 
-    public static ArrayList<LogEntry> fetchGeoCacheLogs(Cache cache, boolean all, ICancelRunnable cancelRun) {
+    public static ArrayList<LogEntry> fetchGeoCacheLogs(Cache cache, boolean all, TestCancelRunnable cancelRun) {
         ArrayList<LogEntry> logList = new ArrayList<>();
 
         LinkedList<String> friendList = new LinkedList<>();

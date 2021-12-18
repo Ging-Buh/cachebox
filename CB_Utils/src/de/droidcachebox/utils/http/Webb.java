@@ -3,10 +3,12 @@ package de.droidcachebox.utils.http;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSocketFactory;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
@@ -14,6 +16,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * Lightweight Java HTTP-Client for calling JSON REST-Services (especially for Android).
@@ -482,7 +488,7 @@ public class Webb {
             if (compress) {
                 os = new GZIPOutputStream(os);
             }
-            WebbUtils.copyStream(is, os);
+            WebbUtils.copyStream(is, os, null);
             os.flush();
         } finally {
             if (os != null) {

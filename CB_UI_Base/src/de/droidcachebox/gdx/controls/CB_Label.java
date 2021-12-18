@@ -53,12 +53,12 @@ public class CB_Label extends CB_View_Base {
     private static final int SCROLL_PAUSE = 60;
     private static float scrollstep = 0;
     private final AtomicBoolean isRenderingOnce = new AtomicBoolean(false);
-    BitmapFontCache mTextObject;
-    String mText;
-    BitmapFont mFont = Fonts.getNormal();
-    Color mColor = COLOR.getFontColor();
+    protected BitmapFontCache mTextObject;
     protected HAlignment mHAlignment = HAlignment.LEFT;
     protected VAlignment mVAlignment = VAlignment.CENTER;
+    private String mText;
+    private BitmapFont mFont = Fonts.getNormal();
+    private Color mColor = COLOR.getFontColor();
     private WrapType mWrapType = WrapType.SINGLELINE;
     private int ErrorCount = 0;
     private int scrollPos = 0;
@@ -385,8 +385,8 @@ public class CB_Label extends CB_View_Base {
                 yPosition = innerHeight - topBorder - mFont.getAscent();
                 break;
             case CENTER:
-                // bounds.height == mFont.getCapHeight()
-                yPosition = (innerHeight + mFont.getCapHeight()) / 2f; //  - mFont.getDescent()
+                // bounds.height == mFont.getCapHeight() only if one line text
+                yPosition = (innerHeight + bounds.height - mFont.getDescent()) / 2f; //  - mFont.getDescent()
                 break;
             case BOTTOM:
                 yPosition = bottomBorder + mFont.getCapHeight() - mFont.getDescent();
@@ -586,6 +586,10 @@ public class CB_Label extends CB_View_Base {
             text = "";
         mText = text.replace("\r\n", "\n");
         setText();
+    }
+
+    public Color getColor() {
+        return mColor;
     }
 
     public enum VAlignment {

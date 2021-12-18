@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.droidcachebox.ex_import.BreakawayImportThread;
 import de.droidcachebox.ex_import.UnZip;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.CB_View_Base;
@@ -55,6 +54,7 @@ public class FZKDownload extends ActivityBase {
     private final Array<MapInfo> mapInfos = new Array<>();
     private final Array<MapDownloadItem> mapDownloadItems = new Array<>();
     private final ScrollBox scrollBox;
+    private final AtomicBoolean canceled;
     private boolean areAllDownloadsCompleted = false;
     private int allProgress = 0;
     private CB_Button btnOK, btnCancel;
@@ -63,7 +63,6 @@ public class FZKDownload extends ActivityBase {
     private boolean importStarted = false;
     private ImportAnimation importAnimation;
     private String repository_freizeitkarte_android;
-    private boolean canceled = false;
     private boolean repositoryXMLisDownloading = false;
     private boolean doImportByUrl;
     private MapInfo currentMapInfo;
@@ -78,6 +77,7 @@ public class FZKDownload extends ActivityBase {
         scrollBox.setHeight(lblProgressMsg.getY() - btnOK.getMaxY() - margin - margin);
         scrollBox.setY(btnOK.getMaxY() + margin);
         scrollBox.setBackground(getBackground());
+        canceled = new AtomicBoolean();
         doImportByUrl = false;
     }
 
@@ -111,17 +111,12 @@ public class FZKDownload extends ActivityBase {
 
         addChild(btnCancel);
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
-            if (BreakawayImportThread.isCanceled()) {
-                BreakawayImportThread.reset();
-                finish();
-                return true;
-            }
-
             if (importStarted) {
                 MsgBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MsgBoxButton.YesNo, MsgBoxIcon.Stop,
                         (which, data) -> {
                             if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                                finishImport();
+                                canceled.set(true);
+                                // finishImport(); // is done by dlProgressChecker
                             }
                             return true;
                         });
@@ -182,7 +177,7 @@ public class FZKDownload extends ActivityBase {
         importAnimation.setAnimationType(AnimationType.Download);
         addChild(importAnimation, false);
 
-        canceled = false;
+        canceled.set(false);
         importStarted = true;
         for (MapDownloadItem item : mapDownloadItems) {
             item.beginDownload();
@@ -190,11 +185,6 @@ public class FZKDownload extends ActivityBase {
         Thread dlProgressChecker = new Thread(() -> {
 
             while (!areAllDownloadsCompleted) {
-                if (canceled) {
-                    for (MapDownloadItem item : mapDownloadItems) {
-                        item.cancelDownload();
-                    }
-                }
 
                 int calcAll = 0;
                 int downloadCount = 0;
@@ -243,7 +233,6 @@ public class FZKDownload extends ActivityBase {
     }
 
     private void finishImport() {
-        canceled = true;
         importStarted = false;
 
         if (!doImportByUrl) {
@@ -333,8 +322,8 @@ public class FZKDownload extends ActivityBase {
         mapDownloadItems.clear();
         float yPos = 0;
         String workPath = getPathForMapFile();
-        for (MapInfo map : mapInfos) {
-            MapDownloadItem item = new MapDownloadItem(map, workPath, innerWidth);
+        for (MapInfo mapInfo : mapInfos) {
+            MapDownloadItem item = new MapDownloadItem(mapInfo, workPath, innerWidth);
             item.setY(yPos);
             scrollBox.addChild(item);
             mapDownloadItems.add(item);
@@ -529,7 +518,6 @@ public class FZKDownload extends ActivityBase {
         private final AtomicBoolean downloadIsRunning = new AtomicBoolean(false);
         private final Download download;
         private int lastProgress = 0;
-        private boolean canceled = false;
 
         public MapDownloadItem(MapInfo _mapInfo, String _pathForMapFile, float _itemWidth) {
             super(_mapInfo.name);
@@ -573,7 +561,7 @@ public class FZKDownload extends ActivityBase {
                 } else {
                     progressBar.setValues(100, progress / 1024 + " MB");
                 }
-            });
+            }, canceled::get); // getting the superior canceled
 
         }
 
@@ -600,7 +588,6 @@ public class FZKDownload extends ActivityBase {
         }
 
         public void beginDownload() {
-            canceled = false;
 
             if (!doDownloadMap.isChecked() || doDownloadMap.isDisabled()) {
                 lastProgress = -1;
@@ -644,17 +631,12 @@ public class FZKDownload extends ActivityBase {
                     }
                 }
 
-                lastProgress = canceled ? 0 : 100;
+                lastProgress = canceled.get() ? 0 : 100;
                 progressBar.setValues(lastProgress, lastProgress + " %");
                 downloadIsRunning.set(false);
-                Log.info(sClass, "Download everything ready");
+                Log.info(sClass, "Download " + target + (canceled.get() ? " canceled" : " ready"));
             }).start();
 
-        }
-
-        public void cancelDownload() {
-            canceled = true;
-            download.cancelDownload();
         }
 
         public int getDownloadProgress() {

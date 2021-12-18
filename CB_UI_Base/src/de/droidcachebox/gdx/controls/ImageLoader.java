@@ -284,7 +284,7 @@ public class ImageLoader {
             // Download Image to Cache
             try {
                 new Thread(() -> {
-                    Download download = new Download(null);
+                    Download download = new Download(null, null);
                     download.download(iconUrl, CachePath + LocalPath);
                     inLoad = false;
 

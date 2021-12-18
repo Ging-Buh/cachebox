@@ -37,7 +37,7 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn4.executes.TemplateFormatter;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
 public class Trackables extends V_ListView {
@@ -100,7 +100,7 @@ public class Trackables extends V_ListView {
                     () -> {
                         // ICancelListener
                     },
-                    new ICancelRunnable() {
+                    new TestCancelRunnable() {
                         @Override
                         public void run() {
                             Trackable tb = fetchTrackable(TBCode);
@@ -131,7 +131,7 @@ public class Trackables extends V_ListView {
                 () -> {
                     // ICancelListener
                 },
-                new ICancelRunnable() {
+                new TestCancelRunnable() {
                     @Override
                     public void run() {
                         TBList searchList = downloadUsersTrackables();
@@ -152,7 +152,7 @@ public class Trackables extends V_ListView {
     private void logTBs(String title, final int LogTypeId, final String LogText) {
         wd = CancelWaitDialog.ShowWait(title, DownloadAnimation.GetINSTANCE(), () -> {
 
-        }, new ICancelRunnable() {
+        }, new TestCancelRunnable() {
 
             @Override
             public void run() {

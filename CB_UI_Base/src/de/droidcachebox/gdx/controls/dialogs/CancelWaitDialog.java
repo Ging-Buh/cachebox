@@ -25,8 +25,8 @@ import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.RunnableReadyHandler;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.Trace;
 
@@ -39,25 +39,25 @@ public class CancelWaitDialog extends WaitDialog {
 
     private static String sKlasse = "CancelWaitDialog";
     // CancelWaitDialog that;
-    private final ICancelRunnable cancelRunnable;
+    private final TestCancelRunnable cancelRunnable;
     protected IcancelListener cancelListener;
     RunnableReadyHandler mRunnThread;
     private IReadyListener readyListener;
     private boolean isRunning = false;
 
-    public CancelWaitDialog(Size size, String name, IcancelListener cancelListener, ICancelRunnable cancelRunnable) {
+    public CancelWaitDialog(Size size, String name, IcancelListener cancelListener, TestCancelRunnable cancelRunnable) {
         super(size, name);
         this.cancelListener = cancelListener;
         this.cancelRunnable = cancelRunnable;
     }
 
-    public static CancelWaitDialog ShowWait(String Msg, IcancelListener listener, ICancelRunnable cancelRunnable) {
+    public static CancelWaitDialog ShowWait(String Msg, IcancelListener listener, TestCancelRunnable cancelRunnable) {
         final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listener, cancelRunnable);
         wd.setCallerName(Trace.getCallerName(2));
         return wd;
     }
 
-    public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListener cancelListener, ICancelRunnable cancelRunnable) {
+    public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListener cancelListener, TestCancelRunnable cancelRunnable) {
         Log.debug(sKlasse, Msg);
         final CancelWaitDialog wd = createDialog(Msg, cancelListener, cancelRunnable);
         wd.setCallerName(Trace.getCallerName(1));
@@ -82,7 +82,7 @@ public class CancelWaitDialog extends WaitDialog {
         return wd;
     }
 
-    private static CancelWaitDialog createDialog(String msg, IcancelListener listener, ICancelRunnable cancelRunnable) {
+    private static CancelWaitDialog createDialog(String msg, IcancelListener listener, TestCancelRunnable cancelRunnable) {
 
         if (msg == null)
             msg = "";

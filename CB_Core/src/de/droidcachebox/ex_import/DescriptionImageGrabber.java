@@ -293,7 +293,7 @@ public class DescriptionImageGrabber {
                 ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                 // direkt download
-                Download download = new Download(null);
+                Download download = new Download(null, null);
                 if (download.download(uri.toString(), local)) {
                     // there could be an pseudo image indicating a previous error
                     // this file must be deleted
@@ -361,7 +361,7 @@ public class DescriptionImageGrabber {
                             continue; // dieser Spoiler muss jetzt nicht mehr geladen werden da er schon vorhanden ist.
                         }
                         // todo first look for an image from gsak
-                        Download download = new Download(null);
+                        Download download = new Download(null, null);
                         if (download.download(imageEntry.getImageUrl(), imageEntry.getLocalPath())) {
                             // there could be an pseudo image indicating a pprevious error
                             // this file must be deleted

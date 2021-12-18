@@ -87,9 +87,9 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.ICancelRunnable;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.StringReturner;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
 public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, LocationListener {
@@ -702,7 +702,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             @Override
             public void run() {
                 Log.info(sClass, "ImportGPXFile");
-                mainActivity.runOnUiThread(() -> wd = CancelWaitDialog.ShowWait(Translation.get("ImportGPX"), () -> wd.close(), new ICancelRunnable() {
+                mainActivity.runOnUiThread(() -> wd = CancelWaitDialog.ShowWait(Translation.get("ImportGPX"), () -> wd.close(), new TestCancelRunnable() {
                     @Override
                     public void run() {
                         Log.info(sClass, "Import GPXFile from " + externalRequestGpxPath + " started");

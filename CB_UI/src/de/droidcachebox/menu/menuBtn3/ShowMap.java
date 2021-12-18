@@ -515,7 +515,7 @@ public class ShowMap extends AbstractShowAction {
                                 ((MenuItem) v).setDisabled(false);
                                 GL.that.renderOnce();
                                 // Download.download("http://download.openandromaps.org/themes/Elevate4.zip", target);
-                                Download download = new Download(null);
+                                Download download = new Download(null, null);
                                 download.download("https://www.openandromaps.org/wp-content/users/tobias/Elevate.zip", target);
                                 try {
                                     UnZip.extractFolder(target, false);
@@ -582,7 +582,7 @@ public class ShowMap extends AbstractShowAction {
                             GL.that.renderOnce();
                             String zipFile = fzkThemesInfo.Url.substring(fzkThemesInfo.Url.lastIndexOf("/") + 1);
                             String target = themesPath + "/" + zipFile;
-                            Download download = new Download(null);
+                            Download download = new Download(null, null);
                             download.download(fzkThemesInfo.Url, target);
                             try {
                                 UnZip.extractHere(target);

@@ -203,10 +203,10 @@ public class CB_Button extends CB_View_Base {
         if (text == null) return;
         // ? no change
         if (lblTxt != null)
-            if (lblTxt.mText != null)
-                if (lblTxt.mText.equals(text))
-                    if (lblTxt.mFont.equals(font))
-                        if (lblTxt.mColor.equals(color))
+            if (lblTxt.getText() != null)
+                if (lblTxt.getText().equals(text))
+                    if (lblTxt.getFont().equals(font))
+                        if (lblTxt.getColor().equals(color))
                             if (lblTxt.mHAlignment.equals(hAlignment))
                                 if (lblTxt.mVAlignment.equals(vAlignment))
                                 return;

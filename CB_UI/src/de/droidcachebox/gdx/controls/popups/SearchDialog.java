@@ -67,7 +67,7 @@ import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
 /**
@@ -425,7 +425,7 @@ public class SearchDialog extends PopUp_Base {
                 GL.that.RunOnGL(() -> MsgBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null));
             } else {
 
-                wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new ICancelRunnable() {
+                wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new TestCancelRunnable() {
 
                     @Override
                     public void run() {
@@ -461,7 +461,7 @@ public class SearchDialog extends PopUp_Base {
 
     private void searchOnlineNow() {
         Log.debug(log, "searchOnlineNow");
-        wd = CancelWaitDialog.ShowWait(Translation.get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new ICancelRunnable() {
+        wd = CancelWaitDialog.ShowWait(Translation.get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new TestCancelRunnable() {
 
             @Override
             public void run() {

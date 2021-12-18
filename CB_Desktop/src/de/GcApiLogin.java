@@ -9,7 +9,7 @@ import de.droidcachebox.core.CB_Api;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog.IcancelListener;
 import de.droidcachebox.settings.Settings;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.http.Request;
 import de.droidcachebox.utils.http.Response;
 import de.droidcachebox.utils.http.Webb;
@@ -38,7 +38,7 @@ public class GcApiLogin {
             public void isCanceled() {
                 closeWaitDialog();
             }
-        }, new ICancelRunnable() {
+        }, new TestCancelRunnable() {
 
             @Override
             public void run() {

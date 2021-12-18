@@ -357,7 +357,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         try {
                             local = NonLocalImages.poll();
                             url = NonLocalImagesUrl.poll();
-                            Download download = new Download(null);
+                            Download download = new Download(null, null);
                             if (download.download(url, local)) {
                                 anyImagesLoaded = true;
                             }

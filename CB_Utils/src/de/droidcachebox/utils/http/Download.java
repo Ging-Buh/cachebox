@@ -6,20 +6,21 @@ import java.io.InputStream;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.ProgressChangedEvent;
+import de.droidcachebox.utils.TestCancel;
 import de.droidcachebox.utils.log.Log;
 
 public class Download {
     private static final String sClass = "Download";
-    private ProgressChangedEvent progressIndicator;
-    private boolean canceled;
+    private final ProgressChangedEvent progressIndicator;
+    private final TestCancel testCancel;
 
-    public Download(ProgressChangedEvent progressIndicator) {
+    public Download(ProgressChangedEvent progressIndicator, TestCancel testCancel) {
         this.progressIndicator = progressIndicator;
-        canceled = false;
+        this.testCancel = testCancel;
     }
 
     public boolean download(String remote, String local) {
-        boolean err = false;
+        boolean errorOrCanceled = false;
         AbstractFile localFile = FileFactory.createFile(local);
         /* create parent directories, if necessary */
         final AbstractFile directory = localFile.getParentFile();
@@ -30,10 +31,10 @@ public class Download {
         BufferedOutputStream outStream = null;
 
         boolean redirected;
-        int redirCount = 0;
+        int redirectCount = 0;
         do {
             redirected = false;
-            redirCount++;
+            redirectCount++;
             Response<InputStream> response;
             try {
                 response = Webb.create()
@@ -51,13 +52,13 @@ public class Download {
                     kiloByteCount = kiloByteCount + 1;
                     if (progressIndicator != null)
                         progressIndicator.progressChanged("", "", kiloByteCount);
-                    if (canceled)
+                    if (testCancel != null && testCancel.doCancel())
                         throw new Exception("canceled");
                 }
             } catch (Exception ex) {
                 if (ex instanceof WebbException) {
                     WebbException we = (WebbException) ex;
-                    Response re = we.getResponse();
+                    Response<?> re = we.getResponse();
                     if (re != null) {
                         int APIError = re.getStatusCode();
                         if (APIError >= 300 && APIError < 400) {
@@ -67,16 +68,16 @@ public class Download {
                             } else {
                                 // other cases should have been handled automatically
                                 Log.err("Download", remote + " to " + local, ex);
-                                err = true;
+                                errorOrCanceled = true;
                             }
                         }
                     }
                 } else {
-                    if (canceled)
+                    if (testCancel != null && testCancel.doCancel())
                         Log.info(sClass, "canceled");
                     else
                         Log.err(sClass, remote + " to " + local, ex);
-                    err = true;
+                    errorOrCanceled = true;
                 }
             } finally {
                 try {
@@ -88,9 +89,9 @@ public class Download {
                 }
             }
         }
-        while (redirected && redirCount < 2);
+        while (redirected && redirectCount < 2);
 
-        if (err) {
+        if (errorOrCanceled) {
             try {
                 localFile.delete();
             } catch (Exception ignored) {
@@ -101,7 +102,4 @@ public class Download {
         }
     }
 
-    public void cancelDownload() {
-        canceled = true;
-    }
 }

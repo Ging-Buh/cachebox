@@ -58,7 +58,7 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancel;
+import de.droidcachebox.utils.TestCancel;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
@@ -82,7 +82,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     private boolean importRuns = false;
     private int searchState = 0; // 0=GPS, 1= Map, 2= Manuell
     private boolean isCanceld = false;
-    ICancel icancel = () -> isCanceld;
+    TestCancel icancel = () -> isCanceld;
     private CB_Label lblPublished;
     private CB_Button btnBeforeAfterEqual;
     private EditTextField edtDate;

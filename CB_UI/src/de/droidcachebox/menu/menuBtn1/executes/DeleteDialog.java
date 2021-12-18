@@ -22,7 +22,7 @@ import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 
 public class DeleteDialog extends ButtonDialog {
     private SizeF msgBoxContentSize;
@@ -69,7 +69,7 @@ public class DeleteDialog extends ButtonDialog {
 
             wd = CancelWaitDialog.ShowWait(Translation.get("DelActFilter"), () -> {
 
-            }, new ICancelRunnable() {
+            }, new TestCancelRunnable() {
 
                 @Override
                 public void run() {
@@ -101,7 +101,7 @@ public class DeleteDialog extends ButtonDialog {
 
             wd = CancelWaitDialog.ShowWait(Translation.get("DelArchived"), () -> {
 
-            }, new ICancelRunnable() {
+            }, new TestCancelRunnable() {
 
                 @Override
                 public void run() {
@@ -131,7 +131,7 @@ public class DeleteDialog extends ButtonDialog {
 
             wd = CancelWaitDialog.ShowWait(Translation.get("DelFound"), () -> {
 
-            }, new ICancelRunnable() {
+            }, new TestCancelRunnable() {
 
                 @Override
                 public void run() {

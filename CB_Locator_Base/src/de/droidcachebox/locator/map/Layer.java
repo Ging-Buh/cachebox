@@ -48,7 +48,7 @@ public class Layer {
     }
 
     boolean downloadTile(Descriptor desc) {
-        Download download = new Download(null);
+        Download download = new Download(null, null);
         return download.download(getUrl(desc), getLocalFilename(desc));
     }
 
@@ -243,7 +243,7 @@ public class Layer {
                             .ensureSuccess()
                             .asStream()
                             .getBody();
-                    WebbUtils.copyStream(fromUrl, stream);
+                    WebbUtils.copyStream(fromUrl, stream, null);
                     fromUrl.close();
                     stream.close();
                     return true;

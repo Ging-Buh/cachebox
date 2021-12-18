@@ -74,7 +74,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_FixSizeList;
 import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.converter.Base64;
 import de.droidcachebox.utils.http.WebbUtils;
 import de.droidcachebox.utils.log.Log;
@@ -612,7 +612,7 @@ public class DraftsView extends V_ListView {
         private void uploadDraftOrLog(final Draft draft, final boolean isLog) {
             wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
 
-            }, new ICancelRunnable() {
+            }, new TestCancelRunnable() {
 
                 @Override
                 public void run() {

@@ -54,7 +54,7 @@ import de.droidcachebox.menu.menuBtn1.executes.Trackables;
 import de.droidcachebox.menu.menuBtn4.executes.TemplateFormatter;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 
 public class TB_Log extends ActivityBase {
     private static WaitDialog wd;
@@ -244,7 +244,7 @@ public class TB_Log extends ActivityBase {
 
         wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
 
-        }, new ICancelRunnable() {
+        }, new TestCancelRunnable() {
 
             @Override
             public void run() {

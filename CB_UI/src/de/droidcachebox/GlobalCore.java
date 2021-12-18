@@ -52,7 +52,7 @@ import de.droidcachebox.solver.SolverCacheInterface;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
 /**
@@ -230,7 +230,7 @@ public class GlobalCore implements SolverCacheInterface {
         }
 
         if (isAccessTokenInvalid()) {
-            CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
+            CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), null, new TestCancelRunnable() {
                 @Override
                 public void run() {
                     handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);

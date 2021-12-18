@@ -45,7 +45,7 @@ import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
 public class CacheContextMenu {
@@ -138,7 +138,7 @@ public class CacheContextMenu {
         if (GlobalCore.isSetSelectedCache()) {
 
             wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
-            }, new ICancelRunnable() {
+            }, new TestCancelRunnable() {
 
                 @Override
                 public void run() {

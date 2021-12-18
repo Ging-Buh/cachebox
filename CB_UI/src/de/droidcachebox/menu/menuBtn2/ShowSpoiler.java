@@ -22,7 +22,7 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ICancelRunnable;
+import de.droidcachebox.utils.TestCancelRunnable;
 
 public class ShowSpoiler extends AbstractShowAction {
     private static ShowSpoiler showSpoiler;
@@ -118,7 +118,7 @@ public class ShowSpoiler extends AbstractShowAction {
     public CancelWaitDialog ImportSpoiler(boolean withLogImages) {
         wd = CancelWaitDialog.ShowWait(Translation.get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), () -> {
             // canceled
-        }, new ICancelRunnable() {
+        }, new TestCancelRunnable() {
             @Override
             public void run() {
                 // Importer importer = new Importer();

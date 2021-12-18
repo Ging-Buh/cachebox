@@ -275,13 +275,13 @@ public class Importer {
     }
 
     /**
-     * @param ip            ?
+     * @param importerProgress            ?
      * @param importImages  ?
      * @param importSpoiler ?
      * @param where         [Last Filter]FilterInstances.LastFilter.getSqlWhere();
      * @return ErrorCode Use with<br>
      */
-    public int importImages(ImporterProgress ip, boolean importImages, boolean importSpoiler, String where) {
+    public int importImages(ImporterProgress importerProgress, boolean importImages, boolean importSpoiler, String where) {
 
         int ret = 0;
 
@@ -292,7 +292,7 @@ public class Importer {
 
         int cnt = -1;
         int numCaches = reader.getCount();
-        ip.setJobMax("importImages", numCaches);
+        importerProgress.setJobMax("importImages", numCaches);
 
         if (reader.getCount() > 0) {
             reader.moveToFirst();
@@ -313,7 +313,7 @@ public class Importer {
 
                     if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
                     {
-                        ip.ProgressInkrement("importImages", "Importing Images for " + gcCode + " (" + cnt + " / " + numCaches + ")", false);
+                        importerProgress.ProgressInkrement("importImages", "Importing Images for " + gcCode + " (" + cnt + " / " + numCaches + ")", false);
 
                         String description = reader.getString(1);
                         String uri = reader.getString(4);
@@ -336,7 +336,7 @@ public class Importer {
                                 additionalImagesUpdated = reader.getInt(5) != 0;
                             } else additionalImagesUpdated = false;
                         }
-                        ret = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, description, uri, false);
+                        ret = DescriptionImageGrabber.GrabImagesSelectedByCache(importerProgress, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, description, uri, false);
                         if (ret < 0) break;
                     }
                 } catch (Exception e) {
