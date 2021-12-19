@@ -11,7 +11,7 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
 public class LogsTableDAO {
-    private static final String log = "LogsTableDAO";
+    private static final String sClass = "LogsTableDAO";
     private static LogsTableDAO logsTableDAO;
     private SQLiteInterface sql;
     private final CB_List<LogEntry> cacheLogs; // depends on the last used GeoCache
@@ -43,7 +43,6 @@ public class LogsTableDAO {
         if (cache.getGeoCacheCode().equals(lastGeoCache)) return cacheLogs;
         cacheLogs.clear();
         lastGeoCache = cache.getGeoCacheCode();
-        Log.info(log, "Start getLogs for cache: " + cache.getGeoCacheCode());
         CoreCursor reader = sql.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@CacheId order by Timestamp desc", new String[]{Long.toString(cache.generatedId)});
         if (reader != null) {
             reader.moveToFirst();
@@ -57,7 +56,6 @@ public class LogsTableDAO {
         } else {
             lastGeoCache = "";
         }
-        Log.info(log, "Ready getLogs for cache: " + cache.getGeoCacheCode());
         return cacheLogs;
     }
 
@@ -125,8 +123,8 @@ public class LogsTableDAO {
         args.put("CacheId", logEntry.cacheId);
         try {
             sql.insertWithConflictReplace("Logs", args);
-        } catch (Exception exc) {
-            Log.err(log, "Write Log", exc);
+        } catch (Exception ex) {
+            Log.err(sClass, "Write Log", ex);
         }
         forceRereadingOfGeoCacheLogs();
     }
@@ -136,8 +134,6 @@ public class LogsTableDAO {
      * @param LogMaxMonthAge Config.settings.LogMaxMonthAge.getValue()
      */
     public void deleteOldLogs(int minToKeep, int LogMaxMonthAge) {
-
-        Log.debug(log, "deleteOldLogs but keep " + minToKeep + " and not older than " + LogMaxMonthAge);
 
         ArrayList<Long> oldLogCaches = new ArrayList<>();
         Calendar now = Calendar.getInstance();
@@ -153,7 +149,6 @@ public class LogsTableDAO {
         {
             try {
                 String command = "SELECT CacheId FROM logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > " + minToKeep;
-                Log.debug(log, command);
                 CoreCursor reader = sql.rawQuery(command, null);
                 reader.moveToFirst();
                 while (!reader.isAfterLast()) {
@@ -164,7 +159,7 @@ public class LogsTableDAO {
                 }
                 reader.close();
             } catch (Exception ex) {
-                Log.err(log, "deleteOldLogs", ex);
+                Log.err(sClass, "deleteOldLogs", ex);
             }
         }
 
@@ -177,7 +172,6 @@ public class LogsTableDAO {
                 for (long oldLogCache : oldLogCaches) {
                     ArrayList<Long> minLogIds = new ArrayList<>();
                     String command = "select id from logs where CacheId = " + oldLogCache + " order by Timestamp desc";
-                    Log.debug(log, command);
                     int count = 0;
                     CoreCursor reader = sql.rawQuery(command, null);
                     reader.moveToFirst();
@@ -197,12 +191,11 @@ public class LogsTableDAO {
                         delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND CacheId = " + oldLogCache + " AND id NOT IN (" + sb.substring(0, sb.length() - 1) + ")";
                     else
                         delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND CacheId = " + oldLogCache;
-                    Log.debug(log, delCommand);
                     sql.execSQL(delCommand);
                 }
                 sql.setTransactionSuccessful();
             } catch (Exception ex) {
-                Log.err(log, "deleteOldLogs", ex);
+                Log.err(sClass, "deleteOldLogs", ex);
             } finally {
                 sql.endTransaction();
             }
