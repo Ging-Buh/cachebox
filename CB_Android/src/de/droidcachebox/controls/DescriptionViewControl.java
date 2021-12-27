@@ -37,16 +37,16 @@ import java.util.TimerTask;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.ViewOptionsMenu;
-import de.droidcachebox.database.Attribute;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.ImageDAO;
-import de.droidcachebox.database.ImageEntry;
-import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogsTableDAO;
-import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
+import de.droidcachebox.dataclasses.Attribute;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.ImageEntry;
+import de.droidcachebox.dataclasses.LogEntry;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
@@ -86,7 +86,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         CBDB.getInstance().cacheList.remove(aktCache);
                         CBDB.getInstance().cacheList.add(newCache);
 
-                        CacheDAO.getInstance().UpdateDatabase(newCache);
+                        CacheDAO.getInstance().updateDatabase(newCache);
                         newCache.setLongDescription("");
 
                         for (LogEntry apiLog : geoCacheRelated.logs)

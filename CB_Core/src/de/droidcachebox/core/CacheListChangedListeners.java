@@ -24,8 +24,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import de.droidcachebox.Energy;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.GeoCacheType;
 import de.droidcachebox.utils.log.Log;
 
 public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListChangedListeners.CacheListChangedListener> {

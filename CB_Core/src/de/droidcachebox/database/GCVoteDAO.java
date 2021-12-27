@@ -10,7 +10,7 @@ public class GCVoteDAO {
     public int getCacheCountToGetVotesFor(String whereClause) {
         int count = 0;
 
-        CoreCursor reader = CBDB.getInstance().sql.rawQuery("select count(GcCode) from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause), null);
+        CoreCursor reader = CBDB.getInstance().rawQuery("select count(GcCode) from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause), null);
 
         reader.moveToFirst();
 
@@ -25,7 +25,7 @@ public class GCVoteDAO {
     public ArrayList<GCVoteCacheInfo> getGCVotePackage(String whereClause, int packagesize, int offset) {
         ArrayList<GCVoteCacheInfo> caches = new ArrayList<>();
 
-        CoreCursor reader = CBDB.getInstance().sql.rawQuery("select Id, GcCode, VotePending from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + " LIMIT " + offset + "," + packagesize, null);
+        CoreCursor reader = CBDB.getInstance().rawQuery("select Id, GcCode, VotePending from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + " LIMIT " + offset + "," + packagesize, null);
 
         reader.moveToFirst();
 
@@ -49,21 +49,21 @@ public class GCVoteDAO {
         parm.put("Vote", Math.round(Vote * 100));
         parm.put("VotePending", false);
 
-        CBDB.getInstance().sql.update("Caches", parm, "Id=?", new String[]{String.valueOf(Id)});
+        CBDB.getInstance().update("Caches", parm, "Id=?", new String[]{String.valueOf(Id)});
     }
 
     public void updateRating(Long Id, Float Rating) {
         Parameters parm = new Parameters();
         parm.put("Rating", Math.round(Rating * 100));
 
-        CBDB.getInstance().sql.update("Caches", parm, "Id=?", new String[]{String.valueOf(Id)});
+        CBDB.getInstance().update("Caches", parm, "Id=?", new String[]{String.valueOf(Id)});
     }
 
     public void updatePendingVote(Long Id) {
         Parameters parm = new Parameters();
         parm.put("VotePending", false);
 
-        CBDB.getInstance().sql.update("Caches", parm, "Id=?", new String[]{String.valueOf(Id)});
+        CBDB.getInstance().update("Caches", parm, "Id=?", new String[]{String.valueOf(Id)});
     }
 
     /**
@@ -74,7 +74,7 @@ public class GCVoteDAO {
     public ArrayList<GCVoteCacheInfo> getPendingGCVotes() {
         ArrayList<GCVoteCacheInfo> caches = new ArrayList<>();
 
-        CoreCursor reader = CBDB.getInstance().sql.rawQuery("select Id, GcCode, Url, Vote from Caches where VotePending=1", null);
+        CoreCursor reader = CBDB.getInstance().rawQuery("select Id, GcCode, Url, Vote from Caches where VotePending=1", null);
 
         reader.moveToFirst();
 

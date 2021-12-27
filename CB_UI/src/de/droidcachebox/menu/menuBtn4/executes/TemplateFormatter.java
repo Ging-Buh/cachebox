@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.database.Draft;
-import de.droidcachebox.database.Trackable;
+import de.droidcachebox.dataclasses.Draft;
+import de.droidcachebox.dataclasses.Trackable;
 import de.droidcachebox.settings.Settings;
 
 public class TemplateFormatter {

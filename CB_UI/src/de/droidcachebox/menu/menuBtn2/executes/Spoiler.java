@@ -18,9 +18,9 @@ package de.droidcachebox.menu.menuBtn2.executes;
 import java.util.ArrayList;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.ImageDAO;
-import de.droidcachebox.database.ImageEntry;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.ImageEntry;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.activities.ImageActivity;
 import de.droidcachebox.gdx.controls.GalleryBigItem;

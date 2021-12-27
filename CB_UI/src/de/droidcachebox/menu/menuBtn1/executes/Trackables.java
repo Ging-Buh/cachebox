@@ -13,10 +13,10 @@ import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.DraftsDatabase;
-import de.droidcachebox.database.LogType;
-import de.droidcachebox.database.TBList;
-import de.droidcachebox.database.Trackable;
 import de.droidcachebox.database.TrackableListDAO;
+import de.droidcachebox.dataclasses.LogType;
+import de.droidcachebox.dataclasses.TBList;
+import de.droidcachebox.dataclasses.Trackable;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.TB_Details;
@@ -83,7 +83,7 @@ public class Trackables extends V_ListView {
 
     private void readTbList() {
         trackableList.clear();
-        CoreCursor reader = DraftsDatabase.getInstance().getSql().rawQuery("select Id,Archived,GcCode,CacheId,CurrentGoal,CurrentOwnerName,DateCreated,Description,IconUrl,ImageUrl,Name,OwnerName,Url,TypeName,Home,TravelDistance from Trackable", null);
+        CoreCursor reader = DraftsDatabase.getInstance().rawQuery("select Id,Archived,GcCode,CacheId,CurrentGoal,CurrentOwnerName,DateCreated,Description,IconUrl,ImageUrl,Name,OwnerName,Url,TypeName,Home,TravelDistance from Trackable", null);
         if (reader != null) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -96,7 +96,7 @@ public class Trackables extends V_ListView {
 
     private boolean fetchTB(final String TBCode) {
         if (TBCode.length() > 0) {
-            wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(),
+            wd = CancelWaitDialog.ShowWait(Translation.get("Search"), new DownloadAnimation(),
                     () -> {
                         // ICancelListener
                     },
@@ -117,7 +117,7 @@ public class Trackables extends V_ListView {
                         }
 
                         @Override
-                        public boolean doCancel() {
+                        public boolean checkCanceled() {
                             return false;
                         }
                     });
@@ -127,7 +127,7 @@ public class Trackables extends V_ListView {
 
     // reload inventory
     public void refreshTbList() {
-        wd = CancelWaitDialog.ShowWait(Translation.get("RefreshInventory"), DownloadAnimation.GetINSTANCE(),
+        wd = CancelWaitDialog.ShowWait(Translation.get("RefreshInventory"), new DownloadAnimation(),
                 () -> {
                     // ICancelListener
                 },
@@ -143,14 +143,14 @@ public class Trackables extends V_ListView {
                     }
 
                     @Override
-                    public boolean doCancel() {
+                    public boolean checkCanceled() {
                         return false;
                     }
                 });
     }
 
     private void logTBs(String title, final int LogTypeId, final String LogText) {
-        wd = CancelWaitDialog.ShowWait(title, DownloadAnimation.GetINSTANCE(), () -> {
+        wd = CancelWaitDialog.ShowWait(title, new DownloadAnimation(), () -> {
 
         }, new TestCancelRunnable() {
 
@@ -165,7 +165,7 @@ public class Trackables extends V_ListView {
             }
 
             @Override
-            public boolean doCancel() {
+            public boolean checkCanceled() {
                 return false;
             }
         });

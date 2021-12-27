@@ -1,8 +1,10 @@
-package de.droidcachebox.database;
+package de.droidcachebox.dataclasses;
 
 import java.util.ArrayList;
 
 import de.droidcachebox.core.FilterProperties;
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.MoveableList;
@@ -20,7 +22,7 @@ public class Categories extends MoveableList<Category> {
         // if necessary, adds a new Category entry and then returns the entry from Categories
         gpxFilename = FileFactory.createFile(gpxFilename).getName();
         for (Category category : this) {
-            if (gpxFilename.toUpperCase().equals(category.GpxFilename.toUpperCase())) {
+            if (gpxFilename.equalsIgnoreCase(category.GpxFilename)) {
                 return category;
             }
         }
@@ -39,7 +41,7 @@ public class Categories extends MoveableList<Category> {
         return null;
     }
 
-    Category createNewCategory(String filename) {
+    public Category createNewCategory(String filename) {
         filename = FileFactory.createFile(filename).getName();
 
         // neue Category in DB anlegen
@@ -48,14 +50,14 @@ public class Categories extends MoveableList<Category> {
         Parameters args = new Parameters();
         args.put("GPXFilename", filename);
         try {
-            CBDB.getInstance().sql.insert("Category", args);
+            CBDB.getInstance().insert("Category", args);
         } catch (Exception exc) {
             //Log.err(log, "CreateNewCategory", filename, exc);
         }
 
         long Category_ID = 0;
 
-        CoreCursor reader = CBDB.getInstance().sql.rawQuery("Select max(ID) from Category", null);
+        CoreCursor reader = CBDB.getInstance().rawQuery("Select max(ID) from Category", null);
         reader.moveToFirst();
         if (!reader.isAfterLast()) {
             Category_ID = reader.getLong(0);

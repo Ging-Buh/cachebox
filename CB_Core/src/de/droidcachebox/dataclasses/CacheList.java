@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.database;
-
-import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.utils.MathUtils.CalculationType;
-import de.droidcachebox.utils.MoveableList;
-import de.droidcachebox.utils.log.Log;
+package de.droidcachebox.dataclasses;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.database.CacheWithWP;
+import de.droidcachebox.locator.Coordinate;
+import de.droidcachebox.utils.MathUtils.CalculationType;
+import de.droidcachebox.utils.MoveableList;
+import de.droidcachebox.utils.log.Log;
 
 public class CacheList extends MoveableList<Cache> {
 

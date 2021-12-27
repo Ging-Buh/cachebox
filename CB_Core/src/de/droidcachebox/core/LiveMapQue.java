@@ -33,9 +33,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Category;
-import de.droidcachebox.database.GpxFilename;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Category;
+import de.droidcachebox.dataclasses.GpxFilename;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;

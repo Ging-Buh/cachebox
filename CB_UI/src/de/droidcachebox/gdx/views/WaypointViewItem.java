@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.ParentInfo;

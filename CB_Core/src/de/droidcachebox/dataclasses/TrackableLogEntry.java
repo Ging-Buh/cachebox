@@ -1,4 +1,4 @@
-package de.droidcachebox.database;
+package de.droidcachebox.dataclasses;
 
 import java.util.Date;
 

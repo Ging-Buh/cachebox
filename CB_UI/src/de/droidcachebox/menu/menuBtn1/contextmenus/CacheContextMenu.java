@@ -13,13 +13,13 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheListDAO;
-import de.droidcachebox.database.GeoCacheType;
 import de.droidcachebox.database.LogsTableDAO;
-import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -137,7 +137,7 @@ public class CacheContextMenu {
     public void reloadSelectedCache() {
         if (GlobalCore.isSetSelectedCache()) {
 
-            wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
+            wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), () -> {
             }, new TestCancelRunnable() {
 
                 @Override
@@ -159,7 +159,7 @@ public class CacheContextMenu {
                             CacheListChangedListeners.getInstance().cacheListChanged();
                         }
 
-                        ShowSpoiler.getInstance().ImportSpoiler(false).setReadyListener(() -> {
+                        ShowSpoiler.getInstance().importSpoiler(false).setReadyListener(() -> {
                             // do after import
                             if (GlobalCore.isSetSelectedCache()) {
                                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -180,7 +180,7 @@ public class CacheContextMenu {
                 }
 
                 @Override
-                public boolean doCancel() {
+                public boolean checkCanceled() {
                     return false;
                 }
             });
@@ -199,7 +199,7 @@ public class CacheContextMenu {
             WaypointDAO.getInstance().deleteFromDatabase(wp);
         }
 
-        CBDB.getInstance().getSql().delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGeoCacheCode() + "'", null);
+        CBDB.getInstance().delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGeoCacheCode() + "'", null);
 
         // ClearOrphanedLogs(); // do it when you have more time
         LogsTableDAO.getInstance().deleteLogs(GlobalCore.getSelectedCache().generatedId);
@@ -226,7 +226,7 @@ public class CacheContextMenu {
     private void toggleAsFavorite() {
         GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
         CacheDAO dao = CacheDAO.getInstance();
-        dao.UpdateDatabase(GlobalCore.getSelectedCache());
+        dao.updateDatabase(GlobalCore.getSelectedCache());
         // Update cacheList
         CBDB.getInstance().cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());
         // Update View

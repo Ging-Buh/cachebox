@@ -16,5 +16,8 @@
 package de.droidcachebox.utils;
 
 public interface TestCancel {
-    boolean doCancel();
+    /**
+     * @return if result is true, the calling method should end itself
+     */
+    boolean checkCanceled();
 }

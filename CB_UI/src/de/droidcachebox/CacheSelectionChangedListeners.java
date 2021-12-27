@@ -2,8 +2,8 @@ package de.droidcachebox;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.utils.log.Log;
 
 public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSelectionChangedListeners.CacheSelectionChangedListener> {

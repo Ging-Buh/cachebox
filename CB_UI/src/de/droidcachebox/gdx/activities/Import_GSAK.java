@@ -1,6 +1,6 @@
 package de.droidcachebox.gdx.activities;
 
-import static de.droidcachebox.database.Cache.IS_FULL;
+import static de.droidcachebox.dataclasses.Cache.IS_FULL;
 
 import android.text.InputType;
 
@@ -16,21 +16,21 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.Attribute;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.Category;
 import de.droidcachebox.database.CoreCursor;
-import de.droidcachebox.database.GeoCacheSize;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.GpxFilename;
-import de.droidcachebox.database.ImageEntry;
-import de.droidcachebox.database.LogEntry;
-import de.droidcachebox.database.LogType;
 import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.SQLiteInterface;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Attribute;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Category;
+import de.droidcachebox.dataclasses.GeoCacheSize;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.GpxFilename;
+import de.droidcachebox.dataclasses.ImageEntry;
+import de.droidcachebox.dataclasses.LogEntry;
+import de.droidcachebox.dataclasses.LogType;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;

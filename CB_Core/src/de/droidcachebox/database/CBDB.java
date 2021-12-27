@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.dataclasses.CacheList;
+import de.droidcachebox.dataclasses.Categories;
+import de.droidcachebox.dataclasses.Category;
 import de.droidcachebox.utils.log.Log;
 
 public class CBDB extends Database_Core {
@@ -62,75 +65,75 @@ public class CBDB extends Database_Core {
     @Override
     protected void alterDatabase(int lastDatabaseSchemeVersion) {
 
-        sql.beginTransaction();
+        beginTransaction();
         try {
             if (lastDatabaseSchemeVersion <= 0) {
                 // First Initialization of the Database
-                cbdb.sql.execSQL("CREATE TABLE [Caches] ([Id] bigint NOT NULL primary key,[GcCode] nvarchar (12) NULL,[GcId] nvarchar (255) NULL,[Latitude] float NULL,[Longitude] float NULL,[Name] nchar (255) NULL,[Size] int NULL,[Difficulty] smallint NULL,[Terrain] smallint NULL,[Archived] bit NULL,[Available] bit NULL,[Found] bit NULL,[Type] smallint NULL,[PlacedBy] nvarchar (255) NULL,[Owner] nvarchar (255) NULL,[DateHidden] datetime NULL,[Hint] ntext NULL,[Description] ntext NULL,[Url] nchar (255) NULL,[NumTravelbugs] smallint NULL,[Rating] smallint NULL,[Vote] smallint NULL,[VotePending] bit NULL,[Notes] ntext NULL,[Solver] ntext NULL,[Favorit] bit NULL,[AttributesPositive] bigint NULL,[AttributesNegative] bigint NULL,[TourName] nchar (255) NULL,[GPXFilename_Id] bigint NULL,[HasUserData] bit NULL,[ListingCheckSum] int NULL DEFAULT 0,[ListingChanged] bit NULL,[ImagesUpdated] bit NULL,[DescriptionImagesUpdated] bit NULL,[CorrectedCoordinates] bit NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [archived_idx] ON [Caches] ([Archived] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [AttributesNegative_idx] ON [Caches] ([AttributesNegative] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [AttributesPositive_idx] ON [Caches] ([AttributesPositive] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [available_idx] ON [Caches] ([Available] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [Difficulty_idx] ON [Caches] ([Difficulty] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [Favorit_idx] ON [Caches] ([Favorit] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [found_idx] ON [Caches] ([Found] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [GPXFilename_Id_idx] ON [Caches] ([GPXFilename_Id] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [HasUserData_idx] ON [Caches] ([HasUserData] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [ListingChanged_idx] ON [Caches] ([ListingChanged] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [NumTravelbugs_idx] ON [Caches] ([NumTravelbugs] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [placedby_idx] ON [Caches] ([PlacedBy] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [Rating_idx] ON [Caches] ([Rating] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [Size_idx] ON [Caches] ([Size] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [Terrain_idx] ON [Caches] ([Terrain] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [Type_idx] ON [Caches] ([Type] ASC);");
+                execSQL("CREATE TABLE [Caches] ([Id] bigint NOT NULL primary key,[GcCode] nvarchar (12) NULL,[GcId] nvarchar (255) NULL,[Latitude] float NULL,[Longitude] float NULL,[Name] nchar (255) NULL,[Size] int NULL,[Difficulty] smallint NULL,[Terrain] smallint NULL,[Archived] bit NULL,[Available] bit NULL,[Found] bit NULL,[Type] smallint NULL,[PlacedBy] nvarchar (255) NULL,[Owner] nvarchar (255) NULL,[DateHidden] datetime NULL,[Hint] ntext NULL,[Description] ntext NULL,[Url] nchar (255) NULL,[NumTravelbugs] smallint NULL,[Rating] smallint NULL,[Vote] smallint NULL,[VotePending] bit NULL,[Notes] ntext NULL,[Solver] ntext NULL,[Favorit] bit NULL,[AttributesPositive] bigint NULL,[AttributesNegative] bigint NULL,[TourName] nchar (255) NULL,[GPXFilename_Id] bigint NULL,[HasUserData] bit NULL,[ListingCheckSum] int NULL DEFAULT 0,[ListingChanged] bit NULL,[ImagesUpdated] bit NULL,[DescriptionImagesUpdated] bit NULL,[CorrectedCoordinates] bit NULL);");
+                execSQL("CREATE INDEX [archived_idx] ON [Caches] ([Archived] ASC);");
+                execSQL("CREATE INDEX [AttributesNegative_idx] ON [Caches] ([AttributesNegative] ASC);");
+                execSQL("CREATE INDEX [AttributesPositive_idx] ON [Caches] ([AttributesPositive] ASC);");
+                execSQL("CREATE INDEX [available_idx] ON [Caches] ([Available] ASC);");
+                execSQL("CREATE INDEX [Difficulty_idx] ON [Caches] ([Difficulty] ASC);");
+                execSQL("CREATE INDEX [Favorit_idx] ON [Caches] ([Favorit] ASC);");
+                execSQL("CREATE INDEX [found_idx] ON [Caches] ([Found] ASC);");
+                execSQL("CREATE INDEX [GPXFilename_Id_idx] ON [Caches] ([GPXFilename_Id] ASC);");
+                execSQL("CREATE INDEX [HasUserData_idx] ON [Caches] ([HasUserData] ASC);");
+                execSQL("CREATE INDEX [ListingChanged_idx] ON [Caches] ([ListingChanged] ASC);");
+                execSQL("CREATE INDEX [NumTravelbugs_idx] ON [Caches] ([NumTravelbugs] ASC);");
+                execSQL("CREATE INDEX [placedby_idx] ON [Caches] ([PlacedBy] ASC);");
+                execSQL("CREATE INDEX [Rating_idx] ON [Caches] ([Rating] ASC);");
+                execSQL("CREATE INDEX [Size_idx] ON [Caches] ([Size] ASC);");
+                execSQL("CREATE INDEX [Terrain_idx] ON [Caches] ([Terrain] ASC);");
+                execSQL("CREATE INDEX [Type_idx] ON [Caches] ([Type] ASC);");
 
-                cbdb.sql.execSQL("CREATE TABLE [CelltowerLocation] ([CellId] nvarchar (20) NOT NULL primary key,[Latitude] float NULL,[Longitude] float NULL);");
+                execSQL("CREATE TABLE [CelltowerLocation] ([CellId] nvarchar (20) NOT NULL primary key,[Latitude] float NULL,[Longitude] float NULL);");
 
-                cbdb.sql.execSQL("CREATE TABLE [GPXFilenames] ([Id] integer not null primary key autoincrement,[GPXFilename] nvarchar (255) NULL,[Imported] datetime NULL, [Name] nvarchar (255) NULL,[CacheCount] int NULL);");
+                execSQL("CREATE TABLE [GPXFilenames] ([Id] integer not null primary key autoincrement,[GPXFilename] nvarchar (255) NULL,[Imported] datetime NULL, [Name] nvarchar (255) NULL,[CacheCount] int NULL);");
 
-                cbdb.sql.execSQL("CREATE TABLE [Logs] ([Id] bigint NOT NULL primary key, [CacheId] bigint NULL,[Timestamp] datetime NULL,[Finder] nvarchar (128) NULL,[Type] smallint NULL,[Comment] ntext NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [log_idx] ON [Logs] ([CacheId] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [timestamp_idx] ON [Logs] ([Timestamp] ASC);");
+                execSQL("CREATE TABLE [Logs] ([Id] bigint NOT NULL primary key, [CacheId] bigint NULL,[Timestamp] datetime NULL,[Finder] nvarchar (128) NULL,[Type] smallint NULL,[Comment] ntext NULL);");
+                execSQL("CREATE INDEX [log_idx] ON [Logs] ([CacheId] ASC);");
+                execSQL("CREATE INDEX [timestamp_idx] ON [Logs] ([Timestamp] ASC);");
 
-                cbdb.sql.execSQL("CREATE TABLE [PocketQueries] ([Id] integer not null primary key autoincrement,[PQName] nvarchar (255) NULL,[CreationTimeOfPQ] datetime NULL);");
+                execSQL("CREATE TABLE [PocketQueries] ([Id] integer not null primary key autoincrement,[PQName] nvarchar (255) NULL,[CreationTimeOfPQ] datetime NULL);");
 
-                cbdb.sql.execSQL("CREATE TABLE [Waypoint] ([GcCode] nvarchar (12) NOT NULL primary key,[CacheId] bigint NULL,[Latitude] float NULL,[Longitude] float NULL,[Description] ntext NULL,[Clue] ntext NULL,[Type] smallint NULL,[SyncExclude] bit NULL,[UserWaypoint] bit NULL,[Title] ntext NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [UserWaypoint_idx] ON [Waypoint] ([UserWaypoint] ASC);");
+                execSQL("CREATE TABLE [Waypoint] ([GcCode] nvarchar (12) NOT NULL primary key,[CacheId] bigint NULL,[Latitude] float NULL,[Longitude] float NULL,[Description] ntext NULL,[Clue] ntext NULL,[Type] smallint NULL,[SyncExclude] bit NULL,[UserWaypoint] bit NULL,[Title] ntext NULL);");
+                execSQL("CREATE INDEX [UserWaypoint_idx] ON [Waypoint] ([UserWaypoint] ASC);");
 
-                cbdb.sql.execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
+                execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
+                execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
 
-                cbdb.sql.execSQL("CREATE TABLE [Replication] ([Id] integer not null primary key autoincrement, [ChangeType] int NOT NULL, [CacheId] bigint NOT NULL, [WpGcCode] nvarchar (12) NULL, [SolverCheckSum] int NULL, [NotesCheckSum] int NULL, [WpCoordCheckSum] int NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [Replication_idx] ON [Replication] ([Id] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [ReplicationCache_idx] ON [Replication] ([CacheId] ASC);");
+                execSQL("CREATE TABLE [Replication] ([Id] integer not null primary key autoincrement, [ChangeType] int NOT NULL, [CacheId] bigint NOT NULL, [WpGcCode] nvarchar (12) NULL, [SolverCheckSum] int NULL, [NotesCheckSum] int NULL, [WpCoordCheckSum] int NULL);");
+                execSQL("CREATE INDEX [Replication_idx] ON [Replication] ([Id] ASC);");
+                execSQL("CREATE INDEX [ReplicationCache_idx] ON [Replication] ([CacheId] ASC);");
             }
 
             if (lastDatabaseSchemeVersion < 1003) {
-                cbdb.sql.execSQL("CREATE TABLE [Locations] ([Id] integer not null primary key autoincrement, [Name] nvarchar (255) NULL, [Latitude] float NULL, [Longitude] float NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [Locatioins_idx] ON [Locations] ([Id] ASC);");
+                execSQL("CREATE TABLE [Locations] ([Id] integer not null primary key autoincrement, [Name] nvarchar (255) NULL, [Latitude] float NULL, [Longitude] float NULL);");
+                execSQL("CREATE INDEX [Locatioins_idx] ON [Locations] ([Id] ASC);");
 
-                cbdb.sql.execSQL("CREATE TABLE [SdfExport] ([Id]  integer not null primary key autoincrement, [Description] nvarchar(255) NULL, [ExportPath] nvarchar(255) NULL, [MaxDistance] float NULL, [LocationID] Bigint NULL, [Filter] ntext NULL, [Update] bit NULL, [ExportImages] bit NULL, [ExportSpoilers] bit NULL, [ExportMaps] bit NULL, [OwnRepository] bit NULL, [ExportMapPacks] bit NULL, [MaxLogs] int NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [SdfExport_idx] ON [SdfExport] ([Id] ASC);");
+                execSQL("CREATE TABLE [SdfExport] ([Id]  integer not null primary key autoincrement, [Description] nvarchar(255) NULL, [ExportPath] nvarchar(255) NULL, [MaxDistance] float NULL, [LocationID] Bigint NULL, [Filter] ntext NULL, [Update] bit NULL, [ExportImages] bit NULL, [ExportSpoilers] bit NULL, [ExportMaps] bit NULL, [OwnRepository] bit NULL, [ExportMapPacks] bit NULL, [MaxLogs] int NULL);");
+                execSQL("CREATE INDEX [SdfExport_idx] ON [SdfExport] ([Id] ASC);");
 
-                cbdb.sql.execSQL("ALTER TABLE [CACHES] ADD [FirstImported] datetime NULL;");
+                execSQL("ALTER TABLE [CACHES] ADD [FirstImported] datetime NULL;");
 
-                cbdb.sql.execSQL("CREATE TABLE [Category] ([Id]  integer not null primary key autoincrement, [GpxFilename] nvarchar(255) NULL, [Pinned] bit NULL default 0, [CacheCount] int NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [Category_idx] ON [Category] ([Id] ASC);");
+                execSQL("CREATE TABLE [Category] ([Id]  integer not null primary key autoincrement, [GpxFilename] nvarchar(255) NULL, [Pinned] bit NULL default 0, [CacheCount] int NULL);");
+                execSQL("CREATE INDEX [Category_idx] ON [Category] ([Id] ASC);");
 
-                cbdb.sql.execSQL("ALTER TABLE [GpxFilenames] ADD [CategoryId] bigint NULL;");
+                execSQL("ALTER TABLE [GpxFilenames] ADD [CategoryId] bigint NULL;");
 
-                cbdb.sql.execSQL("ALTER TABLE [Caches] add [state] nvarchar(50) NULL;");
-                cbdb.sql.execSQL("ALTER TABLE [Caches] add [country] nvarchar(50) NULL;");
+                execSQL("ALTER TABLE [Caches] add [state] nvarchar(50) NULL;");
+                execSQL("ALTER TABLE [Caches] add [country] nvarchar(50) NULL;");
             }
             if (lastDatabaseSchemeVersion < 1015) {
                 // GpxFilenames mit Kategorien verknüpfen
 
                 // alte Category Tabelle löschen
-                sql.delete("Category", "", null);
+                delete("Category", "", null);
                 HashMap<Long, String> gpxFilenames = new HashMap<>();
                 HashMap<String, Long> categories = new HashMap<>();
 
-                CoreCursor reader = cbdb.sql.rawQuery("select ID, GPXFilename from GPXFilenames", null);
+                CoreCursor reader = rawQuery("select ID, GPXFilename from GPXFilenames", null);
                 reader.moveToFirst();
                 while (!reader.isAfterLast()) {
                     long id = reader.getLong(0);
@@ -152,7 +155,7 @@ public class CBDB extends Database_Core {
                         Parameters args = new Parameters();
                         args.put("CategoryId", categories.get(entry.getValue()));
                         try {
-                            CBDB.cbdb.sql.update("GpxFilenames", args, "Id=" + entry.getKey(), null);
+                            update("GpxFilenames", args, "Id=" + entry.getKey(), null);
                         } catch (Exception exc) {
                             Log.err(sClass, "Database", "Update_CategoryId", exc);
                         }
@@ -161,28 +164,28 @@ public class CBDB extends Database_Core {
 
             }
             if (lastDatabaseSchemeVersion < 1016) {
-                cbdb.sql.execSQL("ALTER TABLE [CACHES] ADD [ApiStatus] smallint NULL default 0;");
+                execSQL("ALTER TABLE [CACHES] ADD [ApiStatus] smallint NULL default 0;");
             }
             if (lastDatabaseSchemeVersion < 1017) {
-                cbdb.sql.execSQL("CREATE TABLE [Trackable] ([Id] integer not null primary key autoincrement, [Archived] bit NULL, [GcCode] nvarchar (12) NULL, [CacheId] bigint NULL, [CurrentGoal] ntext, [CurrentOwnerName] nvarchar (255) NULL, [DateCreated] datetime NULL, [Description] ntext, [IconUrl] nvarchar (255) NULL, [ImageUrl] nvarchar (255) NULL, [name] nvarchar (255) NULL, [OwnerName] nvarchar (255), [Url] nvarchar (255) NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [cacheid_idx] ON [Trackable] ([CacheId] ASC);");
-                cbdb.sql.execSQL("CREATE TABLE [TbLogs] ([Id] integer not null primary key autoincrement, [TrackableId] integer not NULL, [CacheID] bigint NULL, [GcCode] nvarchar (12) NULL, [LogIsEncoded] bit NULL DEFAULT 0, [LogText] ntext, [LogTypeId] bigint NULL, [LoggedByName] nvarchar (255) NULL, [Visited] datetime NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [trackableid_idx] ON [TbLogs] ([TrackableId] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [trackablecacheid_idx] ON [TBLOGS] ([CacheId] ASC);");
+                execSQL("CREATE TABLE [Trackable] ([Id] integer not null primary key autoincrement, [Archived] bit NULL, [GcCode] nvarchar (12) NULL, [CacheId] bigint NULL, [CurrentGoal] ntext, [CurrentOwnerName] nvarchar (255) NULL, [DateCreated] datetime NULL, [Description] ntext, [IconUrl] nvarchar (255) NULL, [ImageUrl] nvarchar (255) NULL, [name] nvarchar (255) NULL, [OwnerName] nvarchar (255), [Url] nvarchar (255) NULL);");
+                execSQL("CREATE INDEX [cacheid_idx] ON [Trackable] ([CacheId] ASC);");
+                execSQL("CREATE TABLE [TbLogs] ([Id] integer not null primary key autoincrement, [TrackableId] integer not NULL, [CacheID] bigint NULL, [GcCode] nvarchar (12) NULL, [LogIsEncoded] bit NULL DEFAULT 0, [LogText] ntext, [LogTypeId] bigint NULL, [LoggedByName] nvarchar (255) NULL, [Visited] datetime NULL);");
+                execSQL("CREATE INDEX [trackableid_idx] ON [TbLogs] ([TrackableId] ASC);");
+                execSQL("CREATE INDEX [trackablecacheid_idx] ON [TBLOGS] ([CacheId] ASC);");
             }
             if (lastDatabaseSchemeVersion < 1018) {
-                cbdb.sql.execSQL("ALTER TABLE [SdfExport] ADD [MapPacks] nvarchar(512) NULL;");
+                execSQL("ALTER TABLE [SdfExport] ADD [MapPacks] nvarchar(512) NULL;");
 
             }
             if (lastDatabaseSchemeVersion < 1019) {
                 // neue Felder für die erweiterten Attribute einfügen
-                cbdb.sql.execSQL("ALTER TABLE [CACHES] ADD [AttributesPositiveHigh] bigint NULL default 0");
-                cbdb.sql.execSQL("ALTER TABLE [CACHES] ADD [AttributesNegativeHigh] bigint NULL default 0");
+                execSQL("ALTER TABLE [CACHES] ADD [AttributesPositiveHigh] bigint NULL default 0");
+                execSQL("ALTER TABLE [CACHES] ADD [AttributesNegativeHigh] bigint NULL default 0");
 
                 // Die Nummerierung der Attribute stimmte nicht mit der von
                 // Groundspeak überein. Bei 16 und 45 wurde jeweils eine
                 // Nummber übersprungen
-                CoreCursor reader = cbdb.sql.rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[]{});
+                CoreCursor reader = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[]{});
                 reader.moveToFirst();
                 while (!reader.isAfterLast()) {
                     long id = reader.getLong(0);
@@ -196,7 +199,7 @@ public class CBDB extends Database_Core {
                     val.put("AttributesPositive", attributesPositive);
                     val.put("AttributesNegative", attributesNegative);
                     String whereClause = "[Id]=" + id;
-                    cbdb.sql.update("Caches", val, whereClause, null);
+                    update("Caches", val, whereClause, null);
                     reader.moveToNext();
                 }
                 reader.close();
@@ -204,51 +207,51 @@ public class CBDB extends Database_Core {
             }
             if (lastDatabaseSchemeVersion < 1020) {
                 // for long Settings
-                cbdb.sql.execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
+                execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
 
             }
             if (lastDatabaseSchemeVersion < 1021) {
                 // Image Table
-                cbdb.sql.execSQL("CREATE TABLE [Images] ([Id] integer not null primary key autoincrement, [CacheId] bigint NULL, [GcCode] nvarchar (12) NULL, [Description] ntext, [Name] nvarchar (255) NULL, [ImageUrl] nvarchar (255) NULL, [IsCacheImage] bit NULL);");
-                cbdb.sql.execSQL("CREATE INDEX [images_cacheid_idx] ON [Images] ([CacheId] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [images_gccode_idx] ON [Images] ([GcCode] ASC);");
-                cbdb.sql.execSQL("CREATE INDEX [images_iscacheimage_idx] ON [Images] ([IsCacheImage] ASC);");
-                cbdb.sql.execSQL("CREATE UNIQUE INDEX [images_imageurl_idx] ON [Images] ([ImageUrl] ASC);");
+                execSQL("CREATE TABLE [Images] ([Id] integer not null primary key autoincrement, [CacheId] bigint NULL, [GcCode] nvarchar (12) NULL, [Description] ntext, [Name] nvarchar (255) NULL, [ImageUrl] nvarchar (255) NULL, [IsCacheImage] bit NULL);");
+                execSQL("CREATE INDEX [images_cacheid_idx] ON [Images] ([CacheId] ASC);");
+                execSQL("CREATE INDEX [images_gccode_idx] ON [Images] ([GcCode] ASC);");
+                execSQL("CREATE INDEX [images_iscacheimage_idx] ON [Images] ([IsCacheImage] ASC);");
+                execSQL("CREATE UNIQUE INDEX [images_imageurl_idx] ON [Images] ([ImageUrl] ASC);");
             }
             if (lastDatabaseSchemeVersion < 1022) {
-                cbdb.sql.execSQL("ALTER TABLE [Caches] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
+                execSQL("ALTER TABLE [Caches] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
 
-                cbdb.sql.execSQL("ALTER TABLE [Waypoint] DROP CONSTRAINT Waypoint_PK ");
-                cbdb.sql.execSQL("ALTER TABLE [Waypoint] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
-                cbdb.sql.execSQL("ALTER TABLE [Waypoint] ADD CONSTRAINT  [Waypoint_PK] PRIMARY KEY ([GcCode]); ");
+                execSQL("ALTER TABLE [Waypoint] DROP CONSTRAINT Waypoint_PK ");
+                execSQL("ALTER TABLE [Waypoint] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
+                execSQL("ALTER TABLE [Waypoint] ADD CONSTRAINT  [Waypoint_PK] PRIMARY KEY ([GcCode]); ");
 
-                cbdb.sql.execSQL("ALTER TABLE [Replication] ALTER COLUMN [WpGcCode] nvarchar(15) NOT NULL; ");
-                cbdb.sql.execSQL("ALTER TABLE [Trackable] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
-                cbdb.sql.execSQL("ALTER TABLE [TbLogs] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
-                cbdb.sql.execSQL("ALTER TABLE [Images] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
+                execSQL("ALTER TABLE [Replication] ALTER COLUMN [WpGcCode] nvarchar(15) NOT NULL; ");
+                execSQL("ALTER TABLE [Trackable] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
+                execSQL("ALTER TABLE [TbLogs] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
+                execSQL("ALTER TABLE [Images] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
             }
             if (lastDatabaseSchemeVersion < 1024) {
-                cbdb.sql.execSQL("ALTER TABLE [Waypoint] ADD COLUMN [IsStart] BOOLEAN DEFAULT 'false' NULL");
+                execSQL("ALTER TABLE [Waypoint] ADD COLUMN [IsStart] BOOLEAN DEFAULT 'false' NULL");
             }
 
             if (lastDatabaseSchemeVersion < 1026) {
                 // add one column for short description
                 // [ShortDescription] ntext NULL
-                cbdb.sql.execSQL("ALTER TABLE [Caches] ADD [ShortDescription] ntext NULL;");
+                execSQL("ALTER TABLE [Caches] ADD [ShortDescription] ntext NULL;");
             }
 
             if (lastDatabaseSchemeVersion < 1027) {
                 // add one column for Favorite Points
                 // [FavPoints] SMALLINT 0
-                cbdb.sql.execSQL("ALTER TABLE [CACHES] ADD [FavPoints] smallint NULL default 0;");
+                execSQL("ALTER TABLE [CACHES] ADD [FavPoints] smallint NULL default 0;");
 
             }
 
-            cbdb.sql.setTransactionSuccessful();
+            setTransactionSuccessful();
         } catch (Exception exc) {
             Log.err(sClass, "alterDatabase", "", exc);
         } finally {
-            cbdb.sql.endTransaction();
+            endTransaction();
         }
     }
 
@@ -296,12 +299,11 @@ public class CBDB extends Database_Core {
         CoreCursor reader = null;
         int count = 0;
         try {
-            reader = CBDB.cbdb.sql.rawQuery("select count(*) from caches", null);
+            reader = rawQuery("select count(*) from caches", null);
             if (reader != null) {
                 reader.moveToFirst();
                 count = reader.getInt(0);
             }
-            else count = 0;
         } catch (Exception e) {
             e.printStackTrace();
         }

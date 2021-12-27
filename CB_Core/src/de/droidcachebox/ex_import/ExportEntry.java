@@ -1,10 +1,10 @@
 package de.droidcachebox.ex_import;
 
+import java.io.Serializable;
+
 import de.droidcachebox.database.ChangeType;
 import de.droidcachebox.database.CoreCursor;
-import de.droidcachebox.database.Waypoint;
-
-import java.io.Serializable;
+import de.droidcachebox.dataclasses.Waypoint;
 
 public class ExportEntry implements Serializable {
     private static final long serialVersionUID = 1571599258092289354L;

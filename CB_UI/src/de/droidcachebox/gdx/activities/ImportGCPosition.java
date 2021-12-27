@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
@@ -35,10 +36,9 @@ import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.Category;
-import de.droidcachebox.database.GpxFilename;
+import de.droidcachebox.dataclasses.Category;
+import de.droidcachebox.dataclasses.GpxFilename;
 import de.droidcachebox.gdx.ActivityBase;
-import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -58,12 +58,11 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.TestCancel;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
 public class ImportGCPosition extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
-    private static final String log = "ImportGCPosition";
+    private static final String sClass = "ImportGCPosition";
     private final CB_Button btnOK;
     private final CB_Button btnCancel;
     private final CoordinateButton coordinateButton;
@@ -72,27 +71,19 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     private final SimpleDateFormat simpleDateFormat;
     private CB_Button btnPlus;
     private CB_Button btnMinus;
-    private CB_Label lblHeader, lblRadius, lblRadiusUnit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
-    private Image gsLogo;
     private CB_CheckBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
     private EditTextField txtRadius;
     private MultiToggleButton tglBtnGPS, tglBtnMap, tglBtnWeb;
     private Coordinate actSearchPos;
     private ImportAnimation dis;
-    private boolean importRuns = false;
+    private boolean importStarted = false;
     private int searchState = 0; // 0=GPS, 1= Map, 2= Manuell
-    private boolean isCanceld = false;
-    TestCancel icancel = () -> isCanceld;
-    private CB_Label lblPublished;
+    private final AtomicBoolean canceled;
     private CB_Button btnBeforeAfterEqual;
     private EditTextField edtDate;
-    private CB_Label lblImportLimit;
     private EditTextField edtImportLimit;
-    private CB_Label lblCacheName;
     private EditTextField edtCacheName;
-    private CB_Label lblOwner;
     private EditTextField edtOwner;
-    private CB_Label lblCategory;
     private EditTextField edtCategory;
     private SearchCoordinates searchCoordinates;
 
@@ -128,14 +119,15 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         scrollBox.setVirtualHeight(box.getHeight());
 
         initClickHandlersAndContent();
+        canceled = new AtomicBoolean();
 
     }
 
     private void createHeaderLine() {
-        lblHeader = new CB_Label(Translation.get("importCachesOverPosition"));
+        CB_Label lblHeader = new CB_Label(Translation.get("importCachesOverPosition"));
         lblHeader.setFont(Fonts.getBig()).setHAlignment(CB_Label.HAlignment.CENTER);
         float lineHeight = lblHeader.getHeight();
-        gsLogo = new Image(0, 0, lineHeight, lineHeight, "", false);
+        Image gsLogo = new Image(0, 0, lineHeight, lineHeight, "", false);
         gsLogo.setDrawable(new SpriteDrawable(Sprites.getSprite(Sprites.IconName.dayGcLiveIcon.name())));
         this.addNext(lblHeader); // sets the width
         this.addLast(gsLogo, FIXED);
@@ -150,7 +142,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         float wRadius = Fonts.Measure(sRadius).width;
         float wUnit = Fonts.Measure(sUnit).width;
 
-        lblRadius = new CB_Label(sRadius);
+        CB_Label lblRadius = new CB_Label(sRadius);
         lblRadius.setWidth(wRadius);
         //box.addNext(lblRadius, FIXED);
         box.addNext(lblRadius);
@@ -160,7 +152,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         //box.addNext(txtRadius);
         box.addNext(txtRadius);
 
-        lblRadiusUnit = new CB_Label(sUnit);
+        CB_Label lblRadiusUnit = new CB_Label(sUnit);
         lblRadiusUnit.setWidth(wUnit);
         box.addNext(lblRadiusUnit, FIXED);
 
@@ -174,7 +166,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     }
 
     private void createCategoryLine() {
-        lblCategory = new CB_Label(Translation.get("category"));
+        CB_Label lblCategory = new CB_Label(Translation.get("category"));
         lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
         box.addNext(lblCategory, FIXED);
         edtCategory = new EditTextField(this, "*" + Translation.get("category"));
@@ -182,7 +174,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     }
 
     private void createImportLimitLine() {
-        lblImportLimit = new CB_Label(Translation.get("ImportLimit"));
+        CB_Label lblImportLimit = new CB_Label(Translation.get("ImportLimit"));
         lblImportLimit.setWidth(Fonts.Measure(lblImportLimit.getText()).width);
         box.addNext(lblImportLimit, FIXED);
         edtImportLimit = new EditTextField(this, "*" + Translation.get("ImportLimit"));
@@ -191,7 +183,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     }
 
     private void createCacheNameLine() {
-        lblCacheName = new CB_Label(Translation.get("Title"));
+        CB_Label lblCacheName = new CB_Label(Translation.get("Title"));
         lblCacheName.setWidth(Fonts.Measure(lblCacheName.getText()).width);
         box.addNext(lblCacheName, FIXED);
         edtCacheName = new EditTextField(this, "*" + Translation.get("Title"));
@@ -199,7 +191,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     }
 
     private void createOwnerLine() {
-        lblOwner = new CB_Label(Translation.get("Owner"));
+        CB_Label lblOwner = new CB_Label(Translation.get("Owner"));
         lblOwner.setWidth(Fonts.Measure(lblOwner.getText()).width);
         box.addNext(lblOwner, FIXED);
         edtOwner = new EditTextField(this, "*" + Translation.get("Owner"));
@@ -207,7 +199,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     }
 
     private void createPublishedLine() {
-        lblPublished = new CB_Label(Translation.get("published"));
+        CB_Label lblPublished = new CB_Label(Translation.get("published"));
         box.addNext(lblPublished);
         btnBeforeAfterEqual = new CB_Button("<=");
         btnBeforeAfterEqual.setWidth(Fonts.Measure(". <= .").width);
@@ -223,17 +215,17 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
         checkBoxOnlyAvailable = new CB_CheckBox();
         box.addNext(checkBoxOnlyAvailable, FIXED);
-        lblOnlyAvailable = new CB_Label(Translation.get("SearchOnlyAvailable"));
+        CB_Label lblOnlyAvailable = new CB_Label(Translation.get("SearchOnlyAvailable"));
         box.addLast(lblOnlyAvailable);
 
         checkBoxExcludeHides = new CB_CheckBox();
         box.addNext(checkBoxExcludeHides, FIXED);
-        lblExcludeHides = new CB_Label(Translation.get("SearchWithoutOwns"));
+        CB_Label lblExcludeHides = new CB_Label(Translation.get("SearchWithoutOwns"));
         box.addLast(lblExcludeHides);
 
         checkBoxExcludeFounds = new CB_CheckBox();
         box.addNext(checkBoxExcludeFounds, FIXED);
-        lblExcludeFounds = new CB_Label(Translation.get("SearchWithoutFounds"));
+        CB_Label lblExcludeFounds = new CB_Label(Translation.get("SearchWithoutFounds"));
         box.addLast(lblExcludeFounds);
 
     }
@@ -261,13 +253,14 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     private void initClickHandlersAndContent() {
 
         btnOK.setClickHandler((v, x, y, pointer, button) -> {
-            ImportNow();
+            importNow();
             return true;
         });
 
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
-            if (importRuns) {
-                isCanceld = true;
+            if (importStarted) {
+                // or add messagebox to confirm cancellation
+                canceled.set(true);
             } else {
                 finish();
             }
@@ -428,11 +421,12 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     }
 
-    private void ImportNow() {
+    private void importNow() {
         btnOK.disable();
-        importRuns = true;
+        importStarted = true;
 
-        isCanceld = false;
+        canceled.set(false);
+
         // disable UI
         dis = new ImportAnimation(box);
         dis.setBackground(getBackground());
@@ -508,7 +502,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                             try {
                                 CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
                             } catch (InterruptedException e) {
-                                Log.err(log, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
+                                Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
                             }
                         }
                     }
@@ -536,58 +530,12 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                 }
                 btnOK.enable();
             }
-            importRuns = false;
+            importStarted = false;
         });
 
         thread.setPriority(Thread.MAX_PRIORITY);
         thread.start();
 
-    }
-
-    @Override
-    public void dispose() {
-        dispose(btnOK);
-        dispose(btnCancel);
-        dispose(btnBeforeAfterEqual);
-        dispose(btnPlus);
-        dispose(btnMinus);
-        dispose(lblHeader);
-        dispose(lblRadius);
-        dispose(lblRadiusUnit);
-        dispose(lblExcludeFounds);
-        dispose(lblOnlyAvailable);
-        dispose(lblExcludeHides);
-        dispose(lblImportLimit);
-        dispose(edtImportLimit);
-        dispose(lblCacheName);
-        dispose(edtCacheName);
-        dispose(lblOwner);
-        dispose(edtOwner);
-        dispose(gsLogo);
-        dispose(coordinateButton);
-        dispose(checkBoxExcludeFounds);
-        dispose(checkBoxOnlyAvailable);
-        dispose(checkBoxExcludeHides);
-        dispose(txtRadius);
-        dispose(tglBtnGPS);
-        dispose(tglBtnMap);
-        dispose(dis);
-        dispose(box);
-        dispose(lblPublished);
-        dispose(edtDate);
-        dispose(lblCategory);
-        dispose(edtCategory);
-
-        actSearchPos = null;
-
-        super.dispose();
-
-    }
-
-    private void dispose(CB_View_Base control) {
-        if (control != null)
-            control.dispose();
-        control = null;
     }
 
 }

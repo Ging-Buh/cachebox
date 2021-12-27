@@ -37,7 +37,7 @@ import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.Draft;
+import de.droidcachebox.dataclasses.Draft;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;

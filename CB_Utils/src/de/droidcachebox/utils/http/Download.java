@@ -52,7 +52,7 @@ public class Download {
                     kiloByteCount = kiloByteCount + 1;
                     if (progressIndicator != null)
                         progressIndicator.progressChanged("", "", kiloByteCount);
-                    if (testCancel != null && testCancel.doCancel())
+                    if (testCancel != null && testCancel.checkCanceled())
                         throw new Exception("canceled");
                 }
             } catch (Exception ex) {
@@ -73,7 +73,7 @@ public class Download {
                         }
                     }
                 } else {
-                    if (testCancel != null && testCancel.doCancel())
+                    if (testCancel != null && testCancel.checkCanceled())
                         Log.info(sClass, "canceled");
                     else
                         Log.err(sClass, remote + " to " + local, ex);

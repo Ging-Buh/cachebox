@@ -57,7 +57,7 @@ public class OpenRouteService {
 
                         @Override
                         public void run() {
-                            wd = CancelWaitDialog.ShowWait(Translation.get("generateRoute"), DownloadAnimation.GetINSTANCE(), new CancelWaitDialog.IcancelListener() {
+                            wd = CancelWaitDialog.ShowWait(Translation.get("generateRoute"), new DownloadAnimation(), new CancelWaitDialog.IcancelListener() {
 
                                 @Override
                                 public void isCanceled() {
@@ -213,7 +213,7 @@ public class OpenRouteService {
                                 }
 
                                 @Override
-                                public boolean doCancel() {
+                                public boolean checkCanceled() {
                                     return false;
                                 }
                             });

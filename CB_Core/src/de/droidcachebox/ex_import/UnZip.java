@@ -4,10 +4,9 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import de.droidcachebox.PlatformUIBase;
@@ -21,43 +20,39 @@ import de.droidcachebox.utils.log.Log;
 public class UnZip {
     private static final String log = "UnZip";
 
-    static public void extractHere(String zipFile) throws IOException {
-        // extract the content to the path of the zipfile
-        extractFolder(zipFile, true);
+    static public void extractHere(String zipFileName) throws IOException {
+        extract(FileFactory.createFile(zipFileName), true);
+    }
+
+    static public void extract(String zipFileName, boolean here) throws IOException {
+        extract(FileFactory.createFile(zipFileName), here);
     }
 
     /**
      * Extract the given ZIP-File
-     *
-     * @param zipFile
-     * @return Extracted Folder Path as String
-     * @throws ZipException ?
-     * @throws IOException ?
      */
-    static public void extractFolder(String zipFile, boolean here) throws ZipException, IOException {
-        Log.debug(log, "unzip from " + zipFile);
+    static public void extract(AbstractFile zipFile, boolean here) throws IOException {
+        String zipPathAndName = zipFile.getAbsolutePath();
+        Log.debug(log, "unzip from " + zipFile.getName());
         int BUFFER = 2048;
-        AbstractFile abstractFile = FileFactory.createFile(zipFile);
         ZipFile zip;
         if (PlatformUIBase.AndroidVersion >= 24) {
-            // todo Android has nothing to do in Core
-            zip = new ZipFile(abstractFile.getAbsolutePath(), Charset.forName("ISO-8859-1"));
+            zip = new ZipFile(zipPathAndName, StandardCharsets.ISO_8859_1);
         } else {
-            zip = new ZipFile(abstractFile.getAbsolutePath());
+            zip = new ZipFile(zipPathAndName);
         }
 
         String newPath;
         if (here) {
-            // extract the content to the path of the zipfile
-            newPath = abstractFile.getParent();
+            // extract the content to the path of the zipFile
+            newPath = zipFile.getParent();
         } else {
-            // extract the content to a path including the name of the zipfile (is perhaps a new directory)
-            newPath = zipFile.substring(0, zipFile.length() - 4);
+            // extract the content to a path including the name of the zipFile (is perhaps a new directory)
+            newPath = zipPathAndName.substring(0, zipPathAndName.length() - 4);
             FileFactory.createFile(newPath).mkdir();
         }
 
         Enumeration<?> zipFileEntries = zip.entries();
-
         // Process each entry
         while (zipFileEntries.hasMoreElements()) {
             // grab a zip file entry
@@ -78,7 +73,7 @@ public class UnZip {
             if (!entry.isDirectory()) {
 
                 int currentByte;
-                byte data[] = new byte[BUFFER];
+                byte[] data = new byte[BUFFER];
 
                 FileOutputStream fos = destAbstractFile.getFileOutputStream();
                 BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
@@ -99,7 +94,7 @@ public class UnZip {
             Log.debug(log, "  done with size " + destAbstractFile.length());
 
             if (currentEntry.endsWith(".zip")) {
-                // found a zip file, try to open recursiv
+                // found a zip file, try to open recursive
                 extractHere(destAbstractFile.getAbsolutePath());
             }
         }

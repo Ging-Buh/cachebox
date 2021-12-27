@@ -22,7 +22,6 @@ public class WaitDialog extends ButtonDialog {
 
     public WaitDialog(Size size, String name) {
         super(size.getBounds().asFloat(), name, "", "", null, null, null);
-
     }
 
     public static WaitDialog ShowWait() {
@@ -49,7 +48,7 @@ public class WaitDialog extends ButtonDialog {
         SizeF contentSize = waitDialog.getContentSize();
 
         CB_RectF imageRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
-        waitDialog.animation = WorkAnimation.GetINSTANCE(imageRec);
+        waitDialog.animation = new WorkAnimation(imageRec);
         waitDialog.addChild(waitDialog.animation);
 
         waitDialog.label = new CB_Label(contentSize.getBounds());
@@ -77,12 +76,13 @@ public class WaitDialog extends ButtonDialog {
 
     }
 
-    public void setAnimation(final AnimationBase Animation) {
+    public void setAnimation(final AnimationBase animation) {
         GL.that.RunOnGL(() -> {
-            WaitDialog.this.removeChild(WaitDialog.this.animation);
+            removeChild(this.animation);
+            this.animation = animation;
             CB_RectF imageRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
-            WaitDialog.this.animation = Animation.INSTANCE(imageRec);
-            WaitDialog.this.addChild(WaitDialog.this.animation);
+            animation.setRec(imageRec);
+            addChild(animation);
         });
 
     }

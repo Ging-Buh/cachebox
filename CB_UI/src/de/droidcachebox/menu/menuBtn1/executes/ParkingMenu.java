@@ -3,7 +3,7 @@ package de.droidcachebox.menu.menuBtn1.executes;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
+import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.Box;

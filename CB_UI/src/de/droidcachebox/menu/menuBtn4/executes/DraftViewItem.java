@@ -26,9 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.Draft;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.LogType;
+import de.droidcachebox.dataclasses.Draft;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;

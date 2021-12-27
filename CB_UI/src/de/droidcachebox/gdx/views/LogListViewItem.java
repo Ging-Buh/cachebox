@@ -18,10 +18,15 @@ package de.droidcachebox.gdx.views;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.LogEntry;
+import de.droidcachebox.dataclasses.LogEntry;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -32,10 +37,6 @@ import de.droidcachebox.gdx.controls.popups.ICopyPaste;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 public class LogListViewItem extends ListViewItemBackground implements ICopyPaste {
     private static NinePatch headerBackground;

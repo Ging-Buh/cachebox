@@ -18,8 +18,8 @@ import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogsTableDAO;
+import de.droidcachebox.dataclasses.LogEntry;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -100,7 +100,7 @@ public class ShowLogs extends AbstractShowAction {
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
 
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> ShowSpoiler.getInstance().ImportSpoiler(true).setReadyListener(() -> {
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> ShowSpoiler.getInstance().importSpoiler(true).setReadyListener(() -> {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {
                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -116,11 +116,11 @@ public class ShowLogs extends AbstractShowAction {
 
                 @Override
                 public void run() {
-                    GL.that.postAsync(() -> pd = CancelWaitDialog.ShowWait(Translation.get("LoadLogs"), DownloadAnimation.GetINSTANCE(),
+                    GL.that.postAsync(() -> pd = CancelWaitDialog.ShowWait(Translation.get("LoadLogs"), new DownloadAnimation(),
                             () -> doCancelThread = true, new RunnableReadyHandler() {
 
                                 @Override
-                                public boolean doCancel() {
+                                public boolean checkCanceled() {
                                     return doCancelThread;
                                 }
 
@@ -169,7 +169,7 @@ public class ShowLogs extends AbstractShowAction {
                                 }
 
                                 @Override
-                                public void runnableIsReady(boolean canceled) {
+                                public void afterRun(boolean canceled) {
                                     String sCanceled = canceled ? Translation.get("isCanceled") + br : "";
                                     pd.close();
                                     if (result != -1) {

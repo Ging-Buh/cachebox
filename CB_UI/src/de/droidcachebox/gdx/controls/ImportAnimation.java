@@ -18,6 +18,7 @@ package de.droidcachebox.gdx.controls;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
@@ -46,11 +47,11 @@ public class ImportAnimation extends Box {
 
             switch (Type) {
                 case Work:
-                    mAnimation = WorkAnimation.GetINSTANCE(imageRec);
+                    mAnimation = new WorkAnimation(imageRec);
                     break;
 
                 case Download:
-                    mAnimation = DownloadAnimation.GetINSTANCE(imageRec);
+                    mAnimation = new DownloadAnimation(imageRec);
                     break;
             }
 

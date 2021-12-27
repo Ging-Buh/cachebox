@@ -32,22 +32,26 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import de.droidcachebox.database.Attribute;
-import de.droidcachebox.database.Cache;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.Category;
-import de.droidcachebox.database.GeoCacheSize;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.GpxFilename;
-import de.droidcachebox.database.LogEntry;
-import de.droidcachebox.database.LogType;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.WaypointDAO;
+import de.droidcachebox.dataclasses.Attribute;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Categories;
+import de.droidcachebox.dataclasses.Category;
+import de.droidcachebox.dataclasses.GeoCacheSize;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.GpxFilename;
+import de.droidcachebox.dataclasses.LogEntry;
+import de.droidcachebox.dataclasses.LogType;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
+import de.droidcachebox.utils.TestCancel;
 import de.droidcachebox.utils.log.Log;
 
 public class GPXFileImporter {
@@ -67,70 +71,45 @@ public class GPXFileImporter {
 
     private final AbstractFile mGpxAbstractFile;
     private final String mDisplayFilename;
-    private final ImporterProgress mip;
+    private final ImporterProgress importerProgress;
     private final Waypoint waypoint = new Waypoint(true);
     private final LogEntry log = new LogEntry();
     private final String br = System.getProperty("line.separator");
-    private IImportHandler mImportHandler;
+    private final CacheDAO cacheDAO = CacheDAO.getInstance();
+    public Categories categories;
     private Integer currentWpt = 0;
     private Integer countWpt = 0;
     private Integer errors = 0;
     private GpxFilename gpxFilename = null;
     private String gpxName = "";
     private String gpxAuthor = "";
+    private TestCancel testCancel;
 
-    GPXFileImporter(AbstractFile abstractFile, ImporterProgress ip) {
+    GPXFileImporter(AbstractFile abstractFile, ImporterProgress _importerProgress) {
         super();
         mGpxAbstractFile = abstractFile;
-        mip = ip;
+        importerProgress = _importerProgress;
         mDisplayFilename = abstractFile.getName();
     }
 
-    private static Date parseDate(String text) {
-        Date date = parseDateWithFormat(DATE_PATTERN_1, text);
-        if (date != null) {
-            return date;
-        } else {
-            date = parseDateWithFormat(DATE_PATTERN_2, text);
-            if (date != null) {
-                return date;
-            } else {
-                date = parseDateWithFormat(DATE_PATTERN_3, text);
-                if (date != null) {
-                    return date;
-                } else {
-                    throw new XMLParserException("Illegal date format");
-                }
-            }
-        }
-    }
-
-    private static Date parseDateWithFormat(SimpleDateFormat df, String text) {
-        Date date = null;
-        try {
-            date = df.parse(text);
-        } catch (ParseException ignored) {
-        }
-        return date;
-    }
-
     /**
-     * @param importHandler ?
      * @param countwpt ?
      */
-    public void doImport(IImportHandler importHandler, Integer countwpt) {
+    public void doImport(Integer countwpt, TestCancel testCancel) throws Exception {
         // http://www.thebuzzmedia.com/software/simple-java-xml-parser-sjxp/
+
+        if (testCancel != null && testCancel.checkCanceled()) {
+            throw new Exception("canceled");
+        }
 
         currentWpt = 0;
         this.countWpt = countwpt;
 
-        mImportHandler = importHandler;
-
-        Category category = mImportHandler.getCategory(mGpxAbstractFile.getAbsolutePath());
+        Category category = getCategory(mGpxAbstractFile.getAbsolutePath());
         if (category == null)
             return;
 
-        gpxFilename = mImportHandler.NewGpxFilename(category, mGpxAbstractFile.getAbsolutePath());
+        gpxFilename = NewGpxFilename(category, mGpxAbstractFile.getAbsolutePath());
         if (gpxFilename == null)
             return;
 
@@ -149,18 +128,69 @@ public class GPXFileImporter {
         createTerraRules(ruleList);
         createCacheboxRules(ruleList);
 
-        @SuppressWarnings("unchecked")
         XMLParser<Map<String, String>> parserCache = new XMLParser<>(ruleList.toArray(new IRule[0]));
 
         try {
+            if (testCancel != null && testCancel.checkCanceled())
+                throw new Exception("canceled");
             FileInputStream fis = mGpxAbstractFile.getFileInputStream();
             parserCache.parse(fis, values);
             fis.close();
         } catch (Exception e) {
+            if (testCancel != null && testCancel.checkCanceled())
+                throw new Exception("canceled");
             Log.err(sClass, gpxFilename.GpxFileName + ": " + e.getLocalizedMessage());
         }
+    }
 
-        mImportHandler = null;
+    private void handleCache(Cache cache) throws Exception {
+
+        if (testCancel != null && testCancel.checkCanceled()) {
+            throw new Exception("canceled");
+        }
+
+        if (cacheDAO.cacheExists(cache.generatedId)) {
+            cacheDAO.updateDatabase(cache);
+        } else {
+            cacheDAO.writeToDatabase(cache);
+        }
+
+        if (cache.getWayPoints().size() > 0) {
+            for (int i = 0; i < cache.getWayPoints().size(); i++) {
+                handleWayPoint(cache.getWayPoints().get(i));
+            }
+        }
+
+        // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
+        cache.setLongDescription("");
+    }
+
+    private void handleLog(LogEntry log) throws Exception {
+        if (testCancel != null && testCancel.checkCanceled()) {
+            throw new Exception("canceled");
+        }
+        LogsTableDAO.getInstance().WriteLogEntry(log);
+    }
+
+    private void handleWayPoint(Waypoint wayPoint) throws Exception {
+        if (testCancel != null && testCancel.checkCanceled()) {
+            throw new Exception("canceled");
+        }
+        WaypointDAO.getInstance().WriteImportToDatabase(wayPoint);
+    }
+
+    private Category getCategory(String fileName) throws Exception {
+        if (testCancel != null && testCancel.checkCanceled()) {
+            throw new Exception("canceled");
+        }
+        return CoreData.categories.getCategory(fileName);
+    }
+
+    private GpxFilename NewGpxFilename(Category category, String fileName) throws Exception {
+        if (testCancel != null && testCancel.checkCanceled()) {
+            throw new Exception("canceled");
+        }
+        return category.addGpxFilename(fileName);
     }
 
     private void createGPXRules(List<IRule<Map<String, String>>> ruleList) {
@@ -181,6 +211,34 @@ public class GPXFileImporter {
             }
         });
 
+    }
+
+    private Date parseDate(String text) {
+        Date date = parseDateWithFormat(DATE_PATTERN_1, text);
+        if (date != null) {
+            return date;
+        } else {
+            date = parseDateWithFormat(DATE_PATTERN_2, text);
+            if (date != null) {
+                return date;
+            } else {
+                date = parseDateWithFormat(DATE_PATTERN_3, text);
+                if (date != null) {
+                    return date;
+                } else {
+                    throw new XMLParserException("Illegal date format");
+                }
+            }
+        }
+    }
+
+    private Date parseDateWithFormat(SimpleDateFormat df, String text) {
+        Date date = null;
+        try {
+            date = df.parse(text);
+        } catch (ParseException ignored) {
+        }
+        return date;
     }
 
     private void createCacheboxRules(List<IRule<Map<String, String>>> ruleList) {
@@ -244,8 +302,12 @@ public class GPXFileImporter {
                         try {
                             createWaypoint(values);
                         } catch (Exception e) {
-                            errors++;
-                            Log.err(sClass, "CreateWaypoint", e);
+                            if (e.getMessage().equals("canceled"))
+                                parser.stop();
+                            else {
+                                errors++;
+                                Log.err(sClass, "CreateWaypoint", e);
+                            }
                         }
                     }
                 }
@@ -1261,7 +1323,7 @@ public class GPXFileImporter {
                     }
 
                     LogCount++;
-                    mImportHandler.handleLog(log);
+                    handleLog(log);
 
                     log.clear();
                 }
@@ -1326,8 +1388,7 @@ public class GPXFileImporter {
             info.append(errors);
         }
 
-        if (mip != null)
-            mip.ProgressInkrement("ImportGPX", info.toString(), false);
+        importerProgress.incrementProgress("ImportGPX", info.toString(), false);
 
         // Write Note and Solver
         if (values.containsKey("cachebox-extension_solver")) {
@@ -1346,11 +1407,11 @@ public class GPXFileImporter {
         }
 
         // write to Database
-        mImportHandler.handleCache(cache);
+        handleCache(cache);
 
     }
 
-    private void createWaypoint(Map<String, String> values) {
+    private void createWaypoint(Map<String, String> values) throws Exception {
         if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon")) {
             waypoint.setCoordinate(new CoordinateGPS(Double.parseDouble(values.get("wpt_attribute_lat")), Double.parseDouble(values.get("wpt_attribute_lon"))));
         } else {
@@ -1393,10 +1454,9 @@ public class GPXFileImporter {
         }
 
         currentWpt++;
-        if (mip != null)
-            mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentWpt + "/" + countWpt + "\n" + waypoint.getWaypointCode() + " - " + waypoint.getDescription(), false);
+        importerProgress.incrementProgress("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentWpt + "/" + countWpt + "\n" + waypoint.getWaypointCode() + " - " + waypoint.getDescription(), false);
 
-        mImportHandler.handleWayPoint(waypoint);
+        handleWayPoint(waypoint);
 
         waypoint.clear();
 

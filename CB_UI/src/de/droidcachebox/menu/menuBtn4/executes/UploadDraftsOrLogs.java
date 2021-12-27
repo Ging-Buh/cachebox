@@ -4,9 +4,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.Draft;
-import de.droidcachebox.database.Drafts;
-import de.droidcachebox.database.LogType;
+import de.droidcachebox.dataclasses.Draft;
+import de.droidcachebox.dataclasses.Drafts;
+import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
@@ -15,7 +15,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.menu.menuBtn2.executes.Logs;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.RunnableReadyHandler;
 
 public class UploadDraftsOrLogs {
@@ -34,7 +33,7 @@ public class UploadDraftsOrLogs {
 
             @Override
             public void run() {
-                ProgresssChangedEventList.progressChanged("Upload", "", 0);
+                progressDialog.setProgress("Upload", "", 0);
 
                 Drafts drafts = new Drafts();
                 drafts.loadDrafts(Drafts.LoadingType.CanUpload);
@@ -61,7 +60,7 @@ public class UploadDraftsOrLogs {
                             // wurde.
                             break;
                         // Progress status Melden
-                        ProgresssChangedEventList.progressChanged(draft.CacheName, (100 * count) / anzahl);
+                        progressDialog.setProgress("", draft.CacheName, (100 * count) / anzahl);
 
                         int result;
 
@@ -104,12 +103,12 @@ public class UploadDraftsOrLogs {
             }
 
             @Override
-            public boolean doCancel() {
+            public boolean checkCanceled() {
                 return cancel.get();
             }
 
             @Override
-            public void runnableIsReady(boolean canceld) {
+            public void afterRun(boolean canceld) {
                 if (!canceld) {
                     if (uploadMeldung.length() == 0) {
                         MsgBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MsgBoxIcon.GC_Live);
@@ -125,8 +124,9 @@ public class UploadDraftsOrLogs {
         // ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
 
         GL.that.RunOnGL(() -> {
-            progressDialog = ProgressDialog.Show("uploadDrafts", uploadDrafts);
+            progressDialog = new ProgressDialog("uploadDrafts", null, uploadDrafts);
             progressDialog.setCancelListener(() -> cancel.set(true));
+            GL.that.showDialog(progressDialog);
         });
 
     }

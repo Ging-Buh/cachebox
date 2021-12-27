@@ -27,10 +27,6 @@ public abstract class Database_Core {
         databasePath = "";
     }
 
-    public SQLiteInterface getSql() {
-        return sql;
-    }
-
     public void beginTransaction() {
         sql.beginTransaction();
     }
@@ -41,6 +37,34 @@ public abstract class Database_Core {
 
     public void endTransaction() {
         sql.endTransaction();
+    }
+
+    public void execSQL(String sqlCommand) {
+        sql.execSQL(sqlCommand);
+    }
+
+    public CoreCursor rawQuery(String sqlCommand, String[] args) {
+        return sql.rawQuery(sqlCommand, args);
+    }
+
+    public long insert(String table, HashMap<String, Object> parameters) {
+        return sql.insert(table, parameters);
+    }
+
+    public void insertWithConflictReplace(String table, HashMap<String, Object> parameters) {
+        sql.insertWithConflictReplace(table, parameters);
+    }
+
+    public void insertWithConflictIgnore(String table, HashMap<String, Object> parameters) {
+        sql.insertWithConflictIgnore(table, parameters);
+    }
+
+    public long update(String table, HashMap<String, Object> parameters, String whereClause, String[] whereArgs) {
+        return sql.update(table, parameters, whereClause, whereArgs);
+    }
+
+    public long delete(String table, String whereClause, String[] whereArgs){
+        return sql.delete(table, whereClause, whereArgs);
     }
 
     public boolean isDatabaseNew() {

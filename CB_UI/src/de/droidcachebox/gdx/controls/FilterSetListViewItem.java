@@ -8,15 +8,20 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.gdx.*;
+
+import java.util.ArrayList;
+
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_Input;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-
-import java.util.ArrayList;
 
 public class FilterSetListViewItem extends ListViewItemBackground {
     public static final int COLLAPSE_BUTTON_ITEM = 0;

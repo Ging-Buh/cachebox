@@ -1,9 +1,10 @@
-package de.droidcachebox.database;
-
-import de.droidcachebox.ex_import.DescriptionImageGrabber;
+package de.droidcachebox.dataclasses;
 
 import java.io.Serializable;
 import java.net.URI;
+
+import de.droidcachebox.database.CoreCursor;
+import de.droidcachebox.ex_import.DescriptionImageGrabber;
 
 public class ImageEntry implements Serializable {
     private static final long serialVersionUID = 4216092006574290607L;

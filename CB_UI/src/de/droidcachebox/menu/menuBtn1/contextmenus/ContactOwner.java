@@ -7,7 +7,7 @@ import java.net.URLEncoder;
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.database.Cache;
+import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;

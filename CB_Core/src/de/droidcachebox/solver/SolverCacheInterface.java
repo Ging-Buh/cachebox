@@ -1,7 +1,7 @@
 package de.droidcachebox.solver;
 
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Waypoint;
 
 public interface SolverCacheInterface {
     Cache sciGetSelectedCache();

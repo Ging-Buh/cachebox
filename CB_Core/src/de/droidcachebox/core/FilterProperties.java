@@ -15,17 +15,18 @@
  */
 package de.droidcachebox.core;
 
-import de.droidcachebox.database.Attribute;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.utils.DLong;
-import de.droidcachebox.utils.log.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import de.droidcachebox.dataclasses.Attribute;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.utils.DLong;
+import de.droidcachebox.utils.log.Log;
 
 public class FilterProperties {
     private static final String log = "FilterProperties";

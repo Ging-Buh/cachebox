@@ -1,8 +1,8 @@
-package de.droidcachebox.database;
-
-import de.droidcachebox.utils.DLong;
+package de.droidcachebox.dataclasses;
 
 import java.util.HashMap;
+
+import de.droidcachebox.utils.DLong;
 
 public enum Attribute {
     Default, // 0

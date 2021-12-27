@@ -14,10 +14,10 @@ import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.GeoCacheSize;
-import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.GeoCacheSize;
+import de.droidcachebox.dataclasses.GeoCacheType;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -257,11 +257,11 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             cache.setCountry(cacheCountry.getText());
             cache.setLongDescription(cacheDescription.getText());
             if (update) {
-                cacheDAO.UpdateDatabase(cache);
+                cacheDAO.updateDatabase(cache);
                 CacheListChangedListeners.getInstance().cacheListChanged();
             } else {
                 CBDB.getInstance().cacheList.add(cache);
-                cacheDAO.WriteToDatabase(cache);
+                cacheDAO.writeToDatabase(cache);
                 GlobalCore.setSelectedCache(cache);
                 CacheListChangedListeners.getInstance().cacheListChanged();
                 GeoCaches.getInstance().setSelectedCacheVisible();

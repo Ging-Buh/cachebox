@@ -397,7 +397,6 @@ public class MsgBox extends Dialog {
 
     @Override
     public void dispose() {
-        //Log.debug(log, "Dispose MessageBox=> " + name);
 
         if (FooterItems != null) {
             for (CB_View_Base t : FooterItems) {

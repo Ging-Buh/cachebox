@@ -15,7 +15,7 @@
  */
 package de.droidcachebox.gdx.views;
 
-import de.droidcachebox.database.Trackable;
+import de.droidcachebox.dataclasses.Trackable;
 import de.droidcachebox.gdx.activities.TB_Details;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.Image;

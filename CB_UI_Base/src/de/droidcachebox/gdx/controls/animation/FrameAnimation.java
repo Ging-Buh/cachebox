@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.math.CB_RectF;
 
 import java.util.ArrayList;
+
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.math.CB_RectF;
 
 public abstract class FrameAnimation extends AnimationBase {
     private ArrayList<Drawable> frames;
@@ -66,11 +67,6 @@ public abstract class FrameAnimation extends AnimationBase {
 
         }
         GL.that.renderOnce();
-    }
-
-    protected void play(int duration) {
-        this.mDuration = duration;
-        mPlaying = true;
     }
 
     @Override

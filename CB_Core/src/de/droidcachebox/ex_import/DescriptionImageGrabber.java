@@ -29,9 +29,9 @@ import java.util.LinkedList;
 
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.Database_Core.Parameters;
-import de.droidcachebox.database.ImageEntry;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.ImageEntry;
 import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -270,11 +270,11 @@ public class DescriptionImageGrabber {
         return images;
     }
 
-    public static int GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String description, String url, boolean withLogImages) {
+    public static int grabImagesSelectedByCache(ImporterProgress importerProgress, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String description, String url, boolean withLogImages) {
         boolean imageLoadError = false;
         if (!descriptionImagesUpdated) {
             Log.debug(log, "GrabImagesSelectedByCache -> grab description images");
-            ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode);
+            importerProgress.changeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode);
 
             LinkedList<URI> imgUris = GetImageUris(description, url);
 
@@ -285,12 +285,9 @@ public class DescriptionImageGrabber {
                     return 0;
                 }
 
-                if (BreakawayImportThread.isCanceled())
-                    return 0;
-
                 String local = buildDescriptionImageFilename(gcCode, uri);
 
-                ip.ProgressChangeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
+                importerProgress.changeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                 // direkt download
                 Download download = new Download(null, null);
@@ -309,7 +306,7 @@ public class DescriptionImageGrabber {
             if (!imageLoadError) {
                 Parameters args = new Parameters();
                 args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-                CBDB.getInstance().getSql().update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
+                CBDB.getInstance().update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
             }
             Log.debug(log, "GrabImagesSelectedByCache done");
         }
@@ -326,7 +323,7 @@ public class DescriptionImageGrabber {
                 allSpoilers.add(file);
 
             {
-                ip.ProgressChangeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode);
+                importerProgress.changeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode);
 
                 // todo always take from database. They are not downloaded yet
                 // todo else don't write them to database on fetch/update cache
@@ -343,12 +340,9 @@ public class DescriptionImageGrabber {
                         return 0;
                     }
 
-                    if (BreakawayImportThread.isCanceled())
-                        return 0;
-
                     String uri = imageEntry.getImageUrl();
 
-                    ip.ProgressChangeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
+                    importerProgress.changeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                     imageEntry = BuildAdditionalImageFilenameHashNew(imageEntry);
                     if (imageEntry != null) {
@@ -378,7 +372,7 @@ public class DescriptionImageGrabber {
                 if (!imageLoadError) {
                     Parameters args = new Parameters();
                     args.put("ImagesUpdated", additionalImagesUpdated);
-                    CBDB.getInstance().getSql().update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
+                    CBDB.getInstance().update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
                     // jetzt können noch alle "alten" Spoiler gelöscht werden.
                     // "alte" Spoiler sind die, die auf der SD vorhanden sind, aber nicht als Link über die API gemeldet wurden.
                     // Alle Spoiler in der Liste allSpoilers sind "alte"

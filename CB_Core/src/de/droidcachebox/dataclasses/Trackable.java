@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.database;
-
-import de.droidcachebox.utils.UnitFormatter;
-import de.droidcachebox.utils.log.Log;
+package de.droidcachebox.dataclasses;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import de.droidcachebox.database.CoreCursor;
+import de.droidcachebox.utils.UnitFormatter;
+import de.droidcachebox.utils.log.Log;
 
 public class Trackable implements Comparable<Trackable> {
     private static final String log = "Trackable";

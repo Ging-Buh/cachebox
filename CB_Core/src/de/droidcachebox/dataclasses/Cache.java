@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.database;
+package de.droidcachebox.dataclasses;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
+import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.CB_List;
@@ -31,6 +32,7 @@ import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 
 public class Cache implements Comparable<Cache>, Serializable {
+    public final static byte NOT_LIVE = 0;
     public final static byte IS_LITE = 1;
     public final static byte IS_FULL = 2;
     // ########################################################
@@ -40,7 +42,6 @@ public class Cache implements Comparable<Cache>, Serializable {
     //
     // so we use one Short for Store all boolean and Use a BitMask
     // ########################################################
-    final static byte NOT_LIVE = 0;
     private static final String EMPTY_STRING = "";
     private static final Charset US_ASCII = StandardCharsets.US_ASCII;
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
@@ -198,32 +199,6 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public boolean mustLoadDetail() {
         return (geoCacheDetail == null);
-    }
-
-    /**
-     * Load Detail Information from DB
-     */
-    public void loadDetail() {
-        CacheDAO dao = CacheDAO.getInstance();
-        dao.readDetail(this);
-        // load all Waypoints with full Details
-        CB_List<Waypoint> readWaypoints = WaypointDAO.getInstance().getWaypointsFromCacheID(generatedId, true);
-        if (wayPoints == null) wayPoints = new CB_List<>();
-        for (int i = 0; i < readWaypoints.size(); i++) {
-            Waypoint readWaypoint = readWaypoints.get(i);
-            boolean found = false;
-            for (int j = 0; j < wayPoints.size(); j++) {
-                Waypoint existingWaypoint = wayPoints.get(j);
-                if (readWaypoint.getWaypointCode().equals(existingWaypoint.getWaypointCode())) {
-                    found = true;
-                    existingWaypoint.detail = readWaypoint.detail; // copy Detail Info
-                    break;
-                }
-            }
-            if (!found) {
-                wayPoints.add(readWaypoint);
-            }
-        }
     }
 
     public boolean iAmTheOwner() {
@@ -690,7 +665,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         return getMaskValue(MASK_LISTING_CHANGED);
     }
 
-    void setListingChanged(boolean listingChanged) {
+    public void setListingChanged(boolean listingChanged) {
         setMaskValue(MASK_LISTING_CHANGED, listingChanged);
     }
 
@@ -736,7 +711,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    int getNoteChecksum() {
+    public int getNoteChecksum() {
         if (geoCacheDetail != null) {
             return geoCacheDetail.noteCheckSum;
         } else {
@@ -778,7 +753,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    int getSolverChecksum() {
+    public int getSolverChecksum() {
         if (geoCacheDetail != null) {
             return geoCacheDetail.solverCheckSum;
         } else {
@@ -868,7 +843,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    DLong getAttributesPositive() {
+    public DLong getAttributesPositive() {
         if (geoCacheDetail != null) {
             return geoCacheDetail.getAttributesPositive(generatedId);
         } else {
@@ -882,7 +857,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    DLong getAttributesNegative() {
+    public DLong getAttributesNegative() {
         if (geoCacheDetail != null) {
             return geoCacheDetail.getAttributesNegative(generatedId);
         } else {
@@ -1001,6 +976,7 @@ public class Cache implements Comparable<Cache>, Serializable {
      * list of wayPoints for the geoCache
      */
     public CB_List<Waypoint> getWayPoints() {
+        if (wayPoints == null) wayPoints = new CB_List<>();
         return wayPoints;
     }
 

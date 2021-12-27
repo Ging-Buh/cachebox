@@ -27,8 +27,8 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Date;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.ParentInfo;

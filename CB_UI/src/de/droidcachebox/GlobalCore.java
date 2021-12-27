@@ -34,9 +34,10 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.CacheList;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.CacheList;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
@@ -161,7 +162,7 @@ public class GlobalCore implements SolverCacheInterface {
             // load Detail Info if not available
             if (selectedCache.getGeoCacheDetail() == null) {
                 Log.debug(log, "[GlobalCore]setSelectedWaypoint: loadDetail of " + cache.getGeoCacheCode());
-                selectedCache.loadDetail();
+                CacheDAO.getInstance().loadDetail(selectedCache);
             }
 
             CacheSelectionChangedListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
@@ -230,7 +231,7 @@ public class GlobalCore implements SolverCacheInterface {
         }
 
         if (isAccessTokenInvalid()) {
-            CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), null, new TestCancelRunnable() {
+            CancelWaitDialog.ShowWait("chk API Key", new DownloadAnimation(), null, new TestCancelRunnable() {
                 @Override
                 public void run() {
                     handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
@@ -246,7 +247,7 @@ public class GlobalCore implements SolverCacheInterface {
                 }
 
                 @Override
-                public boolean doCancel() {
+                public boolean checkCanceled() {
                     return false;
                 }
             });

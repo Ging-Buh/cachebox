@@ -46,7 +46,7 @@ public class GcApiLogin {
             }
 
             @Override
-            public boolean doCancel() {
+            public boolean checkCanceled() {
                 // TODO Handle Cancel
                 return false;
             }

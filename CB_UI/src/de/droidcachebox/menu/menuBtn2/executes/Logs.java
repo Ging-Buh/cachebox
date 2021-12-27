@@ -20,10 +20,10 @@ import java.util.Collections;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogsTableDAO;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.LogEntry;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.list.Adapter;

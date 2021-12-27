@@ -27,8 +27,9 @@ import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.InvalidateTextureListeners;
 import de.droidcachebox.core.CacheListChangedListeners;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -187,7 +188,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
 
                 if (currentGeoCache.mustLoadDetail()) {
                     Log.debug(log, "loading details.");
-                    currentGeoCache.loadDetail();
+                    CacheDAO.getInstance().loadDetail(currentGeoCache);
                 }
 
                 if (showAtt) {

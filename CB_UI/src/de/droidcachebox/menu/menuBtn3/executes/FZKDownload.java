@@ -55,7 +55,7 @@ public class FZKDownload extends ActivityBase {
     private final Array<MapDownloadItem> mapDownloadItems = new Array<>();
     private final ScrollBox scrollBox;
     private final AtomicBoolean canceled;
-    private boolean areAllDownloadsCompleted = false;
+    private boolean allDownloadsComplete;
     private int allProgress = 0;
     private CB_Button btnOK, btnCancel;
     private CB_Label lblProgressMsg;
@@ -105,7 +105,7 @@ public class FZKDownload extends ActivityBase {
 
         addChild(btnOK);
         btnOK.setClickHandler((v, x, y, pointer, button) -> {
-            ImportNow();
+            importNow();
             return true;
         });
 
@@ -161,11 +161,11 @@ public class FZKDownload extends ActivityBase {
         doImportByUrl = true;
     }
 
-    private void ImportNow() {
+    private void importNow() {
         if (importStarted)
             return;
 
-        areAllDownloadsCompleted = false;
+        allDownloadsComplete = false;
 
         // disable btn
         btnOK.disable();
@@ -182,16 +182,17 @@ public class FZKDownload extends ActivityBase {
         for (MapDownloadItem item : mapDownloadItems) {
             item.beginDownload();
         }
-        Thread dlProgressChecker = new Thread(() -> {
 
-            while (!areAllDownloadsCompleted) {
+        new Thread(() -> {
+
+            while (!allDownloadsComplete) {
 
                 int calcAll = 0;
                 int downloadCount = 0;
                 for (MapDownloadItem item : mapDownloadItems) {
-                    int actPro = item.getDownloadProgress();
-                    if (actPro > -1) {
-                        calcAll += actPro;
+                    int currentItemDownloadProgress = item.getDownloadProgress();
+                    if (currentItemDownloadProgress > -1) {
+                        calcAll += currentItemDownloadProgress;
                         downloadCount++;
                     }
                 }
@@ -205,9 +206,8 @@ public class FZKDownload extends ActivityBase {
                 }
 
                 try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {
                 }
 
                 // chk download ready
@@ -221,15 +221,13 @@ public class FZKDownload extends ActivityBase {
 
                 if (areAllDownloadsReady) {
                     // all downloads ready
-                    areAllDownloadsCompleted = true;
+                    allDownloadsComplete = true;
                     finishImport();
                 }
 
             }
 
-        });
-
-        dlProgressChecker.start();
+        }).start();
     }
 
     private void finishImport() {
@@ -247,10 +245,10 @@ public class FZKDownload extends ActivityBase {
 
         progressBar.fillBarAt(0);
 
-        if (areAllDownloadsCompleted) {
+        if (allDownloadsComplete) {
             lblProgressMsg.setText("");
             btnCancel.setText(Translation.get("ok"));
-            // to prevent download again. On next start you must check again
+            // to prevent checked items download again: uncheck (== enable). On next start you must check again
             for (MapDownloadItem item : mapDownloadItems) {
                 item.enable();
             }
@@ -445,7 +443,7 @@ public class FZKDownload extends ActivityBase {
         return ruleList;
     }
 
-    static class MapComparator implements Comparator<MapInfo> {
+    private static class MapComparator implements Comparator<MapInfo> {
         LatLong centre;
 
         public MapComparator(LatLong centre) {
@@ -479,7 +477,7 @@ public class FZKDownload extends ActivityBase {
         }
     }
 
-    private class MapInfo {
+    private static class MapInfo {
         public String name;
         public String description;
         public String url;

@@ -1,11 +1,22 @@
 package de.droidcachebox.core;
 
-import de.droidcachebox.database.GeoCacheType;
+import static de.droidcachebox.dataclasses.GeoCacheType.CITO;
+import static de.droidcachebox.dataclasses.GeoCacheType.Camera;
+import static de.droidcachebox.dataclasses.GeoCacheType.Earth;
+import static de.droidcachebox.dataclasses.GeoCacheType.Event;
+import static de.droidcachebox.dataclasses.GeoCacheType.Giga;
+import static de.droidcachebox.dataclasses.GeoCacheType.Letterbox;
+import static de.droidcachebox.dataclasses.GeoCacheType.MegaEvent;
+import static de.droidcachebox.dataclasses.GeoCacheType.Multi;
+import static de.droidcachebox.dataclasses.GeoCacheType.Munzee;
+import static de.droidcachebox.dataclasses.GeoCacheType.Mystery;
+import static de.droidcachebox.dataclasses.GeoCacheType.Traditional;
+import static de.droidcachebox.dataclasses.GeoCacheType.Wherigo;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static de.droidcachebox.database.GeoCacheType.*;
+import de.droidcachebox.dataclasses.GeoCacheType;
 
 public class FilterInstances {
 

@@ -45,7 +45,7 @@ import java.util.TimerTask;
 import de.droidcachebox.components.CacheNameView;
 import de.droidcachebox.controls.DownSlider;
 import de.droidcachebox.controls.MicrophoneView;
-import de.droidcachebox.database.Cache;
+import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.ViewConst;

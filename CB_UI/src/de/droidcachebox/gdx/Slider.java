@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.GeoCacheSize;
-import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogsTableDAO;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.GeoCacheSize;
+import de.droidcachebox.dataclasses.LogEntry;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;

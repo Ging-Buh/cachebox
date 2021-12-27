@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.dataclasses.GpxFilename;
 
 public class GpxFilenameDAO {
     public GpxFilename ReadFromCursor(CoreCursor reader) {
@@ -41,7 +42,7 @@ public class GpxFilenameDAO {
     public void GPXFilenameUpdateCacheCount() {
         // welche GPXFilenamen sind in der DB erfasst
 
-        CoreCursor reader = CBDB.getInstance().sql.rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
+        CoreCursor reader = CBDB.getInstance().rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
 
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
@@ -51,14 +52,14 @@ public class GpxFilenameDAO {
             Parameters args = new Parameters();
             args.put("CacheCount", CacheCount);
 
-            CBDB.getInstance().sql.update("GPXFilenames", args, "ID=?", new String[]{String.valueOf(GPXFilename_ID)});
+            CBDB.getInstance().update("GPXFilenames", args, "ID=?", new String[]{String.valueOf(GPXFilename_ID)});
             reader.moveToNext();
         }
 
         reader.close();
 
-        CBDB.getInstance().sql.delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
-        CBDB.getInstance().sql.delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
+        CBDB.getInstance().delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
+        CBDB.getInstance().delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
     }
 
 }

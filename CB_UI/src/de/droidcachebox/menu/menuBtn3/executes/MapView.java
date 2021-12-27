@@ -47,12 +47,12 @@ import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.core.LiveMapQue;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheListDAO;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -348,7 +348,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         infoBubble.setInvisible();
         infoBubble.setClickHandler((v, x, y, pointer, button) -> {
             if (infoBubble.saveButtonClicked(x, y)) {
-                wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), () -> {
+                wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), () -> {
 
                 }, new TestCancelRunnable() {
 
@@ -356,7 +356,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                     public void run() {
                         Cache bubblesCache = infoBubble.getCache();
                         if (bubblesCache.getGeoCacheDetail() == null)
-                            bubblesCache.loadDetail();
+                            CacheDAO.getInstance().loadDetail(bubblesCache);
                         String GCCode = bubblesCache.getGeoCacheCode();
                         ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(bubblesCache);
                         if (geoCacheRelateds.size() > 0) {
@@ -383,7 +383,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         CacheListChangedListeners.getInstance().cacheListChanged();
                         wd.close();
 
-                        ShowSpoiler.getInstance().ImportSpoiler(false).setReadyListener(() -> {
+                        ShowSpoiler.getInstance().importSpoiler(false).setReadyListener(() -> {
                             // do after import
                             if (GlobalCore.isSetSelectedCache()) {
                                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -393,7 +393,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                     }
 
                     @Override
-                    public boolean doCancel() {
+                    public boolean checkCanceled() {
                         return false;
                     }
                 });

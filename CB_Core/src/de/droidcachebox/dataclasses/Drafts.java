@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.database;
+package de.droidcachebox.dataclasses;
 
 import com.badlogic.gdx.utils.Array;
 
+import de.droidcachebox.database.CoreCursor;
+import de.droidcachebox.database.DraftsDatabase;
 import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
@@ -107,7 +109,7 @@ public class Drafts extends Array<Draft> {
             }
 
             try {
-                CoreCursor reader = DraftsDatabase.getInstance().sql.rawQuery(sql, null);
+                CoreCursor reader = DraftsDatabase.getInstance().rawQuery(sql, null);
                 if (reader != null) {
                     reader.moveToFirst();
                     while (!reader.isAfterLast()) {

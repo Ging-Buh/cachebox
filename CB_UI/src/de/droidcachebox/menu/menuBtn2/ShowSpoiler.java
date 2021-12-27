@@ -26,10 +26,10 @@ import de.droidcachebox.utils.TestCancelRunnable;
 
 public class ShowSpoiler extends AbstractShowAction {
     private static ShowSpoiler showSpoiler;
+    private static CancelWaitDialog wd;
     private final Sprite SpoilerExistsIcon;
     private final Sprite NoSpoilerIcon;
     private Menu contextMenu;
-    private static CancelWaitDialog wd;
 
     private ShowSpoiler() {
         super("spoiler");
@@ -88,7 +88,7 @@ public class ShowSpoiler extends AbstractShowAction {
     private void createContextMenu() {
         contextMenu = new Menu("SpoilerViewContextMenuTitle");
 
-        contextMenu.addMenuItem("reloadSpoiler", null, () -> ImportSpoiler(false).setReadyListener(() -> {
+        contextMenu.addMenuItem("reloadSpoiler", null, () -> importSpoiler(false).setReadyListener(() -> {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {
                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -98,7 +98,7 @@ public class ShowSpoiler extends AbstractShowAction {
             }
         }));
 
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> ImportSpoiler(true).setReadyListener(() -> {
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> importSpoiler(true).setReadyListener(() -> {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {
                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -115,17 +115,18 @@ public class ShowSpoiler extends AbstractShowAction {
     }
 
 
-    public CancelWaitDialog ImportSpoiler(boolean withLogImages) {
-        wd = CancelWaitDialog.ShowWait(Translation.get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), () -> {
+    public CancelWaitDialog importSpoiler(boolean withLogImages) {
+        wd = CancelWaitDialog.ShowWait(Translation.get("downloadSpoiler"), new DownloadAnimation(), () -> {
             // canceled
         }, new TestCancelRunnable() {
             @Override
             public void run() {
-                // Importer importer = new Importer();
-                ImporterProgress ip = new ImporterProgress();
+                ImporterProgress importerProgress = new ImporterProgress((message, progressMessage, progress) -> {
+                    // todo show progress
+                });
                 int result = GroundspeakAPI.ERROR;
                 if (GlobalCore.getSelectedCache() != null)
-                    result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
+                    result = DescriptionImageGrabber.grabImagesSelectedByCache(importerProgress, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
                 wd.close();
                 if (result != OK) {
                     GL.that.toast(LastAPIError);
@@ -133,7 +134,7 @@ public class ShowSpoiler extends AbstractShowAction {
             }
 
             @Override
-            public boolean doCancel() {
+            public boolean checkCanceled() {
                 return false;
             }
         });

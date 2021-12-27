@@ -27,14 +27,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import de.droidcachebox.database.Attribute;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.CacheList;
 import de.droidcachebox.database.CacheListDAO;
-import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogsTableDAO;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Attribute;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.CacheList;
+import de.droidcachebox.dataclasses.LogEntry;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
@@ -50,7 +50,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public final class GpxSerializer {
-    private static final String sKlasse = "GpxSerializer";
+    private static final String sClass = "GpxSerializer";
     private static final SimpleDateFormat dateFormatZ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
     private static final String PREFIX_XSI = "http://www.w3.org/2001/XMLSchema-instance";
     private static final String PREFIX_GPX = "http://www.topografix.com/GPX/1/0";
@@ -212,12 +212,18 @@ public final class GpxSerializer {
         // Split the overall set of geocodes into small chunks. That is a compromise between memory efficiency (because
         // we don't load all caches fully into memory) and speed (because we don't query each cache separately).
         while (!allGeocodes.isEmpty()) {
-            final ArrayList<String> batch = new ArrayList<>(allGeocodes.subList(0, Math.min(CACHES_PER_BATCH, allGeocodes.size())));
-            exportBatch(gpx, batch);
-            allGeocodes.removeAll(batch);
-            batch.clear();
-            if (cancel)
+            try {
+                final ArrayList<String> batch = new ArrayList<>(allGeocodes.subList(0, Math.min(CACHES_PER_BATCH, allGeocodes.size())));
+                exportBatch(gpx, batch);
+                allGeocodes.removeAll(batch);
+                batch.clear();
+                if (cancel)
+                    break;
+            }
+            catch (Exception ex) {
+                Log.err(sClass, ex);
                 break;
+            }
         }
 
         gpx.endTag(PREFIX_GPX, "gpx");
@@ -225,132 +231,136 @@ public final class GpxSerializer {
     }
 
     private void exportBatch(final XmlSerializer gpx, ArrayList<String> geocodesOfBatch) throws IOException {
-        CacheList cacheList;
-
-        boolean fullDetails = true;
-        boolean loadAllWaypoints = true;
-        boolean withDescription = true;
 
         progressListener.publishProgress(countExported, Translation.get("readCacheDetails", String.valueOf(geocodesOfBatch.size())));
 
-        cacheList = CacheListDAO.getInstance().readCacheList(geocodesOfBatch, withDescription, fullDetails, loadAllWaypoints);
-
+        CacheList cacheList = CacheListDAO.getInstance().readCacheList(geocodesOfBatch, true, true, true);
         for (int i = 0; i < cacheList.size(); i++) {
             if (cancel)
                 break;
             Cache cache = cacheList.get(i);
 
-            if (cache == null) {
-                continue;
-            }
-            final Coordinate coords = cache.getCoordinate();
-            if (coords == null) {
-                // Export would be invalid without coordinates.
-                continue;
-            }
-            gpx.startTag(PREFIX_GPX, "wpt");
-            gpx.attribute("", "lat", Double.toString(coords.getLatitude()));
-            gpx.attribute("", "lon", Double.toString(coords.getLongitude()));
-
-            final Date hiddenDate = cache.getDateHidden();
-            if (hiddenDate != null) {
-                simpleText(gpx, PREFIX_GPX, "time", dateFormatZ.format(hiddenDate));
-            }
-
-            String additinalIfFound = cache.isFound() ? "|Found" : "";
-            String note = CacheDAO.getInstance().getNote(cache);
-            if (note == null)
-                note = "";
-            String solver = CacheDAO.getInstance().getSolver(cache);
-            if (solver == null)
-                solver = "";
-
-            multipleTexts(gpx, PREFIX_GPX, //
-                    "name", cache.getGeoCacheCode(), //
-                    "desc", cache.getGeoCacheName(), //
-                    "url", cache.getUrl(), //
-                    "urlname", cache.getGeoCacheName(), //
-                    "sym", cache.isFound() ? "Geocache Found" : "Geocache", //
-                    "type", "Geocache|" + cache.getGeoCacheType().toString() + additinalIfFound//
-
-            );
-
-            gpx.startTag(PREFIX_GROUNDSPEAK, "cache");
-            gpx.attribute("", "id", cache.getGeoCacheId());
-            gpx.attribute("", "available", cache.isAvailable() ? "True" : "False");
-            gpx.attribute("", "archived", cache.isArchived() ? "True" : "False");
-            gpx.attribute("", "xmlns:groundspeak", PREFIX_GROUNDSPEAK);
-
-            String difficulty;
-            String terrain;
-
-            if (cache.getDifficulty() % 1 == 0) {
-                difficulty = Integer.toString((int) cache.getDifficulty());
-            } else {
-                difficulty = Float.toString(cache.getDifficulty());
-            }
-
-            if (cache.getTerrain() % 1 == 0) {
-                terrain = Integer.toString((int) cache.getTerrain());
-            } else {
-                terrain = Float.toString(cache.getTerrain());
-            }
-
-            multipleTexts(gpx, PREFIX_GROUNDSPEAK, //
-                    "name", cache.getGeoCacheName(), //
-                    "placed_by", cache.getPlacedBy(), //
-                    "owner", cache.getOwner(), //
-                    "type", cache.getGeoCacheType().toString(), //
-                    "container", cache.geoCacheSize.toString(), //
-                    "difficulty", difficulty, //
-                    "terrain", terrain, //
-                    "country", getCountry(cache), //
-                    "state", getState(cache), //
-                    "encoded_hints", cache.getHint());
-
-            writeAttributes(cache);
-
-            // Shortdescription is not in DB. It is combined with LongDescription and saved into ROW Description
-            // Expand DB with ROW shortDescription
-            String shortDesc = null;
             try {
-                shortDesc = cache.getShortDescription();
-            } catch (Exception e) {
-                e.printStackTrace();
+                if (cache == null) {
+                    continue;
+                }
+                final Coordinate coords = cache.getCoordinate();
+                if (coords == null) {
+                    // Export would be invalid without coordinates.
+                    continue;
+                }
+                gpx.startTag(PREFIX_GPX, "wpt");
+                gpx.attribute("", "lat", Double.toString(coords.getLatitude()));
+                gpx.attribute("", "lon", Double.toString(coords.getLongitude()));
+
+                final Date hiddenDate = cache.getDateHidden();
+                if (hiddenDate != null) {
+                    simpleText(gpx, PREFIX_GPX, "time", dateFormatZ.format(hiddenDate));
+                }
+
+                String additinalIfFound = cache.isFound() ? "|Found" : "";
+                String note = CacheDAO.getInstance().getNote(cache);
+                if (note == null)
+                    note = "";
+                String solver = CacheDAO.getInstance().getSolver(cache);
+                if (solver == null)
+                    solver = "";
+
+                multipleTexts(gpx, PREFIX_GPX, //
+                        "name", cache.getGeoCacheCode(), //
+                        "desc", cache.getGeoCacheName(), //
+                        "url", cache.getUrl(), //
+                        "urlname", cache.getGeoCacheName(), //
+                        "sym", cache.isFound() ? "Geocache Found" : "Geocache", //
+                        "type", "Geocache|" + cache.getGeoCacheType().toString() + additinalIfFound//
+
+                );
+
+                gpx.startTag(PREFIX_GROUNDSPEAK, "cache");
+                gpx.attribute("", "id", cache.getGeoCacheId());
+                gpx.attribute("", "available", cache.isAvailable() ? "True" : "False");
+                gpx.attribute("", "archived", cache.isArchived() ? "True" : "False");
+                gpx.attribute("", "xmlns:groundspeak", PREFIX_GROUNDSPEAK);
+
+                String difficulty;
+                String terrain;
+
+                if (cache.getDifficulty() % 1 == 0) {
+                    difficulty = Integer.toString((int) cache.getDifficulty());
+                } else {
+                    difficulty = Float.toString(cache.getDifficulty());
+                }
+
+                if (cache.getTerrain() % 1 == 0) {
+                    terrain = Integer.toString((int) cache.getTerrain());
+                } else {
+                    terrain = Float.toString(cache.getTerrain());
+                }
+
+                multipleTexts(gpx, PREFIX_GROUNDSPEAK, //
+                        "name", cache.getGeoCacheName(), //
+                        "placed_by", cache.getPlacedBy(), //
+                        "owner", cache.getOwner(), //
+                        "type", cache.getGeoCacheType().toString(), //
+                        "container", cache.geoCacheSize.toString(), //
+                        "difficulty", difficulty, //
+                        "terrain", terrain, //
+                        "country", getCountry(cache), //
+                        "state", getState(cache), //
+                        "encoded_hints", cache.getHint());
+
+                writeAttributes(cache);
+
+                // Shortdescription is not in DB. It is combined with LongDescription and saved into ROW Description
+                // Expand DB with ROW shortDescription
+                String shortDesc = null;
+                try {
+                    shortDesc = cache.getShortDescription();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (shortDesc != null && shortDesc.length() > 0) {
+                    gpx.startTag(PREFIX_GROUNDSPEAK, "short_description");
+                    gpx.attribute("", "html", containsHtml(cache.getShortDescription()) ? "True" : "False");
+                    gpx.text(validateChar(cache.getShortDescription()));
+                    gpx.endTag(PREFIX_GROUNDSPEAK, "short_description");
+                }
+
+                String longDesc = cache.getLongDescription();
+                if (longDesc != null && longDesc.length() > 0) {
+                    gpx.startTag(PREFIX_GROUNDSPEAK, "long_description");
+                    gpx.attribute("", "html", containsHtml(cache.getLongDescription()) ? "True" : "False");
+                    gpx.text(validateChar(cache.getLongDescription()));
+                    gpx.endTag(PREFIX_GROUNDSPEAK, "long_description");
+                }
+                writeLogs(cache);
+                // writeTravelBugs(cache);
+
+                gpx.endTag(PREFIX_GROUNDSPEAK, "cache");
+
+                gpx.startTag(PREFIX_GPX, PREFIX_CACHEBOX);
+                multipleTexts(gpx, PREFIX_GPX, //
+                        "note", note, //
+                        "solver", solver//
+                );
+                gpx.endTag(PREFIX_GPX, PREFIX_CACHEBOX);
+
+                gpx.endTag(PREFIX_GPX, "wpt");
+
+                try {
+                    writeWaypoints(cache);
+                }
+                catch (Exception sex) {
+                    Log.err(sClass, "write waypoints for " + cache.getGeoCacheCode(), sex);
+                }
+
+                countExported++;
+                if (progressListener != null) {
+                    progressListener.publishProgress(countExported, Translation.get("writeCache", cache.getGeoCacheCode()));
+                }
             }
-            if (shortDesc != null && shortDesc.length() > 0) {
-                gpx.startTag(PREFIX_GROUNDSPEAK, "short_description");
-                gpx.attribute("", "html", containsHtml(cache.getShortDescription()) ? "True" : "False");
-                gpx.text(validateChar(cache.getShortDescription()));
-                gpx.endTag(PREFIX_GROUNDSPEAK, "short_description");
-            }
-
-            String longDesc = cache.getLongDescription();
-            if (longDesc != null && longDesc.length() > 0) {
-                gpx.startTag(PREFIX_GROUNDSPEAK, "long_description");
-                gpx.attribute("", "html", containsHtml(cache.getLongDescription()) ? "True" : "False");
-                gpx.text(validateChar(cache.getLongDescription()));
-                gpx.endTag(PREFIX_GROUNDSPEAK, "long_description");
-            }
-            writeLogs(cache);
-            // writeTravelBugs(cache);
-
-            gpx.endTag(PREFIX_GROUNDSPEAK, "cache");
-
-            gpx.startTag(PREFIX_GPX, PREFIX_CACHEBOX);
-            multipleTexts(gpx, PREFIX_GPX, //
-                    "note", note, //
-                    "solver", solver//
-            );
-            gpx.endTag(PREFIX_GPX, PREFIX_CACHEBOX);
-
-            gpx.endTag(PREFIX_GPX, "wpt");
-
-            writeWaypoints(cache);
-
-            countExported++;
-            if (progressListener != null) {
-                progressListener.publishProgress(countExported, Translation.get("writeCache", cache.getGeoCacheCode()));
+            catch (Exception ex) {
+                Log.err(sClass, "write waypoints for " + cache.getGeoCacheCode(), ex);
             }
         }
 
@@ -429,7 +439,7 @@ public final class GpxSerializer {
             try {
                 gpx.text(validateChar(log.logText));
             } catch (final IllegalArgumentException e) {
-                Log.err(sKlasse, "GpxSerializer.writeLogs: cannot write log " + log.logId + " for cache " + cache.getGeoCacheCode(), e);
+                Log.err(sClass, "GpxSerializer.writeLogs: cannot write log " + log.logId + " for cache " + cache.getGeoCacheCode(), e);
                 gpx.text(" [end of log omitted due to an invalid character]");
             }
             gpx.endTag(PREFIX_GROUNDSPEAK, "text");
@@ -460,7 +470,7 @@ public final class GpxSerializer {
     }
 
     public interface ProgressListener {
-        void publishProgress(int countExported, String Name);
+        void publishProgress(int countExported, String name);
     }
 
 }

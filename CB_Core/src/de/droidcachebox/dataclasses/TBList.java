@@ -1,6 +1,8 @@
-package de.droidcachebox.database;
+package de.droidcachebox.dataclasses;
 
 import java.util.ArrayList;
+
+import de.droidcachebox.database.TrackableListDAO;
 
 public class TBList extends ArrayList<Trackable> {
 

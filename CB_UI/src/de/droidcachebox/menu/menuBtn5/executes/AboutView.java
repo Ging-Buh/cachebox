@@ -27,8 +27,8 @@ import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
@@ -172,7 +172,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                             switch (which) {
                                 case 1:
                                     msgBox.close();
-                                    pd = CancelWaitDialog.ShowWait(Translation.get("LoadFounds"), DownloadAnimation.GetINSTANCE(), null, new TestCancelRunnable() {
+                                    pd = CancelWaitDialog.ShowWait(Translation.get("LoadFounds"), new DownloadAnimation(), null, new TestCancelRunnable() {
                                         @Override
                                         public void run() {
                                             result = GroundspeakAPI.fetchMyUserInfos().findCount;
@@ -187,7 +187,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                         }
 
                                         @Override
-                                        public boolean doCancel() {
+                                        public boolean checkCanceled() {
                                             return false;
                                         }
                                     });

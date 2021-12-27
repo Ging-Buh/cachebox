@@ -1,4 +1,4 @@
-package de.droidcachebox.database;
+package de.droidcachebox.dataclasses;
 
 import java.util.ArrayList;
 
@@ -144,7 +144,7 @@ public enum GeoCacheType {
         }
     }
 
-    public static String toShortString(Cache cache) {
+    public static String toShortString(de.droidcachebox.dataclasses.Cache cache) {
         if (cache.getGeoCacheType() == null) return " ";
 
         switch (cache.getGeoCacheType()) {

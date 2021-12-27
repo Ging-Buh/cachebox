@@ -24,11 +24,11 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.CacheWithWP;
-import de.droidcachebox.database.Categories;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Categories;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -111,7 +111,7 @@ public class SelectDBDialog extends AbstractAction {
                     // null -- GlobalCore.getSelectedCache().getCoordinate()
                     if (ret != null && ret.getCache() != null) {
                         Log.debug(log, "returnFromSelectDB:Set selectedCache to " + ret.getCache().getGeoCacheCode() + " from valid position.");
-                        ret.getCache().loadDetail();
+                        CacheDAO.getInstance().loadDetail(ret.getCache());
                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                         GlobalCore.setNearestCache(ret.getCache());
                     }
@@ -128,7 +128,7 @@ public class SelectDBDialog extends AbstractAction {
                         if (c.getGeoCacheCode().equalsIgnoreCase(lastSelectedCache)) {
                             try {
                                 Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
-                                c.loadDetail();
+                                CacheDAO.getInstance().loadDetail(c);
                                 GlobalCore.setSelectedCache(c);
                             } catch (Exception ex) {
                                 Log.err(log, "set last selected Cache", ex);
@@ -143,7 +143,7 @@ public class SelectDBDialog extends AbstractAction {
             if (GlobalCore.getSelectedCache() == null) {
                 Cache c = CBDB.getInstance().cacheList.get(0);
                 Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGeoCacheCode() + " from firstInDB");
-                c.loadDetail();
+                CacheDAO.getInstance().loadDetail(c);
                 GlobalCore.setSelectedCache(c);
             }
             Log.debug(log, "selected cache: " + GlobalCore.getSelectedCache().getGeoCacheName() + " (" + GlobalCore.getSelectedCache().getGeoCacheCode() + ")");

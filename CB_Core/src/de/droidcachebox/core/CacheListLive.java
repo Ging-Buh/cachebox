@@ -16,12 +16,13 @@
 package de.droidcachebox.core;
 
 import com.badlogic.gdx.utils.Array;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.locator.map.Descriptor;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
+
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.locator.map.Descriptor;
 
 /**
  * This list holds the Live loaded Caches with a maximum capacity and the Descriptor for Live request.

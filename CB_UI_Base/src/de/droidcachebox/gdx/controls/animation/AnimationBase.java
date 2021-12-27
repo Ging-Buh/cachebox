@@ -1,6 +1,7 @@
 package de.droidcachebox.gdx.controls.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.math.CB_RectF;
 
@@ -23,9 +24,5 @@ public abstract class AnimationBase extends CB_View_Base {
     public abstract void stop();
 
     public abstract void pause();
-
-    public abstract AnimationBase INSTANCE();
-
-    public abstract AnimationBase INSTANCE(CB_RectF rec);
 
 }

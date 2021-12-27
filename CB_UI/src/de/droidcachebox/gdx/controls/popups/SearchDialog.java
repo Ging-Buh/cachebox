@@ -32,16 +32,16 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.Category;
-import de.droidcachebox.database.GpxFilename;
 import de.droidcachebox.database.ImageDAO;
-import de.droidcachebox.database.ImageEntry;
-import de.droidcachebox.database.LogEntry;
 import de.droidcachebox.database.LogsTableDAO;
-import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Category;
+import de.droidcachebox.dataclasses.GpxFilename;
+import de.droidcachebox.dataclasses.ImageEntry;
+import de.droidcachebox.dataclasses.LogEntry;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Slider;
 import de.droidcachebox.gdx.Slider.YPositionChanged;
@@ -425,7 +425,7 @@ public class SearchDialog extends PopUp_Base {
                 GL.that.RunOnGL(() -> MsgBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null));
             } else {
 
-                wd = CancelWaitDialog.ShowWait(Translation.get("Search"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new TestCancelRunnable() {
+                wd = CancelWaitDialog.ShowWait(Translation.get("Search"), new DownloadAnimation(), this::closeWaitDialog, new TestCancelRunnable() {
 
                     @Override
                     public void run() {
@@ -444,7 +444,7 @@ public class SearchDialog extends PopUp_Base {
                     }
 
                     @Override
-                    public boolean doCancel() {
+                    public boolean checkCanceled() {
                         return false;
                     }
                 });
@@ -461,7 +461,7 @@ public class SearchDialog extends PopUp_Base {
 
     private void searchOnlineNow() {
         Log.debug(log, "searchOnlineNow");
-        wd = CancelWaitDialog.ShowWait(Translation.get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), this::closeWaitDialog, new TestCancelRunnable() {
+        wd = CancelWaitDialog.ShowWait(Translation.get("searchOverAPI"), new DownloadAnimation(), this::closeWaitDialog, new TestCancelRunnable() {
 
             @Override
             public void run() {
@@ -539,7 +539,7 @@ public class SearchDialog extends PopUp_Base {
                                 if (cache.getGPXFilename_ID() == 0) {
                                     cache.setGPXFilename_ID(gpxFilename.Id);
                                 }
-                                cacheDAO.WriteToDatabase(cache);
+                                cacheDAO.writeToDatabase(cache);
                                 for (LogEntry log : geoCacheRelated.logs) {
                                     LogsTableDAO.getInstance().WriteLogEntry(log);
                                 }
@@ -572,7 +572,7 @@ public class SearchDialog extends PopUp_Base {
             }
 
             @Override
-            public boolean doCancel() {
+            public boolean checkCanceled() {
                 return false;
             }
         });

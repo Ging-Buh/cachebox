@@ -19,9 +19,9 @@ import static de.droidcachebox.settings.Settings.globalVolume;
 
 import de.droidcachebox.SoundCache.Sounds;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheWithWP;
-import de.droidcachebox.database.GeoCacheType;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.GeoCacheType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.locator.GPS;
 import de.droidcachebox.locator.GPS_FallBackEvent;

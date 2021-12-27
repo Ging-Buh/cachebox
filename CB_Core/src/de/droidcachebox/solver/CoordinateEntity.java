@@ -3,11 +3,11 @@ package de.droidcachebox.solver;
 import java.util.ArrayList;
 
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.CoreCursor;
-import de.droidcachebox.database.Waypoint;
 import de.droidcachebox.database.WaypointDAO;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.translation.Translation;
@@ -30,7 +30,7 @@ public class CoordinateEntity extends Entity {
     }
 
     private Coordinate LoadFromDB(String sql) {
-        CoreCursor reader = CBDB.getInstance().getSql().rawQuery(sql, null);
+        CoreCursor reader = CBDB.getInstance().rawQuery(sql, null);
         try {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -96,7 +96,7 @@ public class CoordinateEntity extends Entity {
         WaypointDAO waypointDAO = WaypointDAO.getInstance();
         Waypoint dbWaypoint;
         // Suchen, ob dieser Waypoint bereits vorhanden ist.
-        CoreCursor reader = CBDB.getInstance().getSql().rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
+        CoreCursor reader = CBDB.getInstance().rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
         try {
             reader.moveToFirst();
             if (reader.isAfterLast())

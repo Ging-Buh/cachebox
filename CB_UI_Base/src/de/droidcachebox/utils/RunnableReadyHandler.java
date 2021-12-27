@@ -1,7 +1,8 @@
 package de.droidcachebox.utils;
 
 /**
- * Extends ICancelRunnable with the abstract RunnableIsReady(isCanceled)
+ * Extends TestCancelRunnable with the abstract runnableIsReady(isCanceled)
+ * runnableIsReady is called after the TestCancelRunnable is executed
  *
  * @author Longri
  */
@@ -14,14 +15,14 @@ public abstract class RunnableReadyHandler implements TestCancelRunnable {
     public RunnableReadyHandler() {
     }
 
-    public abstract void runnableIsReady(boolean isCanceled);
+    public abstract void afterRun(boolean isCanceled);
 
     public void start() {
         if (!isRunning) {
             isRunning = true;
             mRunThread = new Thread(() -> {
-                this.run();
-                runnableIsReady(isCanceled);
+                RunnableReadyHandler.this.run(); // the TestCancelRunnable
+                RunnableReadyHandler.this.afterRun(isCanceled);
             });
             mRunThread.start();
         }
@@ -30,7 +31,7 @@ public abstract class RunnableReadyHandler implements TestCancelRunnable {
     /*
      * the thread of the runnable is canceled!
      */
-    public void Cancel() {
+    public void cancel() {
         isCanceled = true;
         if (mRunThread != null)
             mRunThread.interrupt();

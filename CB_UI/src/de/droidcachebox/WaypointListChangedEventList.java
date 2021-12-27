@@ -1,8 +1,8 @@
 package de.droidcachebox;
 
-import de.droidcachebox.database.Cache;
-
 import java.util.ArrayList;
+
+import de.droidcachebox.dataclasses.Cache;
 
 public class WaypointListChangedEventList {
     public static ArrayList<WaypointListChangedEvent> list = new ArrayList<WaypointListChangedEvent>();

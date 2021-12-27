@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.ParentInfo;

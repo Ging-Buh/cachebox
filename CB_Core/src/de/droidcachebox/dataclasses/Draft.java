@@ -1,4 +1,4 @@
-package de.droidcachebox.database;
+package de.droidcachebox.dataclasses;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -7,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.database.DraftsDatabase;
 import de.droidcachebox.utils.log.Log;
 
 public class Draft implements Serializable {
@@ -136,14 +138,14 @@ public class Draft implements Serializable {
         args.put("TrackingNumber", TrackingNumber);
         args.put("directLog", isDirectLog);
         try {
-            DraftsDatabase.getInstance().sql.insertWithConflictReplace("Fieldnotes", args);
+            DraftsDatabase.getInstance().insertWithConflictReplace("Fieldnotes", args);
         } catch (Exception exc) {
             Log.err(sKlasse, exc.toString());
             return;
         }
         // search FieldNote Id : should be the last entry
         CoreCursor reader = DraftsDatabase.getInstance()
-                .sql.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog, GcId from FieldNotes where GcCode='" + gcCode
+                .rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog, GcId from FieldNotes where GcCode='" + gcCode
                         + "' and type=" + type.getGcLogTypeId(), null);
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
@@ -186,14 +188,14 @@ public class Draft implements Serializable {
         args.put("TrackingNumber", TrackingNumber);
         args.put("directLog", isDirectLog);
         try {
-            DraftsDatabase.getInstance().sql.update("FieldNotes", args, "id=" + Id, null);
+            DraftsDatabase.getInstance().update("FieldNotes", args, "id=" + Id, null);
         } catch (Exception ignored) {
         }
     }
 
     public void deleteFromDatabase() {
         try {
-            DraftsDatabase.getInstance().sql.delete("FieldNotes", "id=" + Id, null);
+            DraftsDatabase.getInstance().delete("FieldNotes", "id=" + Id, null);
         } catch (Exception ignored) {
         }
     }

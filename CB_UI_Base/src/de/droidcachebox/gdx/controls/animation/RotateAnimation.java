@@ -17,6 +17,7 @@ package de.droidcachebox.gdx.controls.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.math.CB_RectF;
 
@@ -24,7 +25,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
  * @author Longri
  */
 public abstract class RotateAnimation extends AnimationBase {
-    static final int ANIMATION_DURATION = 2000;
     private float mOriginX;
     private float mOriginY;
     private float mScale = 1f;
@@ -32,13 +32,7 @@ public abstract class RotateAnimation extends AnimationBase {
 
     RotateAnimation(CB_RectF rec, String Name) {
         super(rec, Name);
-    }
-
-    /**
-     * Time for 360°
-     */
-    protected void play(int duration) {
-        this.mDuration = duration;
+        mDuration = 2000; // Time for 360°
         mPlaying = true;
         mPause = false;
     }

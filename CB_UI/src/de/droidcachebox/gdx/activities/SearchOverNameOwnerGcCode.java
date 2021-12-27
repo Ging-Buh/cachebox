@@ -30,8 +30,8 @@ import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.Category;
-import de.droidcachebox.database.GpxFilename;
+import de.droidcachebox.dataclasses.Category;
+import de.droidcachebox.dataclasses.GpxFilename;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -58,7 +58,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
 public class SearchOverNameOwnerGcCode extends ActivityBase {
-    private static final String log = "SearchOverNameOwnerGcCode";
+    private static final String sClass = "SearchOverNameOwnerGcCode";
     private final float lineHeight;
     private CB_Button btnImport, btnCancel;
     private CB_Label lblTitle, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
@@ -339,7 +339,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                                     importAnimation.setAnimationType(AnimationType.Work);
                                     CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
                                 } catch (InterruptedException e) {
-                                    Log.err(log, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
+                                    Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
                                 }
                             }
 

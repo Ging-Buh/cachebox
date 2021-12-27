@@ -16,8 +16,8 @@
 package de.droidcachebox.gdx.activities;
 
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.LogType;
-import de.droidcachebox.database.Trackable;
+import de.droidcachebox.dataclasses.LogType;
+import de.droidcachebox.dataclasses.Trackable;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;

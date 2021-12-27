@@ -16,7 +16,6 @@
 package de.droidcachebox.gdx.activities;
 
 import static de.droidcachebox.core.GroundspeakAPI.APIError;
-import static de.droidcachebox.core.GroundspeakAPI.ERROR;
 import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.fetchPocketQuery;
@@ -34,21 +33,17 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
-import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.core.GroundspeakAPI.PQ;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.LogsTableDAO;
-import de.droidcachebox.ex_import.BreakawayImportThread;
-import de.droidcachebox.ex_import.GPXFileImporter;
 import de.droidcachebox.ex_import.Importer;
 import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.gdx.ActivityBase;
@@ -57,11 +52,9 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_CheckBox;
-import de.droidcachebox.gdx.controls.CB_CheckBox.OnCheckChangedListener;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.CollapseBox;
-import de.droidcachebox.gdx.controls.CollapseBox.IAnimatedHeightChangedListener;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.ImportAnimation;
@@ -89,19 +82,17 @@ import de.droidcachebox.utils.Copy;
 import de.droidcachebox.utils.CopyRule;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.ProgressChangedEvent;
-import de.droidcachebox.utils.ProgresssChangedEventList;
 import de.droidcachebox.utils.log.Log;
 
-public class Import extends ActivityBase implements ProgressChangedEvent {
-    private static final String log = "Import";
+public class Import extends ActivityBase {
+    private static final String sClass = "Import";
     private static final long ANIMATION_TICK = 450;
-    private final boolean MAP_LINE_ACTIVE = false;
     private final float CollapseBoxMaxHeight;
     private final ScrollBox scrollBox;
     private final ArrayList<String> values = new ArrayList<>();
     private final float CollapseBoxHeight;
-    private Date ImportStart;
+    private final AtomicBoolean canceled;
+    private float CollapseBoxLogsMaxHeight;
     private boolean PQ_LINE_ACTIVE = true;
     private boolean CBS_LINE_ACTIVE;
     private boolean GPX_LINE_ACTIVE = true;
@@ -110,67 +101,42 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private boolean DB_LINE_ACTIVE = true;
     private boolean IMAGE_LINE_ACTIVE;
     private V_ListView lvPQs;
-    private CB_Button bOK;
+    private CB_Button btnOK;
     private CB_Button refreshPqList;
     private CB_Button btnSelectFile;
     private float innerLeft;
     private float innerHeight;
-    private float CollapseBoxLogsMaxHeight;
+    private ProgressBar progressBar;
     private CB_Label lblPQ;
+    private CB_CheckBox checkImportPQFromGC;
     private CB_Label lblCBServer;
+    private CB_CheckBox checkImportFromCBServer;
     private CB_Label lblGPX;
+    private CB_CheckBox checkBoxImportGPX;
     private CB_Label lblGcVote;
+    private CB_CheckBox checkBoxGcVote;
     private CB_Label lblImage;
+    private CB_CheckBox checkBoxPreloadImages;
     private CB_Label lblSpoiler;
-    private CB_Label lblMaps;
+    private CB_CheckBox checkBoxPreloadSpoiler;
     private CB_Label lblProgressMsg;
     private CB_Label lblLogs;
     private CB_Label lblCompact;
-    private ProgressBar pgBar;
-    private CB_CheckBox checkImportPQfromGC, checkImportFromCBServer, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
-    private CollapseBox PQ_ListCollapseBox, CBServerCollapseBox, LogCollapseBox;
-    private final IAnimatedHeightChangedListener mAnimationListener = height -> animatedHeightChanged();
+    private CB_CheckBox checkBoxCleanLogs;
+    private CB_CheckBox checkBoxCompactDB;
+    private CollapseBox pqListCollapseBox;
+    private CollapseBox cbServerCollapseBox;
+    private CollapseBox logCollapseBox;
     private Spinner spinner;
-
-    private final OnCheckChangedListener checkLog_CheckStateChanged = new OnCheckChangedListener() {
-
-        @Override
-        public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
-            if (checkBoxCleanLogs.isChecked()) {
-                LogCollapseBox.expand();
-                spinner.setSelection(Settings.LogMaxMonthAge.getValue());
-            } else {
-                LogCollapseBox.collapse();
-            }
-
-            Settings.DeleteLogs.setValue(isChecked);
-            Settings.getInstance().acceptChanges();
-        }
-    };
+    private boolean allDownloadsComplete;
     private Timer mAnimationTimer;
     private int animationValue = 0;
-    private Boolean importStarted = false;
+    private boolean importStarted = false;
     private ArrayList<PQ> PqList;
-    private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
-        @Override
-        public void onCheckedChanged(CB_CheckBox view, boolean isChecked) {
-            if (checkImportPQfromGC.isChecked()) {
-                checkBoxImportGPX.setChecked(true);
-                checkBoxImportGPX.setEnabled(false);
-                PQ_ListCollapseBox.expand();
-                if (lvPQs.getAllListSize() == 0)
-                    refreshPqList();
-            } else {
-                checkBoxImportGPX.setEnabled(true);
-                PQ_ListCollapseBox.collapse();
-            }
-        }
-    };
-
     private CB_RectF itemRec;
     private float itemHeight = -1;
-    private ImportAnimation dis;
-    private volatile BreakawayImportThread importThread;
+    private ImportAnimation importAnimation;
+    private CB_Button btnCancel;
 
     public Import() {
         this(0);
@@ -178,7 +144,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     public Import(int importType) {
         super("importActivity");
-        // um direkt gleich den Import für eine bestimmte API starten zu können
+        // to direct start of an import
         CBS_LINE_ACTIVE = false;
         IMAGE_LINE_ACTIVE = true;
         switch (importType) {
@@ -206,8 +172,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         this.addChild(scrollBox);
         createOkCancelBtn();
         createTitleLine();
-        scrollBox.setHeight(lblProgressMsg.getY() - bOK.getMaxY() - margin - margin);
-        scrollBox.setY(bOK.getMaxY() + margin);
+        scrollBox.setHeight(lblProgressMsg.getY() - btnOK.getMaxY() - margin - margin);
+        scrollBox.setY(btnOK.getMaxY() + margin);
         scrollBox.setBackground(this.getBackground());
         if (PQ_LINE_ACTIVE) {
             if (!isAccessTokenInvalid()) {
@@ -218,7 +184,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 MsgBox.show(Translation.get("Desc_ImportPQsFromGeocachingCom"), Translation.get("apiKeyInvalid"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
             }
         }
-        Log.debug(log, "is Premium = " + PQ_LINE_ACTIVE);
+        Log.debug(sClass, "is Premium = " + PQ_LINE_ACTIVE);
         createPQLines();
         createCBServerLines();
         createPqCollapseBox();
@@ -226,19 +192,18 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         createGpxLine();
         createGcVoteLine();
         createImageLine();
-        createMapLine();
         createLogLine();
         createLogCollapseBox();
         createCompactDBLine();
 
         initialForm();
 
-        Layout();
+        layout();
 
         if (importType == MI_IMPORT_CBS) {
             checkImportFromCBServer.setChecked(true);
             checkImportFromCBServer.setVisible(true);
-            CBServerCollapseBox.expand();
+            cbServerCollapseBox.expand();
         } else if (importType == MI_IMPORT_GCV) {
             checkBoxGcVote.setChecked(true);
             checkBoxGcVote.setVisible(true);
@@ -249,44 +214,29 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         lblCBServer.setVisible(false);
 
         // scrollBox.setBackground(new ColorDrawable(Color.RED));
-    }
-
-    @Override
-    public void onShow() {
-        ProgresssChangedEventList.add(this);
-    }
-
-    @Override
-    public void onHide() {
-        ProgresssChangedEventList.remove(this);
+        canceled = new AtomicBoolean();
     }
 
     private void createOkCancelBtn() {
-        bOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Import");
-        CB_Button bCancel = new CB_Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Import");
+        btnOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Import");
+        btnCancel = new CB_Button(btnOK.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Import");
 
         // Translations
-        bOK.setText(Translation.get("import"));
-        bCancel.setText(Translation.get("cancel"));
+        btnOK.setText(Translation.get("import"));
+        btnCancel.setText(Translation.get("cancel"));
 
-        this.addChild(bOK);
-        bOK.setClickHandler((v, x, y, pointer, button) -> {
-            ImportNow();
+        addChild(btnOK);
+        btnOK.setClickHandler((v, x, y, pointer, button) -> {
+            importNow();
             return true;
         });
 
-        this.addChild(bCancel);
-        bCancel.setClickHandler((v, x, y, pointer, button) -> {
-            if (BreakawayImportThread.isCanceled()) {
-                BreakawayImportThread.reset();
-                finish();
-                return true;
-            }
-
+        addChild(btnCancel);
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (importStarted) {
                 MsgBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MsgBoxButton.YesNo, MsgBoxIcon.Stop, (which, data) -> {
                     if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                        cancelImport();
+                        canceled.set(true);
                     }
                     return true;
                 });
@@ -309,9 +259,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth, lineHeight);
 
-        pgBar = new ProgressBar(rec);
+        progressBar = new ProgressBar(rec);
 
-        pgBar.setValues(0, "");
+        progressBar.setValues(0, "");
 
         float progressLineHeight = Fonts.measureForSmallFont("Tg").height * 3;
 
@@ -319,7 +269,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         lblProgressMsg.setFont(Fonts.getBubbleSmall());
         lblProgressMsg.setVAlignment(VAlignment.TOP);
 
-        this.addChild(pgBar);
+        this.addChild(progressBar);
         this.addChild(lblProgressMsg);
 
     }
@@ -328,15 +278,15 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         innerLeft = margin;
 
-        checkImportPQfromGC = new CB_CheckBox();
-        checkImportPQfromGC.setX(innerLeft);
-        checkImportPQfromGC.setY(innerHeight - checkImportPQfromGC.getHeight());
+        checkImportPQFromGC = new CB_CheckBox();
+        checkImportPQFromGC.setX(innerLeft);
+        checkImportPQFromGC.setY(innerHeight - checkImportPQFromGC.getHeight());
         if (!PQ_LINE_ACTIVE) {
-            checkImportPQfromGC.setVisible(false);
-            checkImportPQfromGC.setHeight(0);
-            checkImportPQfromGC.setChecked(false);
+            checkImportPQFromGC.setVisible(false);
+            checkImportPQFromGC.setHeight(0);
+            checkImportPQFromGC.setChecked(false);
         }
-        lblPQ = new CB_Label("lblPQ", checkImportPQfromGC.getMaxX() + margin, checkImportPQfromGC.getY(), innerWidth - margin * 3 - checkImportPQfromGC.getWidth(), checkImportPQfromGC.getHeight());
+        lblPQ = new CB_Label("lblPQ", checkImportPQFromGC.getMaxX() + margin, checkImportPQFromGC.getY(), innerWidth - margin * 3 - checkImportPQFromGC.getWidth(), checkImportPQFromGC.getHeight());
         lblPQ.setFont(Fonts.getNormal());
         lblPQ.setText(Translation.get("PQfromGC"));
         if (!PQ_LINE_ACTIVE) {
@@ -344,7 +294,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             lblPQ.setHeight(0);
         }
 
-        scrollBox.addChild(checkImportPQfromGC);
+        scrollBox.addChild(checkImportPQFromGC);
         scrollBox.addChild(lblPQ);
     }
 
@@ -373,11 +323,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private void createPqCollapseBox() {
         CB_RectF rec = new CB_RectF(lblPQ.getX(), lblPQ.getY() - CollapseBoxHeight - margin, lblPQ.getWidth(), CollapseBoxHeight);
 
-        PQ_ListCollapseBox = new CollapseBox(rec, "PqCollapse");
-        PQ_ListCollapseBox.setBackground(this.getBackground());
+        pqListCollapseBox = new CollapseBox(rec, "PqCollapse");
+        pqListCollapseBox.setBackground(this.getBackground());
 
         refreshPqList = new CB_Button(name);
-        refreshPqList.setWidth(PQ_ListCollapseBox.getWidth() - margin - margin);
+        refreshPqList.setWidth(pqListCollapseBox.getWidth() - margin - margin);
         refreshPqList.setX(margin);
         refreshPqList.setY(margin);
         refreshPqList.setText(Translation.get("refreshPqList"));
@@ -386,43 +336,43 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             return true;
         });
 
-        lvPQs = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, PQ_ListCollapseBox.getWidth(), PQ_ListCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
+        lvPQs = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, pqListCollapseBox.getWidth(), pqListCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
 
         lvPQs.setEmptyMsgItem(Translation.get("EmptyPqList"));
 
-        PQ_ListCollapseBox.addChild(lvPQs);
-        PQ_ListCollapseBox.addChild(refreshPqList);
+        pqListCollapseBox.addChild(lvPQs);
+        pqListCollapseBox.addChild(refreshPqList);
 
-        scrollBox.addChild(PQ_ListCollapseBox);
+        scrollBox.addChild(pqListCollapseBox);
     }
 
     private void createCBServerCollapseBox() {
         CB_RectF rec = new CB_RectF(lblPQ.getX(), lblPQ.getY() - CollapseBoxHeight - margin, lblPQ.getWidth(), CollapseBoxHeight);
 
-        CBServerCollapseBox = new CollapseBox(rec, "CBServerCollapse");
-        CBServerCollapseBox.setBackground(this.getBackground());
+        cbServerCollapseBox = new CollapseBox(rec, "CBServerCollapse");
+        cbServerCollapseBox.setBackground(this.getBackground());
 
         CB_Button refreshCBServerList = new CB_Button(name);
-        refreshCBServerList.setWidth(PQ_ListCollapseBox.getWidth() - margin - margin);
+        refreshCBServerList.setWidth(pqListCollapseBox.getWidth() - margin - margin);
         refreshCBServerList.setX(margin);
         refreshCBServerList.setY(margin);
         refreshCBServerList.setText(Translation.get("refreshCBServerList"));
         refreshCBServerList.setClickHandler((v, x, y, pointer, button) -> true);
 
-        V_ListView lvCBServer = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, CBServerCollapseBox.getWidth(), CBServerCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
+        V_ListView lvCBServer = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, cbServerCollapseBox.getWidth(), cbServerCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
 
         lvCBServer.setEmptyMsgItem(Translation.get("EmptyCBServerList"));
 
-        CBServerCollapseBox.addChild(lvCBServer);
-        CBServerCollapseBox.addChild(refreshCBServerList);
+        cbServerCollapseBox.addChild(lvCBServer);
+        cbServerCollapseBox.addChild(refreshCBServerList);
 
-        scrollBox.addChild(CBServerCollapseBox);
+        scrollBox.addChild(cbServerCollapseBox);
     }
 
     private void createGpxLine() {
         checkBoxImportGPX = new CB_CheckBox();
         checkBoxImportGPX.setX(innerLeft);
-        checkBoxImportGPX.setY(PQ_ListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
+        checkBoxImportGPX.setY(pqListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
 
         btnSelectFile = new CB_Button(Translation.get("selectFile"));
 
@@ -439,7 +389,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         btnSelectFile.setWidth(scrollBox.getInnerWidth() - (btnSelectFile.getX() + margin));
 
         btnSelectFile.setClickHandler((v, x, y, pointer, button) -> {
-            new FileOrFolderPicker(GlobalCore.workPath + "/User", "*.gpx|*.zip", "", "", this::copyGPX2PQ_Folder).show();
+            new FileOrFolderPicker(GlobalCore.workPath + "/User", "*.gpx|*.zip", "", "", this::copyGPX2PQFolder).show();
             return true;
         });
 
@@ -503,21 +453,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         }
     }
 
-    private void createMapLine() {
-        checkBoxImportMaps = new CB_CheckBox();
-        checkBoxImportMaps.setX(innerLeft);
-        checkBoxImportMaps.setY(checkBoxPreloadSpoiler.getY() - margin - checkBoxImportMaps.getHeight());
-
-        lblMaps = new CB_Label(this.name + " lblMaps", checkBoxImportMaps.getMaxX() + margin, checkBoxImportMaps.getY(), innerWidth - margin * 3 - checkBoxImportMaps.getWidth(), checkBoxImportMaps.getHeight());
-        lblMaps.setFont(Fonts.getNormal());
-        lblMaps.setText(Translation.get("Maps"));
-    }
-
     private void createLogLine() {
         checkBoxCleanLogs = new CB_CheckBox();
         checkBoxCleanLogs.setX(innerLeft);
 
-        float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadSpoiler.getY();
+        float yPos = checkBoxPreloadSpoiler.getY();
 
         checkBoxCleanLogs.setY(yPos - margin - checkBoxCleanLogs.getHeight());
         if (!LOG_LINE_ACTIVE) {
@@ -541,9 +481,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         CollapseBoxLogsMaxHeight = checkBoxCleanLogs.getHeight() + (SmallLineHeight * 3.5f) + (margin * 4);
 
         CB_RectF rec = new CB_RectF(lblLogs.getX(), lblLogs.getY() - CollapseBoxLogsMaxHeight - margin, lblLogs.getWidth(), CollapseBoxLogsMaxHeight);
-        LogCollapseBox = new CollapseBox(rec, "LogCollapse");
-        LogCollapseBox.setBackground(this.getBackground());
-        scrollBox.addChild(LogCollapseBox);
+        logCollapseBox = new CollapseBox(rec, "LogCollapse");
+        logCollapseBox.setBackground(this.getBackground());
+        scrollBox.addChild(logCollapseBox);
 
         // ################################
         // create and fill LogLife spinner
@@ -576,24 +516,24 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             }
         };
 
-        spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "ImportDeleteLogsTitle", adapter, index -> {
+        spinner = new Spinner(margin, logCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), logCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "ImportDeleteLogsTitle", adapter, index -> {
             Settings.LogMaxMonthAge.setValue(index);
             Settings.getInstance().acceptChanges();
         });
 
-        LogCollapseBox.addChild(spinner);
+        logCollapseBox.addChild(spinner);
 
-        CB_Label lblButKeepLeast = new CB_Label(this.name + " lblButKeepLeast", margin, spinner.getY() - margin - SmallLineHeight, LogCollapseBox.getInnerWidth(), SmallLineHeight);
+        CB_Label lblButKeepLeast = new CB_Label(this.name + " lblButKeepLeast", margin, spinner.getY() - margin - SmallLineHeight, logCollapseBox.getInnerWidth(), SmallLineHeight);
         lblButKeepLeast.setText(Translation.get("ButKeepLeast"));
-        LogCollapseBox.addChild(lblButKeepLeast);
+        logCollapseBox.addChild(lblButKeepLeast);
 
-        final EditTextField input = new EditTextField(checkBoxCleanLogs.scaleCenter(2), LogCollapseBox, "*" + Translation.get("ButKeepLeast"));
+        final EditTextField input = new EditTextField(checkBoxCleanLogs.scaleCenter(2), logCollapseBox, "*" + Translation.get("ButKeepLeast"));
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         input.setHeight(SmallLineHeight * 2.5f);
         input.setText(String.valueOf(Settings.LogMinCount.getValue()));
         input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());
-        LogCollapseBox.addChild(input);
+        logCollapseBox.addChild(input);
         input.setClickHandler((v, x, y, pointer, button) -> {
             NumericInputBox.Show(Translation.get("ButKeepLeast"), Translation.get("DeleteLogs"), Settings.LogMinCount.getValue(), new IReturnValueListener() {
                 @Override
@@ -615,7 +555,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private void createCompactDBLine() {
         checkBoxCompactDB = new CB_CheckBox();
         checkBoxCompactDB.setX(innerLeft);
-        checkBoxCompactDB.setY(LogCollapseBox.getY() - margin - checkBoxCompactDB.getHeight());
+        checkBoxCompactDB.setY(logCollapseBox.getY() - margin - checkBoxCompactDB.getHeight());
 
         if (!DB_LINE_ACTIVE) {
             checkBoxCompactDB.setVisible(false);
@@ -633,20 +573,17 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         scrollBox.addChild(lblCompact);
     }
 
-    private void Layout() {
+    private void layout() {
 
         checkBoxCompactDB.setY(margin);
         lblCompact.setY(margin);
 
-        LogCollapseBox.setY(checkBoxCompactDB.getMaxY() + margin);
+        logCollapseBox.setY(checkBoxCompactDB.getMaxY() + margin);
 
-        checkBoxCleanLogs.setY(LogCollapseBox.getMaxY() + margin);
-        lblLogs.setY(LogCollapseBox.getMaxY() + margin);
+        checkBoxCleanLogs.setY(logCollapseBox.getMaxY() + margin);
+        lblLogs.setY(logCollapseBox.getMaxY() + margin);
 
-        checkBoxImportMaps.setY(lblLogs.getMaxY() + margin);
-        lblMaps.setY(lblLogs.getMaxY() + margin);
-
-        float yPos = MAP_LINE_ACTIVE ? lblMaps.getMaxY() : lblLogs.getMaxY();
+        float yPos = lblLogs.getMaxY();
 
         checkBoxPreloadSpoiler.setY(yPos + margin);
         lblSpoiler.setY(yPos + margin);
@@ -663,33 +600,43 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         lblGPX.setY(lblGcVote.getMaxY() + margin);
         btnSelectFile.setY(lblGcVote.getMaxY() + margin);
 
-        CBServerCollapseBox.setY(checkBoxImportGPX.getMaxY() + margin);
+        cbServerCollapseBox.setY(checkBoxImportGPX.getMaxY() + margin);
 
-        checkImportFromCBServer.setY(CBServerCollapseBox.getMaxY() + margin);
-        lblCBServer.setY(CBServerCollapseBox.getMaxY() + margin);
+        checkImportFromCBServer.setY(cbServerCollapseBox.getMaxY() + margin);
+        lblCBServer.setY(cbServerCollapseBox.getMaxY() + margin);
 
-        PQ_ListCollapseBox.setY(lblCBServer.getMaxY() + margin);
+        pqListCollapseBox.setY(lblCBServer.getMaxY() + margin);
         // PQ_ListCollapseBox.setHeight(CollapseBoxHeight);
 
-        checkImportPQfromGC.setY(PQ_ListCollapseBox.getMaxY() + margin);
-        lblPQ.setY(PQ_ListCollapseBox.getMaxY() + margin);
+        checkImportPQFromGC.setY(pqListCollapseBox.getMaxY() + margin);
+        lblPQ.setY(pqListCollapseBox.getMaxY() + margin);
 
         innerHeight = lblPQ.getMaxY() + margin;
         scrollBox.setVirtualHeight(innerHeight);
     }
 
     private void initialForm() {
-        checkBoxImportMaps.setChecked(MAP_LINE_ACTIVE ? Settings.CacheMapData.getValue() : false);
         checkBoxPreloadImages.setChecked(Settings.CacheImageData.getValue());
         checkBoxPreloadSpoiler.setChecked(Settings.CacheSpoilerData.getValue());
         checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE ? Settings.ImportGpx.getValue() : false);
-        checkImportPQfromGC.setOnCheckChangedListener(checkImportPQfromGC_CheckStateChanged);
+        checkImportPQFromGC.setOnCheckChangedListener((view, isChecked) -> {
+            if (checkImportPQFromGC.isChecked()) {
+                checkBoxImportGPX.setChecked(true);
+                checkBoxImportGPX.setEnabled(false);
+                pqListCollapseBox.expand();
+                if (lvPQs.getAllListSize() == 0)
+                    refreshPqList();
+            } else {
+                checkBoxImportGPX.setEnabled(true);
+                pqListCollapseBox.collapse();
+            }
+        });
         checkBoxGcVote.setChecked(GCV_LINE_ACTIVE ? Settings.ImportRatings.getValue() : false);
 
-        checkImportPQfromGC.setChecked(PQ_LINE_ACTIVE ? Settings.ImportPQsFromGeocachingCom.getValue() : false);
-        checkImportPQfromGC.setEnabled(true);
+        checkImportPQFromGC.setChecked(PQ_LINE_ACTIVE ? Settings.ImportPQsFromGeocachingCom.getValue() : false);
+        checkImportPQFromGC.setEnabled(true);
 
-        if (checkImportPQfromGC.isChecked()) {
+        if (checkImportPQFromGC.isChecked()) {
             checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE);
             checkBoxImportGPX.setEnabled(false);
         }
@@ -697,28 +644,38 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         checkBoxPreloadSpoiler.setEnable(true);
         lblSpoiler.setTextColor(COLOR.getFontColor());
-        if (checkImportPQfromGC.isChecked()) {
-            PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
+        if (checkImportPQFromGC.isChecked()) {
+            pqListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
         } else {
-            PQ_ListCollapseBox.setAnimationHeight(0);
+            pqListCollapseBox.setAnimationHeight(0);
         }
 
         if (checkImportFromCBServer.isChecked()) {
-            CBServerCollapseBox.setAnimationHeight(CollapseBoxHeight);
+            cbServerCollapseBox.setAnimationHeight(CollapseBoxHeight);
         } else {
-            CBServerCollapseBox.setAnimationHeight(0);
+            cbServerCollapseBox.setAnimationHeight(0);
         }
 
-        PQ_ListCollapseBox.setAnimationListener(mAnimationListener);
-        CBServerCollapseBox.setAnimationListener(mAnimationListener);
-        LogCollapseBox.setAnimationListener(mAnimationListener);
+        pqListCollapseBox.setAnimationListener(height -> animatedHeightChanged());
+        cbServerCollapseBox.setAnimationListener(height -> animatedHeightChanged());
+        logCollapseBox.setAnimationListener(height -> animatedHeightChanged());
 
         checkBoxCleanLogs.setChecked(LOG_LINE_ACTIVE ? Settings.DeleteLogs.getValue() : false);
 
-        checkBoxCleanLogs.setOnCheckChangedListener(checkLog_CheckStateChanged);
+        checkBoxCleanLogs.setOnCheckChangedListener((view, isChecked) -> {
+            if (checkBoxCleanLogs.isChecked()) {
+                logCollapseBox.expand();
+                spinner.setSelection(Settings.LogMaxMonthAge.getValue());
+            } else {
+                logCollapseBox.collapse();
+            }
+
+            Settings.DeleteLogs.setValue(isChecked);
+            Settings.getInstance().acceptChanges();
+        });
 
         if (checkBoxCleanLogs.isChecked()) {
-            LogCollapseBox.setAnimationHeight(CollapseBoxLogsMaxHeight);
+            logCollapseBox.setAnimationHeight(CollapseBoxLogsMaxHeight);
 
             // validate value
             int value = Settings.LogMaxMonthAge.getValue();
@@ -729,7 +686,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
             spinner.setSelection(Settings.LogMaxMonthAge.getValue());
         } else {
-            LogCollapseBox.setAnimationHeight(0);
+            logCollapseBox.setAnimationHeight(0);
         }
 
     }
@@ -789,347 +746,254 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         }
     }
 
-    private void ImportNow() {
-        // disable btn
-        bOK.disable();
+    private void importNow() {
+        if (importStarted)
+            return;
+
+        allDownloadsComplete = false;
+
+        btnOK.disable();
 
         // disable UI
-        dis = new ImportAnimation(scrollBox);
-        dis.setBackground(getBackground());
+        importAnimation = new ImportAnimation(scrollBox);
+        importAnimation.setBackground(getBackground());
+        addChild(importAnimation, false);
 
-        this.addChild(dis, false);
-
-        Settings.CacheMapData.setValue(checkBoxImportMaps.isChecked());
         Settings.CacheImageData.setValue(checkBoxPreloadImages.isChecked());
         Settings.CacheSpoilerData.setValue(checkBoxPreloadSpoiler.isChecked());
         Settings.ImportGpx.setValue(checkBoxImportGPX.isChecked());
 
-        Settings.ImportPQsFromGeocachingCom.setValue(checkImportPQfromGC.isChecked());
+        Settings.ImportPQsFromGeocachingCom.setValue(checkImportPQFromGC.isChecked());
         Settings.ImportRatings.setValue(checkBoxGcVote.isChecked());
         Settings.CompactDB.setValue(checkBoxCompactDB.isChecked());
         Settings.getInstance().acceptChanges();
-        String directoryPath = Settings.PocketQueryFolder.getValue();
-        // chk exist import folder
-        AbstractFile directory = FileFactory.createFile(directoryPath);
 
-        ImportThread(directoryPath, directory);
+        canceled.set(false);
+        importStarted = true;
 
-    }
+        ImporterProgress importerProgress = new ImporterProgress(
+                (textWithinProgressBar, textInExtraLabel, percent) -> GL.that.RunOnGL(
+                        () -> {
+                            progressBar.fillBarAt(percent);
+                            lblProgressMsg.setText(textInExtraLabel);
+                            if (!textWithinProgressBar.equals(""))
+                                progressBar.setText(textWithinProgressBar);
+                        })
+        );
 
-    private void ImportThread(final String directoryPath, final AbstractFile directory) {
-        importThread = new BreakawayImportThread() {
-            @Override
-            public void run() {
-                importStarted = true;
+        if (checkImportPQFromGC.isChecked()) {
+            importerProgress.addStep("importGC", 4);
+        }
+        if (checkImportFromCBServer.isChecked()) {
+            importerProgress.addStep("importCBServer", 4);
+        }
+        if (checkBoxImportGPX.isChecked()) {
+            importerProgress.addStep("ExtractZip", 1);
+            importerProgress.addStep("AnalyseGPX", 1);
+            importerProgress.addStep("ImportGPX", 4);
+        }
+        if (checkBoxGcVote.isChecked()) {
+            importerProgress.addStep("sendGcVote", 1);
+            importerProgress.addStep("importGcVote", 4);
+        }
+        if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
+            importerProgress.addStep("importImages", 4);
+        }
+        if (checkBoxCleanLogs.isChecked()) {
+            importerProgress.addStep("DeleteLogs", 1);
+        }
+        if (checkBoxCompactDB.isChecked()) {
+            importerProgress.addStep("CompactDB", 1);
+        }
 
-                Importer importer = new Importer();
-                ImporterProgress ip = new ImporterProgress();
-
-                try {
-                    // Set Progress values
-                    if (checkImportPQfromGC.isChecked()) {
-                        ip.addStep(new ImporterProgress.Step("importGC", 4));
-                    }
-                    if (checkImportFromCBServer.isChecked()) {
-                        ip.addStep(new ImporterProgress.Step("importCBServer", 4));
-                    }
-                    if (checkBoxImportGPX.isChecked()) {
-                        ip.addStep(new ImporterProgress.Step("ExtractZip", 1));
-                        ip.addStep(new ImporterProgress.Step("AnalyseGPX", 1));
-                        ip.addStep(new ImporterProgress.Step("ImportGPX", 4));
-                    }
-                    if (checkBoxGcVote.isChecked()) {
-                        ip.addStep(new ImporterProgress.Step("sendGcVote", 1));
-                        ip.addStep(new ImporterProgress.Step("importGcVote", 4));
-                    }
-
-                    if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
-                        // ip.addStep(ip.new Step("importImageUrls", 4));
-                        ip.addStep(new ImporterProgress.Step("importImages", 4));
-                    }
-
-                    if (checkBoxCleanLogs.isChecked()) {
-                        ip.addStep(new ImporterProgress.Step("DeleteLogs", 1));
-                    }
-
-                    if (checkBoxCompactDB.isChecked()) {
-                        ip.addStep(new ImporterProgress.Step("CompactDB", 1));
-                    }
-
-                    // begin import
-
-                    if (checkImportPQfromGC.isChecked()) {
-
-                        if (PqList != null && PqList.size() > 0) {
-
-                            // PQ-List von nicht Downloadbaren PQs befreien
-
-                            ArrayList<PQ> downloadPqList = new ArrayList<>();
-
-                            for (PQ pq : PqList) {
-                                if (pq.doDownload)
-                                    downloadPqList.add(pq);
-                            }
-
-
-                            ip.setJobMax("importGC", downloadPqList.size());
-
-                            dis.setAnimationType(AnimationType.Download);
-
-                            Iterator<PQ> iterator = downloadPqList.iterator();
-                            if (iterator.hasNext()) {
-                                do {
-                                    if (BreakawayImportThread.isCanceled()) {
-                                        cancelImport();
-                                        ip.ProgressChangeMsg("", "");
-                                        return;
-                                    }
-
-                                    PQ pq = iterator.next();
-
-                                    if (pq.doDownload) {
-                                        ip.ProgressInkrement("importGC", "Download: " + pq.name, false);
-                                        fetchPocketQuery(pq, Settings.PocketQueryFolder.getValue());
-                                        if (APIError != OK) {
-                                            MsgBox.show(LastAPIError, Translation.get("PQfromGC"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
-                                        }
-                                    }
-
-                                } while (iterator.hasNext());
-                            }
-
-                            if (downloadPqList.size() == 0) {
-                                ip.ProgressInkrement("importGC", "", true);
-                            }
-                        }
-                    }
-
-                    try {
-                        dis.setAnimationType(AnimationType.Work);
-                    } catch (Exception ignored) {
-                    }
-
-                    // Importiere alle GPX Files im Import Folder, auch in ZIP verpackte
-                    if (checkBoxImportGPX.isChecked() && directory.exists()) {
-
-                        System.gc();
-
-                        long startTime = System.currentTimeMillis();
-
-                        CBDB.getInstance().beginTransaction();
-                        CBDB.getInstance().cacheList.clear();
-                        try {
-                            importer.importGpx(directoryPath, ip);
-                            CBDB.getInstance().setTransactionSuccessful();
-                        } catch (Exception exc) {
-                            exc.printStackTrace();
-                            CBDB.getInstance().endTransaction();
-                            cancelImport();
-                            ip.ProgressChangeMsg("", "");
-                            return;
-                        }
-                        CBDB.getInstance().endTransaction();
-
-                        if (BreakawayImportThread.isCanceled()) {
-                            cancelImport();
-                            ip.ProgressChangeMsg("", "");
-                            return;
-                        }
-
-                        Log.debug(log, "Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
-
-                        System.gc();
-
-                        // delete all files and directories from import folder, normally the PocketQuery subfolder
-                        AbstractFile[] filelist = directory.listFiles();
-                        for (AbstractFile tmp : filelist) {
-                            if (tmp.isDirectory()) {
-                                ArrayList<AbstractFile> ordnerInhalt = FileIO.recursiveDirectoryReader(tmp, new ArrayList<>());
-                                for (AbstractFile tmp2 : ordnerInhalt) {
-                                    try {
-                                        tmp2.delete();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                            }
-                            try {
-                                tmp.delete();
-                                if (tmp.exists()) {
-                                    Log.err(log, "Delete " + tmp.getAbsolutePath());
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }
-
-                    if (checkBoxGcVote.isChecked()) {
-                        dis.setAnimationType(AnimationType.Download);
-                        CBDB.getInstance().beginTransaction();
-                        try {
-                            importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), ip);
-
-                            CBDB.getInstance().setTransactionSuccessful();
-                        } catch (Exception exc) {
-                            exc.printStackTrace();
-                        }
-                        dis.setAnimationType(AnimationType.Work);
-                        CBDB.getInstance().endTransaction();
-                        if (BreakawayImportThread.isCanceled()) {
-                            cancelImport();
-                            ip.ProgressChangeMsg("", "");
-                            return;
-                        }
-                    }
-
-                    if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
-                        dis.setAnimationType(AnimationType.Download);
-                        int result = importer.importImages(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()));
-
-                        if (result == ERROR) {
-                            GL.that.toast(LastAPIError);
-                            ip.ProgressChangeMsg("", "");
-                            return;
-                        }
-
-                        if (BreakawayImportThread.isCanceled()) {
-                            cancelImport();
-                            ip.ProgressChangeMsg("", "");
-                            return;
-                        }
-                        if (dis != null)
-                            dis.setAnimationType(AnimationType.Work);
-                    }
-
-                    Thread.sleep(1000);
-                    if (checkBoxImportMaps.isChecked())
-                        importer.importMaps();
-
-                    Thread.sleep(1000);
-                    if (checkBoxCleanLogs.isChecked()) {
-                        ip.setJobMax("DeleteLogs", 1);
-                        ip.ProgressChangeMsg("DeleteLogs", "");
-                        LogsTableDAO.getInstance().deleteOldLogs(Settings.LogMinCount.getValue(), Settings.LogMaxMonthAge.getValue());
-                        ip.ProgressInkrement("DeleteLogs", "", true);
-                    }
-
-                    if (checkBoxCompactDB.isChecked()) {
-                        ip.setJobMax("CompactDB", 1);
-                        ip.ProgressChangeMsg("CompactDB", "");
-                        CBDB.getInstance().getSql().execSQL("vacuum");
-                        ip.ProgressInkrement("CompactDB", "", true);
-                    }
-
-                } catch (InterruptedException e) {
-                    // import canceld
-                    cancelImport();
-                    FilterProperties props = FilterInstances.getLastFilter();
-                    EditFilterSettings.applyFilter(props);
-                    ip.ProgressChangeMsg("", "");
-                    return;
+        new Thread(() -> {
+            downloadAll(importerProgress);
+            if (allDownloadsComplete) {
+                // without error
+                finishImport();
+            } else {
+                if (canceled.get()) {
+                    // canceled by user
+                    finishImport();
+                } else {
+                    // with error
+                    finishImport();
                 }
-
-                if (BreakawayImportThread.isCanceled()) {
-                    FilterProperties props = FilterInstances.getLastFilter();
-                    EditFilterSettings.applyFilter(props);
-                    ip.ProgressChangeMsg("", "");
-                    return;
-                }
-
-                finish();
-
             }
-        };
-
-        importThread.setPriority(Thread.MAX_PRIORITY);
-        ImportStart = new Date();
-        importThread.start();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-
-        // finish close activity and notify changes
-
-        CacheListChangedListeners.getInstance().cacheListChanged();
-        String Msg;
-
-        if (ImportStart != null) {
-            Date Importfin = new Date();
-            long ImportZeit = Importfin.getTime() - ImportStart.getTime();
-            Msg = "Import " + GPXFileImporter.CacheCount + "Cache " + GPXFileImporter.LogCount + "Logs in " + ImportZeit;
-        } else {
-            Msg = "Import canceld";
-        }
-
-        Log.debug(log, Msg);
-
-        FilterProperties props = FilterInstances.getLastFilter();
-        EditFilterSettings.applyFilter(props);
-
-        // an der richtigen Stelle ausgeben, kommt auch bei CBServer import: GL.that.toast(Msg, 3000);
+        }).start();
 
     }
 
-    private void cancelImport() {
-        if (importThread != null) {
-            importThread.cancel();
-            importThread = null;
+    private void downloadAll(ImporterProgress importerProgress) {
+        if (checkImportPQFromGC.isChecked()) {
+            if (PqList != null && PqList.size() > 0) {
+                // first step "importGC" : import pocket-queries from GroundSpeak
+                ArrayList<PQ> downloadPqList = new ArrayList<>();
+                for (PQ pq : PqList) {
+                    if (pq.doDownload)
+                        downloadPqList.add(pq);
+                }
+                importerProgress.setStepFinalValue("importGC", downloadPqList.size());
+                importAnimation.setAnimationType(AnimationType.Download);
+                for (PQ pq : downloadPqList) {
+                    importerProgress.incrementProgress("importGC", "Download: " + pq.name, false);
+                    fetchPocketQuery(pq, Settings.PocketQueryFolder.getValue());
+                    if (canceled.get()) {
+                        break;
+                    }
+                    if (APIError != OK) {
+                        canceled.set(true);
+                        MsgBox.show(LastAPIError, Translation.get("PQfromGC"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                    }
+                }
+                if (canceled.get()) {
+                    // delete downloaded files
+                    for (PQ pq : downloadPqList) {
+                        AbstractFile pqFile = FileFactory.createFile(Settings.PocketQueryFolder.getValue() + "/" + pq.GUID + ".zip");
+                        try {
+                            pqFile.delete();
+                        } catch (IOException ignored) {
+                        }
+                    }
+                    importerProgress.incrementProgress("importGC", "", true);
+                    return;
+                }
+                importerProgress.incrementProgress("importGC", "", true);
+            }
         }
+        if (canceled.get()) return;
 
+        Importer importer = new Importer();
+
+        importAnimation.setAnimationType(AnimationType.Work);
+        String pqFolderName = Settings.PocketQueryFolder.getValue();
+        AbstractFile pqFolder = FileFactory.createFile(pqFolderName);
+        if (checkBoxImportGPX.isChecked() && pqFolder.exists()) {
+            System.gc();
+            long startTime = System.currentTimeMillis();
+            CBDB.getInstance().beginTransaction();
+            CBDB.getInstance().cacheList.clear();
+            try {
+                importer.importGpx(pqFolderName, importerProgress, canceled::get);
+                CBDB.getInstance().setTransactionSuccessful();
+            } catch (Exception exc) {
+                if (!canceled.get()) Log.err(sClass, "importGpx", exc);
+                importerProgress.changeMsg("", "");
+            }
+            CBDB.getInstance().endTransaction();
+            Log.debug(sClass, "Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
+            System.gc();
+
+            // delete all files and directories from import folder, normally the PocketQuery subfolder
+            AbstractFile[] fileList = pqFolder.listFiles();
+            for (AbstractFile tmp : fileList) {
+                if (tmp.isDirectory()) {
+                    ArrayList<AbstractFile> folderContent = FileIO.recursiveDirectoryReader(tmp, new ArrayList<>());
+                    for (AbstractFile tmp2 : folderContent) {
+                        try {
+                            tmp2.delete();
+                        } catch (IOException e) {
+                            Log.err(sClass, "Delete " + tmp2.getAbsolutePath(), e);
+                        }
+                    }
+
+                }
+                try {
+                    tmp.delete();
+                    if (tmp.exists()) {
+                        Log.err(sClass, "No deletion " + tmp.getAbsolutePath());
+                    }
+                } catch (IOException e) {
+                    Log.err(sClass, "Delete " + tmp.getAbsolutePath(), e);
+                }
+            }
+
+        }
+        if (canceled.get()) return;
+
+        if (checkBoxGcVote.isChecked()) {
+            importAnimation.setAnimationType(AnimationType.Download);
+            CBDB.getInstance().beginTransaction();
+            try {
+                importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), importerProgress, canceled::get);
+                CBDB.getInstance().setTransactionSuccessful();
+            } catch (Exception exc) {
+                if (!canceled.get()) {
+                    Log.err(sClass, "importGcVote", exc);
+                }
+            }
+            CBDB.getInstance().endTransaction();
+            importAnimation.setAnimationType(AnimationType.Work);
+        }
+        if (canceled.get()) return;
+
+        if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
+            importAnimation.setAnimationType(AnimationType.Download);
+            importer.importImages(importerProgress, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()));
+            importAnimation.setAnimationType(AnimationType.Work);
+        }
+        if (canceled.get()) return;
+
+        if (checkBoxCleanLogs.isChecked()) {
+            importerProgress.setStepFinalValue("DeleteLogs", 1);
+            importerProgress.changeMsg("DeleteLogs", "");
+            LogsTableDAO.getInstance().deleteOldLogs(Settings.LogMinCount.getValue(), Settings.LogMaxMonthAge.getValue());
+            importerProgress.incrementProgress("DeleteLogs", "", true);
+        }
+        if (canceled.get()) return;
+
+        if (checkBoxCompactDB.isChecked()) {
+            importerProgress.setStepFinalValue("CompactDB", 1);
+            importerProgress.changeMsg("CompactDB", "");
+            CBDB.getInstance().execSQL("vacuum");
+            importerProgress.incrementProgress("CompactDB", "", true);
+        }
+        if (canceled.get()) return;
+
+        allDownloadsComplete = true;
+
+    }
+
+    private void finishImport() {
         importStarted = false;
 
-        if (dis != null) {
-            this.removeChildDirect(dis);
-            dis.dispose();
-            dis = null;
-        }
-        bOK.enable();
+        btnCancel.setText(Translation.get("ok"));
+        btnOK.enable();
 
-        if (importThread != null && !importThread.isAlive()) {
-            this.finish();
+        if (importAnimation != null) {
+            removeChildDirect(importAnimation);
+            importAnimation.dispose();
+            importAnimation = null;
         }
+
+        CacheListChangedListeners.getInstance().cacheListChanged();
+        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
     }
 
-    @Override
-    public void progressChanged(final String message, final String progressMessage, final int percent) {
-        GL.that.RunOnGL(() -> {
-            pgBar.fillBarAt(percent);
-            lblProgressMsg.setText(progressMessage);
-            if (!message.equals(""))
-                pgBar.setText(message);
-        });
-    }
-
-    private void copyGPX2PQ_Folder(final AbstractFile abstractFile) {
+    private void copyGPX2PQFolder(final AbstractFile abstractFile) {
         if (abstractFile.getAbsolutePath().startsWith(Settings.PocketQueryFolder.getValue()))
             return;
-        dis = new ImportAnimation(scrollBox);
-        dis.setBackground(getBackground());
 
-        this.addChild(dis, false);
-
-        dis.setAnimationType(AnimationType.Work);
+        importAnimation = new ImportAnimation(scrollBox);
+        importAnimation.setBackground(getBackground());
+        addChild(importAnimation, false);
+        importAnimation.setAnimationType(AnimationType.Work);
 
         Thread copyThread = new Thread(() -> {
             CopyRule rule = new CopyRule(abstractFile, Settings.PocketQueryFolder.getValue());
             Copy copyHelper = new Copy(rule);
             try {
                 copyHelper.Run();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ex) {
+                Log.err(sClass, "copyGPX2PQ_Folder", ex);
             }
-            cancelImport();
         });
+
         copyThread.start();
     }
 
     private void animatedHeightChanged() {
-        Layout();
+        layout();
     }
 
     public static class Import_PqListItem extends ListViewItemBackground {
@@ -1145,8 +1009,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
             lblName.setText(pq.name);
 
-            SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
-            String dateString = Translation.get("PQcreationDate") + ": " + postFormater.format(pq.lastGenerated);
+            String dateString = Translation.get("PQcreationDate") + ": " + (new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US)).format(pq.lastGenerated);
             String Count = "\n" + Translation.get("Count") + ": " + pq.cacheCount;
             lblInfo.setText(dateString + Count); // + "  " + FileSize
 
@@ -1180,7 +1043,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             final PQ pq = PqList.get(position);
             if (itemRec == null) {
                 itemHeight = UiSizes.getInstance().getChkBoxSize().getHeight() + UiSizes.getInstance().getChkBoxSize().getHalfHeight();
-                float itemWidth = PQ_ListCollapseBox.getInnerWidth();
+                float itemWidth = pqListCollapseBox.getInnerWidth();
 
                 itemRec = new CB_RectF(new SizeF(itemWidth, itemHeight));
             }

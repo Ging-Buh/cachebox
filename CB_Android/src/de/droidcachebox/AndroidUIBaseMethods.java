@@ -122,7 +122,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
-        OnResumeListeners.getInstance().addListener(AndroidUIBaseMethods.this::handleExternalRequest);
+        OnResumeListeners.getInstance().addListener(this::handleExternalRequest);
         final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"));
         final ResolveInfo resolveInfo = mainActivity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
         if (resolveInfo != null)
@@ -446,8 +446,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                         String sResult = result ? " ok!" : " no success!";
                         if (result) {
                             Log.info(sClass, "Move map-file " + destinationFile.getPath() + sResult);
-                        }
-                        else {
+                        } else {
                             Log.err(sClass, "Move map-file " + destinationFile.getPath() + sResult);
                         }
                     } else {
@@ -519,8 +518,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                     };
                 androidApplication.addAndroidEventListener(handlingGetDirectoryAccess);
                 mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT_TREE);
-            }
-            else {
+            } else {
                 Log.debug(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT_TREE: " + intent);
             }
         }
@@ -542,26 +540,21 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
                 if (handlingGetDocumentAccess == null) {
                     Log.debug(sClass, "create resulthandler for Filepicker");
-                    handlingGetDocumentAccess = new AndroidEventListener() {
-                        @Override
-                        public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-                            androidApplication.removeAndroidEventListener(handlingGetDocumentAccess);
-                            if (requestCode == ACTION_OPEN_DOCUMENT) {
-                                if (resultCode == Activity.RESULT_OK) {
-                                    // The result data contains an Uri for the file(document) that the user selected.
-                                    if (resultData != null) {
-                                        // Perform actions on result
-                                        Uri uri = resultData.getData();
-                                        mainActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                        stringReturner.returnString(uri.toString());
-                                    }
-                                    else {
-                                        Log.debug(sClass, "Filepicker resultData = null (nothing selected?)");
-                                    }
+                    handlingGetDocumentAccess = (requestCode, resultCode, resultData) -> {
+                        androidApplication.removeAndroidEventListener(handlingGetDocumentAccess);
+                        if (requestCode == ACTION_OPEN_DOCUMENT) {
+                            if (resultCode == Activity.RESULT_OK) {
+                                // The result data contains an Uri for the file(document) that the user selected.
+                                if (resultData != null) {
+                                    // Perform actions on result
+                                    Uri uri = resultData.getData();
+                                    mainActivity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    stringReturner.returnString(uri.toString());
+                                } else {
+                                    Log.debug(sClass, "Filepicker resultData = null (nothing selected?)");
                                 }
-                                else {
-                                    Log.debug(sClass, "Filepicker without result");
-                                }
+                            } else {
+                                Log.debug(sClass, "Filepicker without result");
                             }
                         }
                     };
@@ -569,8 +562,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                 Log.debug(sClass, "Start Filepicker");
                 androidApplication.addAndroidEventListener(handlingGetDocumentAccess);
                 mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT);
-            }
-            else {
+            } else {
                 Log.debug(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT: " + intent);
                 getDirectoryAccess(_DirectoryToAccess, stringReturner);
             }
@@ -707,12 +699,15 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                     public void run() {
                         Log.info(sClass, "Import GPXFile from " + externalRequestGpxPath + " started");
                         Date ImportStart = new Date();
-                        Importer importer = new Importer();
-                        ImporterProgress ip = new ImporterProgress();
 
                         CBDB.getInstance().beginTransaction();
                         try {
-                            importer.importGpx(externalRequestGpxPath, ip);
+                            Importer importer = new Importer();
+                            importer.importGpx(externalRequestGpxPath,
+                                    new ImporterProgress((message, progressMessage, progress) -> {
+                                        // dummy: there is no UI to show the progress
+                                    }),
+                                    null);
                         } catch (Exception ignored) {
                         }
                         CBDB.getInstance().setTransactionSuccessful();
@@ -730,7 +725,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                     }
 
                     @Override
-                    public boolean doCancel() {
+                    public boolean checkCanceled() {
                         return false;
                     }
                 }));
@@ -812,8 +807,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     final String[] requestedPermissions = new String[]{Manifest.permission.FOREGROUND_SERVICE};
                     ActivityCompat.requestPermissions(mainActivity, requestedPermissions, Main.Request_ServiceOption);
-                }
-                else {
+                } else {
                     Log.err(sClass, "No Permission needed for FOREGROUND_SERVICE from SDK_INT == 26 and 27");
                     serviceCanBeStarted();
                 }
@@ -827,8 +821,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             locationServiceIntent = new Intent(androidApplication, CBForeground.class);
             androidApplication.startForegroundService(locationServiceIntent);
-        }
-        else {
+        } else {
             Log.info(sClass, "FOREGROUND_SERVICE requires SDK_INT >= 26");
         }
     }

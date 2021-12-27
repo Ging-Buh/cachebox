@@ -518,7 +518,7 @@ public class ShowMap extends AbstractShowAction {
                                 Download download = new Download(null, null);
                                 download.download("https://www.openandromaps.org/wp-content/users/tobias/Elevate.zip", target);
                                 try {
-                                    UnZip.extractFolder(target, false);
+                                    UnZip.extract(target, false);
                                 } catch (Exception ex) {
                                     Log.err(log, target + ": Unzip error: " + ex.toString());
                                     MsgBox.show(target + ": " + ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);

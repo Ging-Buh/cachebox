@@ -7,13 +7,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.LogEntry;
+import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
 public class LogsTableDAO {
     private static final String sClass = "LogsTableDAO";
     private static LogsTableDAO logsTableDAO;
-    private SQLiteInterface sql;
     private final CB_List<LogEntry> cacheLogs; // depends on the last used GeoCache
     private String lastGeoCache;
 
@@ -27,7 +29,6 @@ public class LogsTableDAO {
         if (logsTableDAO == null) {
             logsTableDAO = new LogsTableDAO();
         }
-        logsTableDAO.sql = CBDB.getInstance().sql;
         return logsTableDAO;
     }
 
@@ -43,7 +44,7 @@ public class LogsTableDAO {
         if (cache.getGeoCacheCode().equals(lastGeoCache)) return cacheLogs;
         cacheLogs.clear();
         lastGeoCache = cache.getGeoCacheCode();
-        CoreCursor reader = sql.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@CacheId order by Timestamp desc", new String[]{Long.toString(cache.generatedId)});
+        CoreCursor reader = CBDB.getInstance().rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@CacheId order by Timestamp desc", new String[]{Long.toString(cache.generatedId)});
         if (reader != null) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -98,7 +99,7 @@ public class LogsTableDAO {
      */
     public void ClearOrphanedLogs() {
         String SQL = "DELETE  FROM  Logs WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Logs.CacheId = c.Id)";
-        sql.execSQL(SQL);
+        CBDB.getInstance().execSQL(SQL);
         forceRereadingOfGeoCacheLogs();
     }
 
@@ -107,7 +108,7 @@ public class LogsTableDAO {
      */
     public void deleteLogs(long cacheId) {
         String SQL = "DELETE  FROM  Logs WHERE Logs.CacheId = " + cacheId;
-        sql.execSQL(SQL);
+        CBDB.getInstance().execSQL(SQL);
         forceRereadingOfGeoCacheLogs();
     }
 
@@ -122,7 +123,7 @@ public class LogsTableDAO {
         args.put("Timestamp", sTimeStamp);
         args.put("CacheId", logEntry.cacheId);
         try {
-            sql.insertWithConflictReplace("Logs", args);
+            CBDB.getInstance().insertWithConflictReplace("Logs", args);
         } catch (Exception ex) {
             Log.err(sClass, "Write Log", ex);
         }
@@ -149,7 +150,7 @@ public class LogsTableDAO {
         {
             try {
                 String command = "SELECT CacheId FROM logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > " + minToKeep;
-                CoreCursor reader = sql.rawQuery(command, null);
+                CoreCursor reader = CBDB.getInstance().rawQuery(command, null);
                 reader.moveToFirst();
                 while (!reader.isAfterLast()) {
                     long tmp = reader.getLong(0);
@@ -168,12 +169,12 @@ public class LogsTableDAO {
         // ###################################################
         {
             try {
-                sql.beginTransaction();
+                CBDB.getInstance().beginTransaction();
                 for (long oldLogCache : oldLogCaches) {
                     ArrayList<Long> minLogIds = new ArrayList<>();
                     String command = "select id from logs where CacheId = " + oldLogCache + " order by Timestamp desc";
                     int count = 0;
-                    CoreCursor reader = sql.rawQuery(command, null);
+                    CoreCursor reader = CBDB.getInstance().rawQuery(command, null);
                     reader.moveToFirst();
                     while (!reader.isAfterLast()) {
                         if (count == minToKeep)
@@ -191,13 +192,13 @@ public class LogsTableDAO {
                         delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND CacheId = " + oldLogCache + " AND id NOT IN (" + sb.substring(0, sb.length() - 1) + ")";
                     else
                         delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND CacheId = " + oldLogCache;
-                    sql.execSQL(delCommand);
+                    CBDB.getInstance().execSQL(delCommand);
                 }
-                sql.setTransactionSuccessful();
+                CBDB.getInstance().setTransactionSuccessful();
             } catch (Exception ex) {
                 Log.err(sClass, "deleteOldLogs", ex);
             } finally {
-                sql.endTransaction();
+                CBDB.getInstance().endTransaction();
             }
         }
     }

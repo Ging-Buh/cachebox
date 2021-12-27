@@ -1,105 +1,102 @@
 package de.droidcachebox.ex_import;
 
-import de.droidcachebox.utils.ProgresssChangedEventList;
-
 import java.util.ArrayList;
 
+import de.droidcachebox.utils.ProgressChangedEvent;
+
 /**
- * Verwaltet den Progress Status beim Importieren
+ * for handling of progress during import
  *
  * @author Longri
  */
 public class ImporterProgress {
 
-    private ArrayList<Step> steps;
-    private float weightSumme = 0.0f;
+    private final ArrayList<Step> allSteps;
+    private float overallWeight;
+    private ProgressChangedEvent progressChangedEvent;
 
-    // Initial Progress at Constructor
-    public ImporterProgress() {
-        steps = new ArrayList<>();
+    public ImporterProgress(ProgressChangedEvent progressChangedEvent) {
+        this.progressChangedEvent = progressChangedEvent;
+        allSteps = new ArrayList<>();
+        overallWeight = 0f;
     }
 
-    public void addStep(Step step) {
-        steps.add(step);
-        weightSumme = getWeightSum();
+    public void addStep(String id, float weight) {
+        allSteps.add(new Step(id, weight));
+        overallWeight = overallWeight + weight;
     }
 
-    private float getWeightSum() {
-        float sum = 0.0f;
-        for (Step job : steps) {
-            sum += job.weight;
-        }
-        return sum;
-    }
-
-    public void ProgressInkrement(String Name, String Msg, Boolean Done) {
-        // get Job
-        int Progress = 0;
-        for (Step job : steps) {
-            if (job.Name.equals(Name)) {
-                if (Done) {
-                    job.progress = 1f;
+    /**
+     * fires the event
+     *
+     * @param id   identify the step
+     * @param msg  text for the increment
+     * @param done true, if ready
+     */
+    public void incrementProgress(String id, String msg, boolean done) {
+        int doneTillNowPercent = 0;
+        for (Step step : allSteps) {
+            if (step.id.equals(id)) {
+                if (done) {
+                    step.currentValue = step.finalValue;
                 } else {
-                    job.progress += job.stepWeight;
+                    step.currentValue = step.currentValue + step.incrementValue;
                 }
-                Progress = getProgress();
-
+                doneTillNowPercent = calculateDoneTillNowPercent();
                 break;
             }
         }
 
-        // send Progress Change Msg
-        ProgresssChangedEventList.progressChanged(Name, Msg, Progress);
+        if (progressChangedEvent != null)
+            progressChangedEvent.progressChanged(id, msg, doneTillNowPercent);
     }
 
-    // only change Msg or progress with out changing progress
-    public void ProgressChangeMsg(String Name, String Msg) {
-        // send Progress Change Msg
-        ProgresssChangedEventList.progressChanged(Name, Msg, getProgress());
+    public void changeMsg(String id, String msg) {
+        if (progressChangedEvent != null)
+            progressChangedEvent.progressChanged(id, msg, calculateDoneTillNowPercent());
     }
 
-    public void setJobMax(String Name, int max) {
-        for (Step job : steps) {
-            if (job.Name.equals(Name)) {
-                job.setMaxStep(max);
+    public void setStepFinalValue(String id, int value) {
+        for (Step step : allSteps) {
+            if (step.id.equals(id)) {
+                step.setFinalValue(value);
+                break;
             }
         }
     }
 
-    protected int getProgress() {
+    protected int calculateDoneTillNowPercent() {
         float progress = 0.0f;
-
-        for (Step job : steps) {
-            progress += (job.weight / weightSumme) * job.progress;
+        for (Step step : allSteps) {
+            progress = progress + (step.weight / overallWeight) * (step.currentValue / step.finalValue);
         }
-
         return (int) (100 * progress);
     }
 
     /**
-     * Enthält einen übergeordneten Schritt
-     *
-     * @author Longri
+     * defining a step of the import
      */
     public static class Step {
-        public float weight;
-        public float progress;
-        public String Name;
-        public float stepWeight;
+        public String id; // identify the step
+        public float incrementValue; // add per increment call
+        public float finalValue; // the final value when the step is done
+        public float currentValue; // at finalValue this step is completed (done, ready)
+        public float weight; // how much makes this step from all steps (what the programmer expects, in his scale units)
 
-        public Step(String Name, float weight) {
+        public Step(String id, float weight) {
             this.weight = weight;
-            this.Name = Name;
-            this.progress = 0.0f;
+            this.id = id;
+            this.currentValue = 0f;
         }
 
-        public void setMaxStep(int max) {
-            if (max == 0) {
-                this.stepWeight = 1f;
+        public void setFinalValue(int finalValue) {
+            if (finalValue == 0) {
+                this.incrementValue = 1f; // increment only once
+                this.finalValue = 1f;
             } else {
-                this.stepWeight = 1f / (float) max;
+                this.incrementValue = 1f / finalValue;
+                this.finalValue = finalValue;
             }
-
         }
     }
 

@@ -34,16 +34,16 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.Cache;
 import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.CacheList;
 import de.droidcachebox.database.CacheListDAO;
-import de.droidcachebox.database.Draft;
-import de.droidcachebox.database.Drafts;
-import de.droidcachebox.database.Drafts.LoadingType;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.LogType;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.CacheList;
+import de.droidcachebox.dataclasses.Draft;
+import de.droidcachebox.dataclasses.Drafts;
+import de.droidcachebox.dataclasses.Drafts.LoadingType;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.LogType;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -610,7 +610,7 @@ public class DraftsView extends V_ListView {
         }
 
         private void uploadDraftOrLog(final Draft draft, final boolean isLog) {
-            wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
+            wd = CancelWaitDialog.ShowWait("Upload Log", new DownloadAnimation(), () -> {
 
             }, new TestCancelRunnable() {
 
@@ -665,7 +665,7 @@ public class DraftsView extends V_ListView {
                 }
 
                 @Override
-                public boolean doCancel() {
+                public boolean checkCanceled() {
                     return false;
                 }
             });

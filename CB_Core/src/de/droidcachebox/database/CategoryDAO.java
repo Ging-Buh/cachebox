@@ -17,6 +17,9 @@ package de.droidcachebox.database;
 
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.Database_Core.Parameters;
+import de.droidcachebox.dataclasses.Categories;
+import de.droidcachebox.dataclasses.Category;
+import de.droidcachebox.dataclasses.GpxFilename;
 import de.droidcachebox.utils.log.Log;
 
 public class CategoryDAO {
@@ -39,7 +42,7 @@ public class CategoryDAO {
         result.pinned = reader.getInt(2) != 0;
 
         // alle GpxFilenames einlesen
-        CoreCursor reader2 = CBDB.getInstance().sql.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]{String.valueOf(result.Id)});
+        CoreCursor reader2 = CBDB.getInstance().rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]{String.valueOf(result.Id)});
         reader2.moveToFirst();
         while (!reader2.isAfterLast()) {
             GpxFilenameDAO gpxFilenameDAO = new GpxFilenameDAO();
@@ -60,7 +63,7 @@ public class CategoryDAO {
         Parameters args = new Parameters();
         args.put("pinned", pinned);
         try {
-            CBDB.getInstance().sql.update("Category", args, "Id=" + category.Id, null);
+            CBDB.getInstance().update("Category", args, "Id=" + category.Id, null);
         } catch (Exception exc) {
             Log.err(log, "setPinned", "CategoryDAO", exc);
         }
@@ -73,7 +76,7 @@ public class CategoryDAO {
         CoreData.categories.beginnTransaction();
         CoreData.categories.clear();
 
-        CoreCursor reader = CBDB.getInstance().sql.rawQuery("select ID, GPXFilename, Pinned from Category", null);
+        CoreCursor reader = CBDB.getInstance().rawQuery("select ID, GPXFilename, Pinned from Category", null);
         if (reader != null) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -94,7 +97,7 @@ public class CategoryDAO {
         for (int i = 0, n = CoreData.categories.size(); i < n; i++) {
             Category cat = CoreData.categories.get(i);
             if (cat.CacheCount() == 0) {
-                CBDB.getInstance().sql.delete("Category", "Id=?", new String[]{String.valueOf(cat.Id)});
+                CBDB.getInstance().delete("Category", "Id=?", new String[]{String.valueOf(cat.Id)});
                 delete.add(cat);
             }
         }

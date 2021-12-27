@@ -52,7 +52,7 @@ public class CancelWaitDialog extends WaitDialog {
     }
 
     public static CancelWaitDialog ShowWait(String Msg, IcancelListener listener, TestCancelRunnable cancelRunnable) {
-        final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listener, cancelRunnable);
+        final CancelWaitDialog wd = ShowWait(Msg, new WorkAnimation(), listener, cancelRunnable);
         wd.setCallerName(Trace.getCallerName(2));
         return wd;
     }
@@ -67,7 +67,7 @@ public class CancelWaitDialog extends WaitDialog {
         wd.setButtonCaptions(MsgBoxButton.Cancel);
         wd.mMsgBoxClickListener = (which, data) -> {
             if (wd.mRunnThread != null)
-                wd.mRunnThread.Cancel();
+                wd.mRunnThread.cancel();
             wd.btnRightNegative.disable();
             wd.btnRightNegative.setText(Translation.get("waitForCancel"));
             return false;
@@ -128,7 +128,7 @@ public class CancelWaitDialog extends WaitDialog {
             mRunnThread = new RunnableReadyHandler() {
 
                 @Override
-                public void runnableIsReady(boolean isCanceled) {
+                public void afterRun(boolean isCanceled) {
                     // CancelWaitDialog.this.close();
                     if (isCanceled && cancelListener != null) {
                         cancelListener.isCanceled();
@@ -151,10 +151,10 @@ public class CancelWaitDialog extends WaitDialog {
                 }
 
                 @Override
-                public boolean doCancel() {
+                public boolean checkCanceled() {
                     boolean mCancel = true;
                     if (cancelRunnable != null) {
-                        mCancel = cancelRunnable.doCancel();
+                        mCancel = cancelRunnable.checkCanceled();
                     }
                     CancelWaitDialog.this.close();
                     return mCancel;

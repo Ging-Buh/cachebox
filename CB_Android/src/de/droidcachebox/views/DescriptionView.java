@@ -7,12 +7,13 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.R;
 import de.droidcachebox.ViewOptionsMenu;
 import de.droidcachebox.controls.DescriptionViewControl;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Waypoint;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu, CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static DescriptionViewControl mDescriptionViewControl;

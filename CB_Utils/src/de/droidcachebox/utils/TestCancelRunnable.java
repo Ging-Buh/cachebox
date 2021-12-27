@@ -16,7 +16,7 @@
 package de.droidcachebox.utils;
 
 /**
- * Extends ICancel with void run()
+ * Extension with void run()
  *
  * @author Longri
  */

@@ -4,46 +4,25 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
 
 public class DownloadAnimation extends FrameAnimation {
+    private static final String sClass = "DownloadAnimation";
 
-    private final static DownloadAnimation mINSTANCE = new DownloadAnimation();
-    private static final int ANIMATION_DURATION = 1000;
+    public DownloadAnimation() {
+        this(new CB_RectF(0, 0, 50, 50));
+    }
 
-    private DownloadAnimation() {
-        super(new CB_RectF(0, 0, 50, 50), "DownloadAnimation");
-
+    public DownloadAnimation(CB_RectF cb_rectF) {
+        super(cb_rectF, sClass);
         addFrame(Sprites.getSprite("download-1"));
         addFrame(Sprites.getSprite("download-2"));
         addFrame(Sprites.getSprite("download-3"));
         addFrame(Sprites.getSprite("download-4"));
         addFrame(Sprites.getSprite("download-5"));
-        play(ANIMATION_DURATION);
-    }
-
-    public static DownloadAnimation GetINSTANCE() {
-        return mINSTANCE;
-    }
-
-    public static DownloadAnimation GetINSTANCE(CB_RectF rec) {
-        mINSTANCE.setRec(rec);
-        return mINSTANCE;
-    }
-
-    public AnimationBase INSTANCE() {
-        return mINSTANCE;
-    }
-
-    public AnimationBase INSTANCE(CB_RectF rec) {
-        mINSTANCE.setRec(rec);
-        return mINSTANCE;
-    }
-
-    @Override
-    public void dispose() {
-        // do nothing, is FINAL GLOBAL animation
+        mDuration = 1000;
+        mPlaying=true;
     }
 
     @Override
     public void play() {
-        play(ANIMATION_DURATION);
+
     }
 }

@@ -35,7 +35,7 @@ public class PocketqueryDAO {
         args.put("CreationTimeOfPQ", stimestamp);
 
         try {
-            CBDB.getInstance().sql.insertWithConflictReplace("PocketQueries", args);
+            CBDB.getInstance().insertWithConflictReplace("PocketQueries", args);
         } catch (Exception exc) {
             Log.err(log, "Write Pocketquery to DB", pq.name, exc);
             return -1;
@@ -52,7 +52,7 @@ public class PocketqueryDAO {
      * @return
      */
     public Date getLastGeneratedDate(String pqName) {
-        CoreCursor reader = CBDB.getInstance().sql.rawQuery("select max(CreationTimeOfPQ) from PocketQueries where PQName=@PQName", new String[]{pqName});
+        CoreCursor reader = CBDB.getInstance().rawQuery("select max(CreationTimeOfPQ) from PocketQueries where PQName=@PQName", new String[]{pqName});
         try {
             if (reader.getCount() > 0) {
                 reader.moveToFirst();

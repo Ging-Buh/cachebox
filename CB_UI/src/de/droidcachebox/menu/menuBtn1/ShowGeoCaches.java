@@ -145,7 +145,7 @@ public class ShowGeoCaches extends AbstractShowAction {
                     CBDB.getInstance().beginTransaction();
                     Database_Core.Parameters args = new Database_Core.Parameters();
                     args.put("Favorit", finalChecked ? 1 : 0);
-                    CBDB.getInstance().getSql().update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), null);
+                    CBDB.getInstance().update("Caches", args, FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), null);
                     CBDB.getInstance().setTransactionSuccessful();
                     CBDB.getInstance().endTransaction();
                     ViewManager.reloadCacheList();

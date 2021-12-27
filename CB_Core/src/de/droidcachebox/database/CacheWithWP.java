@@ -1,5 +1,8 @@
 package de.droidcachebox.database;
 
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Waypoint;
+
 /**
  * Class with Cache and WP as return Type
  *

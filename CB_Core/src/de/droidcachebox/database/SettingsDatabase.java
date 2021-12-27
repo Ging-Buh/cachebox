@@ -25,22 +25,22 @@ public class SettingsDatabase extends Database_Core {
 
     @Override
     protected void alterDatabase(int lastDatabaseSchemeVersion) {
-        sql.beginTransaction();
+        beginTransaction();
         try {
             if (lastDatabaseSchemeVersion <= 0) {
                 // First Initialization of the Database
-                sql.execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
-                sql.execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
+                execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
+                execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
             }
             if (lastDatabaseSchemeVersion < 1002) {
                 // Long Text Field for long Strings
-                sql.execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
+                execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
             }
-            sql.setTransactionSuccessful();
+            setTransactionSuccessful();
         } catch (Exception exc) {
             Log.err(sKlasse, "alterDatabase", "", exc);
         } finally {
-            sql.endTransaction();
+            endTransaction();
         }
     }
 

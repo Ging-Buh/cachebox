@@ -1,6 +1,6 @@
 package de.droidcachebox.core;
 
-import de.droidcachebox.database.Categories;
+import de.droidcachebox.dataclasses.Categories;
 
 /**
  * Struktur die alle Infos enthält, die an den Core übergeben werden müssen

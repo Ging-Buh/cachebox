@@ -1,10 +1,12 @@
-package de.droidcachebox.database;
+package de.droidcachebox.dataclasses;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import de.droidcachebox.database.CBDB;
+import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
@@ -183,7 +185,7 @@ public class CacheDetail implements Serializable {
 
     public DLong getAttributesNegative(long Id) {
         if (this.attributesNegative == null) {
-            CoreCursor c = CBDB.getInstance().sql.rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
+            CoreCursor c = CBDB.getInstance().rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 if (!c.isNull(0))
@@ -199,7 +201,7 @@ public class CacheDetail implements Serializable {
 
     public DLong getAttributesPositive(long Id) {
         if (this.attributesPositive == null) {
-            CoreCursor c = CBDB.getInstance().sql.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
+            CoreCursor c = CBDB.getInstance().rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
             if (c != null) {
                 c.moveToFirst();
                 if (!c.isNull(0))

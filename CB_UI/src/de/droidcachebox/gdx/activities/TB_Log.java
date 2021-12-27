@@ -25,11 +25,11 @@ import java.util.Date;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Draft;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.LogType;
-import de.droidcachebox.database.Trackable;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Draft;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.LogType;
+import de.droidcachebox.dataclasses.Trackable;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -242,7 +242,7 @@ public class TB_Log extends ActivityBase {
 
     private void logOnline() {
 
-        wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), () -> {
+        wd = CancelWaitDialog.ShowWait("Upload Log", new DownloadAnimation(), () -> {
 
         }, new TestCancelRunnable() {
 
@@ -310,7 +310,7 @@ public class TB_Log extends ActivityBase {
             }
 
             @Override
-            public boolean doCancel() {
+            public boolean checkCanceled() {
                 return false;
             }
         });

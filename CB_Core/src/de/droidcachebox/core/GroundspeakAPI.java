@@ -16,8 +16,8 @@
 package de.droidcachebox.core;
 
 import static java.lang.Thread.sleep;
-import static de.droidcachebox.database.Cache.IS_FULL;
-import static de.droidcachebox.database.Cache.IS_LITE;
+import static de.droidcachebox.dataclasses.Cache.IS_FULL;
+import static de.droidcachebox.dataclasses.Cache.IS_LITE;
 import static de.droidcachebox.ex_import.DescriptionImageGrabber.Segmentize;
 
 import org.json.JSONArray;
@@ -46,18 +46,18 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.database.Attribute;
-import de.droidcachebox.database.Cache;
-import de.droidcachebox.database.Draft;
-import de.droidcachebox.database.GeoCacheSize;
-import de.droidcachebox.database.GeoCacheType;
-import de.droidcachebox.database.ImageEntry;
-import de.droidcachebox.database.LogEntry;
-import de.droidcachebox.database.LogType;
 import de.droidcachebox.database.LogsTableDAO;
-import de.droidcachebox.database.TBList;
-import de.droidcachebox.database.Trackable;
-import de.droidcachebox.database.Waypoint;
+import de.droidcachebox.dataclasses.Attribute;
+import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Draft;
+import de.droidcachebox.dataclasses.GeoCacheSize;
+import de.droidcachebox.dataclasses.GeoCacheType;
+import de.droidcachebox.dataclasses.ImageEntry;
+import de.droidcachebox.dataclasses.LogEntry;
+import de.droidcachebox.dataclasses.LogType;
+import de.droidcachebox.dataclasses.TBList;
+import de.droidcachebox.dataclasses.Trackable;
+import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Descriptor;
@@ -579,7 +579,7 @@ public class GroundspeakAPI {
         }
     }
 
-    public static ArrayList<LogEntry> fetchGeoCacheLogs(Cache cache, boolean all, TestCancelRunnable cancelRun) {
+    public static ArrayList<LogEntry> fetchGeoCacheLogs(Cache cache, boolean all, TestCancelRunnable testCancelRunnable) {
         ArrayList<LogEntry> logList = new ArrayList<>();
 
         LinkedList<String> friendList = new LinkedList<>();
@@ -593,7 +593,7 @@ public class GroundspeakAPI {
         int start = 0;
         int count = 50;
 
-        while (!cancelRun.doCancel())
+        while (!testCancelRunnable.checkCanceled())
         // Schleife, solange bis entweder keine Logs mehr geladen werden oder bis Logs aller Freunde geladen sind.
         {
             boolean doRetry;
@@ -1721,7 +1721,7 @@ public class GroundspeakAPI {
         public Date lastGenerated;
         public double sizeMB;
         public boolean doDownload = false;
-        String GUID;
+        public String GUID;
     }
 
     public static class UserInfos {
