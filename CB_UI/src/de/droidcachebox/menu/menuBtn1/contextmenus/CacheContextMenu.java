@@ -136,10 +136,8 @@ public class CacheContextMenu {
 
     public void reloadSelectedCache() {
         if (GlobalCore.isSetSelectedCache()) {
-
-            wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), () -> {
+            wd = new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), () -> {
             }, new TestCancelRunnable() {
-
                 @Override
                 public void run() {
                     String GCCode = GlobalCore.getSelectedCache().getGeoCacheCode();
@@ -159,7 +157,7 @@ public class CacheContextMenu {
                             CacheListChangedListeners.getInstance().cacheListChanged();
                         }
 
-                        ShowSpoiler.getInstance().importSpoiler(false).setReadyListener(() -> {
+                        ShowSpoiler.getInstance().importSpoiler(false, () -> {
                             // do after import
                             if (GlobalCore.isSetSelectedCache()) {
                                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -184,6 +182,7 @@ public class CacheContextMenu {
                     return false;
                 }
             });
+            wd.show();
         } else {
             MsgBox.show(Translation.get("NoCacheSelect"), Translation.get("Error"), MsgBoxIcon.Error);
         }

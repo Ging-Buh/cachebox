@@ -172,7 +172,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                             switch (which) {
                                 case 1:
                                     msgBox.close();
-                                    pd = CancelWaitDialog.ShowWait(Translation.get("LoadFounds"), new DownloadAnimation(), null, new TestCancelRunnable() {
+                                    pd = new CancelWaitDialog(Translation.get("LoadFounds"), new DownloadAnimation(), null, new TestCancelRunnable() {
                                         @Override
                                         public void run() {
                                             result = GroundspeakAPI.fetchMyUserInfos().findCount;
@@ -191,6 +191,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                             return false;
                                         }
                                     });
+                                    pd.show();
                                     break;
                                 case 3:
                                     msgBox.close();

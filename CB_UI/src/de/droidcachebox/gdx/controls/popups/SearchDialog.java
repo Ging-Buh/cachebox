@@ -424,8 +424,7 @@ public class SearchDialog extends PopUp_Base {
             if (invalidAccessToken) {
                 GL.that.RunOnGL(() -> MsgBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null));
             } else {
-
-                wd = CancelWaitDialog.ShowWait(Translation.get("Search"), new DownloadAnimation(), this::closeWaitDialog, new TestCancelRunnable() {
+                wd = new CancelWaitDialog(Translation.get("Search"), new DownloadAnimation(), this::closeWaitDialog, new TestCancelRunnable() {
 
                     @Override
                     public void run() {
@@ -448,6 +447,7 @@ public class SearchDialog extends PopUp_Base {
                         return false;
                     }
                 });
+                wd.show();
             }
         });
 
@@ -461,7 +461,7 @@ public class SearchDialog extends PopUp_Base {
 
     private void searchOnlineNow() {
         Log.debug(log, "searchOnlineNow");
-        wd = CancelWaitDialog.ShowWait(Translation.get("searchOverAPI"), new DownloadAnimation(), this::closeWaitDialog, new TestCancelRunnable() {
+        wd = new CancelWaitDialog(Translation.get("searchOverAPI"), new DownloadAnimation(), this::closeWaitDialog, new TestCancelRunnable() {
 
             @Override
             public void run() {
@@ -576,6 +576,7 @@ public class SearchDialog extends PopUp_Base {
                 return false;
             }
         });
+        wd.show();
     }
 
     /**

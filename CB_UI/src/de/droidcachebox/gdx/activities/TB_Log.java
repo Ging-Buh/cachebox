@@ -241,11 +241,8 @@ public class TB_Log extends ActivityBase {
     }
 
     private void logOnline() {
-
-        wd = CancelWaitDialog.ShowWait("Upload Log", new DownloadAnimation(), () -> {
-
+        wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), () -> {
         }, new TestCancelRunnable() {
-
             @Override
             public void run() {
                 int result = uploadTrackableLog(TB, getCache_GcCode(), LogType.CB_LogType2GC(LT), new Date(), edit.getText());
@@ -314,7 +311,7 @@ public class TB_Log extends ActivityBase {
                 return false;
             }
         });
-
+        wd.show();
     }
 
     private void createTBDraft() {

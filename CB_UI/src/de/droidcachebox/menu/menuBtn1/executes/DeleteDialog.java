@@ -14,6 +14,7 @@ import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.ImageButton;
+import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
@@ -66,11 +67,9 @@ public class DeleteDialog extends ButtonDialog {
 
         btDelFilter.setClickHandler((v, x, y, pointer, button) -> {
             close();
-
-            wd = CancelWaitDialog.ShowWait(Translation.get("DelActFilter"), () -> {
+            wd = new CancelWaitDialog(Translation.get("DelActFilter"), new WorkAnimation(), () -> {
 
             }, new TestCancelRunnable() {
-
                 @Override
                 public void run() {
                     long nun = CacheListDAO.getInstance().deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(),
@@ -92,16 +91,15 @@ public class DeleteDialog extends ButtonDialog {
                     return false;
                 }
             });
+            wd.show();
             return true;
         });
 
         btDelArchived.setClickHandler((view, x, y, pointer, button) -> {
             close();
-
-            wd = CancelWaitDialog.ShowWait(Translation.get("DelArchived"), () -> {
+            wd = new CancelWaitDialog(Translation.get("DelArchived"), new WorkAnimation(), () -> {
 
             }, new TestCancelRunnable() {
-
                 @Override
                 public void run() {
                     long nun = CacheListDAO.getInstance().deleteArchived(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
@@ -121,16 +119,15 @@ public class DeleteDialog extends ButtonDialog {
                     return false;
                 }
             });
+            wd.show();
             return true;
         });
 
         btDelFounds.setClickHandler((view, x, y, pointer, button) -> {
             close();
-
-            wd = CancelWaitDialog.ShowWait(Translation.get("DelFound"), () -> {
+            wd = new CancelWaitDialog(Translation.get("DelFound"), new WorkAnimation(), () -> {
 
             }, new TestCancelRunnable() {
-
                 @Override
                 public void run() {
                     long nun = CacheListDAO.getInstance().deleteFinds(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
@@ -149,6 +146,7 @@ public class DeleteDialog extends ButtonDialog {
                     return false;
                 }
             });
+            wd.show();
             return true;
         });
 

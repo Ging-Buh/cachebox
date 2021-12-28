@@ -61,6 +61,7 @@ import de.droidcachebox.ex_import.Importer;
 import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
+import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
@@ -109,7 +110,6 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
     private SharedPreferences.Editor androidSettingEditor;
     private AndroidEventListener handlingGetApiAuth;
     private boolean mustShowCacheList = true;
-    private CancelWaitDialog wd;
     private LocationManager locationManager;
     private AndroidEventListener handlingGetDirectoryAccess, handlingGetDocumentAccess;
     private Intent locationServiceIntent;
@@ -117,6 +117,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
     private android.location.GpsStatus.Listener gpsStatusListener;
     private boolean lostCheck = false;
     private boolean askForLocationPermission;
+    private CancelWaitDialog wd;
 
     AndroidUIBaseMethods(Main main) {
         androidApplication = main;
@@ -694,41 +695,54 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             @Override
             public void run() {
                 Log.info(sClass, "ImportGPXFile");
-                mainActivity.runOnUiThread(() -> wd = CancelWaitDialog.ShowWait(Translation.get("ImportGPX"), () -> wd.close(), new TestCancelRunnable() {
+                mainActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.info(sClass, "Import GPXFile from " + externalRequestGpxPath + " started");
-                        Date ImportStart = new Date();
+                        wd = new CancelWaitDialog(Translation.get("ImportGPX"),
+                                new WorkAnimation(),
+                                () -> {
+                                    if (null != wd)
+                                        wd.close();
+                                },
+                                new TestCancelRunnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.info(sClass, "Import GPXFile from " + externalRequestGpxPath + " started");
+                                        Date ImportStart = new Date();
 
-                        CBDB.getInstance().beginTransaction();
-                        try {
-                            Importer importer = new Importer();
-                            importer.importGpx(externalRequestGpxPath,
-                                    new ImporterProgress((message, progressMessage, progress) -> {
-                                        // dummy: there is no UI to show the progress
-                                    }),
-                                    null);
-                        } catch (Exception ignored) {
-                        }
-                        CBDB.getInstance().setTransactionSuccessful();
-                        CBDB.getInstance().endTransaction();
+                                        CBDB.getInstance().beginTransaction();
+                                        try {
+                                            Importer importer = new Importer();
+                                            importer.importGpx(externalRequestGpxPath,
+                                                    new ImporterProgress((message, progressMessage, progress) -> {
+                                                        // dummy: there is no UI to show the progress
+                                                    }),
+                                                    null);
+                                        } catch (Exception ignored) {
+                                        }
+                                        CBDB.getInstance().setTransactionSuccessful();
+                                        CBDB.getInstance().endTransaction();
 
-                        wd.close();
-                        CacheListChangedListeners.getInstance().cacheListChanged();
-                        FilterProperties props = FilterInstances.getLastFilter();
-                        EditFilterSettings.applyFilter(props);
+                                        wd.close();
+                                        CacheListChangedListeners.getInstance().cacheListChanged();
+                                        FilterProperties props = FilterInstances.getLastFilter();
+                                        EditFilterSettings.applyFilter(props);
 
-                        long ImportZeit = new Date().getTime() - ImportStart.getTime();
-                        String msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
-                        Log.info(sClass, msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
-                        GL.that.toast(msg);
+                                        long ImportZeit = new Date().getTime() - ImportStart.getTime();
+                                        String msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
+                                        Log.info(sClass, msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
+                                        GL.that.toast(msg);
+                                    }
+
+                                    @Override
+                                    public boolean checkCanceled() {
+                                        return false;
+                                    }
+                                });
+
+                        wd.show();
                     }
-
-                    @Override
-                    public boolean checkCanceled() {
-                        return false;
-                    }
-                }));
+                });
 
             }
         };

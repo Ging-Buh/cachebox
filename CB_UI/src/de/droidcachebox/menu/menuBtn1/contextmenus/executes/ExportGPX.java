@@ -83,7 +83,7 @@ public class ExportGPX {
                 }
 
                 @Override
-                public void afterRun(boolean canceled) {
+                public void ready(boolean canceled) {
 
                     if (progressDialog != null) {
                         progressDialog.close();

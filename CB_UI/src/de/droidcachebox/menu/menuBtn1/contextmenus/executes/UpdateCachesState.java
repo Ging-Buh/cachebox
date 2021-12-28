@@ -1,4 +1,4 @@
-package de.droidcachebox.menu.menuBtn1.contextmenus;
+package de.droidcachebox.menu.menuBtn1.contextmenus.executes;
 
 import static de.droidcachebox.core.GroundspeakAPI.APIError;
 import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
@@ -36,7 +36,7 @@ public class UpdateCachesState {
     private int result = 0;
     private ProgressDialog progressDialog;
 
-    UpdateCachesState() {
+    public UpdateCachesState() {
         isCanceled = new AtomicBoolean();
     }
 
@@ -57,6 +57,8 @@ public class UpdateCachesState {
                                         @Override
                                         public void run() {
                                             isCanceled.set(false);
+                                            boolean isInterrupted = false;
+
                                             ArrayList<Cache> chkList = new ArrayList<>();
                                             synchronized (CBDB.getInstance().cacheList) {
                                                 if (CBDB.getInstance().cacheList == null || CBDB.getInstance().cacheList.size() == 0)
@@ -71,14 +73,14 @@ public class UpdateCachesState {
                                             int skip = 0;
                                             result = 0;
                                             ArrayList<Cache> caches = new ArrayList<>();
-                                            boolean cancelThread = false;
                                             float progress = 0;
                                             CacheDAO dao = CacheDAO.getInstance();
+
                                             do {
                                                 if (Thread.interrupted())
-                                                    cancelThread = true;
+                                                    isInterrupted = true;
                                                 caches.clear();
-                                                if (!cancelThread) {
+                                                if (!isInterrupted) {
                                                     if (chkList.size() == 0) break;
                                                     for (int i = skip; i < skip + blockSize && i < chkList.size(); i++) {
                                                         caches.add(chkList.get(i));
@@ -100,9 +102,8 @@ public class UpdateCachesState {
                                                 progress = progress + progressIncrement;
                                                 progressDialog.setProgress("", "", (int) progress);
 
-                                            } while (skip < chkList.size() && !cancelThread);
+                                            } while (skip < chkList.size() && !isInterrupted);
 
-                                            // dao = null;
                                             progressDialog.close();
 
                                         }
@@ -113,7 +114,7 @@ public class UpdateCachesState {
                                         }
 
                                         @Override
-                                        public void afterRun(boolean canceled) {
+                                        public void ready(boolean canceled) {
                                             Log.debug(sClass, "chkState ready");
                                             String sCanceled = canceled ? Translation.get("isCanceld") + br : "";
                                             if (result != -1) {
@@ -133,12 +134,7 @@ public class UpdateCachesState {
                                         }
                                     });
 
-                            progressDialog.setCancelListener(new ProgressDialog.ICancelListener() {
-                                @Override
-                                public void setIsCanceled() {
-                                    isCanceled.set(true);
-                                }
-                            });
+                            progressDialog.setCancelListener(() -> isCanceled.set(true));
 
                             GL.that.showDialog(progressDialog);
                         });

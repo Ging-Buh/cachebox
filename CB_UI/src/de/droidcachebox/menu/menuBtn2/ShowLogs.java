@@ -100,13 +100,14 @@ public class ShowLogs extends AbstractShowAction {
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
 
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> ShowSpoiler.getInstance().importSpoiler(true).setReadyListener(() -> {
-            // do after import
-            if (GlobalCore.isSetSelectedCache()) {
-                GlobalCore.getSelectedCache().loadSpoilerRessources();
-                Spoiler.getInstance().ForceReload();
-            }
-        }));
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()),
+                () -> ShowSpoiler.getInstance().importSpoiler(true, () -> {
+                    // do after import
+                    if (GlobalCore.isSetSelectedCache()) {
+                        GlobalCore.getSelectedCache().loadSpoilerRessources();
+                        Spoiler.getInstance().ForceReload();
+                    }
+                }));
         return contextMenu;
     }
 
@@ -116,70 +117,73 @@ public class ShowLogs extends AbstractShowAction {
 
                 @Override
                 public void run() {
-                    GL.that.postAsync(() -> pd = CancelWaitDialog.ShowWait(Translation.get("LoadLogs"), new DownloadAnimation(),
-                            () -> doCancelThread = true, new RunnableReadyHandler() {
+                    GL.that.postAsync(() -> {
+                        pd = new CancelWaitDialog(Translation.get("LoadLogs"), new DownloadAnimation(),
+                                () -> doCancelThread = true, new RunnableReadyHandler() {
 
-                                @Override
-                                public boolean checkCanceled() {
-                                    return doCancelThread;
+                            @Override
+                            public boolean checkCanceled() {
+                                return doCancelThread;
+                            }
+
+                            @Override
+                            public void run() {
+                                result = 0;
+                                doCancelThread = false;
+                                ArrayList<LogEntry> logList;
+
+                                try {
+                                    Thread.sleep(10);
+                                    logList = fetchGeoCacheLogs(GlobalCore.getSelectedCache(), loadAllLogs, this);
+                                    if (result == ERROR) {
+                                        GL.that.toast(LastAPIError);
+                                    }
+                                    if (logList.size() > 0) {
+                                        CBDB.getInstance().beginTransaction();
+
+                                        Iterator<LogEntry> iterator = logList.iterator();
+                                        if (loadAllLogs)
+                                            LogsTableDAO.getInstance().deleteLogs(GlobalCore.getSelectedCache().generatedId);
+                                        do {
+                                            ChangedCount++;
+                                            try {
+                                                Thread.sleep(10);
+                                                LogEntry writeTmp = iterator.next();
+                                                LogsTableDAO.getInstance().WriteLogEntry(writeTmp);
+                                            } catch (InterruptedException e) {
+                                                doCancelThread = true;
+                                            }
+                                        } while (iterator.hasNext() && !doCancelThread);
+
+                                        CBDB.getInstance().setTransactionSuccessful();
+                                        CBDB.getInstance().endTransaction();
+                                        // update LogListView
+                                        Logs.getInstance().resetIsInitialized();
+                                        // for update slider, ?, ?, ? with latest logs
+                                        CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
+
+                                    }
+
+                                } catch (InterruptedException e) {
+                                    doCancelThread = true;
                                 }
 
-                                @Override
-                                public void run() {
-                                    result = 0;
-                                    doCancelThread = false;
-                                    ArrayList<LogEntry> logList;
+                            }
 
-                                    try {
-                                        Thread.sleep(10);
-                                        logList = fetchGeoCacheLogs(GlobalCore.getSelectedCache(), loadAllLogs, this);
-                                        if (result == ERROR) {
-                                            GL.that.toast(LastAPIError);
-                                        }
-                                        if (logList.size() > 0) {
-                                            CBDB.getInstance().beginTransaction();
-
-                                            Iterator<LogEntry> iterator = logList.iterator();
-                                            if (loadAllLogs)
-                                                LogsTableDAO.getInstance().deleteLogs(GlobalCore.getSelectedCache().generatedId);
-                                            do {
-                                                ChangedCount++;
-                                                try {
-                                                    Thread.sleep(10);
-                                                    LogEntry writeTmp = iterator.next();
-                                                    LogsTableDAO.getInstance().WriteLogEntry(writeTmp);
-                                                } catch (InterruptedException e) {
-                                                    doCancelThread = true;
-                                                }
-                                            } while (iterator.hasNext() && !doCancelThread);
-
-                                            CBDB.getInstance().setTransactionSuccessful();
-                                            CBDB.getInstance().endTransaction();
-                                            // update LogListView
-                                            Logs.getInstance().resetIsInitialized();
-                                            // for update slider, ?, ?, ? with latest logs
-                                            CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
-
-                                        }
-
-                                    } catch (InterruptedException e) {
-                                        doCancelThread = true;
+                            @Override
+                            public void ready(boolean canceled) {
+                                String sCanceled = canceled ? Translation.get("isCanceled") + br : "";
+                                pd.close();
+                                if (result != -1) {
+                                    synchronized (CBDB.getInstance().cacheList) {
+                                        MsgBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MsgBoxIcon.None);
                                     }
 
                                 }
-
-                                @Override
-                                public void afterRun(boolean canceled) {
-                                    String sCanceled = canceled ? Translation.get("isCanceled") + br : "";
-                                    pd.close();
-                                    if (result != -1) {
-                                        synchronized (CBDB.getInstance().cacheList) {
-                                            MsgBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MsgBoxIcon.None);
-                                        }
-
-                                    }
-                                }
-                            }));
+                            }
+                        });
+                        pd.show();
+                    });
                 }
             };
             Timer t = new Timer();

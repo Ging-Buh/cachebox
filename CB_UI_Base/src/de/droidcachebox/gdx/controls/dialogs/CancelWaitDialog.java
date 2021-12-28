@@ -18,17 +18,13 @@ package de.droidcachebox.gdx.controls.dialogs;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
-import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.RunnableReadyHandler;
 import de.droidcachebox.utils.TestCancelRunnable;
-import de.droidcachebox.utils.log.Log;
-import de.droidcachebox.utils.log.Trace;
 
 /**
  * Ein Wait Dialog mit Übergabe eines Runable zur Abarbeitung, welcher abgebrochen werden kann
@@ -37,84 +33,63 @@ import de.droidcachebox.utils.log.Trace;
  */
 public class CancelWaitDialog extends WaitDialog {
 
-    private static String sKlasse = "CancelWaitDialog";
-    // CancelWaitDialog that;
+    private static String sClass = "CancelWaitDialog";
     private final TestCancelRunnable cancelRunnable;
     protected IcancelListener cancelListener;
-    RunnableReadyHandler mRunnThread;
+    RunnableReadyHandler runnableReadyHandler;
     private IReadyListener readyListener;
     private boolean isRunning = false;
 
-    public CancelWaitDialog(Size size, String name, IcancelListener cancelListener, TestCancelRunnable cancelRunnable) {
-        super(size, name);
+    public CancelWaitDialog(String msg, AnimationBase _animation, IcancelListener cancelListener, TestCancelRunnable cancelRunnable) {
+        super(calcMsgBoxSize(msg, false, false, true, false), sClass);
         this.cancelListener = cancelListener;
         this.cancelRunnable = cancelRunnable;
-    }
 
-    public static CancelWaitDialog ShowWait(String Msg, IcancelListener listener, TestCancelRunnable cancelRunnable) {
-        final CancelWaitDialog wd = ShowWait(Msg, new WorkAnimation(), listener, cancelRunnable);
-        wd.setCallerName(Trace.getCallerName(2));
-        return wd;
-    }
+        setTitle("");
+        setButtonCaptions(MsgBoxButton.Cancel);
 
-    public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListener cancelListener, TestCancelRunnable cancelRunnable) {
-        Log.debug(sKlasse, Msg);
-        final CancelWaitDialog wd = createDialog(Msg, cancelListener, cancelRunnable);
-        wd.setCallerName(Trace.getCallerName(1));
-        CB_RectF animationRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
-        Animation.setRec(animationRec);
-        wd.animation = Animation;
-        wd.setButtonCaptions(MsgBoxButton.Cancel);
-        wd.mMsgBoxClickListener = (which, data) -> {
-            if (wd.mRunnThread != null)
-                wd.mRunnThread.cancel();
-            wd.btnRightNegative.disable();
-            wd.btnRightNegative.setText(Translation.get("waitForCancel"));
-            return false;
-        };
-
-        SizeF contentSize = wd.getContentSize();
-        float imageYPos = (contentSize.getHeight() < (wd.animation.getHeight() * 1.7)) ? contentSize.getHalfHeight() - wd.animation.getHalfHeight() : contentSize.getHeight() - wd.animation.getHeight() - margin;
-        wd.animation.setY(imageYPos);
-        wd.addChild(wd.animation);
-        wd.animation.play();
-        wd.show();
-        return wd;
-    }
-
-    private static CancelWaitDialog createDialog(String msg, IcancelListener listener, TestCancelRunnable cancelRunnable) {
-
-        if (msg == null)
-            msg = "";
-
-        Size size = calcMsgBoxSize(msg, false, false, true, false);
-
-        CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listener, cancelRunnable);
-        waitDialog.setTitle("");
-        waitDialog.setButtonCaptions(MsgBoxButton.Cancel);
-
-        SizeF contentSize = waitDialog.getContentSize();
+        SizeF contentSize = getContentSize();
 
         CB_RectF imageRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
 
-        waitDialog.label = new CB_Label(contentSize.getBounds());
-        waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UiSizes.getInstance().getButtonHeight());
-        waitDialog.label.setX(imageRec.getMaxX() + margin);
-        waitDialog.label.setWrappedText(msg);
+        label = new CB_Label(contentSize.getBounds());
+        label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UiSizes.getInstance().getButtonHeight());
+        label.setX(imageRec.getMaxX() + margin);
+        label.setWrappedText(msg);
 
-        int lineCount = waitDialog.label.getLineCount();
-        waitDialog.label.setY(0);
+        int lineCount = label.getLineCount();
+        label.setY(0);
 
         if (lineCount == 1) {
-            waitDialog.label.setText(msg);
-            waitDialog.label.setVAlignment(VAlignment.CENTER);
+            label.setText(msg);
+            label.setVAlignment(VAlignment.CENTER);
         } else {
-            waitDialog.label.setVAlignment(VAlignment.TOP);
+            label.setVAlignment(VAlignment.TOP);
         }
 
-        waitDialog.addChild(waitDialog.label);
+        addChild(label);
 
-        return waitDialog;
+        setButtonCaptions(MsgBoxButton.Cancel);
+
+        mMsgBoxClickListener = (which, data) -> {
+            if (runnableReadyHandler != null)
+                runnableReadyHandler.doInterrupt();
+            btnRightNegative.disable();
+            btnRightNegative.setText(Translation.get("waitForCancel"));
+            return false;
+        };
+
+        animation = _animation;
+
+        if (animation != null) {
+            CB_RectF animationRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
+            animation.setRec(animationRec);
+            // SizeF contentSize = getContentSize();
+            float imageYPos = (contentSize.getHeight() < (animation.getHeight() * 1.7)) ? contentSize.getHalfHeight() - animation.getHalfHeight() : contentSize.getHeight() - animation.getHeight() - margin;
+            animation.setY(imageYPos);
+            addChild(animation);
+            animation.play();
+        }
 
     }
 
@@ -125,10 +100,10 @@ public class CancelWaitDialog extends WaitDialog {
             isRunning = true;
 
             // start cancelRunnable on new Thread
-            mRunnThread = new RunnableReadyHandler() {
+            runnableReadyHandler = new RunnableReadyHandler() {
 
                 @Override
-                public void afterRun(boolean isCanceled) {
+                public void ready(boolean isCanceled) {
                     // CancelWaitDialog.this.close();
                     if (isCanceled && cancelListener != null) {
                         cancelListener.isCanceled();
@@ -160,7 +135,7 @@ public class CancelWaitDialog extends WaitDialog {
                     return mCancel;
                 }
             };
-            mRunnThread.start();
+            runnableReadyHandler.doStart();
         }
     }
 

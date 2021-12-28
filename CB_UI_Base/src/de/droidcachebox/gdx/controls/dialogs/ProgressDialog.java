@@ -26,9 +26,12 @@ public class ProgressDialog extends MsgBox {
 
         addButtons(MsgBoxButton.Cancel);
         btnRightNegative.setClickHandler((view, x, y, pointer, button) -> {
-            runnableReadyHandler.cancel();
             btnRightNegative.disable();
             btnRightNegative.setText(Translation.get("waitForCancel"));
+            runnableReadyHandler.doInterrupt();
+            if (runnableReadyHandler.checkCanceled()) {
+
+            }
             if (mCancelListener != null)
                 mCancelListener.setIsCanceled();
             return true;
@@ -61,8 +64,8 @@ public class ProgressDialog extends MsgBox {
 
     }
 
-    public void setCancelListener(ICancelListener listener) {
-        mCancelListener = listener;
+    public void setCancelListener(ICancelListener cancelListener) {
+        mCancelListener = cancelListener;
     }
 
     public void setAnimation(final AnimationBase animation) {
@@ -78,7 +81,7 @@ public class ProgressDialog extends MsgBox {
 
     @Override
     public void onShow() {
-        if (runnableReadyHandler != null) runnableReadyHandler.start();
+        if (runnableReadyHandler != null) runnableReadyHandler.doStart();
     }
 
     public void setProgress(final String msg, final String progressMessage, final int value) {
@@ -92,6 +95,9 @@ public class ProgressDialog extends MsgBox {
         });
     }
 
+    /**
+     * to inform the creator about cancellation
+     */
     public interface ICancelListener {
         void setIsCanceled();
     }

@@ -348,8 +348,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         infoBubble.setInvisible();
         infoBubble.setClickHandler((v, x, y, pointer, button) -> {
             if (infoBubble.saveButtonClicked(x, y)) {
-                wd = CancelWaitDialog.ShowWait(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), () -> {
-
+                wd = new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), () -> {
                 }, new TestCancelRunnable() {
 
                     @Override
@@ -383,7 +382,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         CacheListChangedListeners.getInstance().cacheListChanged();
                         wd.close();
 
-                        ShowSpoiler.getInstance().importSpoiler(false).setReadyListener(() -> {
+                        ShowSpoiler.getInstance().importSpoiler(false, () -> {
                             // do after import
                             if (GlobalCore.isSetSelectedCache()) {
                                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -397,6 +396,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         return false;
                     }
                 });
+                wd.show();
             } else {
                 if (infoBubble.getWaypoint() == null) {
                     // if cache has a Final waypoint: activate

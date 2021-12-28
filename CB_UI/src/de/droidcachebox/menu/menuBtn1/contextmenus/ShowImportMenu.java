@@ -13,6 +13,7 @@ import de.droidcachebox.gdx.activities.Import_GSAK;
 import de.droidcachebox.gdx.activities.SearchOverNameOwnerGcCode;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.menuBtn1.contextmenus.executes.ExportGPX;
+import de.droidcachebox.menu.menuBtn1.contextmenus.executes.UpdateCachesState;
 
 public class ShowImportMenu extends AbstractShowAction {
     public static final int MI_IMPORT_CBS = 189;

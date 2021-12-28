@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import de.droidcachebox.core.CB_Api;
+import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
-import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog.IcancelListener;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.http.Request;
@@ -18,7 +18,7 @@ import de.droidcachebox.utils.log.Log;
 public class GcApiLogin {
     private static final String log = "GcApiLogin";
 
-    CancelWaitDialog WD;
+    CancelWaitDialog wd;
     private long lastCall = 0;
     private boolean isRunning = false;
 
@@ -32,13 +32,7 @@ public class GcApiLogin {
 
         lastCall = System.currentTimeMillis();
 
-        WD = CancelWaitDialog.ShowWait("Please Wait", new IcancelListener() {
-
-            @Override
-            public void isCanceled() {
-                closeWaitDialog();
-            }
-        }, new TestCancelRunnable() {
+        wd = new CancelWaitDialog("Please Wait", new DownloadAnimation(), () -> closeWaitDialog(), new TestCancelRunnable() {
 
             @Override
             public void run() {
@@ -47,15 +41,15 @@ public class GcApiLogin {
 
             @Override
             public boolean checkCanceled() {
-                // TODO Handle Cancel
                 return false;
             }
         });
+        wd.show();
 
     }
 
     private void closeWaitDialog() {
-        WD.close();
+        wd.close();
     }
 
     private void runOnWaitDialog() {
@@ -106,23 +100,21 @@ public class GcApiLogin {
                     List<String> cookiesHeader = headerFields.get("Set-Cookie");
                     if (cookiesHeader != null) {
                         for (String cookie : cookiesHeader) {
-                            msCookieManager.getCookieStore().add(null,HttpCookie.parse(cookie).get(0));
+                            msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                         }
                     }
                     String cookies = "";
                     String sep = "";
-                    for ( java.net.HttpCookie cookie : msCookieManager.getCookieStore().getCookies() ) {
+                    for (java.net.HttpCookie cookie : msCookieManager.getCookieStore().getCookies()) {
                         cookies += sep + cookie.toString();
                     }
                     if (msCookieManager.getCookieStore().getCookies().size() > 0) {
                         request.header("Cookie", cookies);
                     }
                     remote = response.getHeaderField("location");
-                }
-                else retry = false;
-            }
-            catch (Exception e) {
-                Log.err(log,"Call_OAuth_Page");
+                } else retry = false;
+            } catch (Exception e) {
+                Log.err(log, "Call_OAuth_Page");
                 return;
             }
         }

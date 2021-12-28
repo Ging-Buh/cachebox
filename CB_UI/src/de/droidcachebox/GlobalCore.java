@@ -231,7 +231,7 @@ public class GlobalCore implements SolverCacheInterface {
         }
 
         if (isAccessTokenInvalid()) {
-            CancelWaitDialog.ShowWait("chk API Key", new DownloadAnimation(), null, new TestCancelRunnable() {
+            new CancelWaitDialog("chk API Key", new DownloadAnimation(), null, new TestCancelRunnable() {
                 @Override
                 public void run() {
                     handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
@@ -250,7 +250,7 @@ public class GlobalCore implements SolverCacheInterface {
                 public boolean checkCanceled() {
                     return false;
                 }
-            });
+            }).show();
         } else {
             handler.checkReady(false);
         }

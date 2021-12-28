@@ -53,136 +53,112 @@ public class OpenRouteService {
                 routeDia.close();
 
                 if (!canceld)
-                    GL.that.RunOnGL(new IRunOnGL() {
+                    GL.that.RunOnGL(() -> {
+                        wd = new CancelWaitDialog(Translation.get("generateRoute"), new DownloadAnimation(), () -> {
+                        }, new TestCancelRunnable() {
 
-                        @Override
-                        public void run() {
-                            wd = CancelWaitDialog.ShowWait(Translation.get("generateRoute"), new DownloadAnimation(), new CancelWaitDialog.IcancelListener() {
+                            @Override
+                            public void run() {
+                                Coordinate lastAcceptedCoordinate = null;
+                                float[] dist = new float[4];
+                                double distance = 0;
+                                Coordinate FromPosition = new CoordinateGPS(0, 0);
 
-                                @Override
-                                public void isCanceled() {
-                                    // TODO Handle Cancel Clicket
+                                if (canceld)
+                                    return;
 
-                                }
-                            }, new TestCancelRunnable() {
+                                try {
 
-                                @Override
-                                public void run() {
-                                    Coordinate lastAcceptedCoordinate = null;
-                                    float[] dist = new float[4];
-                                    double distance = 0;
-                                    Coordinate FromPosition = new CoordinateGPS(0, 0);
+                                    // todo
+                                    /*
+                                    HttpResponse response = requestRouteGet(canceld, Motoway, CycleWay, FootWay);
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
-                                    if (canceld)
-                                        return;
+                                     */
+
+                                    StringBuilder builder = new StringBuilder();
+                                    String line = "";
+                                    Track route = new Track("OpenRouteService");
+                                    route.setVisible(true);
+                                    boolean RouteGeometryBlockFound = false;
+                                    boolean IsRoute = false;
 
                                     try {
-
                                         // todo
-                                        /*
-                                        HttpResponse response = requestRouteGet(canceld, Motoway, CycleWay, FootWay);
-                                        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-                                         */
-
-                                        StringBuilder builder = new StringBuilder();
-                                        String line = "";
-                                        Track route = new Track("OpenRouteService");
-                                        route.setVisible(true);
-                                        boolean RouteGeometryBlockFound = false;
-                                        boolean IsRoute = false;
-
-                                        try {
-                                            // todo
-                                            // replace corresponding
-                                            // while (builder.length() > 0) {
-                                            // while ((line = reader.readLine()) != null) {
-                                            while (builder.length() > 0) {
-                                                builder.append(line).append("\n");
-                                                if (line.indexOf("<xls:Error ") >= 0) {
-                                                    int errorIdx = line.indexOf("message=\"");
-                                                    int endIdx = line.indexOf("\"", errorIdx + 9);
-                                                    final String errorMessage = line.substring(errorIdx + 9, endIdx);
-                                                    wd.close();
-                                                    GL.that.RunOnGL(new IRunOnGL() {
-                                                        // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-                                                        // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
-                                                        @Override
-                                                        public void run() {
-                                                            MsgBox.show(errorMessage, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
-                                                        }
-                                                    });
-
-                                                    return;
-                                                }
-
-                                                if (line.indexOf("<xls:RouteGeometry>") >= 0) // suche <xls:RouteGeometry> Block
-                                                {
-                                                    RouteGeometryBlockFound = true;
-                                                }
-
-                                                int idx;
-                                                if (((idx = line.indexOf("<gml:pos>")) > 0) & RouteGeometryBlockFound) {
-                                                    int seperator = line.indexOf(" ", idx + 1);
-                                                    int endIdx = line.indexOf("</gml:pos>", seperator + 1);
-
-                                                    String lonStr = line.substring(idx + 9, seperator);
-                                                    String latStr = line.substring(seperator + 1, endIdx);
-
-                                                    double lat = Double.valueOf(latStr);
-                                                    double lon = Double.valueOf(lonStr);
-
-                                                    lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
-
-                                                    route.getTrackPoints().add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), 0, 0, null));
-
-                                                    // Calculate the length of a Track
-                                                    if (!FromPosition.isValid()) {
-                                                        FromPosition = new Coordinate(lastAcceptedCoordinate);
-                                                        FromPosition.setValid(true);
-                                                    } else {
-                                                        MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
-                                                                lastAcceptedCoordinate.getLongitude(), dist);
-                                                        distance += dist[0];
-                                                        FromPosition = new Coordinate(lastAcceptedCoordinate);
-                                                        IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
-                                                    }
-                                                }
-                                            }
-
-                                            if (IsRoute) {
-                                                final String sDistance = UnitFormatter.distanceString((float) distance);
-                                                route.setTrackLength(distance);
-                                                TrackList.getInstance().setRoutingTrack(route);
-                                                TrackListView.getInstance().notifyDataSetChanged();
-
+                                        // replace corresponding
+                                        // while (builder.length() > 0) {
+                                        // while ((line = reader.readLine()) != null) {
+                                        while (builder.length() > 0) {
+                                            builder.append(line).append("\n");
+                                            if (line.indexOf("<xls:Error ") >= 0) {
+                                                int errorIdx = line.indexOf("message=\"");
+                                                int endIdx = line.indexOf("\"", errorIdx + 9);
+                                                final String errorMessage = line.substring(errorIdx + 9, endIdx);
                                                 wd.close();
-
                                                 GL.that.RunOnGL(new IRunOnGL() {
                                                     // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
                                                     // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
                                                     @Override
                                                     public void run() {
-                                                        String msg = Translation.get("generateRouteLength") + sDistance;
-                                                        MsgBox.show(msg, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Information, null);
-                                                    }
-                                                });
-                                            } else {
-                                                wd.close();
-
-                                                GL.that.RunOnGL(new IRunOnGL() {
-                                                    // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-                                                    // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
-                                                    @Override
-                                                    public void run() {
-                                                        MsgBox.show("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
+                                                        MsgBox.show(errorMessage, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
                                                     }
                                                 });
 
                                                 return;
                                             }
 
-                                        } catch (Exception e) {
+                                            if (line.indexOf("<xls:RouteGeometry>") >= 0) // suche <xls:RouteGeometry> Block
+                                            {
+                                                RouteGeometryBlockFound = true;
+                                            }
+
+                                            int idx;
+                                            if (((idx = line.indexOf("<gml:pos>")) > 0) & RouteGeometryBlockFound) {
+                                                int seperator = line.indexOf(" ", idx + 1);
+                                                int endIdx = line.indexOf("</gml:pos>", seperator + 1);
+
+                                                String lonStr = line.substring(idx + 9, seperator);
+                                                String latStr = line.substring(seperator + 1, endIdx);
+
+                                                double lat = Double.valueOf(latStr);
+                                                double lon = Double.valueOf(lonStr);
+
+                                                lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
+
+                                                route.getTrackPoints().add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), 0, 0, null));
+
+                                                // Calculate the length of a Track
+                                                if (!FromPosition.isValid()) {
+                                                    FromPosition = new Coordinate(lastAcceptedCoordinate);
+                                                    FromPosition.setValid(true);
+                                                } else {
+                                                    MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
+                                                            lastAcceptedCoordinate.getLongitude(), dist);
+                                                    distance += dist[0];
+                                                    FromPosition = new Coordinate(lastAcceptedCoordinate);
+                                                    IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
+                                                }
+                                            }
+                                        }
+
+                                        if (IsRoute) {
+                                            final String sDistance = UnitFormatter.distanceString((float) distance);
+                                            route.setTrackLength(distance);
+                                            TrackList.getInstance().setRoutingTrack(route);
+                                            TrackListView.getInstance().notifyDataSetChanged();
+
+                                            wd.close();
+
+                                            GL.that.RunOnGL(new IRunOnGL() {
+                                                // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+                                                // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+                                                @Override
+                                                public void run() {
+                                                    String msg = Translation.get("generateRouteLength") + sDistance;
+                                                    MsgBox.show(msg, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                                                }
+                                            });
+                                        } else {
                                             wd.close();
 
                                             GL.that.RunOnGL(new IRunOnGL() {
@@ -193,9 +169,10 @@ public class OpenRouteService {
                                                     MsgBox.show("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
                                                 }
                                             });
+
+                                            return;
                                         }
 
-                                        // String page = builder.toString(); //page enthüllt komplette zurückgelieferte Web-Seite
                                     } catch (Exception e) {
                                         wd.close();
 
@@ -208,16 +185,30 @@ public class OpenRouteService {
                                             }
                                         });
                                     }
-                                    TrackList.getInstance().trackListChanged();
 
-                                }
+                                    // String page = builder.toString(); //page enthüllt komplette zurückgelieferte Web-Seite
+                                } catch (Exception e) {
+                                    wd.close();
 
-                                @Override
-                                public boolean checkCanceled() {
-                                    return false;
+                                    GL.that.RunOnGL(new IRunOnGL() {
+                                        // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+                                        // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+                                        @Override
+                                        public void run() {
+                                            MsgBox.show("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
+                                        }
+                                    });
                                 }
-                            });
-                        }
+                                TrackList.getInstance().trackListChanged();
+
+                            }
+
+                            @Override
+                            public boolean checkCanceled() {
+                                return false;
+                            }
+                        });
+                        wd.show();
                     });
 
             }

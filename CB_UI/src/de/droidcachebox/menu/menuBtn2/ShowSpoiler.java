@@ -88,7 +88,7 @@ public class ShowSpoiler extends AbstractShowAction {
     private void createContextMenu() {
         contextMenu = new Menu("SpoilerViewContextMenuTitle");
 
-        contextMenu.addMenuItem("reloadSpoiler", null, () -> importSpoiler(false).setReadyListener(() -> {
+        contextMenu.addMenuItem("reloadSpoiler", null, () -> importSpoiler(false, () -> {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {
                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -98,7 +98,7 @@ public class ShowSpoiler extends AbstractShowAction {
             }
         }));
 
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> importSpoiler(true).setReadyListener(() -> {
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> importSpoiler(true,() -> {
             // do after import
             if (GlobalCore.isSetSelectedCache()) {
                 GlobalCore.getSelectedCache().loadSpoilerRessources();
@@ -114,9 +114,8 @@ public class ShowSpoiler extends AbstractShowAction {
         });
     }
 
-
-    public CancelWaitDialog importSpoiler(boolean withLogImages) {
-        wd = CancelWaitDialog.ShowWait(Translation.get("downloadSpoiler"), new DownloadAnimation(), () -> {
+    public void importSpoiler(boolean withLogImages, CancelWaitDialog.IReadyListener readyListener) {
+        wd = new CancelWaitDialog(Translation.get("downloadSpoiler"), new DownloadAnimation(), () -> {
             // canceled
         }, new TestCancelRunnable() {
             @Override
@@ -138,7 +137,8 @@ public class ShowSpoiler extends AbstractShowAction {
                 return false;
             }
         });
-        return wd;
+        wd.setReadyListener(readyListener);
+        wd.show();
     }
 
 

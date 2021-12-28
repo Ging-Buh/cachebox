@@ -96,7 +96,7 @@ public class Trackables extends V_ListView {
 
     private boolean fetchTB(final String TBCode) {
         if (TBCode.length() > 0) {
-            wd = CancelWaitDialog.ShowWait(Translation.get("Search"), new DownloadAnimation(),
+            wd = new CancelWaitDialog(Translation.get("Search"), new DownloadAnimation(),
                     () -> {
                         // ICancelListener
                     },
@@ -121,13 +121,14 @@ public class Trackables extends V_ListView {
                             return false;
                         }
                     });
+            wd.show();
         }
         return true;
     }
 
     // reload inventory
     public void refreshTbList() {
-        wd = CancelWaitDialog.ShowWait(Translation.get("RefreshInventory"), new DownloadAnimation(),
+        wd = new CancelWaitDialog(Translation.get("RefreshInventory"), new DownloadAnimation(),
                 () -> {
                     // ICancelListener
                 },
@@ -147,10 +148,11 @@ public class Trackables extends V_ListView {
                         return false;
                     }
                 });
+        wd.show();
     }
 
     private void logTBs(String title, final int LogTypeId, final String LogText) {
-        wd = CancelWaitDialog.ShowWait(title, new DownloadAnimation(), () -> {
+        wd = new CancelWaitDialog(title, new DownloadAnimation(), () -> {
 
         }, new TestCancelRunnable() {
 
@@ -169,6 +171,7 @@ public class Trackables extends V_ListView {
                 return false;
             }
         });
+        wd.show();
     }
 
     private void searchTB() {

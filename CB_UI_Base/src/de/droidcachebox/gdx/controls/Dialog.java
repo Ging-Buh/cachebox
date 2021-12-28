@@ -104,7 +104,8 @@ public abstract class Dialog extends CB_View_Base {
         return hasButtons ? UiSizes.getInstance().getButtonHeight() + margin : calcHeaderHeight();
     }
 
-    public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember) {
+    public static Size calcMsgBoxSize(String text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember) {
+        if (text == null) text = "";
         if (margin <= 0)
             margin = UiSizes.getInstance().getMargin();
 
@@ -114,7 +115,7 @@ public abstract class Dialog extends CB_View_Base {
 
         float MsgWidth = (Width * 0.95f) - 5 - UiSizes.getInstance().getButtonHeight();
 
-        float MeasuredTextHeight = Fonts.measureWrapped(Text, MsgWidth).height + (margin * 4);
+        float MeasuredTextHeight = Fonts.measureWrapped(text, MsgWidth).height + (margin * 4);
 
         float Height = (hasIcon ? Math.max(MeasuredTextHeight, UiSizes.getInstance().getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
 

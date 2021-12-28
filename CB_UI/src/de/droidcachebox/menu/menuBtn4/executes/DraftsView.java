@@ -610,10 +610,9 @@ public class DraftsView extends V_ListView {
         }
 
         private void uploadDraftOrLog(final Draft draft, final boolean isLog) {
-            wd = CancelWaitDialog.ShowWait("Upload Log", new DownloadAnimation(), () -> {
+            wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), () -> {
 
             }, new TestCancelRunnable() {
-
                 @Override
                 public void run() {
 
@@ -669,7 +668,7 @@ public class DraftsView extends V_ListView {
                     return false;
                 }
             });
-
+            wd.show();
         }
 
         private void selectCacheFromDraft() {
