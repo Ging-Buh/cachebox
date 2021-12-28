@@ -12,8 +12,8 @@ import de.droidcachebox.utils.ProgressChangedEvent;
 public class ImporterProgress {
 
     private final ArrayList<Step> allSteps;
+    private final ProgressChangedEvent progressChangedEvent;
     private float overallWeight;
-    private ProgressChangedEvent progressChangedEvent;
 
     public ImporterProgress(ProgressChangedEvent progressChangedEvent) {
         this.progressChangedEvent = progressChangedEvent;
@@ -40,7 +40,7 @@ public class ImporterProgress {
                 if (done) {
                     step.currentValue = step.finalValue;
                 } else {
-                    step.currentValue = step.currentValue + step.incrementValue;
+                    step.currentValue = step.currentValue + 1f;
                 }
                 doneTillNowPercent = calculateDoneTillNowPercent();
                 break;
@@ -67,8 +67,10 @@ public class ImporterProgress {
 
     protected int calculateDoneTillNowPercent() {
         float progress = 0.0f;
+        float f;
         for (Step step : allSteps) {
-            progress = progress + (step.weight / overallWeight) * (step.currentValue / step.finalValue);
+            f = (step.weight / overallWeight) * (step.currentValue / step.finalValue);
+            progress = progress + f;
         }
         return (int) (100 * progress);
     }
@@ -78,7 +80,6 @@ public class ImporterProgress {
      */
     public static class Step {
         public String id; // identify the step
-        public float incrementValue; // add per increment call
         public float finalValue; // the final value when the step is done
         public float currentValue; // at finalValue this step is completed (done, ready)
         public float weight; // how much makes this step from all steps (what the programmer expects, in his scale units)
@@ -87,14 +88,13 @@ public class ImporterProgress {
             this.weight = weight;
             this.id = id;
             this.currentValue = 0f;
+            finalValue = 1f;
         }
 
         public void setFinalValue(int finalValue) {
             if (finalValue == 0) {
-                this.incrementValue = 1f; // increment only once
                 this.finalValue = 1f;
             } else {
-                this.incrementValue = 1f / finalValue;
                 this.finalValue = finalValue;
             }
         }

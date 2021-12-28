@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.activities;
+package de.droidcachebox.menu.menuBtn1.contextmenus.executes;
 
 import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
 import static de.droidcachebox.core.GroundspeakAPI.Query;
@@ -42,6 +42,7 @@ import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.activities.SearchCoordinates;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_CheckBox;

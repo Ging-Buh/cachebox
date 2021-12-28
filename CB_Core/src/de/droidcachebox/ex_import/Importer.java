@@ -204,11 +204,11 @@ public class Importer {
             sql = sql + (" where " + where);
         CoreCursor reader = CBDB.getInstance().rawQuery(sql, null);
 
-        int cnt = -1;
+        int cnt = 0;
         int numCaches = reader.getCount();
         importerProgress.setStepFinalValue("importImages", numCaches);
 
-        if (reader.getCount() > 0) {
+        if (numCaches > 0) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
 

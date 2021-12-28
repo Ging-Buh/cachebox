@@ -1,4 +1,4 @@
-package de.droidcachebox.gdx.activities;
+package de.droidcachebox.menu.menuBtn1.contextmenus.executes;
 
 import static de.droidcachebox.dataclasses.Cache.IS_FULL;
 
@@ -35,6 +35,7 @@ import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_CheckBox;

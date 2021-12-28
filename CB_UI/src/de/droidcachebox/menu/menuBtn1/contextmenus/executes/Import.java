@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.droidcachebox.gdx.activities;
+package de.droidcachebox.menu.menuBtn1.contextmenus.executes;
 
 import static de.droidcachebox.core.GroundspeakAPI.APIError;
 import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
@@ -50,6 +50,7 @@ import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -825,6 +826,7 @@ public class Import extends ActivityBase {
     }
 
     private void downloadAll(ImporterProgress importerProgress) {
+        Importer importer = null;
         if (checkImportPQFromGC.isChecked()) {
             if (PqList != null && PqList.size() > 0) {
                 // first step "importGC" : import pocket-queries from GroundSpeak
@@ -863,51 +865,52 @@ public class Import extends ActivityBase {
         }
         if (canceled.get()) return;
 
-        Importer importer = new Importer();
-
         importAnimation.setAnimationType(AnimationType.Work);
-        String pqFolderName = Settings.PocketQueryFolder.getValue();
-        AbstractFile pqFolder = FileFactory.createFile(pqFolderName);
-        if (checkBoxImportGPX.isChecked() && pqFolder.exists()) {
-            System.gc();
-            long startTime = System.currentTimeMillis();
-            CBDB.getInstance().beginTransaction();
-            CBDB.getInstance().cacheList.clear();
-            try {
-                importer.importGpx(pqFolderName, importerProgress, canceled::get);
-                CBDB.getInstance().setTransactionSuccessful();
-            } catch (Exception exc) {
-                if (!canceled.get()) Log.err(sClass, "importGpx", exc);
-                importerProgress.changeMsg("", "");
-            }
-            CBDB.getInstance().endTransaction();
-            Log.debug(sClass, "Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
-            System.gc();
-
-            // delete all files and directories from import folder, normally the PocketQuery subfolder
-            AbstractFile[] fileList = pqFolder.listFiles();
-            for (AbstractFile tmp : fileList) {
-                if (tmp.isDirectory()) {
-                    ArrayList<AbstractFile> folderContent = FileIO.recursiveDirectoryReader(tmp, new ArrayList<>());
-                    for (AbstractFile tmp2 : folderContent) {
-                        try {
-                            tmp2.delete();
-                        } catch (IOException e) {
-                            Log.err(sClass, "Delete " + tmp2.getAbsolutePath(), e);
-                        }
-                    }
-
-                }
+        if (checkBoxImportGPX.isChecked()) {
+            String pqFolderName = Settings.PocketQueryFolder.getValue();
+            AbstractFile pqFolder = FileFactory.createFile(pqFolderName);
+            if (pqFolder.exists()) {
+                System.gc();
+                long startTime = System.currentTimeMillis();
+                CBDB.getInstance().beginTransaction();
+                CBDB.getInstance().cacheList.clear();
                 try {
-                    tmp.delete();
-                    if (tmp.exists()) {
-                        Log.err(sClass, "No deletion " + tmp.getAbsolutePath());
-                    }
-                } catch (IOException e) {
-                    Log.err(sClass, "Delete " + tmp.getAbsolutePath(), e);
+                    if (importer == null) importer = new Importer();
+                    importer.importGpx(pqFolderName, importerProgress, canceled::get);
+                    CBDB.getInstance().setTransactionSuccessful();
+                } catch (Exception exc) {
+                    if (!canceled.get()) Log.err(sClass, "importGpx", exc);
+                    importerProgress.changeMsg("", "");
                 }
-            }
+                CBDB.getInstance().endTransaction();
+                Log.debug(sClass, "Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
+                System.gc();
 
+                // delete all files and directories from import folder, normally the PocketQuery subfolder
+                AbstractFile[] fileList = pqFolder.listFiles();
+                for (AbstractFile tmp : fileList) {
+                    if (tmp.isDirectory()) {
+                        ArrayList<AbstractFile> folderContent = FileIO.recursiveDirectoryReader(tmp, new ArrayList<>());
+                        for (AbstractFile tmp2 : folderContent) {
+                            try {
+                                tmp2.delete();
+                            } catch (IOException e) {
+                                Log.err(sClass, "Delete " + tmp2.getAbsolutePath(), e);
+                            }
+                        }
+
+                    }
+                    try {
+                        tmp.delete();
+                        if (tmp.exists()) {
+                            Log.err(sClass, "No deletion " + tmp.getAbsolutePath());
+                        }
+                    } catch (IOException e) {
+                        Log.err(sClass, "Delete " + tmp.getAbsolutePath(), e);
+                    }
+                }
+
+            }
         }
         if (canceled.get()) return;
 
@@ -915,6 +918,7 @@ public class Import extends ActivityBase {
             importAnimation.setAnimationType(AnimationType.Download);
             CBDB.getInstance().beginTransaction();
             try {
+                if (importer == null) importer = new Importer();
                 importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), importerProgress, canceled::get);
                 CBDB.getInstance().setTransactionSuccessful();
             } catch (Exception exc) {
@@ -929,6 +933,7 @@ public class Import extends ActivityBase {
 
         if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
             importAnimation.setAnimationType(AnimationType.Download);
+            if (importer == null) importer = new Importer();
             importer.importImages(importerProgress, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()));
             importAnimation.setAnimationType(AnimationType.Work);
         }

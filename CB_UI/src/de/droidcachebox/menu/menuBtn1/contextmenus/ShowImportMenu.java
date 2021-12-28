@@ -7,12 +7,12 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.activities.Import;
-import de.droidcachebox.gdx.activities.ImportGCPosition;
-import de.droidcachebox.gdx.activities.Import_GSAK;
-import de.droidcachebox.gdx.activities.SearchOverNameOwnerGcCode;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.menuBtn1.contextmenus.executes.ExportGPX;
+import de.droidcachebox.menu.menuBtn1.contextmenus.executes.Import;
+import de.droidcachebox.menu.menuBtn1.contextmenus.executes.ImportGCPosition;
+import de.droidcachebox.menu.menuBtn1.contextmenus.executes.Import_GSAK;
+import de.droidcachebox.menu.menuBtn1.contextmenus.executes.SearchOverNameOwnerGcCode;
 import de.droidcachebox.menu.menuBtn1.contextmenus.executes.UpdateCachesState;
 
 public class ShowImportMenu extends AbstractShowAction {

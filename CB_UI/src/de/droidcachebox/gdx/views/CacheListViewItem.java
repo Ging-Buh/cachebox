@@ -142,8 +142,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         float result[] = new float[4];
         try {
             MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), coordinateOfFinal.getLatitude(), coordinateOfFinal.getLongitude(), result);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         double cacheBearing = -(result[2] - heading);
         mCache.cachedDistance = result[0];
