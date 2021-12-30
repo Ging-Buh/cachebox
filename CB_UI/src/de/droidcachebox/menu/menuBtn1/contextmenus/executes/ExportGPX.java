@@ -12,6 +12,7 @@ import de.droidcachebox.core.GpxSerializer;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
+import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
@@ -19,7 +20,7 @@ import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.RunnableReadyHandler;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 public class ExportGPX {
@@ -61,8 +62,7 @@ public class ExportGPX {
         final GpxSerializer gpxSerializer = new GpxSerializer();
         try {
             final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(exportFile.getFileOutputStream(), StandardCharsets.UTF_8));
-            // Show with without Animation
-            progressDialog = new ProgressDialog("export", null, new RunnableReadyHandler() {
+            RunAndReady runAndReady = new RunAndReady() {
 
                 @Override
                 public void run() {
@@ -75,11 +75,6 @@ public class ExportGPX {
                                 });
                     } catch (IOException ignored) {
                     }
-                }
-
-                @Override
-                public boolean checkCanceled() {
-                    return isCanceled.get();
                 }
 
                 @Override
@@ -106,7 +101,9 @@ public class ExportGPX {
                     }
 
                 }
-            });
+            };
+
+            progressDialog = new ProgressDialog("export", new WorkAnimation(), runAndReady);
 
             progressDialog.setCancelListener(() -> isCanceled.set(true));
 

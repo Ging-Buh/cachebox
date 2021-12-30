@@ -45,17 +45,17 @@ public class Importer {
     /**
      * imports all gpx and zipped gpx in this path.
      */
-    public void importGpx(String fileOrFolderName, ImporterProgress importerProgress, TestCancel testCancel) throws Exception {
+    public void importGpx(String fileOrFolderName, ImportProgress importProgress, TestCancel testCancel) throws Exception {
         String stepID = "ExtractZip";
         GPXFileImporter.CacheCount = 0;
         GPXFileImporter.LogCount = 0;
         AbstractFile fileOrFolder = FileFactory.createFile(fileOrFolderName);
         if (fileOrFolder.isDirectory()) {
             ArrayList<AbstractFile> zipFiles = FileIO.recursiveDirectoryReader(fileOrFolder, new ArrayList<>(), "zip", false);
-            importerProgress.setStepFinalValue(stepID, zipFiles.size());
+            importProgress.setStepFinalValue(stepID, zipFiles.size());
             ArrayList<AbstractFile> files = new ArrayList<>();
             for (AbstractFile tmpZip : zipFiles) {
-                importerProgress.incrementProgress(stepID, "", false);
+                importProgress.incrementStep(stepID, "");
                 if (testCancel == null || !testCancel.checkCanceled()) {
                     try {
                         files.add(tmpZip);
@@ -73,16 +73,16 @@ public class Importer {
                 }
                 return;
             }
-            importerProgress.incrementProgress(stepID, "", true);
+            importProgress.finishStep(stepID, "");
         }
 
         stepID = "AnalyseGPX";
         AbstractFile[] filesToLoad = getFilesToLoad(fileOrFolderName);
-        importerProgress.setStepFinalValue(stepID, filesToLoad.length);
+        importProgress.setStepFinalValue(stepID, filesToLoad.length);
         HashMap<String, Integer> numberOfWaypoints = new HashMap<>();
         for (AbstractFile fileToLoad : filesToLoad) {
             int numberOfWaypointsInFile = 0;
-            importerProgress.incrementProgress(stepID, fileToLoad.getName(), false);
+            importProgress.incrementStep(stepID, fileToLoad.getName());
             BufferedReader br;
             String strLine;
             try {
@@ -96,30 +96,30 @@ public class Importer {
             }
             numberOfWaypoints.put(fileToLoad.getAbsolutePath(), numberOfWaypointsInFile);
         }
-        importerProgress.incrementProgress(stepID, "", true);
+        importProgress.finishStep(stepID, "");
 
         stepID = "ImportGPX";
         int totalNumberOfWaypoints = 0;
         for (Integer count : numberOfWaypoints.values()) {
             totalNumberOfWaypoints = totalNumberOfWaypoints + count;
         }
-        importerProgress.setStepFinalValue(stepID, filesToLoad.length + totalNumberOfWaypoints);
+        importProgress.setStepFinalValue(stepID, filesToLoad.length + totalNumberOfWaypoints);
         CacheInfoList.indexDB();
         for (AbstractFile fileToLoad : filesToLoad) {
-            importerProgress.incrementProgress(stepID, "Import: " + fileToLoad.getName(), false);
-            GPXFileImporter importer = new GPXFileImporter(fileToLoad, importerProgress);
+            importProgress.incrementStep(stepID, "Import: " + fileToLoad.getName());
+            GPXFileImporter importer = new GPXFileImporter(fileToLoad, importProgress);
             try {
                 importer.doImport(numberOfWaypoints.get(fileToLoad.getAbsolutePath()), testCancel);
             } catch (Exception sex) {
                 if (testCancel != null && testCancel.checkCanceled()) {
-                    throw new Exception("canceled");
+                    throw new Exception(TestCancel.canceled);
                 } else {
                     Log.err(sClass, "importer.doImport => " + fileToLoad.getAbsolutePath(), sex);
                     throw sex;
                 }
             }
         }
-        importerProgress.incrementProgress(stepID, "", true);
+        importProgress.finishStep(stepID, "");
 
         CacheDAO.getInstance().updateCacheCountForGPXFilenames();
         CategoryDAO.getInstance().deleteEmptyCategories();
@@ -128,43 +128,43 @@ public class Importer {
 
     }
 
-    public void importGcVote(String whereClause, ImporterProgress importerProgress, TestCancel testCancel) throws Exception {
+    public void importGcVote(String whereClause, ImportProgress importProgress, TestCancel testCancel) throws Exception {
         String stepID = "sendGcVote";
         GCVoteDAO gcVoteDAO = new GCVoteDAO();
         int i;
         if (AllSettings.GcVotePassword.getValue().length() > 0) {
             ArrayList<GCVoteCacheInfo> pendingVotes = gcVoteDAO.getPendingGCVotes();
-            importerProgress.setStepFinalValue(stepID, pendingVotes.size());
+            importProgress.setStepFinalValue(stepID, pendingVotes.size());
             i = 0;
             for (GCVoteCacheInfo info : pendingVotes) {
                 i++;
-                importerProgress.incrementProgress(stepID, "Sending Votes (" + i + " / " + pendingVotes.size() + ")", false);
+                importProgress.incrementStep(stepID, "Sending Votes (" + i + " / " + pendingVotes.size() + ")");
                 if (testCancel != null && testCancel.checkCanceled())
-                    throw new Exception("canceled");
+                    throw new Exception(TestCancel.canceled);
                 if (GCVote.sendVote(AllSettings.GcLogin.getValue(), AllSettings.GcVotePassword.getValue(), info.getVote(), info.getUrl(), info.getGcCode())) {
                     gcVoteDAO.updatePendingVote(info.getId());
                 }
             }
-            importerProgress.incrementProgress(stepID, "No Votes to send.", true);
+            importProgress.finishStep(stepID, "No Votes to send.");
         }
 
         stepID = "importGcVote";
         int count = gcVoteDAO.getCacheCountToGetVotesFor(whereClause);
-        importerProgress.setStepFinalValue(stepID, count);
+        importProgress.setStepFinalValue(stepID, count);
         int packageSize = 100;
         int offset = 0;
         int failCount = 0;
         i = 0;
         while (offset < count) {
             if (testCancel != null && testCancel.checkCanceled())
-                throw new Exception("canceled");
+                throw new Exception(TestCancel.canceled);
             ArrayList<GCVoteCacheInfo> gcVotePackage = gcVoteDAO.getGCVotePackage(whereClause, packageSize, i);
             ArrayList<String> requests = new ArrayList<>();
             HashMap<String, Boolean> resetVote = new HashMap<>();
             HashMap<String, Long> idLookup = new HashMap<>();
             for (GCVoteCacheInfo gcVoteCacheInfo : gcVotePackage) {
                 if (!gcVoteCacheInfo.getGcCode().toLowerCase(Locale.getDefault()).startsWith("gc")) {
-                    importerProgress.incrementProgress(stepID, "Not a GC.com Cache", false);
+                    importProgress.incrementStep(stepID, "Not a GC.com Cache");
                     continue;
                 }
                 requests.add(gcVoteCacheInfo.getGcCode());
@@ -174,11 +174,11 @@ public class Importer {
             ArrayList<RatingData> ratingData = GCVote.getRating(AllSettings.GcLogin.getValue(), AllSettings.GcVotePassword.getValue(), requests);
             if (ratingData == null || ratingData.isEmpty()) {
                 failCount += packageSize;
-                importerProgress.incrementProgress(stepID, "Query failed...", false);
+                importProgress.incrementStep(stepID, "Query failed...");
             } else {
                 for (RatingData data : ratingData) {
                     if (testCancel != null && testCancel.checkCanceled())
-                        throw new Exception("canceled");
+                        throw new Exception(TestCancel.canceled);
                     if (idLookup.containsKey(data.wayPoint)) {
                         if (resetVote.containsKey(data.wayPoint)) {
                             gcVoteDAO.updateRatingAndVote(idLookup.get(data.wayPoint), data.rating, data.vote);
@@ -187,38 +187,33 @@ public class Importer {
                         }
                     }
                     i++;
-                    importerProgress.incrementProgress(stepID, "Writing Ratings (" + (i + failCount) + " / " + count + ")", false);
+                    importProgress.incrementStep(stepID, "Writing Ratings (" + (i + failCount) + " / " + count + ")");
                 }
             }
             offset = offset + packageSize;
         }
-        importerProgress.incrementProgress(stepID, "", true);
+        importProgress.finishStep(stepID, "");
     }
 
-    public void importImages(ImporterProgress importerProgress, boolean importImages, boolean importSpoiler, String where) {
-
-        int ret;
-
+    public void importImages(ImportProgress importProgress, TestCancel testCancel, boolean importImages, boolean importSpoiler, String where) {
         String sql = "select Id, Description, Name, GcCode, Url, ImagesUpdated, DescriptionImagesUpdated from Caches";
         if (where.length() > 0)
             sql = sql + (" where " + where);
         CoreCursor reader = CBDB.getInstance().rawQuery(sql, null);
-
-        int cnt = 0;
-        int numCaches = reader.getCount();
-        importerProgress.setStepFinalValue("importImages", numCaches);
-
-        if (numCaches > 0) {
+        int importCount = 0;
+        int numberOfGeoCaches = reader.getCount();
+        importProgress.setStepFinalValue("importImages", numberOfGeoCaches);
+        if (numberOfGeoCaches > 0) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
-
-                cnt++;
+                if (testCancel != null && testCancel.checkCanceled()) break;
+                importCount++;
                 try {
                     long id = reader.getLong(0);
                     String gcCode = reader.getString(3);
 
                     if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) {
-                        importerProgress.incrementProgress("importImages", "Importing Images for " + gcCode + " (" + cnt + " / " + numCaches + ")", false);
+                        importProgress.incrementStep("importImages", "Importing Images for " + gcCode + " (" + importCount + " / " + numberOfGeoCaches + ")");
 
                         String description = reader.getString(1);
                         String uri = reader.getString(4);
@@ -241,8 +236,10 @@ public class Importer {
                                 additionalImagesUpdated = reader.getInt(5) != 0;
                             } else additionalImagesUpdated = false;
                         }
-                        ret = DescriptionImageGrabber.grabImagesSelectedByCache(importerProgress, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, description, uri, false);
-                        if (ret < 0) break;
+
+                        if (DescriptionImageGrabber.grabImagesSelectedByCache(importProgress, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, description, uri, false) < 0) {
+                            break;
+                        }
                     }
                 } catch (Exception e) {
                     Log.err(sClass, "importImages", e);

@@ -57,8 +57,8 @@ import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.SQLiteClass;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.ex_import.GPXFileImporter;
+import de.droidcachebox.ex_import.ImportProgress;
 import de.droidcachebox.ex_import.Importer;
-import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
@@ -89,8 +89,8 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.IChanged;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.StringReturner;
-import de.droidcachebox.utils.TestCancelRunnable;
 import de.droidcachebox.utils.log.Log;
 
 public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, LocationListener {
@@ -117,7 +117,6 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
     private android.location.GpsStatus.Listener gpsStatusListener;
     private boolean lostCheck = false;
     private boolean askForLocationPermission;
-    private CancelWaitDialog wd;
 
     AndroidUIBaseMethods(Main main) {
         androidApplication = main;
@@ -691,59 +690,42 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
     }
 
     private void importGPXFile(final String externalRequestGpxPath) {
+        Date ImportStart = new Date();
         TimerTask gpxImportTask = new TimerTask() {
             @Override
             public void run() {
                 Log.info(sClass, "ImportGPXFile");
-                mainActivity.runOnUiThread(new Runnable() {
+                mainActivity.runOnUiThread(() -> new CancelWaitDialog(Translation.get("ImportGPX"), new WorkAnimation(), new RunAndReady() {
+                    @Override
+                    public void ready(boolean isCanceled) {
+                        CacheListChangedListeners.getInstance().cacheListChanged();
+                        FilterProperties props = FilterInstances.getLastFilter();
+                        EditFilterSettings.applyFilter(props);
+
+                        long ImportZeit = new Date().getTime() - ImportStart.getTime();
+                        String msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
+                        Log.info(sClass, msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
+                        GL.that.toast(msg);
+                    }
+
                     @Override
                     public void run() {
-                        wd = new CancelWaitDialog(Translation.get("ImportGPX"),
-                                new WorkAnimation(),
-                                () -> {
-                                    if (null != wd)
-                                        wd.close();
-                                },
-                                new TestCancelRunnable() {
-                                    @Override
-                                    public void run() {
-                                        Log.info(sClass, "Import GPXFile from " + externalRequestGpxPath + " started");
-                                        Date ImportStart = new Date();
+                        Log.info(sClass, "Import GPXFile from " + externalRequestGpxPath + " started");
 
-                                        CBDB.getInstance().beginTransaction();
-                                        try {
-                                            Importer importer = new Importer();
-                                            importer.importGpx(externalRequestGpxPath,
-                                                    new ImporterProgress((message, progressMessage, progress) -> {
-                                                        // dummy: there is no UI to show the progress
-                                                    }),
-                                                    null);
-                                        } catch (Exception ignored) {
-                                        }
-                                        CBDB.getInstance().setTransactionSuccessful();
-                                        CBDB.getInstance().endTransaction();
-
-                                        wd.close();
-                                        CacheListChangedListeners.getInstance().cacheListChanged();
-                                        FilterProperties props = FilterInstances.getLastFilter();
-                                        EditFilterSettings.applyFilter(props);
-
-                                        long ImportZeit = new Date().getTime() - ImportStart.getTime();
-                                        String msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
-                                        Log.info(sClass, msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
-                                        GL.that.toast(msg);
-                                    }
-
-                                    @Override
-                                    public boolean checkCanceled() {
-                                        return false;
-                                    }
-                                });
-
-                        wd.show();
+                        CBDB.getInstance().beginTransaction();
+                        try {
+                            Importer importer = new Importer();
+                            importer.importGpx(externalRequestGpxPath,
+                                    new ImportProgress((message, progressMessage, progress) -> {
+                                        // dummy: there is no UI to show the progress
+                                    }),
+                                    null);
+                        } catch (Exception ignored) {
+                        }
+                        CBDB.getInstance().setTransactionSuccessful();
+                        CBDB.getInstance().endTransaction();
                     }
-                });
-
+                }).show());
             }
         };
 

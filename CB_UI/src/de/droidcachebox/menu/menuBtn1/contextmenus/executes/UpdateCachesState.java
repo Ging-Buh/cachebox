@@ -8,8 +8,6 @@ import static de.droidcachebox.core.GroundspeakAPI.updateStatusOfGeoCaches;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
@@ -26,7 +24,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunnableReadyHandler;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 public class UpdateCachesState {
@@ -44,102 +42,85 @@ public class UpdateCachesState {
         Log.debug("ImportMenuTitle", "chkAPiLogInWithWaitDialog");
         GlobalCore.chkAPiLogInWithWaitDialog(isAccessTokenInvalid -> {
             Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
-            if (!isAccessTokenInvalid) {
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        GL.that.postAsync(() -> {
-                            progressDialog = new ProgressDialog(Translation.get("chkState"),
-                                    new DownloadAnimation(),
-                                    new RunnableReadyHandler() {
-                                        final static int blockSize = 50; // API 1.0 has a limit of 50, handled in GroundSpeakAPI but want to write to DB after BlockSize fetched
+            progressDialog = new ProgressDialog(Translation.get("chkState"), new DownloadAnimation(), new RunAndReady() {
+                final static int blockSize = 50; // API 1.0 has a limit of 50, handled in GroundSpeakAPI but want to write to DB after BlockSize fetched
 
-                                        @Override
-                                        public void run() {
-                                            isCanceled.set(false);
-                                            boolean isInterrupted = false;
+                @Override
+                public void run() {
+                    isCanceled.set(false);
 
-                                            ArrayList<Cache> chkList = new ArrayList<>();
-                                            synchronized (CBDB.getInstance().cacheList) {
-                                                if (CBDB.getInstance().cacheList == null || CBDB.getInstance().cacheList.size() == 0)
-                                                    return;
-                                                changedCount = 0;
-                                                for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
-                                                    chkList.add(CBDB.getInstance().cacheList.get(i));
-                                                }
-                                            }
-                                            float progressIncrement = 100.0f / ((float) chkList.size() / blockSize); // 100% divided by number of blocks (repeats)
-                                            // divide into blocks
-                                            int skip = 0;
-                                            result = 0;
-                                            ArrayList<Cache> caches = new ArrayList<>();
-                                            float progress = 0;
-                                            CacheDAO dao = CacheDAO.getInstance();
-
-                                            do {
-                                                if (Thread.interrupted())
-                                                    isInterrupted = true;
-                                                caches.clear();
-                                                if (!isInterrupted) {
-                                                    if (chkList.size() == 0) break;
-                                                    for (int i = skip; i < skip + blockSize && i < chkList.size(); i++) {
-                                                        caches.add(chkList.get(i));
-                                                    }
-                                                    skip = skip + blockSize;
-                                                    CBDB.getInstance().beginTransaction();
-                                                    for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
-                                                        if (dao.updateDatabaseCacheState(ci.cache))
-                                                            changedCount++;
-                                                    }
-                                                    CBDB.getInstance().setTransactionSuccessful();
-                                                    CBDB.getInstance().endTransaction();
-                                                    if (APIError != OK) {
-                                                        GL.that.toast(LastAPIError);
-                                                        break;
-                                                    }
-                                                }
-
-                                                progress = progress + progressIncrement;
-                                                progressDialog.setProgress("", "", (int) progress);
-
-                                            } while (skip < chkList.size() && !isInterrupted);
-
-                                            progressDialog.close();
-
-                                        }
-
-                                        @Override
-                                        public boolean checkCanceled() {
-                                            return isCanceled.get();
-                                        }
-
-                                        @Override
-                                        public void ready(boolean canceled) {
-                                            Log.debug(sClass, "chkState ready");
-                                            String sCanceled = canceled ? Translation.get("isCanceld") + br : "";
-                                            if (result != -1) {
-                                                // Reload result from DB
-                                                synchronized (CBDB.getInstance().cacheList) {
-                                                    String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
-                                                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
-                                                }
-                                                CacheListChangedListeners.getInstance().cacheListChanged();
-                                                synchronized (CBDB.getInstance().cacheList) {
-                                                    MsgBox.show(sCanceled + Translation.get("CachesUpdated") + " " + changedCount + "/" + CBDB.getInstance().cacheList.size(),
-                                                            Translation.get("chkState"),
-                                                            MsgBoxIcon.None);
-                                                }
-
-                                            }
-                                        }
-                                    });
-
-                            progressDialog.setCancelListener(() -> isCanceled.set(true));
-
-                            GL.that.showDialog(progressDialog);
-                        });
+                    ArrayList<Cache> chkList = new ArrayList<>();
+                    synchronized (CBDB.getInstance().cacheList) {
+                        if (CBDB.getInstance().cacheList == null || CBDB.getInstance().cacheList.size() == 0)
+                            return;
+                        changedCount = 0;
+                        for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
+                            chkList.add(CBDB.getInstance().cacheList.get(i));
+                        }
                     }
-                }, 100);
+                    float progressIncrement = 100.0f / ((float) chkList.size() / blockSize); // 100% divided by number of blocks (repeats)
+                    // divide into blocks
+                    int skip = 0;
+                    result = 0;
+                    ArrayList<Cache> caches = new ArrayList<>();
+                    float progress = 0;
+                    CacheDAO dao = CacheDAO.getInstance();
+
+                    do {
+                        caches.clear();
+                        if (chkList.size() == 0) break;
+                        for (int i = skip; i < skip + blockSize && i < chkList.size(); i++) {
+                            caches.add(chkList.get(i));
+                        }
+                        skip = skip + blockSize;
+                        CBDB.getInstance().beginTransaction();
+                        for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
+                            if (dao.updateDatabaseCacheState(ci.cache))
+                                changedCount++;
+                        }
+                        CBDB.getInstance().setTransactionSuccessful();
+                        CBDB.getInstance().endTransaction();
+                        if (APIError != OK) {
+                            GL.that.toast(LastAPIError);
+                            break;
+                        }
+
+                        progress = progress + progressIncrement;
+                        progressDialog.setProgress("", "", (int) progress);
+
+                    } while (skip < chkList.size() && !isCanceled.get());
+
+                    progressDialog.close();
+
+                }
+
+                @Override
+                public void ready(boolean canceled) {
+                    Log.debug(sClass, "chkState ready");
+                    String sCanceled = canceled ? Translation.get("isCanceld") + br : "";
+                    if (result != -1) {
+                        // Reload result from DB
+                        synchronized (CBDB.getInstance().cacheList) {
+                            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
+                            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                        }
+                        CacheListChangedListeners.getInstance().cacheListChanged();
+                        synchronized (CBDB.getInstance().cacheList) {
+                            MsgBox.show(sCanceled + Translation.get("CachesUpdated") + " " + changedCount + "/" + CBDB.getInstance().cacheList.size(),
+                                    Translation.get("chkState"),
+                                    MsgBoxIcon.None);
+                        }
+
+                    }
+                }
+            });
+
+            progressDialog.setCancelListener(() -> isCanceled.set(true));
+
+            if (!isAccessTokenInvalid) {
+                GL.that.postAsync(() -> {
+                    GL.that.showDialog(progressDialog);
+                });
             }
         });
     }

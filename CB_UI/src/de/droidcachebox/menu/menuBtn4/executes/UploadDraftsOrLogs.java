@@ -8,6 +8,7 @@ import de.droidcachebox.dataclasses.Draft;
 import de.droidcachebox.dataclasses.Drafts;
 import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
@@ -15,7 +16,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.menu.menuBtn2.executes.Logs;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunnableReadyHandler;
+import de.droidcachebox.utils.RunAndReady;
 
 public class UploadDraftsOrLogs {
     private final boolean threadCancel = false;
@@ -29,7 +30,7 @@ public class UploadDraftsOrLogs {
     public void upload(boolean isLog) {
         final AtomicBoolean cancel = new AtomicBoolean(false);
 
-        final RunnableReadyHandler uploadDrafts = new RunnableReadyHandler() {
+        final RunAndReady uploadDrafts = new RunAndReady() {
 
             @Override
             public void run() {
@@ -103,13 +104,8 @@ public class UploadDraftsOrLogs {
             }
 
             @Override
-            public boolean checkCanceled() {
-                return cancel.get();
-            }
-
-            @Override
-            public void ready(boolean canceld) {
-                if (!canceld) {
+            public void ready(boolean canceled) {
+                if (!canceled) {
                     if (uploadMeldung.length() == 0) {
                         MsgBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MsgBoxIcon.GC_Live);
                     } else {
@@ -124,7 +120,7 @@ public class UploadDraftsOrLogs {
         // ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
 
         GL.that.RunOnGL(() -> {
-            progressDialog = new ProgressDialog("uploadDrafts", null, uploadDrafts);
+            progressDialog = new ProgressDialog("uploadDrafts", new DownloadAnimation(), uploadDrafts);
             progressDialog.setCancelListener(() -> cancel.set(true));
             GL.that.showDialog(progressDialog);
         });

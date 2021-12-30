@@ -53,7 +53,7 @@ import de.droidcachebox.solver.SolverCacheInterface;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 /**
@@ -231,7 +231,12 @@ public class GlobalCore implements SolverCacheInterface {
         }
 
         if (isAccessTokenInvalid()) {
-            new CancelWaitDialog("chk API Key", new DownloadAnimation(), null, new TestCancelRunnable() {
+            new CancelWaitDialog("chk API Key", new DownloadAnimation(), new RunAndReady() {
+                @Override
+                public void ready(boolean isCanceled) {
+
+                }
+
                 @Override
                 public void run() {
                     handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
@@ -243,12 +248,7 @@ public class GlobalCore implements SolverCacheInterface {
                             handler.checkReady(isAccessTokenInvalid());
                         }
                     };
-                    ti.schedule(task, 300);
-                }
-
-                @Override
-                public boolean checkCanceled() {
-                    return false;
+                    ti.schedule(task, 3000);
                 }
             }).show();
         } else {

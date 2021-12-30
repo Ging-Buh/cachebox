@@ -145,7 +145,7 @@ public class DesktopUIBaseMethods implements PlatformUIBase.UIBaseMethods {
     @Override
     public void getApiKey() {
         // Android : GetApiAuth();
-        (new GcApiLogin()).RunRequest();
+        (new GcApiLogin()).runRequest();
     }
 
     @Override

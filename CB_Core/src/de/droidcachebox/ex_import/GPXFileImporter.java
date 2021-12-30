@@ -71,7 +71,7 @@ public class GPXFileImporter {
 
     private final AbstractFile mGpxAbstractFile;
     private final String mDisplayFilename;
-    private final ImporterProgress importerProgress;
+    private final ImportProgress importProgress;
     private final Waypoint waypoint = new Waypoint(true);
     private final LogEntry log = new LogEntry();
     private final String br = System.getProperty("line.separator");
@@ -85,21 +85,19 @@ public class GPXFileImporter {
     private String gpxAuthor = "";
     private TestCancel testCancel;
 
-    GPXFileImporter(AbstractFile abstractFile, ImporterProgress _importerProgress) {
+    GPXFileImporter(AbstractFile abstractFile, ImportProgress _importProgress) {
         super();
         mGpxAbstractFile = abstractFile;
-        importerProgress = _importerProgress;
+        importProgress = _importProgress;
         mDisplayFilename = abstractFile.getName();
     }
 
-    /**
-     * @param countwpt ?
-     */
     public void doImport(Integer countwpt, TestCancel testCancel) throws Exception {
         // http://www.thebuzzmedia.com/software/simple-java-xml-parser-sjxp/
+        this.testCancel = testCancel;
 
         if (testCancel != null && testCancel.checkCanceled()) {
-            throw new Exception("canceled");
+            throw new Exception(TestCancel.canceled);
         }
 
         currentWpt = 0;
@@ -132,13 +130,13 @@ public class GPXFileImporter {
 
         try {
             if (testCancel != null && testCancel.checkCanceled())
-                throw new Exception("canceled");
+                throw new Exception(TestCancel.canceled);
             FileInputStream fis = mGpxAbstractFile.getFileInputStream();
             parserCache.parse(fis, values);
             fis.close();
         } catch (Exception e) {
             if (testCancel != null && testCancel.checkCanceled())
-                throw new Exception("canceled");
+                throw new Exception(TestCancel.canceled);
             Log.err(sClass, gpxFilename.GpxFileName + ": " + e.getLocalizedMessage());
         }
     }
@@ -146,7 +144,7 @@ public class GPXFileImporter {
     private void handleCache(Cache cache) throws Exception {
 
         if (testCancel != null && testCancel.checkCanceled()) {
-            throw new Exception("canceled");
+            throw new Exception(TestCancel.canceled);
         }
 
         if (cacheDAO.cacheExists(cache.generatedId)) {
@@ -167,28 +165,28 @@ public class GPXFileImporter {
 
     private void handleLog(LogEntry log) throws Exception {
         if (testCancel != null && testCancel.checkCanceled()) {
-            throw new Exception("canceled");
+            throw new Exception(TestCancel.canceled);
         }
         LogsTableDAO.getInstance().WriteLogEntry(log);
     }
 
     private void handleWayPoint(Waypoint wayPoint) throws Exception {
         if (testCancel != null && testCancel.checkCanceled()) {
-            throw new Exception("canceled");
+            throw new Exception(TestCancel.canceled);
         }
         WaypointDAO.getInstance().WriteImportToDatabase(wayPoint);
     }
 
     private Category getCategory(String fileName) throws Exception {
         if (testCancel != null && testCancel.checkCanceled()) {
-            throw new Exception("canceled");
+            throw new Exception(TestCancel.canceled);
         }
         return CoreData.categories.getCategory(fileName);
     }
 
     private GpxFilename NewGpxFilename(Category category, String fileName) throws Exception {
         if (testCancel != null && testCancel.checkCanceled()) {
-            throw new Exception("canceled");
+            throw new Exception(TestCancel.canceled);
         }
         return category.addGpxFilename(fileName);
     }
@@ -295,14 +293,18 @@ public class GPXFileImporter {
                             createCache(values);
                             CacheCount++;
                         } catch (Exception e) {
-                            errors++;
-                            Log.err(sClass, "CreateCache", e);
+                            if (testCancel != null && testCancel.checkCanceled())
+                                parser.stop();
+                            else {
+                                errors++;
+                                Log.err(sClass, "CreateCache", e);
+                            }
                         }
                     } else if (wpt_type.startsWith("Waypoint|")) {
                         try {
                             createWaypoint(values);
                         } catch (Exception e) {
-                            if (e.getMessage().equals("canceled"))
+                            if (testCancel != null && testCancel.checkCanceled())
                                 parser.stop();
                             else {
                                 errors++;
@@ -1328,7 +1330,10 @@ public class GPXFileImporter {
                     log.clear();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (testCancel != null && testCancel.checkCanceled()) {
+                    throw new Exception(TestCancel.canceled);
+                }
+                else Log.err(sClass, "", e);
             }
 
         }
@@ -1388,7 +1393,7 @@ public class GPXFileImporter {
             info.append(errors);
         }
 
-        importerProgress.incrementProgress("ImportGPX", info.toString(), false);
+        importProgress.incrementStep("ImportGPX", info.toString());
 
         // Write Note and Solver
         if (values.containsKey("cachebox-extension_solver")) {
@@ -1454,7 +1459,7 @@ public class GPXFileImporter {
         }
 
         currentWpt++;
-        importerProgress.incrementProgress("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentWpt + "/" + countWpt + "\n" + waypoint.getWaypointCode() + " - " + waypoint.getDescription(), false);
+        importProgress.incrementStep("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentWpt + "/" + countWpt + "\n" + waypoint.getWaypointCode() + " - " + waypoint.getDescription());
 
         handleWayPoint(waypoint);
 

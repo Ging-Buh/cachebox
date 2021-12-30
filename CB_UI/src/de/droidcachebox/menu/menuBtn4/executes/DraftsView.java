@@ -74,7 +74,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_FixSizeList;
 import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.converter.Base64;
 import de.droidcachebox.utils.http.WebbUtils;
 import de.droidcachebox.utils.log.Log;
@@ -610,12 +610,14 @@ public class DraftsView extends V_ListView {
         }
 
         private void uploadDraftOrLog(final Draft draft, final boolean isLog) {
-            wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), () -> {
+            wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
+                @Override
+                public void ready(boolean isCanceled) {
 
-            }, new TestCancelRunnable() {
+                }
+
                 @Override
                 public void run() {
-
                     if (Settings.GcVotePassword.getEncryptedValue().length() > 0 && !draft.isTbDraft) {
                         if (draft.gc_Vote > 0) {
                             // Stimme abgeben
@@ -655,17 +657,13 @@ public class DraftsView extends V_ListView {
                             return true;
                         });
                     }
+
                     if (GroundspeakAPI.LastAPIError.length() > 0) {
                         MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("Error"), MsgBoxIcon.Error);
                     }
                     if (wd != null)
                         wd.close();
 
-                }
-
-                @Override
-                public boolean checkCanceled() {
-                    return false;
                 }
             });
             wd.show();

@@ -44,8 +44,8 @@ import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI.PQ;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.LogsTableDAO;
+import de.droidcachebox.ex_import.ImportProgress;
 import de.droidcachebox.ex_import.Importer;
-import de.droidcachebox.ex_import.ImporterProgress;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
@@ -92,7 +92,7 @@ public class Import extends ActivityBase {
     private final ScrollBox scrollBox;
     private final ArrayList<String> values = new ArrayList<>();
     private final float CollapseBoxHeight;
-    private final AtomicBoolean canceled;
+    private final AtomicBoolean isCanceled;
     private float CollapseBoxLogsMaxHeight;
     private boolean PQ_LINE_ACTIVE = true;
     private boolean CBS_LINE_ACTIVE;
@@ -215,7 +215,7 @@ public class Import extends ActivityBase {
         lblCBServer.setVisible(false);
 
         // scrollBox.setBackground(new ColorDrawable(Color.RED));
-        canceled = new AtomicBoolean();
+        isCanceled = new AtomicBoolean();
     }
 
     private void createOkCancelBtn() {
@@ -237,7 +237,7 @@ public class Import extends ActivityBase {
             if (importStarted) {
                 MsgBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MsgBoxButton.YesNo, MsgBoxIcon.Stop, (which, data) -> {
                     if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                        canceled.set(true);
+                        isCanceled.set(true);
                     }
                     return true;
                 });
@@ -769,10 +769,10 @@ public class Import extends ActivityBase {
         Settings.CompactDB.setValue(checkBoxCompactDB.isChecked());
         Settings.getInstance().acceptChanges();
 
-        canceled.set(false);
+        isCanceled.set(false);
         importStarted = true;
 
-        ImporterProgress importerProgress = new ImporterProgress(
+        ImportProgress importProgress = new ImportProgress(
                 (textWithinProgressBar, textInExtraLabel, percent) -> GL.that.RunOnGL(
                         () -> {
                             progressBar.fillBarAt(percent);
@@ -783,37 +783,37 @@ public class Import extends ActivityBase {
         );
 
         if (checkImportPQFromGC.isChecked()) {
-            importerProgress.addStep("importGC", 4);
+            importProgress.addStep("importGC", 4);
         }
         if (checkImportFromCBServer.isChecked()) {
-            importerProgress.addStep("importCBServer", 4);
+            importProgress.addStep("importCBServer", 4);
         }
         if (checkBoxImportGPX.isChecked()) {
-            importerProgress.addStep("ExtractZip", 1);
-            importerProgress.addStep("AnalyseGPX", 1);
-            importerProgress.addStep("ImportGPX", 4);
+            importProgress.addStep("ExtractZip", 1);
+            importProgress.addStep("AnalyseGPX", 1);
+            importProgress.addStep("ImportGPX", 4);
         }
         if (checkBoxGcVote.isChecked()) {
-            importerProgress.addStep("sendGcVote", 1);
-            importerProgress.addStep("importGcVote", 4);
+            importProgress.addStep("sendGcVote", 1);
+            importProgress.addStep("importGcVote", 4);
         }
         if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
-            importerProgress.addStep("importImages", 4);
+            importProgress.addStep("importImages", 4);
         }
         if (checkBoxCleanLogs.isChecked()) {
-            importerProgress.addStep("DeleteLogs", 1);
+            importProgress.addStep("DeleteLogs", 1);
         }
         if (checkBoxCompactDB.isChecked()) {
-            importerProgress.addStep("CompactDB", 1);
+            importProgress.addStep("CompactDB", 1);
         }
 
         new Thread(() -> {
-            downloadAll(importerProgress);
+            downloadAll(importProgress);
             if (allDownloadsComplete) {
                 // without error
                 finishImport();
             } else {
-                if (canceled.get()) {
+                if (isCanceled.get()) {
                     // canceled by user
                     finishImport();
                 } else {
@@ -825,7 +825,7 @@ public class Import extends ActivityBase {
 
     }
 
-    private void downloadAll(ImporterProgress importerProgress) {
+    private void downloadAll(ImportProgress importProgress) {
         Importer importer = null;
         if (checkImportPQFromGC.isChecked()) {
             if (PqList != null && PqList.size() > 0) {
@@ -835,20 +835,20 @@ public class Import extends ActivityBase {
                     if (pq.doDownload)
                         downloadPqList.add(pq);
                 }
-                importerProgress.setStepFinalValue("importGC", downloadPqList.size());
+                importProgress.setStepFinalValue("importGC", downloadPqList.size());
                 importAnimation.setAnimationType(AnimationType.Download);
                 for (PQ pq : downloadPqList) {
-                    importerProgress.incrementProgress("importGC", "Download: " + pq.name, false);
+                    importProgress.incrementStep("importGC", "Download: " + pq.name);
                     fetchPocketQuery(pq, Settings.PocketQueryFolder.getValue());
-                    if (canceled.get()) {
+                    if (isCanceled.get()) {
                         break;
                     }
                     if (APIError != OK) {
-                        canceled.set(true);
+                        isCanceled.set(true);
                         MsgBox.show(LastAPIError, Translation.get("PQfromGC"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
                     }
                 }
-                if (canceled.get()) {
+                if (isCanceled.get()) {
                     // delete downloaded files
                     for (PQ pq : downloadPqList) {
                         AbstractFile pqFile = FileFactory.createFile(Settings.PocketQueryFolder.getValue() + "/" + pq.GUID + ".zip");
@@ -857,13 +857,13 @@ public class Import extends ActivityBase {
                         } catch (IOException ignored) {
                         }
                     }
-                    importerProgress.incrementProgress("importGC", "", true);
+                    importProgress.finishStep("importGC", "");
                     return;
                 }
-                importerProgress.incrementProgress("importGC", "", true);
+                importProgress.finishStep("importGC", "");
             }
         }
-        if (canceled.get()) return;
+        if (isCanceled.get()) return;
 
         importAnimation.setAnimationType(AnimationType.Work);
         if (checkBoxImportGPX.isChecked()) {
@@ -875,12 +875,12 @@ public class Import extends ActivityBase {
                 CBDB.getInstance().beginTransaction();
                 CBDB.getInstance().cacheList.clear();
                 try {
-                    if (importer == null) importer = new Importer();
-                    importer.importGpx(pqFolderName, importerProgress, canceled::get);
+                    importer = new Importer();
+                    importer.importGpx(pqFolderName, importProgress, isCanceled::get);
                     CBDB.getInstance().setTransactionSuccessful();
                 } catch (Exception exc) {
-                    if (!canceled.get()) Log.err(sClass, "importGpx", exc);
-                    importerProgress.changeMsg("", "");
+                    if (!isCanceled.get()) Log.err(sClass, "importGpx", exc);
+                    importProgress.changeMsg("", "");
                 }
                 CBDB.getInstance().endTransaction();
                 Log.debug(sClass, "Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
@@ -912,48 +912,48 @@ public class Import extends ActivityBase {
 
             }
         }
-        if (canceled.get()) return;
+        if (isCanceled.get()) return;
 
         if (checkBoxGcVote.isChecked()) {
             importAnimation.setAnimationType(AnimationType.Download);
             CBDB.getInstance().beginTransaction();
             try {
                 if (importer == null) importer = new Importer();
-                importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), importerProgress, canceled::get);
+                importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), importProgress, isCanceled::get);
                 CBDB.getInstance().setTransactionSuccessful();
             } catch (Exception exc) {
-                if (!canceled.get()) {
+                if (!isCanceled.get()) {
                     Log.err(sClass, "importGcVote", exc);
                 }
             }
             CBDB.getInstance().endTransaction();
             importAnimation.setAnimationType(AnimationType.Work);
         }
-        if (canceled.get()) return;
+        if (isCanceled.get()) return;
 
         if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
             importAnimation.setAnimationType(AnimationType.Download);
             if (importer == null) importer = new Importer();
-            importer.importImages(importerProgress, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()));
+            importer.importImages(importProgress, isCanceled::get, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()));
             importAnimation.setAnimationType(AnimationType.Work);
         }
-        if (canceled.get()) return;
+        if (isCanceled.get()) return;
 
         if (checkBoxCleanLogs.isChecked()) {
-            importerProgress.setStepFinalValue("DeleteLogs", 1);
-            importerProgress.changeMsg("DeleteLogs", "");
+            importProgress.setStepFinalValue("DeleteLogs", 1);
+            importProgress.changeMsg("DeleteLogs", "");
             LogsTableDAO.getInstance().deleteOldLogs(Settings.LogMinCount.getValue(), Settings.LogMaxMonthAge.getValue());
-            importerProgress.incrementProgress("DeleteLogs", "", true);
+            importProgress.finishStep("DeleteLogs", "");
         }
-        if (canceled.get()) return;
+        if (isCanceled.get()) return;
 
         if (checkBoxCompactDB.isChecked()) {
-            importerProgress.setStepFinalValue("CompactDB", 1);
-            importerProgress.changeMsg("CompactDB", "");
+            importProgress.setStepFinalValue("CompactDB", 1);
+            importProgress.changeMsg("CompactDB", "");
             CBDB.getInstance().execSQL("vacuum");
-            importerProgress.incrementProgress("CompactDB", "", true);
+            importProgress.finishStep("CompactDB", "");
         }
-        if (canceled.get()) return;
+        if (isCanceled.get()) return;
 
         allDownloadsComplete = true;
 
@@ -962,7 +962,6 @@ public class Import extends ActivityBase {
     private void finishImport() {
         importStarted = false;
 
-        btnCancel.setText(Translation.get("ok"));
         btnOK.enable();
 
         if (importAnimation != null) {

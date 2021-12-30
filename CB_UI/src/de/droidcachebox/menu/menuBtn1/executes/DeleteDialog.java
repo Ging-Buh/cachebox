@@ -23,13 +23,12 @@ import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.RunAndReady;
 
 public class DeleteDialog extends ButtonDialog {
     private SizeF msgBoxContentSize;
     private ImageButton btDelFilter, btDelArchived, btDelFounds;
     private CB_Label lblDelFilter, lblDelArchived, lblDelFounds;
-    private CancelWaitDialog wd;
 
     public DeleteDialog() {
         super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation.get("DeleteCaches"), MsgBoxButton.Cancel, null, null);
@@ -67,86 +66,66 @@ public class DeleteDialog extends ButtonDialog {
 
         btDelFilter.setClickHandler((v, x, y, pointer, button) -> {
             close();
-            wd = new CancelWaitDialog(Translation.get("DelActFilter"), new WorkAnimation(), () -> {
+            new CancelWaitDialog(Translation.get("DelActFilter"), new WorkAnimation(), new RunAndReady() {
+                @Override
+                public void ready(boolean isCanceled) {
 
-            }, new TestCancelRunnable() {
+                }
+
                 @Override
                 public void run() {
-                    long nun = CacheListDAO.getInstance().deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(),
-                            Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
-                    cleanupLogs();
-                    cleanupWaypoints();
-                    wd.close();
+                long nun = CacheListDAO.getInstance().deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(),
+                        Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
+                cleanupLogs();
+                cleanupWaypoints();
 
-                    // reset Filter
-                    FilterInstances.setLastFilter(new FilterProperties());
-                    EditFilterSettings.applyFilter(FilterInstances.getLastFilter());// all Caches
+                // reset Filter
+                FilterInstances.setLastFilter(new FilterProperties());
+                EditFilterSettings.applyFilter(FilterInstances.getLastFilter());// all Caches
 
-                    String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                    GL.that.toast(msg);
-                }
-
-                @Override
-                public boolean checkCanceled() {
-                    return false;
-                }
-            });
-            wd.show();
+                String msg = Translation.get("DeletedCaches", String.valueOf(nun));
+                GL.that.toast(msg);
+            }}).show();
             return true;
         });
 
         btDelArchived.setClickHandler((view, x, y, pointer, button) -> {
             close();
-            wd = new CancelWaitDialog(Translation.get("DelArchived"), new WorkAnimation(), () -> {
+            new CancelWaitDialog(Translation.get("DelArchived"), new WorkAnimation(), new RunAndReady() {
+                @Override
+                public void ready(boolean isCanceled) {
 
-            }, new TestCancelRunnable() {
+                }
+
                 @Override
                 public void run() {
-                    long nun = CacheListDAO.getInstance().deleteArchived(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
-
-                    cleanupLogs();
-                    cleanupWaypoints();
-                    wd.close();
-
-                    EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
-
-                    String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                    GL.that.toast(msg);
-                }
-
-                @Override
-                public boolean checkCanceled() {
-                    return false;
-                }
-            });
-            wd.show();
+                long nun = CacheListDAO.getInstance().deleteArchived(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
+                cleanupLogs();
+                cleanupWaypoints();
+                EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
+                String msg = Translation.get("DeletedCaches", String.valueOf(nun));
+                GL.that.toast(msg);
+            }}).show();
             return true;
         });
 
         btDelFounds.setClickHandler((view, x, y, pointer, button) -> {
             close();
-            wd = new CancelWaitDialog(Translation.get("DelFound"), new WorkAnimation(), () -> {
+            new CancelWaitDialog(Translation.get("DelFound"), new WorkAnimation(), new RunAndReady() {
+                @Override
+                public void ready(boolean isCanceled) {
 
-            }, new TestCancelRunnable() {
+                }
+
                 @Override
                 public void run() {
-                    long nun = CacheListDAO.getInstance().deleteFinds(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
-                    cleanupLogs();
-                    cleanupWaypoints();
-                    wd.close();
-
-                    EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
-
-                    String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                    GL.that.toast(msg);
-                }
-
-                @Override
-                public boolean checkCanceled() {
-                    return false;
-                }
-            });
-            wd.show();
+                long nun = CacheListDAO.getInstance().deleteFinds(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
+                cleanupLogs();
+                cleanupWaypoints();
+                EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
+                String msg = Translation.get("DeletedCaches", String.valueOf(nun));
+                GL.that.toast(msg);
+            }}).show();
             return true;
         });
 

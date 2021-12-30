@@ -17,7 +17,6 @@
 package de.droidcachebox.menu.menuBtn3.executes;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
-import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
 import static de.droidcachebox.gdx.Sprites.Arrows;
 import static de.droidcachebox.gdx.Sprites.IconName;
 import static de.droidcachebox.gdx.Sprites.ListBack;
@@ -100,7 +99,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.PointL;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 public class MapView extends MapViewBase implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
@@ -112,10 +111,10 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     private final PointL lastScreenCenter;
     private final GL_Paint distanceCirclePaint;
     private final GL_Paint directLinePaint;
+    private final CancelWaitDialog wd = null;
     private TreeMap<Integer, Integer> distanceZoomLevel;
     private MultiToggleButton btnMapState;
     private InfoBubble infoBubble;
-    private CancelWaitDialog wd = null;
     private int zoomCross = 16;
     private boolean showRating;
     private boolean showDT;
@@ -348,8 +347,18 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         infoBubble.setInvisible();
         infoBubble.setClickHandler((v, x, y, pointer, button) -> {
             if (infoBubble.saveButtonClicked(x, y)) {
-                wd = new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), () -> {
-                }, new TestCancelRunnable() {
+                new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), new RunAndReady() {
+                    @Override
+                    public void ready(boolean isCanceled) {
+                        ShowSpoiler.getInstance().importSpoiler(false, isCanceled1 -> {
+                            // do after import
+                            if (!isCanceled1) {
+                                if (GlobalCore.isSetSelectedCache()) {
+                                    GlobalCore.getSelectedCache().loadSpoilerRessources();
+                                }
+                            }
+                        });
+                    }
 
                     @Override
                     public void run() {
@@ -357,7 +366,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         if (bubblesCache.getGeoCacheDetail() == null)
                             CacheDAO.getInstance().loadDetail(bubblesCache);
                         String GCCode = bubblesCache.getGeoCacheCode();
-                        ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(bubblesCache);
+                        ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = GroundspeakAPI.updateGeoCache(bubblesCache);
                         if (geoCacheRelateds.size() > 0) {
                             try {
                                 CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
@@ -380,23 +389,10 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
                         CacheListChangedListeners.getInstance().cacheListChanged();
-                        wd.close();
-
-                        ShowSpoiler.getInstance().importSpoiler(false, () -> {
-                            // do after import
-                            if (GlobalCore.isSetSelectedCache()) {
-                                GlobalCore.getSelectedCache().loadSpoilerRessources();
-                            }
-                        });
-
                     }
+                }
 
-                    @Override
-                    public boolean checkCanceled() {
-                        return false;
-                    }
-                });
-                wd.show();
+                ).show();
             } else {
                 if (infoBubble.getWaypoint() == null) {
                     // if cache has a Final waypoint: activate

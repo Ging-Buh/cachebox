@@ -16,6 +16,7 @@
 package de.droidcachebox.utils;
 
 public interface TestCancel {
+    public static final String canceled = "canceled";
     /**
      * @return if result is true, the calling method should end itself
      */

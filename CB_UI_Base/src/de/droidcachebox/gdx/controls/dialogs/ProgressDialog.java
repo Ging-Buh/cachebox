@@ -10,34 +10,31 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunnableReadyHandler;
+import de.droidcachebox.utils.CancelListener;
+import de.droidcachebox.utils.RunAndReady;
 
 public class ProgressDialog extends MsgBox {
     private final CB_Label messageTextView;
     private final CB_Label progressMessageTextView;
     private final ProgressBar progressBar;
-    private final RunnableReadyHandler runnableReadyHandler;
-    public float measuredLabelHeight;
+    private final RunAndReady runAndReady;
     private AnimationBase animation;
-    private ICancelListener mCancelListener;
+    private CancelListener cancelListener;
 
-    public ProgressDialog(String title, AnimationBase animation, RunnableReadyHandler runnableReadyHandler) {
+    public ProgressDialog(String title, AnimationBase animation, RunAndReady runAndReady) {
         super(calcMsgBoxSize(title, true, true, true), title);
+        this.runAndReady = runAndReady;
 
         addButtons(MsgBoxButton.Cancel);
         btnRightNegative.setClickHandler((view, x, y, pointer, button) -> {
             btnRightNegative.disable();
             btnRightNegative.setText(Translation.get("waitForCancel"));
-            runnableReadyHandler.doInterrupt();
-            if (runnableReadyHandler.checkCanceled()) {
-
-            }
-            if (mCancelListener != null)
-                mCancelListener.setIsCanceled();
+            if (cancelListener != null)
+                cancelListener.setIsCanceled();
             return true;
         });
 
-        measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+        float measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 
         progressMessageTextView = new CB_Label(this.name + " progressMessageTextView", leftBorder, margin, innerWidth, measuredLabelHeight);
         this.addChild(progressMessageTextView);
@@ -51,7 +48,6 @@ public class ProgressDialog extends MsgBox {
         messageTextView = new CB_Label(this.name + " messageTextView", leftBorder, progressBar.getMaxY() + margin, innerWidth, measuredLabelHeight);
         this.addChild(messageTextView);
 
-        this.runnableReadyHandler = runnableReadyHandler;
         float heightForAnimation;
         if (animation == null) {
             heightForAnimation = 0;
@@ -62,10 +58,6 @@ public class ProgressDialog extends MsgBox {
         setHeight(getHeight() + (measuredLabelHeight * 2f) + heightForAnimation);
         setTitle(title);
 
-    }
-
-    public void setCancelListener(ICancelListener cancelListener) {
-        mCancelListener = cancelListener;
     }
 
     public void setAnimation(final AnimationBase animation) {
@@ -79,11 +71,6 @@ public class ProgressDialog extends MsgBox {
 
     }
 
-    @Override
-    public void onShow() {
-        if (runnableReadyHandler != null) runnableReadyHandler.doStart();
-    }
-
     public void setProgress(final String msg, final String progressMessage, final int value) {
         GL.that.RunOnGL(() -> {
             if (ProgressDialog.this.isDisposed())
@@ -95,11 +82,13 @@ public class ProgressDialog extends MsgBox {
         });
     }
 
-    /**
-     * to inform the creator about cancellation
-     */
-    public interface ICancelListener {
-        void setIsCanceled();
+    public void setCancelListener(CancelListener cancelListener) {
+        this.cancelListener = cancelListener;
+    }
+
+    @Override
+    public void onShow() {
+        if (runAndReady != null) runAndReady.doStart();
     }
 
 }

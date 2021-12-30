@@ -9,13 +9,13 @@ import de.droidcachebox.utils.ProgressChangedEvent;
  *
  * @author Longri
  */
-public class ImporterProgress {
+public class ImportProgress {
 
     private final ArrayList<Step> allSteps;
     private final ProgressChangedEvent progressChangedEvent;
     private float overallWeight;
 
-    public ImporterProgress(ProgressChangedEvent progressChangedEvent) {
+    public ImportProgress(ProgressChangedEvent progressChangedEvent) {
         this.progressChangedEvent = progressChangedEvent;
         allSteps = new ArrayList<>();
         overallWeight = 0f;
@@ -26,31 +26,20 @@ public class ImporterProgress {
         overallWeight = overallWeight + weight;
     }
 
+    public void incrementStep(String id, String msg) {
+        increment(id, msg, false);
+    }
+
+    public void finishStep(String id, String msg) {
+        increment(id, msg, true);
+    }
+
     /**
      * fires the event
      *
-     * @param id   identify the step
-     * @param msg  text for the increment
-     * @param done true, if ready
+     * @param id  identify the step
+     * @param msg text for the increment
      */
-    public void incrementProgress(String id, String msg, boolean done) {
-        int doneTillNowPercent = 0;
-        for (Step step : allSteps) {
-            if (step.id.equals(id)) {
-                if (done) {
-                    step.currentValue = step.finalValue;
-                } else {
-                    step.currentValue = step.currentValue + 1f;
-                }
-                doneTillNowPercent = calculateDoneTillNowPercent();
-                break;
-            }
-        }
-
-        if (progressChangedEvent != null)
-            progressChangedEvent.progressChanged(id, msg, doneTillNowPercent);
-    }
-
     public void changeMsg(String id, String msg) {
         if (progressChangedEvent != null)
             progressChangedEvent.progressChanged(id, msg, calculateDoneTillNowPercent());
@@ -65,11 +54,29 @@ public class ImporterProgress {
         }
     }
 
-    protected int calculateDoneTillNowPercent() {
-        float progress = 0.0f;
-        float f;
+    /**
+     * @param id   identify the step
+     * @param msg  text for the increment
+     * @param done true, if ready
+     */
+    private void increment(String id, String msg, boolean done) {
         for (Step step : allSteps) {
-            f = (step.weight / overallWeight) * (step.currentValue / step.finalValue);
+            if (step.id.equals(id)) {
+                if (done) {
+                    step.currentValue = step.finalValue;
+                } else {
+                    step.currentValue = step.currentValue + 1;
+                }
+                break;
+            }
+        }
+        changeMsg(id, msg);
+    }
+
+    private int calculateDoneTillNowPercent() {
+        float progress = 0.0f;
+        for (Step step : allSteps) {
+            float f = step.weight * step.currentValue / overallWeight / step.finalValue;
             progress = progress + f;
         }
         return (int) (100 * progress);
@@ -78,22 +85,22 @@ public class ImporterProgress {
     /**
      * defining a step of the import
      */
-    public static class Step {
+    private static class Step {
         public String id; // identify the step
-        public float finalValue; // the final value when the step is done
-        public float currentValue; // at finalValue this step is completed (done, ready)
+        public int finalValue; // the final value when the step is done
+        public int currentValue; // at finalValue this step is completed (done, ready)
         public float weight; // how much makes this step from all steps (what the programmer expects, in his scale units)
 
         public Step(String id, float weight) {
             this.weight = weight;
             this.id = id;
-            this.currentValue = 0f;
-            finalValue = 1f;
+            currentValue = 0;
+            finalValue = 1;
         }
 
         public void setFinalValue(int finalValue) {
             if (finalValue == 0) {
-                this.finalValue = 1f;
+                this.finalValue = 1;
             } else {
                 this.finalValue = finalValue;
             }

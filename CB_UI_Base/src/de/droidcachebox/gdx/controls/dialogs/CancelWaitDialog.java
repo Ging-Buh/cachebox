@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.gdx.controls.dialogs;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
@@ -23,64 +25,54 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunnableReadyHandler;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.CancelListener;
+import de.droidcachebox.utils.RunAndReady;
 
 /**
- * Ein Wait Dialog mit Übergabe eines Runable zur Abarbeitung, welcher abgebrochen werden kann
+ * A WaitDialog extended by a runnable that can be canceled
  *
  * @author Longri
  */
 public class CancelWaitDialog extends WaitDialog {
 
-    private static String sClass = "CancelWaitDialog";
-    private final TestCancelRunnable cancelRunnable;
-    protected IcancelListener cancelListener;
-    RunnableReadyHandler runnableReadyHandler;
-    private IReadyListener readyListener;
-    private boolean isRunning = false;
+    private static final String sClass = "CancelWaitDialog";
+    private final AtomicBoolean isCanceled;
+    private final RunAndReady runAndReady;
+    private CancelListener cancelListener;
 
-    public CancelWaitDialog(String msg, AnimationBase _animation, IcancelListener cancelListener, TestCancelRunnable cancelRunnable) {
+    public CancelWaitDialog(String msg, AnimationBase _animation, RunAndReady runAndReady) {
         super(calcMsgBoxSize(msg, false, false, true, false), sClass);
-        this.cancelListener = cancelListener;
-        this.cancelRunnable = cancelRunnable;
+        this.runAndReady = runAndReady;
+        isCanceled = new AtomicBoolean();
 
         setTitle("");
         setButtonCaptions(MsgBoxButton.Cancel);
+        mMsgBoxClickListener = (which, data) -> {
+            isCanceled.set(true);
+            if (cancelListener != null)
+                cancelListener.setIsCanceled();
+            btnRightNegative.disable();
+            btnRightNegative.setText(Translation.get("waitForCancel"));
+            return false;
+        };
 
         SizeF contentSize = getContentSize();
-
-        CB_RectF imageRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
-
         label = new CB_Label(contentSize.getBounds());
         label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UiSizes.getInstance().getButtonHeight());
+        CB_RectF imageRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
         label.setX(imageRec.getMaxX() + margin);
         label.setWrappedText(msg);
-
-        int lineCount = label.getLineCount();
         label.setY(0);
-
+        int lineCount = label.getLineCount();
         if (lineCount == 1) {
             label.setText(msg);
             label.setVAlignment(VAlignment.CENTER);
         } else {
             label.setVAlignment(VAlignment.TOP);
         }
-
         addChild(label);
 
-        setButtonCaptions(MsgBoxButton.Cancel);
-
-        mMsgBoxClickListener = (which, data) -> {
-            if (runnableReadyHandler != null)
-                runnableReadyHandler.doInterrupt();
-            btnRightNegative.disable();
-            btnRightNegative.setText(Translation.get("waitForCancel"));
-            return false;
-        };
-
         animation = _animation;
-
         if (animation != null) {
             CB_RectF animationRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
             animation.setRec(animationRec);
@@ -90,64 +82,15 @@ public class CancelWaitDialog extends WaitDialog {
             addChild(animation);
             animation.play();
         }
+    }
 
+    public void setCancelListener(CancelListener cancelListener) {
+        this.cancelListener = cancelListener;
     }
 
     @Override
     public void onShow() {
-        if (!isRunning && this.cancelRunnable != null) {
-
-            isRunning = true;
-
-            // start cancelRunnable on new Thread
-            runnableReadyHandler = new RunnableReadyHandler() {
-
-                @Override
-                public void ready(boolean isCanceled) {
-                    // CancelWaitDialog.this.close();
-                    if (isCanceled && cancelListener != null) {
-                        cancelListener.isCanceled();
-                    }
-
-                    if (readyListener != null) {
-                        readyListener.isReady();
-                    }
-
-                    CancelWaitDialog.this.close();
-
-                }
-
-                @Override
-                public void run() {
-                    cancelRunnable.run();
-                    if (readyListener != null)
-                        readyListener.isReady();
-                    CancelWaitDialog.this.close();
-                }
-
-                @Override
-                public boolean checkCanceled() {
-                    boolean mCancel = true;
-                    if (cancelRunnable != null) {
-                        mCancel = cancelRunnable.checkCanceled();
-                    }
-                    CancelWaitDialog.this.close();
-                    return mCancel;
-                }
-            };
-            runnableReadyHandler.doStart();
-        }
+        if (runAndReady != null) runAndReady.doStart();
     }
 
-    public void setReadyListener(IReadyListener readyListener) {
-        this.readyListener = readyListener;
-    }
-
-    public interface IcancelListener {
-        void isCanceled();
-    }
-
-    public interface IReadyListener {
-        void isReady();
-    }
 }

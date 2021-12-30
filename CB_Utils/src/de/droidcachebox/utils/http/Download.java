@@ -53,7 +53,7 @@ public class Download {
                     if (progressIndicator != null)
                         progressIndicator.progressChanged("", "", kiloByteCount);
                     if (testCancel != null && testCancel.checkCanceled())
-                        throw new Exception("canceled");
+                        throw new Exception();
                 }
             } catch (Exception ex) {
                 if (ex instanceof WebbException) {
@@ -74,7 +74,7 @@ public class Download {
                     }
                 } else {
                     if (testCancel != null && testCancel.checkCanceled())
-                        Log.info(sClass, "canceled");
+                        Log.info(sClass, TestCancel.canceled);
                     else
                         Log.err(sClass, remote + " to " + local, ex);
                     errorOrCanceled = true;

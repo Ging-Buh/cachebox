@@ -54,7 +54,7 @@ import de.droidcachebox.menu.menuBtn1.executes.Trackables;
 import de.droidcachebox.menu.menuBtn4.executes.TemplateFormatter;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.RunAndReady;
 
 public class TB_Log extends ActivityBase {
     private static WaitDialog wd;
@@ -241,8 +241,12 @@ public class TB_Log extends ActivityBase {
     }
 
     private void logOnline() {
-        wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), () -> {
-        }, new TestCancelRunnable() {
+        wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
+            @Override
+            public void ready(boolean isCanceled) {
+
+            }
+
             @Override
             public void run() {
                 int result = uploadTrackableLog(TB, getCache_GcCode(), LogType.CB_LogType2GC(LT), new Date(), edit.getText());
@@ -268,6 +272,7 @@ public class TB_Log extends ActivityBase {
                     });
                     return;
                 }
+
                 if (result != OK) {
                     GL.that.toast(LastAPIError);
                     if (wd != null)
@@ -303,12 +308,6 @@ public class TB_Log extends ActivityBase {
                 if (LT == LogType.dropped_off || LT == LogType.retrieve || LT == LogType.grab_it) {
                     GL.that.RunOnGL(() -> Trackables.trackables.refreshTbList());
                 }
-
-            }
-
-            @Override
-            public boolean checkCanceled() {
-                return false;
             }
         });
         wd.show();

@@ -37,7 +37,7 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn4.executes.TemplateFormatter;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 public class Trackables extends V_ListView {
@@ -45,7 +45,6 @@ public class Trackables extends V_ListView {
     public static Trackables trackables;
     private final TrackableListViewAdapter trackableListViewAdapter;
     private final TBList trackableList;
-    private CancelWaitDialog wd;
 
     private Trackables() {
         super(ViewManager.leftTab.getContentRec(), "TrackableListView");
@@ -96,43 +95,42 @@ public class Trackables extends V_ListView {
 
     private boolean fetchTB(final String TBCode) {
         if (TBCode.length() > 0) {
-            wd = new CancelWaitDialog(Translation.get("Search"), new DownloadAnimation(),
-                    () -> {
-                        // ICancelListener
-                    },
-                    new TestCancelRunnable() {
+            CancelWaitDialog xx = new CancelWaitDialog(Translation.get("Search"), new DownloadAnimation(),
+                    new RunAndReady() {
                         @Override
-                        public void run() {
-                            Trackable tb = fetchTrackable(TBCode);
-                            wd.close();
-                            if (tb == null) {
+                        public void ready(boolean isCanceled) {
+                            if (GroundspeakAPI.APIError != OK) {
                                 if (APIError == 404) {
                                     MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("NoTbFound"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
                                 } else {
                                     MsgBox.show(GroundspeakAPI.LastAPIError, "", MsgBoxButton.OK, MsgBoxIcon.Information, null);
                                 }
-                                return;
                             }
-                            new TB_Details().show(tb);
                         }
 
                         @Override
-                        public boolean checkCanceled() {
-                            return false;
+                        public void run() {
+                            Trackable tb = new Trackable();
+                            tb = fetchTrackable(TBCode, tb);
+                            if (tb != null) {
+                                new TB_Details().show(tb);
+                            }
                         }
                     });
-            wd.show();
+            xx.show();
         }
         return true;
     }
 
     // reload inventory
     public void refreshTbList() {
-        wd = new CancelWaitDialog(Translation.get("RefreshInventory"), new DownloadAnimation(),
-                () -> {
-                    // ICancelListener
-                },
-                new TestCancelRunnable() {
+        new CancelWaitDialog(Translation.get("RefreshInventory"), new DownloadAnimation(),
+                new RunAndReady() {
+                    @Override
+                    public void ready(boolean isCanceled) {
+
+                    }
+
                     @Override
                     public void run() {
                         TBList searchList = downloadUsersTrackables();
@@ -140,21 +138,16 @@ public class Trackables extends V_ListView {
                         TrackableListDAO.clearDB();
                         searchList.writeToDB();
                         reloadTB_List();
-                        wd.close();
                     }
-
-                    @Override
-                    public boolean checkCanceled() {
-                        return false;
-                    }
-                });
-        wd.show();
+                }).show();
     }
 
     private void logTBs(String title, final int LogTypeId, final String LogText) {
-        wd = new CancelWaitDialog(title, new DownloadAnimation(), () -> {
+        new CancelWaitDialog(title, new DownloadAnimation(), new RunAndReady() {
+            @Override
+            public void ready(boolean isCanceled) {
 
-        }, new TestCancelRunnable() {
+            }
 
             @Override
             public void run() {
@@ -163,15 +156,8 @@ public class Trackables extends V_ListView {
                         MsgBox.show(GroundspeakAPI.LastAPIError, "", MsgBoxButton.OK, MsgBoxIcon.Information, null);
                     }
                 }
-                wd.close();
             }
-
-            @Override
-            public boolean checkCanceled() {
-                return false;
-            }
-        });
-        wd.show();
+        }).show();
     }
 
     private void searchTB() {

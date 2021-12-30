@@ -1,6 +1,5 @@
 package de;
 
-import java.io.IOException;
 import java.net.HttpCookie;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,7 @@ import de.droidcachebox.core.CB_Api;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.settings.Settings;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.http.Request;
 import de.droidcachebox.utils.http.Response;
 import de.droidcachebox.utils.http.Webb;
@@ -18,46 +17,24 @@ import de.droidcachebox.utils.log.Log;
 public class GcApiLogin {
     private static final String log = "GcApiLogin";
 
-    CancelWaitDialog wd;
     private long lastCall = 0;
     private boolean isRunning = false;
 
     public GcApiLogin() {
     }
 
-    public void RunRequest() {
-
+    public void runRequest() {
         if (lastCall != 0 && lastCall - System.currentTimeMillis() < 100)
-            return;// entprellen!
-
+            return;// avoid double call by click
         lastCall = System.currentTimeMillis();
-
-        wd = new CancelWaitDialog("Please Wait", new DownloadAnimation(), () -> closeWaitDialog(), new TestCancelRunnable() {
-
+        new CancelWaitDialog("Please Wait", new DownloadAnimation(), new RunAndReady() {
             @Override
-            public void run() {
-                runOnWaitDialog();
+            public void ready(boolean isCanceled) {
+
             }
 
             @Override
-            public boolean checkCanceled() {
-                return false;
-            }
-        });
-        wd.show();
-
-    }
-
-    private void closeWaitDialog() {
-        wd.close();
-    }
-
-    private void runOnWaitDialog() {
-        Thread t = new Thread(new Runnable() {
-
-            @Override
             public void run() {
-                // State = 0;
                 String GC_AuthUrl;
 
                 if (Settings.OverrideUrl.getValue().equals("")) {
@@ -74,16 +51,15 @@ public class GcApiLogin {
 
                 try {
                     Log.info("CB_UI GCApiLogin", "Show WebSite " + GC_AuthUrl);
-                    Call_OAuth_Page(GC_AuthUrl);
+                    callOAuthPage(GC_AuthUrl);
                 } catch (Exception e) {
                     Log.err(log, e.getLocalizedMessage());
                 }
             }
-        });
-        t.start();
+        }).show();
     }
 
-    private void Call_OAuth_Page(String remote) throws IOException {
+    private void callOAuthPage(String remote) {
         if (isRunning)
             return;
         isRunning = true;
@@ -103,13 +79,13 @@ public class GcApiLogin {
                             msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                         }
                     }
-                    String cookies = "";
+                    StringBuilder cookies = new StringBuilder();
                     String sep = "";
                     for (java.net.HttpCookie cookie : msCookieManager.getCookieStore().getCookies()) {
-                        cookies += sep + cookie.toString();
+                        cookies.append(sep).append(cookie.toString());
                     }
                     if (msCookieManager.getCookieStore().getCookies().size() > 0) {
-                        request.header("Cookie", cookies);
+                        request.header("Cookie", cookies.toString());
                     }
                     remote = response.getHeaderField("location");
                 } else retry = false;

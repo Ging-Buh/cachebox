@@ -17,11 +17,6 @@ package de.droidcachebox.utils.log;
 
 import org.slf4j.LoggerFactory;
 
-/**
- * TODO document
- *
- * @author Franz  2016
- */
 public class Log {
 
     public static void err(String sKlasse, String logText) {

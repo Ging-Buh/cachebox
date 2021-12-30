@@ -16,7 +16,6 @@
 package de.droidcachebox.database;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -138,7 +137,8 @@ public class CacheDAO {
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         try {
             detail.DateHidden = iso8601Format.parse(sDate);
-        } catch (ParseException ignored) {
+        } catch (Exception ex) {
+            detail.DateHidden = new Date();
         }
 
         detail.Url = reader.getString(readerOffset + 2).trim();
@@ -195,9 +195,7 @@ public class CacheDAO {
         try {
             String firstimported = iso8601Format.format(new Date());
             args.put("FirstImported", firstimported);
-        } catch (Exception e) {
-
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
 
         if ((cache.getShortDescription() != null) && (cache.getShortDescription().length() > 0)) {
@@ -289,9 +287,7 @@ public class CacheDAO {
         try {
             String stimestamp = iso8601Format.format(cache.getDateHidden());
             args.put("DateHidden", stimestamp);
-        } catch (Exception e) {
-
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         args.put("Hint", cache.getHint());
 

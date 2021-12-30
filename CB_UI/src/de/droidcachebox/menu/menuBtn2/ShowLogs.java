@@ -1,17 +1,14 @@
 package de.droidcachebox.menu.menuBtn2;
 
-import static de.droidcachebox.core.GroundspeakAPI.ERROR;
-import static de.droidcachebox.core.GroundspeakAPI.LastAPIError;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCacheLogs;
-import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.CacheSelectionChangedListeners;
@@ -35,15 +32,12 @@ import de.droidcachebox.menu.menuBtn2.executes.Logs;
 import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunnableReadyHandler;
+import de.droidcachebox.utils.RunAndReady;
 
 public class ShowLogs extends AbstractShowAction {
 
     private static ShowLogs that;
-    private CancelWaitDialog pd;
-    private int ChangedCount = 0;
-    private int result = 0;
-    private boolean doCancelThread = false;
+    private final int result = 0;
 
     private ShowLogs() {
         super("ShowLogs");
@@ -101,88 +95,69 @@ public class ShowLogs extends AbstractShowAction {
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
 
         contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()),
-                () -> ShowSpoiler.getInstance().importSpoiler(true, () -> {
+                () -> ShowSpoiler.getInstance().importSpoiler(true, isCanceled -> {
                     // do after import
-                    if (GlobalCore.isSetSelectedCache()) {
-                        GlobalCore.getSelectedCache().loadSpoilerRessources();
-                        Spoiler.getInstance().ForceReload();
+                    if (!isCanceled) {
+                        if (GlobalCore.isSetSelectedCache()) {
+                            GlobalCore.getSelectedCache().loadSpoilerRessources();
+                            Spoiler.getInstance().ForceReload();
+                        }
                     }
                 }));
         return contextMenu;
     }
 
     private void loadLogs(boolean loadAllLogs) {
+
+        final AtomicBoolean isCanceled = new AtomicBoolean();
+        isCanceled.set(false);
+
+        /*
+        do after CancelWaitDialog
+        public void ready(boolean canceled) {
+            String sCanceled = canceled ? Translation.get("isCanceled") + br : "";
+            pd.close();
+            if (result != -1) {
+                synchronized (CBDB.getInstance().cacheList) {
+                    MsgBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MsgBoxIcon.None);
+                }
+
+            }
+        }
+
+         */
+
         GL.that.postAsync(() -> GlobalCore.chkAPiLogInWithWaitDialog(MemberType -> {
             TimerTask tt = new TimerTask() {
-
                 @Override
                 public void run() {
                     GL.that.postAsync(() -> {
-                        pd = new CancelWaitDialog(Translation.get("LoadLogs"), new DownloadAnimation(),
-                                () -> doCancelThread = true, new RunnableReadyHandler() {
-
+                        new CancelWaitDialog(Translation.get("LoadLogs"), new DownloadAnimation(), new RunAndReady() {
                             @Override
-                            public boolean checkCanceled() {
-                                return doCancelThread;
+                            public void ready(boolean isCanceled) {
+
                             }
 
                             @Override
                             public void run() {
-                                result = 0;
-                                doCancelThread = false;
                                 ArrayList<LogEntry> logList;
-
-                                try {
-                                    Thread.sleep(10);
-                                    logList = fetchGeoCacheLogs(GlobalCore.getSelectedCache(), loadAllLogs, this);
-                                    if (result == ERROR) {
-                                        GL.that.toast(LastAPIError);
+                                logList = fetchGeoCacheLogs(GlobalCore.getSelectedCache(), loadAllLogs, isCanceled::get);
+                                if (logList.size() > 0) {
+                                    CBDB.getInstance().beginTransaction();
+                                    if (loadAllLogs)
+                                        LogsTableDAO.getInstance().deleteLogs(GlobalCore.getSelectedCache().generatedId);
+                                    for (LogEntry logEntry : logList) {
+                                        LogsTableDAO.getInstance().WriteLogEntry(logEntry);
                                     }
-                                    if (logList.size() > 0) {
-                                        CBDB.getInstance().beginTransaction();
-
-                                        Iterator<LogEntry> iterator = logList.iterator();
-                                        if (loadAllLogs)
-                                            LogsTableDAO.getInstance().deleteLogs(GlobalCore.getSelectedCache().generatedId);
-                                        do {
-                                            ChangedCount++;
-                                            try {
-                                                Thread.sleep(10);
-                                                LogEntry writeTmp = iterator.next();
-                                                LogsTableDAO.getInstance().WriteLogEntry(writeTmp);
-                                            } catch (InterruptedException e) {
-                                                doCancelThread = true;
-                                            }
-                                        } while (iterator.hasNext() && !doCancelThread);
-
-                                        CBDB.getInstance().setTransactionSuccessful();
-                                        CBDB.getInstance().endTransaction();
-                                        // update LogListView
-                                        Logs.getInstance().resetIsInitialized();
-                                        // for update slider, ?, ?, ? with latest logs
-                                        CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
-
-                                    }
-
-                                } catch (InterruptedException e) {
-                                    doCancelThread = true;
-                                }
-
-                            }
-
-                            @Override
-                            public void ready(boolean canceled) {
-                                String sCanceled = canceled ? Translation.get("isCanceled") + br : "";
-                                pd.close();
-                                if (result != -1) {
-                                    synchronized (CBDB.getInstance().cacheList) {
-                                        MsgBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MsgBoxIcon.None);
-                                    }
-
+                                    CBDB.getInstance().setTransactionSuccessful();
+                                    CBDB.getInstance().endTransaction();
+                                    // update LogListView
+                                    Logs.getInstance().resetIsInitialized();
+                                    // for update slider, ?, ?, ? with latest logs
+                                    CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
                                 }
                             }
-                        });
-                        pd.show();
+                        }).show();
                     });
                 }
             };

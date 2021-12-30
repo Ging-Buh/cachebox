@@ -45,13 +45,12 @@ import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 public class CacheContextMenu {
     private static final String sClass = "CacheContextMenu";
     private static CacheContextMenu instance;
-    private static CancelWaitDialog wd;
     private Cache geoCache;
 
     public static CacheContextMenu getInstance() {
@@ -136,10 +135,15 @@ public class CacheContextMenu {
 
     public void reloadSelectedCache() {
         if (GlobalCore.isSetSelectedCache()) {
-            wd = new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), () -> {
-            }, new TestCancelRunnable() {
+            new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), new RunAndReady() {
+                @Override
+                public void ready(boolean isCanceled) {
+
+                }
+
                 @Override
                 public void run() {
+
                     String GCCode = GlobalCore.getSelectedCache().getGeoCacheCode();
                     ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
                     if (geoCacheRelateds.size() > 0) {
@@ -157,12 +161,15 @@ public class CacheContextMenu {
                             CacheListChangedListeners.getInstance().cacheListChanged();
                         }
 
-                        ShowSpoiler.getInstance().importSpoiler(false, () -> {
-                            // do after import
-                            if (GlobalCore.isSetSelectedCache()) {
-                                GlobalCore.getSelectedCache().loadSpoilerRessources();
-                            }
-                        });
+                        ShowSpoiler.getInstance().importSpoiler(false,
+                                isCanceled -> {
+                                    // do after import
+                                    if (!isCanceled) {
+                                        if (GlobalCore.isSetSelectedCache()) {
+                                            GlobalCore.getSelectedCache().loadSpoilerRessources();
+                                        }
+                                    }
+                                });
 
                         GL.that.RunOnGL(() -> {
                             ShowDescription.getInstance().updateDescriptionView(true);
@@ -174,15 +181,8 @@ public class CacheContextMenu {
                             GL.that.RunOnGL(() -> MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MsgBoxButton.OK, MsgBoxIcon.Information, null));
                         }
                     }
-                    wd.close();
                 }
-
-                @Override
-                public boolean checkCanceled() {
-                    return false;
-                }
-            });
-            wd.show();
+            }).show();
         } else {
             MsgBox.show(Translation.get("NoCacheSelect"), Translation.get("Error"), MsgBoxIcon.Error);
         }

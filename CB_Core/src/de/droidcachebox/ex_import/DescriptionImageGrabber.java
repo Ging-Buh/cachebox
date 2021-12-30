@@ -270,11 +270,11 @@ public class DescriptionImageGrabber {
         return images;
     }
 
-    public static int grabImagesSelectedByCache(ImporterProgress importerProgress, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String description, String url, boolean withLogImages) {
+    public static int grabImagesSelectedByCache(ImportProgress importProgress, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String description, String url, boolean withLogImages) {
         boolean imageLoadError = false;
         if (!descriptionImagesUpdated) {
             Log.debug(log, "GrabImagesSelectedByCache -> grab description images");
-            importerProgress.changeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode);
+            importProgress.changeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode);
 
             LinkedList<URI> imgUris = GetImageUris(description, url);
 
@@ -287,7 +287,7 @@ public class DescriptionImageGrabber {
 
                 String local = buildDescriptionImageFilename(gcCode, uri);
 
-                importerProgress.changeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
+                importProgress.changeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                 // direkt download
                 Download download = new Download(null, null);
@@ -323,7 +323,7 @@ public class DescriptionImageGrabber {
                 allSpoilers.add(file);
 
             {
-                importerProgress.changeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode);
+                importProgress.changeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode);
 
                 // todo always take from database. They are not downloaded yet
                 // todo else don't write them to database on fetch/update cache
@@ -342,7 +342,7 @@ public class DescriptionImageGrabber {
 
                     String uri = imageEntry.getImageUrl();
 
-                    importerProgress.changeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
+                    importProgress.changeMsg("importImages", Translation.get("SpoilerImageImportForGC") + gcCode + Translation.get("ImageDownloadFrom") + uri);
 
                     imageEntry = BuildAdditionalImageFilenameHashNew(imageEntry);
                     if (imageEntry != null) {

@@ -58,7 +58,7 @@ import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
@@ -68,7 +68,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     private CB_Label descTextView, CachesFoundLabel, WaypointLabel, CoordinateLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoordinate, lblCurrent, Current;
     private Image CB_Logo;
     private float margin;
-    private CancelWaitDialog pd;
+    private CancelWaitDialog wd;
     private SatBarChart chart;
     private int result = -1;
     private boolean mustShowNewInstallInfo;
@@ -172,11 +172,16 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                             switch (which) {
                                 case 1:
                                     msgBox.close();
-                                    pd = new CancelWaitDialog(Translation.get("LoadFounds"), new DownloadAnimation(), null, new TestCancelRunnable() {
+                                    wd = new CancelWaitDialog(Translation.get("LoadFounds"), new DownloadAnimation(), new RunAndReady() {
+                                        @Override
+                                        public void ready(boolean isCanceled) {
+
+                                        }
+
                                         @Override
                                         public void run() {
                                             result = GroundspeakAPI.fetchMyUserInfos().findCount;
-                                            pd.close();
+                                            wd.close();
                                             if (result > -1) {
                                                 String Text = Translation.get("FoundsSetTo", String.valueOf(result));
                                                 MsgBox.show(Text, Translation.get("LoadFinds!"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);
@@ -185,13 +190,8 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                                 AboutView.this.refreshText();
                                             }
                                         }
-
-                                        @Override
-                                        public boolean checkCanceled() {
-                                            return false;
-                                        }
                                     });
-                                    pd.show();
+                                    wd.show();
                                     break;
                                 case 3:
                                     msgBox.close();
@@ -452,9 +452,9 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         if (chart != null)
             chart.dispose();
         chart = null;
-        if (pd != null)
-            pd.dispose();
-        pd = null;
+        if (wd != null)
+            wd.dispose();
+        wd = null;
 
         CacheSelectionChangedListeners.getInstance().remove(this);
         GpsStateChangeEventList.Remove(this);

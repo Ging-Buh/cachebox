@@ -11,7 +11,7 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
-import de.droidcachebox.ex_import.ImporterProgress;
+import de.droidcachebox.ex_import.ImportProgress;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -22,7 +22,8 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.ReadyListener;
+import de.droidcachebox.utils.RunAndReady;
 
 public class ShowSpoiler extends AbstractShowAction {
     private static ShowSpoiler showSpoiler;
@@ -88,23 +89,28 @@ public class ShowSpoiler extends AbstractShowAction {
     private void createContextMenu() {
         contextMenu = new Menu("SpoilerViewContextMenuTitle");
 
-        contextMenu.addMenuItem("reloadSpoiler", null, () -> importSpoiler(false, () -> {
-            // do after import
-            if (GlobalCore.isSetSelectedCache()) {
-                GlobalCore.getSelectedCache().loadSpoilerRessources();
-                Spoiler.getInstance().ForceReload();
-                ViewManager.leftTab.showView(Spoiler.getInstance());
-                Spoiler.getInstance().onShow();
-            }
-        }));
+        contextMenu.addMenuItem("reloadSpoiler", null,
+                () -> importSpoiler(false, isCanceled -> {
+                    // do after import
+                    if (!isCanceled) {
+                        if (GlobalCore.isSetSelectedCache()) {
+                            GlobalCore.getSelectedCache().loadSpoilerRessources();
+                            Spoiler.getInstance().ForceReload();
+                            ViewManager.leftTab.showView(Spoiler.getInstance());
+                            Spoiler.getInstance().onShow();
+                        }
+                    }
+                }));
 
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> importSpoiler(true,() -> {
+        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()), () -> importSpoiler(true, isCanceled -> {
             // do after import
-            if (GlobalCore.isSetSelectedCache()) {
-                GlobalCore.getSelectedCache().loadSpoilerRessources();
-                Spoiler.getInstance().ForceReload();
-                ViewManager.leftTab.showView(Spoiler.getInstance());
-                Spoiler.getInstance().onShow();
+            if (!isCanceled) {
+                if (GlobalCore.isSetSelectedCache()) {
+                    GlobalCore.getSelectedCache().loadSpoilerRessources();
+                    Spoiler.getInstance().ForceReload();
+                    ViewManager.leftTab.showView(Spoiler.getInstance());
+                    Spoiler.getInstance().onShow();
+                }
             }
         }));
 
@@ -114,30 +120,27 @@ public class ShowSpoiler extends AbstractShowAction {
         });
     }
 
-    public void importSpoiler(boolean withLogImages, CancelWaitDialog.IReadyListener readyListener) {
-        wd = new CancelWaitDialog(Translation.get("downloadSpoiler"), new DownloadAnimation(), () -> {
-            // canceled
-        }, new TestCancelRunnable() {
-            @Override
-            public void run() {
-                ImporterProgress importerProgress = new ImporterProgress((message, progressMessage, progress) -> {
-                    // todo show progress
-                });
-                int result = GroundspeakAPI.ERROR;
-                if (GlobalCore.getSelectedCache() != null)
-                    result = DescriptionImageGrabber.grabImagesSelectedByCache(importerProgress, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
-                wd.close();
-                if (result != OK) {
-                    GL.that.toast(LastAPIError);
-                }
-            }
+    public void importSpoiler(boolean withLogImages, ReadyListener readyListener) {
+        wd = new CancelWaitDialog(Translation.get("downloadSpoiler"), new DownloadAnimation(),
+                new RunAndReady() {
+                    @Override
+                    public void ready(boolean isCanceled) {
+                        readyListener.isReady(isCanceled);
+                    }
 
-            @Override
-            public boolean checkCanceled() {
-                return false;
-            }
-        });
-        wd.setReadyListener(readyListener);
+                    @Override
+                    public void run() {
+                    ImportProgress importProgress = new ImportProgress((message, progressMessage, progress) -> {
+                        // todo show progress
+                    });
+                    int result = GroundspeakAPI.ERROR;
+                    if (GlobalCore.getSelectedCache() != null)
+                        result = DescriptionImageGrabber.grabImagesSelectedByCache(importProgress, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
+                    wd.close();
+                    if (result != OK) {
+                        GL.that.toast(LastAPIError);
+                    }
+                }});
         wd.show();
     }
 

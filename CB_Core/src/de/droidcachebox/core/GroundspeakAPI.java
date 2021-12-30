@@ -66,7 +66,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.DLong;
 import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.TestCancelRunnable;
+import de.droidcachebox.utils.TestCancel;
 import de.droidcachebox.utils.http.Request;
 import de.droidcachebox.utils.http.Response;
 import de.droidcachebox.utils.http.Webb;
@@ -579,7 +579,7 @@ public class GroundspeakAPI {
         }
     }
 
-    public static ArrayList<LogEntry> fetchGeoCacheLogs(Cache cache, boolean all, TestCancelRunnable testCancelRunnable) {
+    public static ArrayList<LogEntry> fetchGeoCacheLogs(Cache cache, boolean all, TestCancel testCancel) {
         ArrayList<LogEntry> logList = new ArrayList<>();
 
         LinkedList<String> friendList = new LinkedList<>();
@@ -593,7 +593,7 @@ public class GroundspeakAPI {
         int start = 0;
         int count = 50;
 
-        while (!testCancelRunnable.checkCanceled())
+        while (testCancel == null || !testCancel.checkCanceled())
         // Schleife, solange bis entweder keine Logs mehr geladen werden oder bis Logs aller Freunde geladen sind.
         {
             boolean doRetry;
@@ -706,7 +706,8 @@ public class GroundspeakAPI {
                 for (int ii = 0; ii < jTrackables.length(); ii++) {
                     JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
                     if (!jTrackable.optBoolean("inHolderCollection", false)) {
-                        Trackable tb = createTrackable(jTrackable);
+                        Trackable tb = new Trackable();
+                        tb = createTrackable(jTrackable, tb);
                         Log.debug(sKlasse, "downloadUsersTrackables: add " + tb.getName());
                         tbList.add(tb);
                     } else {
@@ -727,25 +728,27 @@ public class GroundspeakAPI {
         }
     }
 
-    public static Trackable fetchTrackable(String TBCode) {
+    public static Trackable fetchTrackable(String TBCode, Trackable tb) {
         Log.info(sKlasse, "fetchTrackable for " + TBCode);
         LastAPIError = "";
         APIError = 0;
-        if (isAccessTokenInvalid()) return null;
+        if (isAccessTokenInvalid()) {
+            tb = null;
+            return null;
+        }
         try {
-            Trackable tb = createTrackable(getNetz()
-                    .get(getUrl(1, "trackables/" + TBCode))
-                    .param("fields", "referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,owner.username,holder.username,currentGeocacheCode,type")
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody()
-            );
+            tb = createTrackable(getNetz()
+                            .get(getUrl(1, "trackables/" + TBCode))
+                            .param("fields", "referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,owner.username,holder.username,currentGeocacheCode,type")
+                            .ensureSuccess()
+                            .asJsonObject()
+                            .getBody()
+                    , tb);
 
-            if (!tb.getTbCode().toLowerCase().equals(TBCode.toLowerCase())) {
+            if (!tb.getTbCode().equalsIgnoreCase(TBCode)) {
                 // fetched by TrackingCode, the result for trackingcode is always empty, except for owner
                 tb.setTrackingCode(TBCode);
             }
-            return tb;
         } catch (Exception ex) {
             if (ex instanceof WebbException) {
                 WebbException we = (WebbException) ex;
@@ -759,8 +762,9 @@ public class GroundspeakAPI {
                             + LastAPIError
                             + "\n for " + getUrl(1, "trackables/" + TBCode + "?fields=url,description")
                     , ex);
-            return null;
+            tb = null;
         }
+        return tb;
     }
 
     public static int uploadTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note) {
@@ -1098,7 +1102,7 @@ public class GroundspeakAPI {
             // Log.debug(log, "Access Token = " + act.substring(1, act.length()));
             return act.substring(1);
         } else
-        return "";
+            return "";
     }
 
     public static boolean hasGroundSpeakAccessToken() {
@@ -1151,9 +1155,8 @@ public class GroundspeakAPI {
         }
     }
 
-    private static Trackable createTrackable(JSONObject API1Trackable) {
+    private static Trackable createTrackable(JSONObject API1Trackable, Trackable tb) {
         try {
-            Trackable tb = new Trackable();
             Log.debug(sKlasse, API1Trackable.toString());
             tb.setArchived(false);
             tb.setTbCode(API1Trackable.optString("referenceCode", ""));
