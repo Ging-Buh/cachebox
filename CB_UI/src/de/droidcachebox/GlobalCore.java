@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.core.API_ErrorEventHandlerList;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -231,6 +232,7 @@ public class GlobalCore implements SolverCacheInterface {
         }
 
         if (isAccessTokenInvalid()) {
+            AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog("chk API Key", new DownloadAnimation(), new RunAndReady() {
                 @Override
                 public void ready(boolean isCanceled) {
@@ -250,6 +252,12 @@ public class GlobalCore implements SolverCacheInterface {
                     };
                     ti.schedule(task, 3000);
                 }
+
+                @Override
+                public void setIsCanceled() {
+                    isCanceled.set(true);
+                }
+
             }).show();
         } else {
             handler.checkReady(false);

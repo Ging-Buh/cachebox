@@ -1,5 +1,7 @@
 package de.droidcachebox.menu.menuBtn1.executes;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.WrapType;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
@@ -66,6 +68,7 @@ public class DeleteDialog extends ButtonDialog {
 
         btDelFilter.setClickHandler((v, x, y, pointer, button) -> {
             close();
+            AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog(Translation.get("DelActFilter"), new WorkAnimation(), new RunAndReady() {
                 @Override
                 public void ready(boolean isCanceled) {
@@ -74,23 +77,31 @@ public class DeleteDialog extends ButtonDialog {
 
                 @Override
                 public void run() {
-                long nun = CacheListDAO.getInstance().deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(),
-                        Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
-                cleanupLogs();
-                cleanupWaypoints();
+                    long nun = CacheListDAO.getInstance().deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(),
+                            Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
+                    cleanupLogs();
+                    cleanupWaypoints();
 
-                // reset Filter
-                FilterInstances.setLastFilter(new FilterProperties());
-                EditFilterSettings.applyFilter(FilterInstances.getLastFilter());// all Caches
+                    // reset Filter
+                    FilterInstances.setLastFilter(new FilterProperties());
+                    EditFilterSettings.applyFilter(FilterInstances.getLastFilter());// all Caches
 
-                String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                GL.that.toast(msg);
-            }}).show();
+                    String msg = Translation.get("DeletedCaches", String.valueOf(nun));
+                    GL.that.toast(msg);
+                }
+
+                @Override
+                public void setIsCanceled() {
+                    isCanceled.set(true);
+                }
+
+            }).show();
             return true;
         });
 
         btDelArchived.setClickHandler((view, x, y, pointer, button) -> {
             close();
+            AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog(Translation.get("DelArchived"), new WorkAnimation(), new RunAndReady() {
                 @Override
                 public void ready(boolean isCanceled) {
@@ -99,18 +110,26 @@ public class DeleteDialog extends ButtonDialog {
 
                 @Override
                 public void run() {
-                long nun = CacheListDAO.getInstance().deleteArchived(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
-                cleanupLogs();
-                cleanupWaypoints();
-                EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
-                String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                GL.that.toast(msg);
-            }}).show();
+                    long nun = CacheListDAO.getInstance().deleteArchived(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
+                    cleanupLogs();
+                    cleanupWaypoints();
+                    EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
+                    String msg = Translation.get("DeletedCaches", String.valueOf(nun));
+                    GL.that.toast(msg);
+                }
+
+                @Override
+                public void setIsCanceled() {
+                    isCanceled.set(true);
+                }
+
+            }).show();
             return true;
         });
 
         btDelFounds.setClickHandler((view, x, y, pointer, button) -> {
             close();
+            AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog(Translation.get("DelFound"), new WorkAnimation(), new RunAndReady() {
                 @Override
                 public void ready(boolean isCanceled) {
@@ -119,13 +138,20 @@ public class DeleteDialog extends ButtonDialog {
 
                 @Override
                 public void run() {
-                long nun = CacheListDAO.getInstance().deleteFinds(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
-                cleanupLogs();
-                cleanupWaypoints();
-                EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
-                String msg = Translation.get("DeletedCaches", String.valueOf(nun));
-                GL.that.toast(msg);
-            }}).show();
+                    long nun = CacheListDAO.getInstance().deleteFinds(Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
+                    cleanupLogs();
+                    cleanupWaypoints();
+                    EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
+                    String msg = Translation.get("DeletedCaches", String.valueOf(nun));
+                    GL.that.toast(msg);
+                }
+
+                @Override
+                public void setIsCanceled() {
+                    isCanceled.set(true);
+                }
+
+            }).show();
             return true;
         });
 

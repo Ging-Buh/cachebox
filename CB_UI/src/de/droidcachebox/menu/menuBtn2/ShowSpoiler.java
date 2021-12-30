@@ -6,6 +6,8 @@ import static de.droidcachebox.core.GroundspeakAPI.OK;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
@@ -121,6 +123,7 @@ public class ShowSpoiler extends AbstractShowAction {
     }
 
     public void importSpoiler(boolean withLogImages, ReadyListener readyListener) {
+        AtomicBoolean isCanceled = new AtomicBoolean(false);
         wd = new CancelWaitDialog(Translation.get("downloadSpoiler"), new DownloadAnimation(),
                 new RunAndReady() {
                     @Override
@@ -130,17 +133,24 @@ public class ShowSpoiler extends AbstractShowAction {
 
                     @Override
                     public void run() {
-                    ImportProgress importProgress = new ImportProgress((message, progressMessage, progress) -> {
-                        // todo show progress
-                    });
-                    int result = GroundspeakAPI.ERROR;
-                    if (GlobalCore.getSelectedCache() != null)
-                        result = DescriptionImageGrabber.grabImagesSelectedByCache(importProgress, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
-                    wd.close();
-                    if (result != OK) {
-                        GL.that.toast(LastAPIError);
+                        ImportProgress importProgress = new ImportProgress((message, progressMessage, progress) -> {
+                            // todo show progress
+                        });
+                        int result = GroundspeakAPI.ERROR;
+                        if (GlobalCore.getSelectedCache() != null)
+                            result = DescriptionImageGrabber.grabImagesSelectedByCache(importProgress, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
+                        wd.close();
+                        if (result != OK) {
+                            GL.that.toast(LastAPIError);
+                        }
                     }
-                }});
+
+                    @Override
+                    public void setIsCanceled() {
+                        isCanceled.set(true);
+                    }
+
+                });
         wd.show();
     }
 

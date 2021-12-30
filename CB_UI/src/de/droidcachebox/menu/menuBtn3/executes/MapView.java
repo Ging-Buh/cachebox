@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.Energy;
@@ -347,6 +348,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         infoBubble.setInvisible();
         infoBubble.setClickHandler((v, x, y, pointer, button) -> {
             if (infoBubble.saveButtonClicked(x, y)) {
+                AtomicBoolean isCanceled = new AtomicBoolean(false);
                 new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), new RunAndReady() {
                     @Override
                     public void ready(boolean isCanceled) {
@@ -390,9 +392,13 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         infoBubble.setCache(selCache, null, true);
                         CacheListChangedListeners.getInstance().cacheListChanged();
                     }
-                }
 
-                ).show();
+                    @Override
+                    public void setIsCanceled() {
+                        isCanceled.set(true);
+                    }
+
+                }).show();
             } else {
                 if (infoBubble.getWaypoint() == null) {
                     // if cache has a Final waypoint: activate

@@ -19,6 +19,7 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
@@ -34,6 +35,8 @@ public class ExportGPX {
     }
 
     public void exportGPX() {
+        AbstractFile defaultFile = FileFactory.createFile(Settings.gpxExportFileName.getValue());
+        if (!defaultFile.exists()) FileIO.createFile(Settings.gpxExportFileName.getValue());
         new FileOrFolderPicker(FileIO.getDirectoryName(Settings.gpxExportFileName.getValue()),
                 ".gpx",
                 Translation.get("enterFileName"), // selectExportFolder
@@ -101,11 +104,14 @@ public class ExportGPX {
                     }
 
                 }
+
+                @Override
+                public void setIsCanceled() {
+                    isCanceled.set(true);
+                }
             };
 
             progressDialog = new ProgressDialog("export", new WorkAnimation(), runAndReady);
-
-            progressDialog.setCancelListener(() -> isCanceled.set(true));
 
             GL.that.showDialog(progressDialog);
 

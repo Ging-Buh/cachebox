@@ -1,5 +1,7 @@
 package de.droidcachebox.gdx.activities.notUsed;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.IRunOnGL;
@@ -51,6 +53,7 @@ public class OpenRouteService {
 
             if (!canceld)
                 GL.that.RunOnGL(() -> {
+                    AtomicBoolean isCanceled = new AtomicBoolean(false);
                     wd = new CancelWaitDialog(Translation.get("generateRoute"), new DownloadAnimation(), new RunAndReady() {
                         @Override
                         public void ready(boolean isCanceled) {
@@ -193,6 +196,12 @@ public class OpenRouteService {
                             }
                             TrackList.getInstance().trackListChanged();
                         }
+
+                        @Override
+                        public void setIsCanceled() {
+                            isCanceled.set(true);
+                        }
+
                     });
                     wd.show();
                 });

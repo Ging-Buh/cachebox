@@ -7,6 +7,7 @@ import static de.droidcachebox.core.GroundspeakAPI.fetchTrackable;
 import static de.droidcachebox.core.GroundspeakAPI.uploadTrackableLog;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
@@ -95,6 +96,7 @@ public class Trackables extends V_ListView {
 
     private boolean fetchTB(final String TBCode) {
         if (TBCode.length() > 0) {
+            AtomicBoolean isCanceled = new AtomicBoolean(false);
             CancelWaitDialog xx = new CancelWaitDialog(Translation.get("Search"), new DownloadAnimation(),
                     new RunAndReady() {
                         @Override
@@ -116,6 +118,12 @@ public class Trackables extends V_ListView {
                                 new TB_Details().show(tb);
                             }
                         }
+
+                        @Override
+                        public void setIsCanceled() {
+                            isCanceled.set(true);
+                        }
+
                     });
             xx.show();
         }
@@ -124,6 +132,7 @@ public class Trackables extends V_ListView {
 
     // reload inventory
     public void refreshTbList() {
+        AtomicBoolean isCanceled = new AtomicBoolean(false);
         new CancelWaitDialog(Translation.get("RefreshInventory"), new DownloadAnimation(),
                 new RunAndReady() {
                     @Override
@@ -139,10 +148,17 @@ public class Trackables extends V_ListView {
                         searchList.writeToDB();
                         reloadTB_List();
                     }
+
+                    @Override
+                    public void setIsCanceled() {
+                        isCanceled.set(true);
+                    }
+
                 }).show();
     }
 
     private void logTBs(String title, final int LogTypeId, final String LogText) {
+        AtomicBoolean isCanceled = new AtomicBoolean(false);
         new CancelWaitDialog(title, new DownloadAnimation(), new RunAndReady() {
             @Override
             public void ready(boolean isCanceled) {
@@ -157,6 +173,12 @@ public class Trackables extends V_ListView {
                     }
                 }
             }
+
+            @Override
+            public void setIsCanceled() {
+                isCanceled.set(true);
+            }
+
         }).show();
     }
 

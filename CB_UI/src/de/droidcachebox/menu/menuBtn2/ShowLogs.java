@@ -157,6 +157,12 @@ public class ShowLogs extends AbstractShowAction {
                                     CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
                                 }
                             }
+
+                            @Override
+                            public void setIsCanceled() {
+                                isCanceled.set(true);
+                            }
+
                         }).show();
                     });
                 }

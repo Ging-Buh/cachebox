@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
@@ -167,12 +169,13 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                msgBox = MsgBox.show(Translation.get("LoadFounds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live,
+                msgBox = MsgBox.show(Translation.get("LoadFinds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live,
                         (which, data) -> {
                             switch (which) {
                                 case 1:
                                     msgBox.close();
-                                    wd = new CancelWaitDialog(Translation.get("LoadFounds"), new DownloadAnimation(), new RunAndReady() {
+                                    AtomicBoolean isCanceled = new AtomicBoolean(false);
+                                    wd = new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
                                         @Override
                                         public void ready(boolean isCanceled) {
 
@@ -180,16 +183,22 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
                                         @Override
                                         public void run() {
-                                            result = GroundspeakAPI.fetchMyUserInfos().findCount;
+                                            result = GroundspeakAPI.forceFetchMyUserInfos().findCount;
                                             wd.close();
                                             if (result > -1) {
                                                 String Text = Translation.get("FoundsSetTo", String.valueOf(result));
-                                                MsgBox.show(Text, Translation.get("LoadFinds!"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);
+                                                MsgBox.show(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);
                                                 Settings.FoundOffset.setValue(result);
                                                 Settings.getInstance().acceptChanges();
                                                 AboutView.this.refreshText();
                                             }
                                         }
+
+                                        @Override
+                                        public void setIsCanceled() {
+                                            isCanceled.set(true);
+                                        }
+
                                     });
                                     wd.show();
                                     break;

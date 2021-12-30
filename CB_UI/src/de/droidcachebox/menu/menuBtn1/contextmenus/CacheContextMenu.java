@@ -7,6 +7,7 @@ import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
 import static de.droidcachebox.gdx.controls.messagebox.MsgBox.BTN_LEFT_POSITIVE;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -135,6 +136,7 @@ public class CacheContextMenu {
 
     public void reloadSelectedCache() {
         if (GlobalCore.isSetSelectedCache()) {
+            AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), new RunAndReady() {
                 @Override
                 public void ready(boolean isCanceled) {
@@ -182,6 +184,12 @@ public class CacheContextMenu {
                         }
                     }
                 }
+
+                @Override
+                public void setIsCanceled() {
+                    isCanceled.set(true);
+                }
+
             }).show();
         } else {
             MsgBox.show(Translation.get("NoCacheSelect"), Translation.get("Error"), MsgBoxIcon.Error);

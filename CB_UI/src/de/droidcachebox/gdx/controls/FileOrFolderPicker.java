@@ -107,8 +107,9 @@ public class FileOrFolderPicker extends ActivityBase {
         selectFolder = possibleExtensions == null;
         if (selectFolder)
             this.possibleExtensions = ""; // want to show files on directory selection
-        else
+        else {
             this.possibleExtensions = possibleExtensions;
+        }
         // or selectFolder = fileReturn == null;
         if (selectFolder) {
             btnSelectFolder = new CB_Button(selectFolderText);
@@ -141,6 +142,11 @@ public class FileOrFolderPicker extends ActivityBase {
                         btnPlusMenu.close();
                         InputString is = new InputString("newFile", true) {
                             public void callBack(String inputString) {
+                                if (!inputString.contains(".")) {
+                                    if (!possibleExtensions.substring(1).contains(".")) {
+                                        inputString = inputString + possibleExtensions;
+                                    }
+                                }
                                 FileIO.createFile(currentFolder.getAbsolutePath() + "/" + inputString);
                                 onShow();
                             }
@@ -393,6 +399,11 @@ public class FileOrFolderPicker extends ActivityBase {
                     }).show());
                     fileModifications.addMenuItem("newFile", null, () -> (new InputString("newFile", true) {
                         public void callBack(String inputString) {
+                            if (!inputString.contains(".")) {
+                                if (!possibleExtensions.substring(1).contains(".")) {
+                                    inputString = inputString + possibleExtensions;
+                                }
+                            }
                             FileIO.createFile(currentFolder.getAbsolutePath() + "/" + fileName + "/" + inputString);
                             currentFolder = FileFactory.createFile(currentFolder.getAbsolutePath() + "/" + fileName);
                             onShow();

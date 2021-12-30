@@ -24,6 +24,7 @@ import static de.droidcachebox.core.GroundspeakAPI.searchGeoCaches;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
@@ -377,6 +378,7 @@ public class SearchDialog extends PopUp_Base {
             if (invalidAccessToken) {
                 GL.that.RunOnGL(() -> MsgBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null));
             } else {
+                AtomicBoolean isCanceled = new AtomicBoolean(false);
                 new CancelWaitDialog(Translation.get("Search"), new DownloadAnimation(), new RunAndReady() {
                     @Override
                     public void ready(boolean isCanceled) {
@@ -397,6 +399,12 @@ public class SearchDialog extends PopUp_Base {
                                     });
                         }
                     }
+
+                    @Override
+                    public void setIsCanceled() {
+                        isCanceled.set(true);
+                    }
+
                 }).show();
             }
         });
@@ -405,6 +413,7 @@ public class SearchDialog extends PopUp_Base {
 
     private void searchOnlineNow() {
         Log.debug(log, "searchOnlineNow");
+        AtomicBoolean isCanceled = new AtomicBoolean(false);
         new CancelWaitDialog(Translation.get("searchOverAPI"), new DownloadAnimation(), new RunAndReady() {
             @Override
             public void ready(boolean isCanceled) {
@@ -516,6 +525,12 @@ public class SearchDialog extends PopUp_Base {
 
                 }
             }
+
+            @Override
+            public void setIsCanceled() {
+                isCanceled.set(true);
+            }
+
         }).show();
     }
 

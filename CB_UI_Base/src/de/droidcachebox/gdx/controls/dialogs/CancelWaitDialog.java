@@ -15,8 +15,6 @@
  */
 package de.droidcachebox.gdx.controls.dialogs;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
@@ -25,7 +23,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.CancelListener;
 import de.droidcachebox.utils.RunAndReady;
 
 /**
@@ -36,21 +33,18 @@ import de.droidcachebox.utils.RunAndReady;
 public class CancelWaitDialog extends WaitDialog {
 
     private static final String sClass = "CancelWaitDialog";
-    private final AtomicBoolean isCanceled;
     private final RunAndReady runAndReady;
-    private CancelListener cancelListener;
 
     public CancelWaitDialog(String msg, AnimationBase _animation, RunAndReady runAndReady) {
         super(calcMsgBoxSize(msg, false, false, true, false), sClass);
         this.runAndReady = runAndReady;
-        isCanceled = new AtomicBoolean();
 
         setTitle("");
+
+        // the cancel button
         setButtonCaptions(MsgBoxButton.Cancel);
         mMsgBoxClickListener = (which, data) -> {
-            isCanceled.set(true);
-            if (cancelListener != null)
-                cancelListener.setIsCanceled();
+            runAndReady.setIsCanceled();
             btnRightNegative.disable();
             btnRightNegative.setText(Translation.get("waitForCancel"));
             return false;
@@ -82,10 +76,6 @@ public class CancelWaitDialog extends WaitDialog {
             addChild(animation);
             animation.play();
         }
-    }
-
-    public void setCancelListener(CancelListener cancelListener) {
-        this.cancelListener = cancelListener;
     }
 
     @Override

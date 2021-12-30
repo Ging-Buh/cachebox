@@ -1012,6 +1012,11 @@ public class GroundspeakAPI {
         return me.memberShipType != MemberShipType.Unknown;
     }
 
+    public static UserInfos forceFetchMyUserInfos() {
+        me = null;
+        return fetchMyUserInfos();
+    }
+
     public static UserInfos fetchMyUserInfos() {
         if (me == null || me.memberShipType == MemberShipType.Unknown) {
             Log.debug(sKlasse, "fetchMyUserInfos called. Must fetch. Active now: " + active);

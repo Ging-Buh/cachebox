@@ -113,14 +113,16 @@ public class UpdateCachesState {
 
                     }
                 }
+
+                @Override
+                public void setIsCanceled() {
+                    isCanceled.set(true);
+                }
+
             });
 
-            progressDialog.setCancelListener(() -> isCanceled.set(true));
-
             if (!isAccessTokenInvalid) {
-                GL.that.postAsync(() -> {
-                    GL.that.showDialog(progressDialog);
-                });
+                GL.that.postAsync(() -> GL.that.showDialog(progressDialog));
             }
         });
     }

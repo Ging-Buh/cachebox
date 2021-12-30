@@ -691,6 +691,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
 
     private void importGPXFile(final String externalRequestGpxPath) {
         Date ImportStart = new Date();
+        AtomicBoolean isCanceled = new AtomicBoolean(false);
         TimerTask gpxImportTask = new TimerTask() {
             @Override
             public void run() {
@@ -717,14 +718,18 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                             Importer importer = new Importer();
                             importer.importGpx(externalRequestGpxPath,
                                     new ImportProgress((message, progressMessage, progress) -> {
-                                        // dummy: there is no UI to show the progress
-                                    }),
-                                    null);
+                                    }), isCanceled::get);
                         } catch (Exception ignored) {
                         }
                         CBDB.getInstance().setTransactionSuccessful();
                         CBDB.getInstance().endTransaction();
                     }
+
+                    @Override
+                    public void setIsCanceled() {
+                        isCanceled.set(true);
+                    }
+
                 }).show());
             }
         };

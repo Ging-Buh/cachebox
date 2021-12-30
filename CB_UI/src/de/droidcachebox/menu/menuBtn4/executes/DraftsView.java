@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
@@ -610,6 +611,7 @@ public class DraftsView extends V_ListView {
         }
 
         private void uploadDraftOrLog(final Draft draft, final boolean isLog) {
+            AtomicBoolean isCanceled = new AtomicBoolean(false);
             wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
                 @Override
                 public void ready(boolean isCanceled) {
@@ -663,8 +665,13 @@ public class DraftsView extends V_ListView {
                     }
                     if (wd != null)
                         wd.close();
-
                 }
+
+                @Override
+                public void setIsCanceled() {
+                    isCanceled.set(true);
+                }
+
             });
             wd.show();
         }

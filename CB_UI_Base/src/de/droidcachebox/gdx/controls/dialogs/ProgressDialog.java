@@ -10,7 +10,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.CancelListener;
 import de.droidcachebox.utils.RunAndReady;
 
 public class ProgressDialog extends MsgBox {
@@ -19,7 +18,6 @@ public class ProgressDialog extends MsgBox {
     private final ProgressBar progressBar;
     private final RunAndReady runAndReady;
     private AnimationBase animation;
-    private CancelListener cancelListener;
 
     public ProgressDialog(String title, AnimationBase animation, RunAndReady runAndReady) {
         super(calcMsgBoxSize(title, true, true, true), title);
@@ -29,8 +27,7 @@ public class ProgressDialog extends MsgBox {
         btnRightNegative.setClickHandler((view, x, y, pointer, button) -> {
             btnRightNegative.disable();
             btnRightNegative.setText(Translation.get("waitForCancel"));
-            if (cancelListener != null)
-                cancelListener.setIsCanceled();
+            runAndReady.setIsCanceled();
             return true;
         });
 
@@ -80,10 +77,6 @@ public class ProgressDialog extends MsgBox {
             if (!msg.equals(""))
                 messageTextView.setText(msg);
         });
-    }
-
-    public void setCancelListener(CancelListener cancelListener) {
-        this.cancelListener = cancelListener;
     }
 
     @Override

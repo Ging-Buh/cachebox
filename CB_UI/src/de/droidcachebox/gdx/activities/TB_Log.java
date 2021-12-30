@@ -22,6 +22,7 @@ import static de.droidcachebox.core.GroundspeakAPI.uploadTrackableLog;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WrapType;
@@ -241,6 +242,7 @@ public class TB_Log extends ActivityBase {
     }
 
     private void logOnline() {
+        AtomicBoolean isCanceled = new AtomicBoolean(false);
         wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
             @Override
             public void ready(boolean isCanceled) {
@@ -309,6 +311,12 @@ public class TB_Log extends ActivityBase {
                     GL.that.RunOnGL(() -> Trackables.trackables.refreshTbList());
                 }
             }
+
+            @Override
+            public void setIsCanceled() {
+                isCanceled.set(true);
+            }
+
         });
         wd.show();
     }

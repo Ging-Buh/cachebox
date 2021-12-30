@@ -27,14 +27,15 @@ public class UploadDraftsOrLogs {
     public UploadDraftsOrLogs() {
     }
 
-    public void upload(boolean isLog) {
-        final AtomicBoolean cancel = new AtomicBoolean(false);
+    public void upload(boolean asLog) {
+        final AtomicBoolean isCanceled = new AtomicBoolean(false);
 
         final RunAndReady uploadDrafts = new RunAndReady() {
 
             @Override
             public void run() {
                 progressDialog.setProgress("Upload", "", 0);
+                boolean sendGCVote = Settings.GcVotePassword.getEncryptedValue().length() > 0;
 
                 Drafts drafts = new Drafts();
                 drafts.loadDrafts(Drafts.LoadingType.CanUpload);
@@ -46,13 +47,11 @@ public class UploadDraftsOrLogs {
                         anzahl++;
                 }
 
-                boolean sendGCVote = Settings.GcVotePassword.getEncryptedValue().length() > 0;
-
                 if (anzahl > 0) {
                     uploadMeldung = "";
                     apiKeyError = false;
                     for (Draft draft : drafts) {
-                        if (cancel.get())
+                        if (isCanceled.get())
                             break;
 
                         if (draft.uploaded)
@@ -72,26 +71,28 @@ public class UploadDraftsOrLogs {
                             if (sendGCVote) {
                                 if (draft.gc_Vote > 0) {
                                     try {
-                                        sendCacheVote(draft);
+                                        try {
+                                            if (!GCVote.sendVote(Settings.GcLogin.getValue(), Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
+                                                uploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
+                                            }
+                                        } catch (Exception e) {
+                                            uploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
+                                        }
+
                                     } catch (Exception ignored) {
                                     }
                                 }
                             }
-                            result = GroundspeakAPI.uploadDraftOrLog(draft, isLog);
+                            result = GroundspeakAPI.uploadDraftOrLog(draft, asLog);
                         }
 
                         if (result == GroundspeakAPI.ERROR) {
                             GL.that.toast(GroundspeakAPI.LastAPIError);
-                            uploadMeldung = new StringBuilder()
-                                    .append(uploadMeldung)
-                                    .append(draft.gcCode)
-                                    .append("\n")
-                                    .append(GroundspeakAPI.LastAPIError)
-                                    .append("\n").toString();
+                            uploadMeldung = uploadMeldung + draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
                         } else {
                             // set draft as uploaded only when upload was working
                             draft.uploaded = true;
-                            if (isLog && !draft.isTbDraft) {
+                            if (asLog && !draft.isTbDraft) {
                                 draft.gcLogReference = GroundspeakAPI.logReferenceCode;
                                 Logs.getInstance().resetIsInitialized(); // if own log is written !
                             }
@@ -115,28 +116,19 @@ public class UploadDraftsOrLogs {
                 }
                 DraftsView.getInstance().notifyDataSetChanged();
             }
-        };
 
-        // ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
+            @Override
+            public void setIsCanceled() {
+                isCanceled.set(true);
+            }
+
+        };
 
         GL.that.RunOnGL(() -> {
             progressDialog = new ProgressDialog("uploadDrafts", new DownloadAnimation(), uploadDrafts);
-            progressDialog.setCancelListener(() -> cancel.set(true));
             GL.that.showDialog(progressDialog);
         });
 
-    }
-
-    private void sendCacheVote(Draft draft) {
-
-        // Stimme abgeben
-        try {
-            if (!GCVote.sendVote(Settings.GcLogin.getValue(), Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
-                uploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
-            }
-        } catch (Exception e) {
-            uploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
-        }
     }
 
 }

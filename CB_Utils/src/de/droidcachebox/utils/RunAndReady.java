@@ -31,4 +31,6 @@ public abstract class RunAndReady implements Runnable {
         if (mRunThread != null)
             mRunThread.interrupt();
     }
+
+    public abstract void setIsCanceled();
 }
