@@ -63,6 +63,7 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
@@ -89,7 +90,6 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.IChanged;
-import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.StringReturner;
 import de.droidcachebox.utils.log.Log;
 

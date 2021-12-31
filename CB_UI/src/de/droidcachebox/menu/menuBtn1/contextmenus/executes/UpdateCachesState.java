@@ -20,11 +20,11 @@ import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
+import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 public class UpdateCachesState {
@@ -89,8 +89,6 @@ public class UpdateCachesState {
                         progressDialog.setProgress("", "", (int) progress);
 
                     } while (skip < chkList.size() && !isCanceled.get());
-
-                    progressDialog.close();
 
                 }
 

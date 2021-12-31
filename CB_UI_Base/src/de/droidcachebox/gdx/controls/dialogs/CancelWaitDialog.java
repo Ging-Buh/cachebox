@@ -23,7 +23,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunAndReady;
 
 /**
  * A WaitDialog extended by a runnable that can be canceled
@@ -80,7 +79,7 @@ public class CancelWaitDialog extends WaitDialog {
 
     @Override
     public void onShow() {
-        if (runAndReady != null) runAndReady.doStart();
+        if (runAndReady != null) runAndReady.doStart(this);
     }
 
 }

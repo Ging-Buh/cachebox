@@ -45,6 +45,7 @@ import de.droidcachebox.gdx.controls.RadioButton;
 import de.droidcachebox.gdx.controls.RadioGroup;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
@@ -55,7 +56,6 @@ import de.droidcachebox.menu.menuBtn1.executes.Trackables;
 import de.droidcachebox.menu.menuBtn4.executes.TemplateFormatter;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunAndReady;
 
 public class TB_Log extends ActivityBase {
     private static WaitDialog wd;

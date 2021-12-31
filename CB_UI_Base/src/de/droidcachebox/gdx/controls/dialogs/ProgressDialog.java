@@ -10,7 +10,6 @@ import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunAndReady;
 
 public class ProgressDialog extends MsgBox {
     private final CB_Label messageTextView;
@@ -81,7 +80,7 @@ public class ProgressDialog extends MsgBox {
 
     @Override
     public void onShow() {
-        if (runAndReady != null) runAndReady.doStart();
+        if (runAndReady != null) runAndReady.doStart(this);
     }
 
 }

@@ -65,6 +65,7 @@ import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.ZoomButtons;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
@@ -100,7 +101,6 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.PointL;
-import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 public class MapView extends MapViewBase implements CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
@@ -112,7 +112,6 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     private final PointL lastScreenCenter;
     private final GL_Paint distanceCirclePaint;
     private final GL_Paint directLinePaint;
-    private final CancelWaitDialog wd = null;
     private TreeMap<Integer, Integer> distanceZoomLevel;
     private MultiToggleButton btnMapState;
     private InfoBubble infoBubble;

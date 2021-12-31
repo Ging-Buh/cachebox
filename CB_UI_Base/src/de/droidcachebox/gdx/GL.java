@@ -555,7 +555,7 @@ public class GL implements ApplicationListener {
                     if (dialog == null || dialog.isDisposed())
                         return;
                     if (dialog.equals(mDialog))
-                        throw new IllegalStateException("mDialog can't disposed");
+                        throw new IllegalStateException("dialog can't dispose");
                     dialog.dispose();
                 }
             };

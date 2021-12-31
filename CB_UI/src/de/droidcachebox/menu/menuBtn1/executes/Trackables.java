@@ -23,6 +23,7 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.TB_Details;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
@@ -38,7 +39,6 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn4.executes.TemplateFormatter;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 public class Trackables extends V_ListView {

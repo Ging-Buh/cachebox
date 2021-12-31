@@ -12,8 +12,8 @@ import de.droidcachebox.core.GpxSerializer;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
-import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
+import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.settings.Settings;
@@ -21,7 +21,6 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.log.Log;
 
 public class ExportGPX {
@@ -82,13 +81,6 @@ public class ExportGPX {
 
                 @Override
                 public void ready(boolean canceled) {
-
-                    if (progressDialog != null) {
-                        progressDialog.close();
-                        progressDialog.dispose();
-                        progressDialog = null;
-                    }
-
                     if (canceled) {
                         MsgBox.show(Translation.get("exportedCanceld",
                                 String.valueOf(actExportedCount),
@@ -102,7 +94,6 @@ public class ExportGPX {
                                 Translation.get("export"),
                                 MsgBoxIcon.Information);
                     }
-
                 }
 
                 @Override
@@ -111,7 +102,7 @@ public class ExportGPX {
                 }
             };
 
-            progressDialog = new ProgressDialog("export", new WorkAnimation(), runAndReady);
+            progressDialog = new ProgressDialog("export", null, runAndReady);
 
             GL.that.showDialog(progressDialog);
 

@@ -45,6 +45,7 @@ import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
+import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
@@ -60,7 +61,6 @@ import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
-import de.droidcachebox.utils.RunAndReady;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
@@ -172,19 +172,12 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                 msgBox = MsgBox.show(Translation.get("LoadFinds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live,
                         (which, data) -> {
                             switch (which) {
-                                case 1:
+                                case MsgBox.BTN_LEFT_POSITIVE:
                                     msgBox.close();
                                     AtomicBoolean isCanceled = new AtomicBoolean(false);
                                     wd = new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
                                         @Override
                                         public void ready(boolean isCanceled) {
-
-                                        }
-
-                                        @Override
-                                        public void run() {
-                                            result = GroundspeakAPI.forceFetchMyUserInfos().findCount;
-                                            wd.close();
                                             if (result > -1) {
                                                 String Text = Translation.get("FoundsSetTo", String.valueOf(result));
                                                 MsgBox.show(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);
@@ -195,6 +188,11 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                         }
 
                                         @Override
+                                        public void run() {
+                                            result = GroundspeakAPI.forceFetchMyUserInfos().findCount;
+                                        }
+
+                                        @Override
                                         public void setIsCanceled() {
                                             isCanceled.set(true);
                                         }
@@ -202,7 +200,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                     });
                                     wd.show();
                                     break;
-                                case 3:
+                                case MsgBox.BTN_RIGHT_NEGATIVE:
                                     msgBox.close();
                                     GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"), Settings.FoundOffset.getValue(), new IReturnValueListener() {
                                         @Override

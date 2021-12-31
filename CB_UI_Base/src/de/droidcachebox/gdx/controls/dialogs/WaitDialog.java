@@ -24,13 +24,6 @@ public class WaitDialog extends ButtonDialog {
         super(size.getBounds().asFloat(), name, "", "", null, null, null);
     }
 
-    public static WaitDialog ShowWait() {
-        WaitDialog wd = createDialog("");
-        wd.setCallerName(Trace.getCallerName());
-        wd.show();
-        return wd;
-    }
-
     public static WaitDialog ShowWait(String Msg) {
         WaitDialog wd = createDialog(Msg);
         wd.setCallerName(Trace.getCallerName());
