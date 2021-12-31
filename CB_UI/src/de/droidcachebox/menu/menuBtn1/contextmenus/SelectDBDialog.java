@@ -81,7 +81,8 @@ public class SelectDBDialog extends AbstractAction {
 
     private void returnFromSelectDB() {
 
-        wd = WaitDialog.ShowWait("Load DB ...");
+        wd = new WaitDialog("Load DB ...");
+        wd.show();
 
         Log.debug(log, "\r\nSwitch DB " + Settings.DatabaseName.getValue());
         CBDB.getInstance().close();
@@ -153,13 +154,6 @@ public class SelectDBDialog extends AbstractAction {
         ViewManager.that.filterSetChanged();
 
         wd.dismis();
-/*
-        Thread thread = new Thread(() -> {
-        });
-
-        thread.start();
-
- */
 
     }
 }

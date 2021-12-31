@@ -264,7 +264,8 @@ public class EditFilterSettings extends ActivityBase {
 
     public static void applyFilter(final FilterProperties filterProperties) {
 
-        pd = WaitDialog.ShowWait(Translation.get("FilterCaches"));
+        pd = new WaitDialog(Translation.get("FilterCaches"));
+        pd.show();
 
         new Thread(() -> {
             try {

@@ -46,7 +46,6 @@ import de.droidcachebox.gdx.controls.RadioGroup;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.controls.messagebox.MsgBox;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
@@ -58,7 +57,6 @@ import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
 public class TB_Log extends ActivityBase {
-    private static WaitDialog wd;
     private static TB_Log that;
     private Trackable TB;
     private CB_Button btnClose;
@@ -243,20 +241,13 @@ public class TB_Log extends ActivityBase {
 
     private void logOnline() {
         AtomicBoolean isCanceled = new AtomicBoolean(false);
-        wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
+        final int[] result = {OK};
+        CancelWaitDialog wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
             @Override
             public void ready(boolean isCanceled) {
 
-            }
-
-            @Override
-            public void run() {
-                int result = uploadTrackableLog(TB, getCache_GcCode(), LogType.CB_LogType2GC(LT), new Date(), edit.getText());
-
-                if (result == ERROR) {
+                if (result[0] == ERROR) {
                     GL.that.toast(LastAPIError);
-                    if (wd != null)
-                        wd.close();
                     MsgBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question, (which, data) -> {
                         switch (which) {
                             case MsgBox.BTN_RIGHT_NEGATIVE:
@@ -275,10 +266,8 @@ public class TB_Log extends ActivityBase {
                     return;
                 }
 
-                if (result != OK) {
+                if (result[0] != OK) {
                     GL.that.toast(LastAPIError);
-                    if (wd != null)
-                        wd.close();
                     MsgBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question,
                             (which, data) -> {
                                 switch (which) {
@@ -302,14 +291,17 @@ public class TB_Log extends ActivityBase {
                     GL.that.RunOnGL(() -> MsgBox.show(LastAPIError, Translation.get("Error"), MsgBoxIcon.Error));
                 }
 
-                if (wd != null)
-                    wd.close();
                 TB_Log.this.finish();
 
                 // Refresh TB List after Droped Off or Picked or Grabed
                 if (LT == LogType.dropped_off || LT == LogType.retrieve || LT == LogType.grab_it) {
                     GL.that.RunOnGL(() -> Trackables.trackables.refreshTbList());
                 }
+            }
+
+            @Override
+            public void run() {
+                result[0] = uploadTrackableLog(TB, getCache_GcCode(), LogType.CB_LogType2GC(LT), new Date(), edit.getText());
             }
 
             @Override

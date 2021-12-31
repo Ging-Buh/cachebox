@@ -15,19 +15,14 @@
  */
 package de.droidcachebox.gdx.controls.dialogs;
 
-import de.droidcachebox.gdx.controls.CB_Label;
-import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
 import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.gdx.math.SizeF;
-import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 
 /**
- * A WaitDialog extended by a runnable that can be canceled
- *
- * @author Longri
+ * A WaitDialog with a cancelButton
+ * the runnable (runAndReady) starts onShow
  */
 public class CancelWaitDialog extends WaitDialog {
 
@@ -35,12 +30,10 @@ public class CancelWaitDialog extends WaitDialog {
     private final RunAndReady runAndReady;
 
     public CancelWaitDialog(String msg, AnimationBase _animation, RunAndReady runAndReady) {
-        super(calcMsgBoxSize(msg, false, false, true, false), sClass);
+        super(msg, calcMsgBoxSize(msg, false, false, true, false), sClass);
         this.runAndReady = runAndReady;
 
-        setTitle("");
-
-        // the cancel button
+        // the cancel button (WaitDialog has none)
         setButtonCaptions(MsgBoxButton.Cancel);
         mMsgBoxClickListener = (which, data) -> {
             runAndReady.setIsCanceled();
@@ -49,29 +42,13 @@ public class CancelWaitDialog extends WaitDialog {
             return false;
         };
 
-        SizeF contentSize = getContentSize();
-        label = new CB_Label(contentSize.getBounds());
-        label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UiSizes.getInstance().getButtonHeight());
-        CB_RectF imageRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
-        label.setX(imageRec.getMaxX() + margin);
-        label.setWrappedText(msg);
-        label.setY(0);
-        int lineCount = label.getLineCount();
-        if (lineCount == 1) {
-            label.setText(msg);
-            label.setVAlignment(VAlignment.CENTER);
-        } else {
-            label.setVAlignment(VAlignment.TOP);
-        }
-        addChild(label);
+        // label with msg-text comes from WaitDialog
 
-        animation = _animation;
+        // set animation position and size from WaitDialog
         if (animation != null) {
-            CB_RectF animationRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
-            animation.setRec(animationRec);
-            // SizeF contentSize = getContentSize();
-            float imageYPos = (contentSize.getHeight() < (animation.getHeight() * 1.7)) ? contentSize.getHalfHeight() - animation.getHalfHeight() : contentSize.getHeight() - animation.getHeight() - margin;
-            animation.setY(imageYPos);
+            _animation.setRec(new CB_RectF(0, 0, animation.getWidth(), animation.getHeight()));
+            animation.setY(_animation.getY());
+            animation = _animation;
             addChild(animation);
             animation.play();
         }

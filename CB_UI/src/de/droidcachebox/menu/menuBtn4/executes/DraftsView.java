@@ -54,7 +54,6 @@ import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
@@ -87,7 +86,6 @@ public class DraftsView extends V_ListView {
     private boolean firstShow;
     private Drafts drafts;
     private DraftsViewAdapter draftsViewAdapter;
-    private WaitDialog wd;
     private EditDraft editDraft;
 
     private DraftsView() {
@@ -611,11 +609,46 @@ public class DraftsView extends V_ListView {
         }
 
         private void uploadDraftOrLog(final Draft draft, final boolean isLog) {
+            final int[] result = {OK};
             AtomicBoolean isCanceled = new AtomicBoolean(false);
-            wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
+            new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
                 @Override
                 public void ready(boolean isCanceled) {
 
+                    if (result[0] == OK) {
+                        // after direct Log change state to uploaded
+                        draft.uploaded = true;
+                        if (isLog && !draft.isTbDraft) {
+                            draft.gcLogReference = GroundspeakAPI.logReferenceCode;
+                            Logs.getInstance().resetIsInitialized(); // if own log is written !
+                        }
+                        addOrChangeDraft(draft, false, EditDraft.SaveMode.LocalUpdate);
+                    } else {
+                        MsgBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question, (which, data) -> {
+                            switch (which) {
+                                case MsgBox.BTN_RIGHT_NEGATIVE:
+                                    uploadDraftOrLog(draft, true);
+                                    // addOrChangeDraft(draft, isNewDraft, true);// try again
+                                    break;
+                                case MsgBox.BTN_MIDDLE_NEUTRAL:
+                                    break;
+                                case MsgBox.BTN_LEFT_POSITIVE:
+                                    // is alread in local database
+                                    // addOrChangeDraft(draft, isNewDraft, false);// create Draft
+                                    uploadDraftOrLog(draft, false); // or nothing
+                            }
+                            return true;
+                        });
+
+                        // todo 2x MsgBox geht nicht
+                        /*
+                        if (GroundspeakAPI.LastAPIError.length() > 0) {
+                            MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("Error"), MsgBoxIcon.Error, (which, data) -> {
+                            });
+                        }
+
+                         */
+                    }
                 }
 
                 @Override
@@ -632,39 +665,7 @@ public class DraftsView extends V_ListView {
                             }
                         }
                     }
-
-                    if (OK == GroundspeakAPI.uploadDraftOrLog(draft, isLog)) {
-                        // after direct Log change state to uploaded
-                        draft.uploaded = true;
-                        if (isLog && !draft.isTbDraft) {
-                            draft.gcLogReference = GroundspeakAPI.logReferenceCode;
-                            Logs.getInstance().resetIsInitialized(); // if own log is written !
-                        }
-                        addOrChangeDraft(draft, false, EditDraft.SaveMode.LocalUpdate);
-                    } else {
-                        // Error handling
-                        MsgBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question, (which, data) -> {
-                            switch (which) {
-                                case MsgBox.BTN_RIGHT_NEGATIVE:
-                                    uploadDraftOrLog(draft, true);
-                                    // addOrChangeDraft(draft, isNewDraft, true);// try again
-                                    break;
-                                case MsgBox.BTN_MIDDLE_NEUTRAL:
-                                    break;
-                                case MsgBox.BTN_LEFT_POSITIVE:
-                                    // is alread in local database
-                                    // addOrChangeDraft(draft, isNewDraft, false);// create Draft
-                                    uploadDraftOrLog(draft, false); // or nothing
-                            }
-                            return true;
-                        });
-                    }
-
-                    if (GroundspeakAPI.LastAPIError.length() > 0) {
-                        MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("Error"), MsgBoxIcon.Error);
-                    }
-                    if (wd != null)
-                        wd.close();
+                    result[0] = GroundspeakAPI.uploadDraftOrLog(draft, isLog);
                 }
 
                 @Override
@@ -672,8 +673,7 @@ public class DraftsView extends V_ListView {
                     isCanceled.set(true);
                 }
 
-            });
-            wd.show();
+            }).show();
         }
 
         private void selectCacheFromDraft() {

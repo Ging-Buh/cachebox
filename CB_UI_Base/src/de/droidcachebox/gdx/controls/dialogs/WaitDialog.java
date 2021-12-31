@@ -1,7 +1,5 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
@@ -13,60 +11,44 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.utils.log.Log;
-import de.droidcachebox.utils.log.Trace;
 
 public class WaitDialog extends ButtonDialog {
-    private static final String log = "WaitDialog";
+    // private static final String sClass = "WaitDialog";
     AnimationBase animation;
 
-    public WaitDialog(Size size, String name) {
+    public WaitDialog(String msg, Size size, String name) {
         super(size.getBounds().asFloat(), name, "", "", null, null, null);
-    }
 
-    public static WaitDialog ShowWait(String Msg) {
-        WaitDialog wd = createDialog(Msg);
-        wd.setCallerName(Trace.getCallerName());
-        wd.show();
-        return wd;
-    }
+        setTitle("");
 
-    protected static WaitDialog createDialog(String msg) {
-
-        Size size = calcMsgBoxSize(msg, false, false, true, false);
-
-        WaitDialog waitDialog = new WaitDialog(size, "WaitDialog");
-        waitDialog.setTitle("");
-
-        SizeF contentSize = waitDialog.getContentSize();
-
+        // the msg on a label
+        SizeF contentSize = getContentSize();
+        label = new CB_Label(contentSize.getBounds());
+        label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UiSizes.getInstance().getButtonHeight());
         CB_RectF imageRec = new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
-        waitDialog.animation = new WorkAnimation(imageRec);
-        waitDialog.addChild(waitDialog.animation);
-
-        waitDialog.label = new CB_Label(contentSize.getBounds());
-        waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UiSizes.getInstance().getButtonHeight());
-        waitDialog.label.setX(imageRec.getMaxX() + margin);
-        waitDialog.label.setWrappedText(msg);
-
-        int lineCount = waitDialog.label.getLineCount();
-        waitDialog.label.setY(0);
-
+        label.setX(imageRec.getMaxX() + margin);
+        label.setWrappedText(msg);
+        label.setY(0);
+        int lineCount = label.getLineCount();
         if (lineCount == 1) {
-            waitDialog.label.setText(msg);
-            waitDialog.label.setVAlignment(VAlignment.CENTER);
+            label.setText(msg);
+            label.setVAlignment(VAlignment.CENTER);
         } else {
-            waitDialog.label.setVAlignment(VAlignment.TOP);
+            label.setVAlignment(VAlignment.TOP);
         }
+        addChild(label);
 
-        float imageYPos = (contentSize.getHeight() < (waitDialog.animation.getHeight() * 1.7)) ? contentSize.getHalfHeight() - waitDialog.animation.getHalfHeight() : contentSize.getHeight() - waitDialog.animation.getHeight() - margin;
-        waitDialog.animation.setY(imageYPos);
+        animation = new WorkAnimation(imageRec);
+        float imageYPos = (contentSize.getHeight() < (animation.getHeight() * 1.7)) ? contentSize.getHalfHeight() - animation.getHalfHeight() : contentSize.getHeight() - animation.getHeight() - margin;
+        animation.setY(imageYPos);
+        addChild(animation);
 
-        waitDialog.addChild(waitDialog.label);
-        waitDialog.setButtonCaptions(MsgBoxButton.NOTHING);
+        setButtonCaptions(MsgBoxButton.NOTHING);
 
-        return waitDialog;
+    }
 
+    public WaitDialog(String msg) {
+        this(msg, calcMsgBoxSize(msg, false, false, true, false), "WaitDialog");
     }
 
     public void setAnimation(final AnimationBase animation) {
@@ -81,28 +63,10 @@ public class WaitDialog extends ButtonDialog {
     }
 
     public void dismis() {
-        Log.debug(log, "WaitDialog.dismis");
         GL.that.RunOnGL(() -> {
             GL.that.closeDialog(WaitDialog.this);
             GL.that.renderOnce();
         });
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        String caller = Trace.getCallerName(1);
-        Log.debug(log, "WaitDialog.disposed called:" + caller);
-    }
-
-    @Override
-    public void render(Batch batch) {
-        super.render(batch);
-    }
-
-    @Override
-    public String toString() {
-        return getName() + label.getText() + " created by: " + callerName;
     }
 
 }
