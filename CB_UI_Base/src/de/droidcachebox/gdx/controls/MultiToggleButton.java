@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2020 team-cachebox.de
+ * Copyright (C) 2011-2022 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,9 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
@@ -29,8 +32,6 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-
-import java.util.ArrayList;
 
 public class MultiToggleButton extends CB_Button {
 

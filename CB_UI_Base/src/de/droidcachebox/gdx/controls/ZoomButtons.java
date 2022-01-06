@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2020 team-cachebox.de
+ * Copyright (C) 2011-2022 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,16 @@ package de.droidcachebox.gdx.controls;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
-
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ZoomButtons extends CB_View_Base {
 

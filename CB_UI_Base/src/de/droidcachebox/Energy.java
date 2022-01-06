@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2020 team-cachebox.de
+ * Copyright (C) 2011-2022 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package de.droidcachebox;
 
+import java.util.ArrayList;
+
 import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
 
 /**
  * Contains the static queries of the state of CacheBox, for the decision whether a job being processed has to do. Thus delivers

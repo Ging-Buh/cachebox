@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2020 team-cachebox.de
+ * Copyright (C) 2011-2022 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package de.droidcachebox.locator;
 
-import de.droidcachebox.utils.CB_List;
-
 import java.util.Iterator;
+
+import de.droidcachebox.utils.CB_List;
 
 /**
  * Klasse zum verwalten von GPS Status
