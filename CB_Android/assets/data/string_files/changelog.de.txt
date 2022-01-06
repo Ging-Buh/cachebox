@@ -5,6 +5,11 @@
 • Streichungen = -
 • Offen = •
 
+Version 3717 vom 6. Januar 2022
+* Fortschrittsanzeige u.a. beim Download von FZK-Karten
+* Mapsforge Karte hinzufügen
+* Abbruch Funktionalität teilweise überarbeitet
+
 Version 3698 vom 2.Dezember 2021
 ~ Überarbeitung der Einstellungsmenüs
 + Im Kartenmenü: Unter "Andere" kann eine Mapsforge map-Datei zur Kartendarstellung aus einem beliebigen Verzeichnis gewählt werden. (Berechtigung/Auswahl über den Android Filepicker)

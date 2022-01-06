@@ -5,6 +5,11 @@
 • Deletions = -
 • Unsolved = •
 
+Version 3717 dated January 6, 2022
+* make fzk maps download progress visible again
+* corect a bug in mapsforge additional layer
+* make cancel work again for some activities
+
 Version 3698 dated December 2, 2021
 ~ Revision of the settings menu
 + In the map menu: Under "Other", a Mapsforge map file for the map display can be selected from any directory. (Authorization / selection via the Android filepicker)
