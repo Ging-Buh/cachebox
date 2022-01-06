@@ -109,7 +109,7 @@ public class MsgBox extends Dialog {
 
         CB_RectF contentSize = msgBox.getContentSize().getBounds();
         ScrollBox scrollBox = new ScrollBox(contentSize);
-        scrollBox.initRow(BOTTOMUP);
+        scrollBox.initRow(BOTTOMUp);
         scrollBox.setVirtualHeight(labelHeight);
         scrollBox.addLast(msgBox.label);
 
@@ -159,7 +159,7 @@ public class MsgBox extends Dialog {
         ScrollBox scrollBox = new ScrollBox(msgBox.getContentSize().getBounds());
         scrollBox.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getInstance().getButtonHeight());
         scrollBox.setPos(imageRec.getMaxX() + 5, 0);
-        scrollBox.initRow(BOTTOMUP);
+        scrollBox.initRow(BOTTOMUp);
         scrollBox.setVirtualHeight(labelHeight);
         scrollBox.addLast(msgBox.label);
 
@@ -258,7 +258,7 @@ public class MsgBox extends Dialog {
     }
 
     private void createButtons(int anzahl, String left, String middle, String right) {
-        initRow(BOTTOMUP, margin);
+        initRow(BOTTOMUp, margin);
         setBorders(margin, margin);
         if (anzahl > 0) {
             left = Translation.get(left);

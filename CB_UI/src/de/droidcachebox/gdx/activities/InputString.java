@@ -34,7 +34,7 @@ public class InputString extends ActivityBase {
     private void createControls(boolean oneLine) {
         btnOK = new CB_Button(Translation.get("ok"));
         btnCancel = new CB_Button(Translation.get("cancel"));
-        this.initRow(BOTTOMUP);
+        this.initRow(BOTTOMUp);
         this.addNext(btnOK);
         this.addLast(btnCancel);
         scrollBox = new ScrollBox(0, getAvailableHeight());

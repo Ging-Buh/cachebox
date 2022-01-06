@@ -69,7 +69,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         // das übliche
         btnOK = new CB_Button(Translation.get("ok"));
         btnCancel = new CB_Button(Translation.get("cancel"));
-        initRow(BOTTOMUP);
+        initRow(BOTTOMUp);
         addNext(btnOK);
         addLast(btnCancel);
         mainPanel = new ScrollBox(0, getAvailableHeight());

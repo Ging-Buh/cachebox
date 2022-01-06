@@ -238,7 +238,7 @@ public class CB_Button extends CB_View_Base {
     }
 
     protected void layout() {
-        this.initRow(BOTTOMUP);
+        this.initRow(BOTTOMUp);
         if (lblTxt != null) this.addLast(lblTxt);
         GL.that.renderOnce();
     }

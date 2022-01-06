@@ -111,11 +111,11 @@ public class TB_Details extends ActivityBase {
 
     private void layout() {
         removeChilds();
-        initRow(BOTTOMUP);
+        initRow(BOTTOMUp);
         addNext(btnAction);
         addLast(btnClose);
 
-        initRow(TOPDOWN);
+        initRow(TOPDown);
         addNext(icon, FIXED);
         icon.setImageURL(trackable.getIconUrl());
         title.setWrapType(WrapType.WRAPPED);

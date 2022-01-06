@@ -129,7 +129,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
 
         mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.getInstance().getInfoSliderHeight()), "SlideBox");
         mSlideBox.setBackground(Sprites.progressBack); // topBorder + bottomBorder are ignored, so initRow
-        mSlideBox.initRow(TOPDOWN, mSlideBox.getHeight());
+        mSlideBox.initRow(TOPDown, mSlideBox.getHeight());
         float w = Fonts.measureForBigFont("G.").width;
         last5Logs = new CB_Label[5];
         for (int i = 0; i < 5; i++) {

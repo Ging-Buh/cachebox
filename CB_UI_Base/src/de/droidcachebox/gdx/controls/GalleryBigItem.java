@@ -17,6 +17,7 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+
 import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.Sprites;
@@ -39,7 +40,7 @@ public class GalleryBigItem extends ListViewItemBackground {
         super(rec, Index, "");
         iloader = loader;
 
-        this.initRow(BOTTOMUP);
+        this.initRow(BOTTOMUp);
         CB_Label lbl = new CB_Label(label);
         lbl.setWidth(this.getWidth());
         lbl.setWrapType(WrapType.WRAPPED);

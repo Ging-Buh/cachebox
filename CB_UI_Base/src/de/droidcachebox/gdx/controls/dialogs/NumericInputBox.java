@@ -54,7 +54,7 @@ public class NumericInputBox extends CB_View_Base {
 
         NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withoutDotOkCancel, getKeyListener(msgBox));
 
-        msgBox.initRow(BOTTOMUP, margin);
+        msgBox.initRow(BOTTOMUp, margin);
         msgBox.addLast(numPad);
 
         msgBox.setFooterHeight(msgBox.getHeightFromBottom());
@@ -127,7 +127,7 @@ public class NumericInputBox extends CB_View_Base {
         NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withOkCancel, getKeyListener(msgBox));
         numPad.setY(margin);
 
-        msgBox.initRow(BOTTOMUP, margin);
+        msgBox.initRow(BOTTOMUp, margin);
         msgBox.addLast(numPad);
         msgBox.setFooterHeight(msgBox.getHeightFromBottom());
 
@@ -188,7 +188,7 @@ public class NumericInputBox extends CB_View_Base {
         NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withDoubleDotOkCancel, getKeyListener(msgBox));
         numPad.setY(margin);
 
-        msgBox.initRow(BOTTOMUP, margin);
+        msgBox.initRow(BOTTOMUp, margin);
         msgBox.addLast(numPad);
         msgBox.setFooterHeight(msgBox.getHeightFromBottom());
 

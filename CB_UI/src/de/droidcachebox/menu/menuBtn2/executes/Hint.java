@@ -21,7 +21,7 @@ public class Hint extends MsgBox {
         scrollBox = new ScrollBox(rec);
         label = new CB_Label("Hint"); // oder ohne Parameter aufrufen
         // damit label.Pos auf (leftBorder, bottomBorder) gesetzt wird (ev. 0,0)
-        scrollBox.initRow(BOTTOMUP);
+        scrollBox.initRow(BOTTOMUp);
         // damit die Breite des Labels zur Bestimmung des Umbruchs gesetzt ist:
         scrollBox.addLast(label);
         label.setWrappedText(UnitFormatter.Rot13(hint)); // , Fonts.getBig()

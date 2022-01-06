@@ -193,7 +193,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     }
 
     private void initLayout() {
-        initRow(BOTTOMUP);
+        initRow(BOTTOMUp);
         addNext(btnOK);
         addNext(btnLog);
         addNext(btnDraft);
@@ -202,7 +202,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         scrollBox.setBackground(this.getBackground());
 
         scrollBoxContent = new Box(scrollBox.getInnerWidth(), 0);
-        scrollBoxContent.initRow(BOTTOMUP);
+        scrollBoxContent.initRow(BOTTOMUp);
         giveFavoritePoint.setChecked(false);
         if (GroundspeakAPI.hasBeenOnline()) {
             if (GroundspeakAPI.isPremiumMember()) {

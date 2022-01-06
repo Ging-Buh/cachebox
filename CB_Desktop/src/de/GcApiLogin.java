@@ -34,6 +34,11 @@ public class GcApiLogin {
             }
 
             @Override
+            public void setIsCanceled() {
+
+            }
+
+            @Override
             public void run() {
                 String GC_AuthUrl;
 

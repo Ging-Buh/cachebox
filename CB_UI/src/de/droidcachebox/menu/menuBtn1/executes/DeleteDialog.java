@@ -54,7 +54,7 @@ public class DeleteDialog extends ButtonDialog {
         lblDelFounds = new CB_Label(Translation.get("DelFound"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
 
         Box box = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight()), "");
-        box.initRow(BOTTOMUP);
+        box.initRow(BOTTOMUp);
         box.addNext(lblDelFilter);
         box.addNext(lblDelArchived);
         box.addLast(lblDelFounds);

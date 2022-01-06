@@ -45,7 +45,7 @@ public class ImageButton extends CB_Button {
     @Override
     protected void layout() {
         if (image == null) return;
-        initRow(BOTTOMUP);
+        initRow(BOTTOMUp);
         image.setHeight(innerHeight);
         image.setWidth(innerHeight);
         if (lblTxt != null) {

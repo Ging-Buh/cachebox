@@ -40,7 +40,7 @@ import de.droidcachebox.utils.log.Log;
 public class GL_View_Base extends CB_RectF {
     protected static final int MOUSE_WHEEL_POINTER_UP = -280272;
     protected static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
-    private static final String log = "GL_View_Base";
+    private static final String sClass = "GL_View_Base";
     private static final ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<>();
     public static boolean debug = false;
     public static boolean disableScissor = false;
@@ -75,7 +75,8 @@ public class GL_View_Base extends CB_RectF {
     protected boolean thisInvalidate;
     protected float mScale;
     protected Object data;
-    float weight;
+    protected float weight;
+    protected int elementAlignment = 0; // bottom
     private OnClickListener mOnLongClickListener;
     private OnClickListener mOnDoubleClickListener;
     private float mRotate = 0;
@@ -493,7 +494,7 @@ public class GL_View_Base extends CB_RectF {
         try {
             render(batch);
         } catch (IllegalStateException e) {
-            Log.err(log, "renderChilds", e);
+            Log.err(sClass, "renderChilds", e);
             // reset Colorfilter ?
             if (batchHasColor) {
                 // alte abgespeicherte Farbe des Batches wieder herstellen!
@@ -676,7 +677,7 @@ public class GL_View_Base extends CB_RectF {
             innerHeight = height - topBorder - bottomBorder;
             onResized(this);
         } catch (Exception ex) {
-            Log.err(log, "resize", ex);
+            Log.err(sClass, "resize", ex);
         }
         debugSprite = null;
 
@@ -719,7 +720,7 @@ public class GL_View_Base extends CB_RectF {
                     view.onStop();
                 }
             } catch (Exception e) {
-                Log.err(log, "onStop", e);
+                Log.err(sClass, "onStop", e);
             }
         }
     }
@@ -750,7 +751,7 @@ public class GL_View_Base extends CB_RectF {
                 }
             }
         } catch (Exception e) {
-            Log.err(log, "click", e);
+            Log.err(sClass, "click", e);
         }
         return handled;
     }
@@ -791,7 +792,7 @@ public class GL_View_Base extends CB_RectF {
 
             }
         } catch (Exception e) {
-            Log.err(log, "doubleClick", e);
+            Log.err(sClass, "doubleClick", e);
         }
         return behandelt;
     }
@@ -828,7 +829,7 @@ public class GL_View_Base extends CB_RectF {
 
             }
         } catch (Exception e) {
-            Log.err(log, "longClick", e);
+            Log.err(sClass, "longClick", e);
         }
         return behandelt;
     }
@@ -998,7 +999,7 @@ public class GL_View_Base extends CB_RectF {
                 }
             });
         } catch (Exception ex) {
-            Log.err(log, "RunOnGLWithThreadCheck", ex);
+            Log.err(sClass, "RunOnGLWithThreadCheck", ex);
         }
         name = null;
         data = null;

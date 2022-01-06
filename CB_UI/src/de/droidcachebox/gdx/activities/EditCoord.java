@@ -121,7 +121,7 @@ public class EditCoord extends ActivityBase {
 
         CB_Button btnOK = new CB_Button("btnOK");
         CB_Button btnCancel = new CB_Button("btnCancel");
-        initRow(BOTTOMUP);
+        initRow(BOTTOMUp);
         addNext(btnOK);
         addLast(btnCancel);
         btnCancel.setText(Translation.get("cancel"));
@@ -516,7 +516,7 @@ public class EditCoord extends ActivityBase {
             return true;
         });
 
-        panel.initRow(BOTTOMUP);
+        panel.initRow(BOTTOMUp);
         panel.addNext(dummy1); // dummy links
         panel.addNext(btnNumpad[0]);
         panel.addLast(leerTaste); // Leertaste rechts, nur bei UTM-Eingabe sichtbar

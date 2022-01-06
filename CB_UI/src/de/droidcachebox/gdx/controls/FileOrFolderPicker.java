@@ -195,7 +195,7 @@ public class FileOrFolderPicker extends ActivityBase {
         if (secondSDCard.length() > 0) addNext(btnSD2);
         addNext(btnHome);
         finaliseRow();
-        initRow(BOTTOMUP);
+        initRow(BOTTOMUp);
         if (selectFolder) {
             addNext(btnSelectFolder);
         } else {

@@ -97,7 +97,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         // createHeaderLine();
         btnOK = new CB_Button(Translation.get("import"));
         btnCancel = new CB_Button(Translation.get("cancel"));
-        this.initRow(BOTTOMUP);
+        this.initRow(BOTTOMUp);
         this.addNext(btnOK);
         this.addLast(btnCancel);
         scrollBox = new ScrollBox(0, this.getAvailableHeight());

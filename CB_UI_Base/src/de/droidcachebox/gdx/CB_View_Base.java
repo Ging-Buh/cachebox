@@ -1,19 +1,20 @@
 package de.droidcachebox.gdx;
 
+import java.util.ArrayList;
+
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
-import de.droidcachebox.utils.MoveableList;
 
 public class CB_View_Base extends GL_View_Base {
 
     public static final int FIXED = -1;
-    public static final boolean BOTTOMUP = false;
-    protected static final boolean TOPDOWN = true;
+    public static final boolean BOTTOMUp = false;
+    public static final boolean TOPDown = true;
     // row handling by arbor95: makes live much easier
     // Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
-    // the position and width (stretched equally, weighted, fixed or percentual) of the objects is calculated automatically
-    private MoveableList<GL_View_Base> row;
-    private boolean topdown = TOPDOWN; // false = bottomup
+    // the position and width (stretched equally, weighted, fixed or percentage) of the objects is calculated automatically
+    private ArrayList<GL_View_Base> row;
+    private boolean topdown = TOPDown; // false = bottomUp
     private float rowYPos = 0;
     private float xMargin = 0;
     private float yMargin = 0;
@@ -22,12 +23,16 @@ public class CB_View_Base extends GL_View_Base {
 
     // # Constructors
 
-    public CB_View_Base(String name) {
-        this(new CB_RectF(), null, name);
+    public CB_View_Base(SizeF size, String Name) {
+        super(size, Name);
     }
 
     public CB_View_Base(CB_RectF rec, GL_View_Base Parent, String Name) {
         super(rec, Parent, Name);
+    }
+
+    public CB_View_Base(String name) {
+        this(new CB_RectF(), null, name);
     }
 
     public CB_View_Base(float x, float y, float width, float height, String name) {
@@ -42,12 +47,8 @@ public class CB_View_Base extends GL_View_Base {
         this(rec, null, name);
     }
 
-    public CB_View_Base(SizeF size, String Name) {
-        super(size, Name);
-    }
-
     /**
-     * * used Height from Bottom with correct topborder
+     * * used Height from Bottom with correct top border
      **/
     public float getHeightFromBottom() {
         return rowYPos - yMargin + topBorder;
@@ -103,10 +104,20 @@ public class CB_View_Base extends GL_View_Base {
     }
 
     /**
+     * @param alignment for placing elements
+     *                  0 is at bottom (the default),
+     *                  other is at top (e.g. for images),
+     *                  middle is not yet implemented
+     */
+    public void setElementAlignment(int alignment) {
+        elementAlignment = alignment;
+    }
+
+    /**
      * * start objects at top
      **/
     public void initRow() {
-        initRow(TOPDOWN);
+        initRow(TOPDown);
     }
 
     /**
@@ -114,10 +125,10 @@ public class CB_View_Base extends GL_View_Base {
      **/
     public void initRow(boolean direction) {
         if (direction) {
-            initRow(direction, getHeight() - topBorder);
+            initRow(true, getHeight() - topBorder);
         } else {
             // starting at 0
-            initRow(direction, bottomBorder);
+            initRow(false, bottomBorder);
         }
     }
 
@@ -126,13 +137,13 @@ public class CB_View_Base extends GL_View_Base {
      **/
     public void initRow(boolean direction, float y) {
         if (row == null) {
-            row = new MoveableList<>();
+            row = new ArrayList<>();
         } else {
             row.clear();
         }
         rowYPos = y;
         if (bottomYAdd < 0) {
-            // nur beim ersten Mal, sonst müssen die Werte erhalten bleiben
+            // only if empty area, else do not change these values
             if (direction) {
                 bottomYAdd = bottomBorder;
                 topYAdd = y;
@@ -160,29 +171,31 @@ public class CB_View_Base extends GL_View_Base {
         return topYAdd - bottomYAdd;
     }
 
+    /**
+     * do not use, if you added from top and from bottom
+     * redo adjustHeight, if you add more
+     */
     public void adjustHeight() {
-        // nicht sinnvoll wenn von unten und von oben was hinzugefügt wurde
-        // und danach auch bitte nichts mehr hinzufügen.
         if (topdown) {
             setHeight(getHeight() - topYAdd);
-            // Die Position aller Clients muss bei TopDown neu gesetzt werden.
+            // the position of all children must be recalculated
             for (int i = 0, n = childs.size(); i < n; i++) {
                 GL_View_Base view = childs.get(i);
                 view.setPos(view.getX(), view.getY() - topYAdd);
             }
-            // topYAdd = bottomYAdd; // fertig gebaut
+            // topYAdd = bottomYAdd; // ready
         } else {
             setHeight(bottomYAdd);
-            // topYAdd = bottomYAdd; // fertig gebaut
+            // topYAdd = bottomYAdd; // ready
         }
     }
 
-    // Note: Final Position and Size of objects is done on addLast
-    // Note: Changing of objects (depending on final Position or Size) must be
-    // done after addLast
-    // Examples: setting Text of a Button, ....
-    // Now, after rework of Label, this is no longer true. Text will be set
-    // correctly (independent of call order)
+    /*
+    Note: Final Position and Size of objects is done on addLast,
+    so changes, that depend on final Position or Size must be done after addLast
+    Examples: wrapping of text, ...
+
+     */
 
     /**
      * * Add the object at the end of the current row. the current row will be
@@ -259,7 +272,7 @@ public class CB_View_Base extends GL_View_Base {
                     if (view.weight == FIXED) {
                         fixedWidthSum += view.getWidth() + xMargin; // xMargin is added to each object
                     } else {
-                        // Prozentuale Breite des Objekts bzgl widthToFill
+                        // percentage width of child regarding widthToFill
                         percentWidthSum += Math.abs(view.weight) * widthToFill;
                     }
                 }
@@ -278,7 +291,13 @@ public class CB_View_Base extends GL_View_Base {
                         view.setWidth(Math.abs(view.weight) * widthToFill - xMargin);
                     }
                 }
-                view.setPos(rowXPos, rowYPos);
+                if (view.elementAlignment == 0) {
+                    // at bottom of line
+                    view.setPos(rowXPos, rowYPos);
+                } else {
+                    // at top of line
+                    view.setPos(rowXPos, rowYPos + rowMaxHeight - view.getHeight());
+                }
                 addChildDirect(view);
                 // next object at x
                 rowXPos = rowXPos + view.getWidth() + xMargin;

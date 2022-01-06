@@ -47,7 +47,7 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
     private Notes() {
         super(ViewManager.leftTab.getContentRec(), "NotesView");
 
-        initRow(BOTTOMUP);
+        initRow(BOTTOMUp);
         CB_Button getSolverButton = new CB_Button(Translation.get("getSolver"));
         // getSolverButton.disable();
         addNext(getSolverButton);

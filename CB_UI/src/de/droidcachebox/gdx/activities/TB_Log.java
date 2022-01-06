@@ -138,11 +138,11 @@ public class TB_Log extends ActivityBase {
 
     private void layout() {
         this.removeChilds();
-        this.initRow(BOTTOMUP);
+        this.initRow(BOTTOMUp);
         this.addNext(btnAction);
         this.addLast(btnClose);
         this.addLast(contentBox);
-        contentBox.initRow(TOPDOWN, contentBox.getHeight());
+        contentBox.initRow(TOPDown, contentBox.getHeight());
         contentBox.setNoBorders();
         contentBox.setMargins(0, 0);
         contentBox.addLast(edit);

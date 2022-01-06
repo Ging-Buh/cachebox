@@ -78,7 +78,7 @@ public class Import_GSAK extends ActivityBase {
         addLast(progressBar);
         bOK = new CB_Button(Translation.get("import"));
         bCancel = new CB_Button(Translation.get("cancel"));
-        this.initRow(BOTTOMUP);
+        this.initRow(BOTTOMUp);
         this.addNext(bOK);
         this.addLast(bCancel);
 

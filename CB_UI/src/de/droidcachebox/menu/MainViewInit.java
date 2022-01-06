@@ -163,7 +163,7 @@ public class MainViewInit extends MainViewBase {
         progress = new ProgressBar();
         progress.setBackground(progressBack);
         progress.setProgressFill(progressFill);
-        this.initRow(BOTTOMUP);
+        this.initRow(BOTTOMUp);
         this.addLast(progress);
 
         float logoCalcRef = ref * 1.5f;
