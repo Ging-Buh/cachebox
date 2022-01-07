@@ -413,15 +413,15 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
             cacheDesc = new WaypointViewItem(rec, 0, actCache, null, CacheInfo.VIEW_MODE_SLIDER);
             cacheDesc.setHeight(cacheDesc.getHeight() + cacheDesc.getAttributeHeight() + cacheDesc.getStarsHeight() + (cacheDesc.getTextHeight() / 2));
             cacheDesc.requestLayout();
-            cacheDesc.isSelected = true;
+            cacheDesc.setSelected(true);
             cacheDesc.addListener(onItemSizeChanged);
             mSlideBoxContent.addChild(cacheDesc);
         }
 
         if (actWaypoint != null) {
             waypointDesc = new WaypointViewItem(rec, 1, actCache, actWaypoint);
-            waypointDesc.isSelected = true;
-            cacheDesc.isSelected = false;
+            waypointDesc.setSelected(true);
+            cacheDesc.setSelected(false);
             waypointDesc.addListener(onItemSizeChanged);
             mSlideBoxContent.addChild(waypointDesc);
         } else {

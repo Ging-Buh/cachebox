@@ -296,17 +296,20 @@ public class GestureButton extends CB_Button {
             AbstractAction action = cb_actionButton.getAction();
             if (action == null)
                 continue;
-            MenuItem mi = cm.addMenuItem(action.getTitleTranslationId(), action.getTitleExtension(), null, (v, x, y, pointer, button) -> {
-                cm.close();
-                MenuItem clickedItem = (MenuItem) v;
-                AbstractAction btnAction = (AbstractAction) clickedItem.getData();
-                btnAction.execute();
-                if (btnAction instanceof AbstractShowAction) {
-                    aktActionView = (AbstractShowAction) btnAction;
-                    setButton(aktActionView.getIcon(), aktActionView.getTitleTranslationId());
+            MenuItem mi = cm.addMenuItem(action.getTitleTranslationId(), action.getTitleExtension(), null, new OnClickListener() {
+                @Override
+                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                    MenuItem clickedItem = (MenuItem) v;
+                    AbstractAction btnAction = (AbstractAction) clickedItem.getData();
+                    cm.close(); // close disposes the MenuItem, so get it (getData) before close
+                    btnAction.execute();
+                    if (btnAction instanceof AbstractShowAction) {
+                        aktActionView = (AbstractShowAction) btnAction;
+                        GestureButton.this.setButton(aktActionView.getIcon(), aktActionView.getTitleTranslationId());
+                    }
+                    GL.that.closeToast();
+                    return true;
                 }
-                GL.that.closeToast();
-                return true;
             });
             mi.setData(action);
             if (cb_actionButton.getGestureDirection() != GestureDirection.None) {

@@ -17,6 +17,7 @@ package de.droidcachebox.gdx.main;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -27,11 +28,10 @@ import de.droidcachebox.gdx.math.SizeF;
 
 public class MenuItem extends ListViewItemBackground {
 
-    protected Object data = null;
     boolean mIsCheckable = false;
     private boolean mIsChecked = false;
     protected boolean isPressed = false;
-    private CB_Label mLabel;
+    private CB_Label lblTitle;
     private Image checkImage;
     private Drawable iconDrawable;
     private String mTitle;
@@ -80,9 +80,8 @@ public class MenuItem extends ListViewItemBackground {
         super.initialize();
         removeChilds();
 
-        mLabel = new CB_Label(this);
+        boolean hasIcon = iconDrawable != null;
 
-        boolean hasIcon = (iconDrawable != null);
         if (hasIcon) {
             CB_RectF rec = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight()).scaleCenter(0.75f);
             iconImage = new Image(rec, "MenuItemImage", false);
@@ -116,12 +115,16 @@ public class MenuItem extends ListViewItemBackground {
             addChild(checkImage);
         }
 
+        lblTitle = new CB_Label(this);
         if (mTitle != null)
-            mLabel.setText(mTitle);
+            lblTitle.setText(mTitle);
+
         if (!mIsEnabled) {
-            mLabel.setTextColor(COLOR.getDisableFontColor());
+            lblTitle.setTextColor(COLOR.getDisableFontColor());
         }
-        addChild(mLabel);
+
+        addChild(lblTitle);
+
         setContentSize();
     }
 
@@ -137,7 +140,7 @@ public class MenuItem extends ListViewItemBackground {
         float left = getHeight() * 0.2f;
         float right = hasIcon ? getHeight() : 0;
         float labelWidth = getWidth() - right - left;
-        mLabel.setWidth(labelWidth);
+        lblTitle.setWidth(labelWidth);
 
         if (hasIcon && iconImage != null) {
             iconImage.setPos(getWidth() - getHeight(), (getHeight() - iconImage.getHeight()) / 2);
@@ -154,7 +157,7 @@ public class MenuItem extends ListViewItemBackground {
             checkImage.setSize(rec);
         }
 
-        mLabel.setPos(left, (getHeight() - mLabel.getHeight()) / 2);
+        lblTitle.setPos(left, (getHeight() - lblTitle.getHeight()) / 2);
     }
 
     /**
@@ -174,10 +177,10 @@ public class MenuItem extends ListViewItemBackground {
      */
     public MenuItem setTitle(String title) {
         mTitle = title;
-        if (mLabel == null)
-            mLabel = new CB_Label(name + " mLabel", this, title);
+        if (lblTitle == null)
+            lblTitle = new CB_Label(name + " mLabel", this, title);
         else
-            mLabel.setText(title);
+            lblTitle.setText(title);
         return this;
     }
 
@@ -221,17 +224,16 @@ public class MenuItem extends ListViewItemBackground {
         return mIsEnabled;
     }
 
-
     @Override
     public void setEnabled(boolean enabled) {
         mIsEnabled = enabled;
 
         if (!mIsEnabled) {
-            // lösche ClickListener
-            // these are the defaults, but they are never used
-            // used is the menus onItemClickedListener,
-            // who handles item clicks independant of isEnabled
-            // what is not bad ex. for spoilers
+            // unset ClickListener mOnClickListener and mOnLongClickListener
+            // these are (always) overruled by the onItemClickedListener in Menu,
+            // who handles item clicks independent of isEnabled
+            // what is not necessary bad
+            // ex. for spoilers (showing there is none, but perhaps act ...)
             setClickHandler(null);
             setOnLongClickListener(null);
         }
@@ -257,16 +259,6 @@ public class MenuItem extends ListViewItemBackground {
     public void setCheckable(boolean isCheckable) {
         mIsCheckable = isCheckable;
         resetIsInitialized();
-    }
-
-    @Override
-    public Object getData() {
-        return data;
-    }
-
-    @Override
-    public void setData(Object data) {
-        this.data = data;
     }
 
 }

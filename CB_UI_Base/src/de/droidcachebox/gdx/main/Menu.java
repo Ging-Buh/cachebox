@@ -48,7 +48,7 @@ public class Menu extends ButtonDialog {
     private String mMoreMenuTextRight = "";
     private String mMoreMenuTextLeft = "";
     private Menu mParentMenu;
-    protected OnClickListener menuItemClickListener = new OnClickListener() {
+    protected OnClickListener closeMenuOnClick = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             GL.that.closeDialog(Menu.this);
@@ -448,7 +448,7 @@ public class Menu extends ButtonDialog {
     public void addItems(ArrayList<MenuItem> items, boolean setEnabled) {
         for (MenuItem menuItem : items) {
             if (menuItem.getOnClickListener() == null)
-                menuItem.setClickHandler(menuItemClickListener);
+                menuItem.setClickHandler(closeMenuOnClick);
             if (setEnabled)
                 menuItem.setEnabled(true);
             menuItems.add(menuItem);

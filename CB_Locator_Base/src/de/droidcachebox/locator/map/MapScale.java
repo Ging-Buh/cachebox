@@ -73,7 +73,7 @@ public class MapScale extends CB_View_Base implements InvalidateTextureListeners
 
     @Override
     protected void skinIsChanged() {
-        invalidateTexture();
+        handleInvalidateTexture();
         zoomChanged();
     }
 
@@ -169,7 +169,7 @@ public class MapScale extends CB_View_Base implements InvalidateTextureListeners
     }
 
     @Override
-    public void invalidateTexture() {
+    public void handleInvalidateTexture() {
         if (CachedScaleDrawable != null) {
             CachedScaleDrawable = null;
         }

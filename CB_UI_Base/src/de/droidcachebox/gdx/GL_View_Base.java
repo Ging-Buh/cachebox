@@ -47,8 +47,8 @@ public class GL_View_Base extends CB_RectF {
     protected static int nDepthCounter = 0;
     private static boolean calling = false;
     protected final MoveableList<GL_View_Base> childs;
+    protected final ParentInfo myInfoForChild;
     private final Matrix4 rotateMatrix;
-    private final ParentInfo myInfoForChild;
     private final SkinChangedEventListener mSkinChangedEventListener;
     public boolean withoutScissor;
     public CB_RectF thisWorldRec;
@@ -121,7 +121,12 @@ public class GL_View_Base extends CB_RectF {
         mScale = 1f;
         data = null;
         weight = 1f;
-        mSkinChangedEventListener = this::skinIsChanged;
+        mSkinChangedEventListener = new SkinChangedEventListener() {
+            @Override
+            public void handleSkinChanged() {
+                GL_View_Base.this.skinIsChanged();
+            }
+        };
         mColorFilter = null;
         forceHandleTouchEvents = false;
         isClickable = false;
@@ -155,11 +160,11 @@ public class GL_View_Base extends CB_RectF {
         this(new CB_RectF(0, 0, size.getWidth(), size.getHeight()), null, name);
     }
 
-    protected static void callSkinChanged() {
+    protected static void fireSkinChanged() {
         calling = true;
         for (SkinChangedEventListener listener : skinChangedEventList) {
             if (listener != null)
-                listener.skinChanged();
+                listener.handleSkinChanged();
         }
         calling = false;
     }
@@ -529,15 +534,15 @@ public class GL_View_Base extends CB_RectF {
                                 if (childsInvalidate)
                                     view.invalidate();
 
-                                getMyInfoForChild().setParentInfo(myParentInfo);
-                                getMyInfoForChild().setWorldDrawRec(intersectRec);
+                                myInfoForChild.setParentInfo(myParentInfo);
+                                myInfoForChild.setWorldDrawRec(intersectRec);
 
-                                getMyInfoForChild().add(view.getX(), view.getY());
+                                myInfoForChild.add(view.getX(), view.getY());
 
-                                batch.setProjectionMatrix(getMyInfoForChild().Matrix());
+                                batch.setProjectionMatrix(myInfoForChild.Matrix());
                                 nDepthCounter++;
                                 if (!view.isDisposed())
-                                    view.renderChildren(batch, getMyInfoForChild());
+                                    view.renderChildren(batch, myInfoForChild);
                                 nDepthCounter--;
                             }
                         } else {
@@ -554,7 +559,7 @@ public class GL_View_Base extends CB_RectF {
                     }
 
                 } catch (NoSuchElementException | ConcurrentModificationException | IndexOutOfBoundsException e) {
-                    break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+                    break; // on error
                 }
             }
             childsInvalidate = false;
@@ -726,18 +731,15 @@ public class GL_View_Base extends CB_RectF {
     }
 
     public boolean click(int x, int y, int pointer, int button) {
-        // Achtung: dieser click ist nicht virtual und darf nicht überschrieben werden!!!
-        // das Ereignis wird dann in der richtigen View an click übergeben!!!
-        // todo Überschreibung in EditTextField, ColorPicker, Button, .... Erklärung (final)
         boolean handled = false;
         try {
             if (childs.size() > 0) {
                 Iterator<GL_View_Base> iterator = childs.reverseIterator();
+                // iterate for the view with the touchdown (click)
                 while (iterator.hasNext()) {
-                    // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
                     if (view != null && view.isClickable() && view.isVisible() && view.contains(x, y)) {
-                        // view gefunden auf das geklickt wurde
+                        // this view was clicked, so call its click listener
                         handled = view.click(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
                         // if handled, we can break and don't test the rest
                         if (handled) break;
@@ -745,8 +747,8 @@ public class GL_View_Base extends CB_RectF {
                 }
             }
             if (!handled) {
-                // Es ist kein Klick in einem untergeordnetem View -> es muß in diesem view behandelt werden
                 if (mOnClickListener != null) {
+                    // if not finally handled in a subview (result of handled), call the click listener of this view
                     handled = mOnClickListener.onClick(this, x, y, pointer, button);
                 }
             }
@@ -965,57 +967,29 @@ public class GL_View_Base extends CB_RectF {
 
     @Override
     public void dispose() {
-        isDisposed = true;
-
-        GL.that.removeRenderView(this); // Remove from RenderViews if registered
-        try {
-            synchronized (childs) {
-                for (int i = 0; i < childs.size(); i++) {
-                    GL_View_Base view;
-                    try {
-                        view = childs.get(i);
-                    } catch (Exception e) {
-                        break;
+        GL.that.removeRenderView(this);
+        GL.that.RunOnGLWithThreadCheck(() -> {
+            try {
+                synchronized (childs) {
+                    for (GL_View_Base view : childs) {
+                        if (view != null && !view.isDisposed())
+                            view.dispose();
                     }
-                    if (view != null && !view.isDisposed())
-                        view.dispose();
+                    childs.clear();
                 }
-                childs.clear();
-            }
-        } catch (Exception ignored) {
-        }
 
-        debugSprite = null;
-        try {
-            GL.that.RunOnGLWithThreadCheck(() -> {
                 if (debugRegTexture != null) {
                     debugRegTexture.dispose();
-                    debugRegTexture = null;
                 }
 
                 if (debugRegPixmap != null) {
                     debugRegPixmap.dispose();
-                    debugRegPixmap = null;
                 }
-            });
-        } catch (Exception ex) {
-            Log.err(sClass, "RunOnGLWithThreadCheck", ex);
-        }
-        name = null;
-        data = null;
-        mOnClickListener = null;
-        mOnLongClickListener = null;
-        mOnDoubleClickListener = null;
-        drawableBackground = null;
-        parent = null;
-        debugSprite = null;
-        lastTouchPos = null;
 
-        if (debugRegPixmap != null) {
-            debugRegPixmap.dispose();
-        }
-        debugRegPixmap = null;
-
+            } catch (Exception ignored) {
+            }
+            isDisposed = true;
+        });
         super.dispose();
     }
 
@@ -1153,8 +1127,6 @@ public class GL_View_Base extends CB_RectF {
     protected void skinIsChanged() {
     }
 
-    // ############# End Skin changed ############
-
     public void clearColorFilter() {
         mColorFilter = null;
     }
@@ -1179,10 +1151,6 @@ public class GL_View_Base extends CB_RectF {
         this.data = data;
     }
 
-    protected ParentInfo getMyInfoForChild() {
-        return myInfoForChild;
-    }
-
     /**
      * Interface definition for a callback to be invoked when a view is clicked.
      */
@@ -1191,7 +1159,7 @@ public class GL_View_Base extends CB_RectF {
     }
 
     private interface SkinChangedEventListener {
-        void skinChanged();
+        void handleSkinChanged();
     }
 
 }

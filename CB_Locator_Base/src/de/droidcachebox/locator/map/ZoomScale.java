@@ -19,14 +19,19 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import de.droidcachebox.InvalidateTextureListeners;
-import de.droidcachebox.gdx.*;
-import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.gdx.math.GL_UISizes;
 
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.droidcachebox.InvalidateTextureListeners;
+import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.COLOR;
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.math.GL_UISizes;
 
 public class ZoomScale extends CB_View_Base implements InvalidateTextureListeners.InvalidateTextureListener {
     private final boolean isVisible = true;
@@ -325,7 +330,7 @@ public class ZoomScale extends CB_View_Base implements InvalidateTextureListener
     }
 
     @Override
-    public void invalidateTexture() {
+    public void handleInvalidateTexture() {
         ScaleDrawRec = null;
         storedRec = null;
         disposeTexture();

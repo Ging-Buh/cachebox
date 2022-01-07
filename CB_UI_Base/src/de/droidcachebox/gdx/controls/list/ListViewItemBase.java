@@ -5,7 +5,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 
 public abstract class ListViewItemBase extends CB_View_Base implements Comparable<ListViewItemBase> {
 
-    public boolean isSelected = false;
+    protected boolean isSelected = false;
     protected int mIndex;
 
     public ListViewItemBase(CB_RectF rec, int index, String name) {
@@ -41,4 +41,11 @@ public abstract class ListViewItemBase extends CB_View_Base implements Comparabl
         return false;
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 }

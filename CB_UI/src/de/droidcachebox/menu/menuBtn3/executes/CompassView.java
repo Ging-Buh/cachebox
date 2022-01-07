@@ -801,7 +801,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
     }
 
     @Override
-    public void invalidateTexture() {
+    public void handleInvalidateTexture() {
         createControls();
     }
 

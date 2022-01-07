@@ -377,7 +377,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         if (lastState == LastState.onStop) {
             Log.info(sKlasse, "=> Resume from Stop");
             showWaitToRenderStarted();
-            InvalidateTextureListeners.getInstance().invalidateTexture();
+            InvalidateTextureListeners.getInstance().fireInvalidateTexture();
         } else {
             Log.info(sKlasse, "=> onResume");
         }

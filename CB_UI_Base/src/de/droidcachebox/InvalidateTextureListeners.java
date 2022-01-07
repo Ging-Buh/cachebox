@@ -15,8 +15,6 @@
  */
 package de.droidcachebox;
 
-import de.droidcachebox.utils.log.Log;
-
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InvalidateTextureListeners extends CopyOnWriteArrayList<InvalidateTextureListeners.InvalidateTextureListener> {
@@ -40,18 +38,21 @@ public class InvalidateTextureListeners extends CopyOnWriteArrayList<InvalidateT
         remove(listener);
     }
 
-    public void invalidateTexture() {
+    public void fireInvalidateTexture() {
+        for (InvalidateTextureListener listener : this) {
+            listener.handleInvalidateTexture();
+        }
+        /*
         try {
-            for (InvalidateTextureListener listener : this) {
-                listener.invalidateTexture();
-            }
         } catch (Exception ex) {
             Log.err(sKlasse, ex);
         }
+
+         */
     }
 
     public interface InvalidateTextureListener {
-        void invalidateTexture();
+        void handleInvalidateTexture();
     }
 
 }

@@ -368,9 +368,12 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             }
             GL.that.onStop();
             Sprites.loadSprites(true);
-            ShowMap.getInstance().normalMapView.invalidateTexture();
+
+            ShowMap.getInstance().normalMapView.handleInvalidateTexture();
+
             GL.that.onStart();
-            callSkinChanged();
+
+            fireSkinChanged();
 
             removeChilds();
 
@@ -396,7 +399,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                     }
                 }
             }
-            InvalidateTextureListeners.getInstance().invalidateTexture();
+            InvalidateTextureListeners.getInstance().fireInvalidateTexture();
         } catch (Exception ex) {
             Log.err(sClass, "reloadSprites", ex);
         }

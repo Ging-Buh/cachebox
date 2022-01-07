@@ -317,15 +317,15 @@ public abstract class Dialog extends CB_View_Base {
                             if (childsInvalidate)
                                 view.invalidate();
 
-                            getMyInfoForChild().setParentInfo(myParentInfo);
-                            getMyInfoForChild().setWorldDrawRec(intersectRec);
+                            myInfoForChild.setParentInfo(myParentInfo);
+                            myInfoForChild.setWorldDrawRec(intersectRec);
 
-                            getMyInfoForChild().add(view.getX(), view.getY());
+                            myInfoForChild.add(view.getX(), view.getY());
 
-                            batch.setProjectionMatrix(getMyInfoForChild().Matrix());
+                            batch.setProjectionMatrix(myInfoForChild.Matrix());
                             nDepthCounter++;
 
-                            view.renderChildren(batch, getMyInfoForChild());
+                            view.renderChildren(batch, myInfoForChild);
                             nDepthCounter--;
                             batch.setProjectionMatrix(myParentInfo.Matrix());
                         }

@@ -544,7 +544,7 @@ public class EditFilterSettings extends ActivityBase {
             super.setVisible(visible);
             if (visible) {
                 for (PresetListViewItem item : presetListViewItems) {
-                    item.isSelected = false;
+                    item.setSelected(false);
                 }
                 notifyDataSetChanged();
             }

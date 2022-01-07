@@ -99,7 +99,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected boolean showMapCenterCross, showDistanceToCenter;
     protected boolean showAtOriginalPosition;
     protected PolygonDrawable CrossLines = null;
-    protected IChanged themeChangedEventHandler = this::invalidateTexture;
+    protected IChanged themeChangedEventHandler = this::handleInvalidateTexture;
     protected float scale;
     protected int outScreenDraw = 0;
     protected float lastDynamicZoom = -1;
@@ -1128,11 +1128,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     @Override
     protected void skinIsChanged() {
         setBackground(Sprites.ListBack);
-        invalidateTexture();
+        handleInvalidateTexture();
     }
 
     @Override
-    public void invalidateTexture() {
+    public void handleInvalidateTexture() {
         setNewSettings(INITIAL_THEME);
         mapScale.ZoomChanged();
 
@@ -1163,7 +1163,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
             // Car mode
             isCarMode = true;
-            invalidateTexture();
+            handleInvalidateTexture();
         } else if (mapState == MapState.WP) {
             mapStateChangedToWP();
         } else if (mapState == MapState.LOCK || mapState == MapState.GPS) {
@@ -1175,7 +1175,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 return; // brauchen wir nicht noch einmal machen
 
             isCarMode = false;
-            invalidateTexture();
+            handleInvalidateTexture();
         }
 
     }
