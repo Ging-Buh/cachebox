@@ -16,7 +16,7 @@ dependencies {
 
 
     // https://mvnrepository.com/artifact/org.json/json
-    implementation "org.json:json:20180813"
+    implementation 'org.json:json:20211205'
 
 
     //libgdx
@@ -28,6 +28,6 @@ dependencies {
     // rpc part
     implementation fileTree(dir: '../libs', include: ['servlet-api-6.0.16.jar'])
     implementation fileTree(dir: '../libs', include: ['mina-core-2.0.4.jar'])
-    implementation group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    implementation group: 'commons-httpclient', name: 'commons-httpclient', version: '20020423'
 
 }

@@ -613,7 +613,7 @@ public class DraftsView extends V_ListView {
             AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
                 @Override
-                public void ready(boolean isCanceled) {
+                public void ready() {
 
                     if (result[0] == OK) {
                         // after direct Log change state to uploaded

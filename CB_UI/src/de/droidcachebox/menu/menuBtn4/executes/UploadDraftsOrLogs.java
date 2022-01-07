@@ -105,8 +105,8 @@ public class UploadDraftsOrLogs {
             }
 
             @Override
-            public void ready(boolean canceled) {
-                if (!canceled) {
+            public void ready() {
+                if (!isCanceled.get()) {
                     if (uploadMeldung.length() == 0) {
                         MsgBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MsgBoxIcon.GC_Live);
                     } else {

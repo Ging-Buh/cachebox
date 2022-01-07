@@ -100,7 +100,7 @@ public class Trackables extends V_ListView {
             CancelWaitDialog xx = new CancelWaitDialog(Translation.get("Search"), new DownloadAnimation(),
                     new RunAndReady() {
                         @Override
-                        public void ready(boolean isCanceled) {
+                        public void ready() {
                             if (GroundspeakAPI.APIError != OK) {
                                 if (APIError == 404) {
                                     MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("NoTbFound"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
@@ -136,7 +136,7 @@ public class Trackables extends V_ListView {
         new CancelWaitDialog(Translation.get("RefreshInventory"), new DownloadAnimation(),
                 new RunAndReady() {
                     @Override
-                    public void ready(boolean isCanceled) {
+                    public void ready() {
 
                     }
 
@@ -161,7 +161,7 @@ public class Trackables extends V_ListView {
         AtomicBoolean isCanceled = new AtomicBoolean(false);
         new CancelWaitDialog(title, new DownloadAnimation(), new RunAndReady() {
             @Override
-            public void ready(boolean isCanceled) {
+            public void ready() {
 
             }
 

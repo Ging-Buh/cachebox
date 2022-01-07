@@ -1,5 +1,7 @@
 package de.droidcachebox;
 
+import com.badlogic.gdx.Gdx;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -9,6 +11,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -156,7 +160,13 @@ public class DesktopUIBaseMethods implements PlatformUIBase.UIBaseMethods {
             Settings.getInstance().acceptChanges();
             Log.debug(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
-        System.exit(0);
+        Gdx.app.exit();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.exit(0);
+            }
+        }, 2000);
     }
 
     @Override
@@ -188,7 +198,7 @@ public class DesktopUIBaseMethods implements PlatformUIBase.UIBaseMethods {
     @Override
     public InputStream getInputStream(String absolutePath) throws FileNotFoundException {
         // will never be used ?
-        return  FileFactory.createFile(absolutePath).getFileInputStream();
+        return FileFactory.createFile(absolutePath).getFileInputStream();
     }
 
     @Override

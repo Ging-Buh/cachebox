@@ -177,7 +177,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                     AtomicBoolean isCanceled = new AtomicBoolean(false);
                                     wd = new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
                                         @Override
-                                        public void ready(boolean isCanceled) {
+                                        public void ready() {
                                             if (result > -1) {
                                                 String Text = Translation.get("FoundsSetTo", String.valueOf(result));
                                                 MsgBox.show(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);

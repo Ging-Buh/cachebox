@@ -42,7 +42,7 @@ public class ImportProgress {
      */
     public void changeMsg(String id, String msg) {
         if (progressChangedEvent != null)
-            progressChangedEvent.progressChanged(id, msg, calculateDoneTillNowPercent());
+            progressChangedEvent.changedProgress(id, msg, calculateDoneTillNowPercent());
     }
 
     public void setStepFinalValue(String id, int value) {

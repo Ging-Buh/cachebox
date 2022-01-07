@@ -71,7 +71,7 @@ public class DeleteDialog extends ButtonDialog {
             AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog(Translation.get("DelActFilter"), new WorkAnimation(), new RunAndReady() {
                 @Override
-                public void ready(boolean isCanceled) {
+                public void ready() {
 
                 }
 
@@ -104,7 +104,7 @@ public class DeleteDialog extends ButtonDialog {
             AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog(Translation.get("DelArchived"), new WorkAnimation(), new RunAndReady() {
                 @Override
-                public void ready(boolean isCanceled) {
+                public void ready() {
 
                 }
 
@@ -132,7 +132,7 @@ public class DeleteDialog extends ButtonDialog {
             AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog(Translation.get("DelFound"), new WorkAnimation(), new RunAndReady() {
                 @Override
-                public void ready(boolean isCanceled) {
+                public void ready() {
 
                 }
 

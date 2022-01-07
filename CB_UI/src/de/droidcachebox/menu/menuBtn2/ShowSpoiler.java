@@ -127,8 +127,8 @@ public class ShowSpoiler extends AbstractShowAction {
         wd = new CancelWaitDialog(Translation.get("downloadSpoiler"), new DownloadAnimation(),
                 new RunAndReady() {
                     @Override
-                    public void ready(boolean isCanceled) {
-                        readyListener.isReady(isCanceled);
+                    public void ready() {
+                        readyListener.isReady(isCanceled.get());
                     }
 
                     @Override

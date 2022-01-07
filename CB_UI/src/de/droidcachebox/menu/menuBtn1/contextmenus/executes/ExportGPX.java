@@ -80,8 +80,8 @@ public class ExportGPX {
                 }
 
                 @Override
-                public void ready(boolean canceled) {
-                    if (canceled) {
+                public void ready() {
+                    if (isCanceled.get()) {
                         MsgBox.show(Translation.get("exportedCanceld",
                                 String.valueOf(actExportedCount),
                                 String.valueOf(numberOfGeoCachesToExport)),

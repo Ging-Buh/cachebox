@@ -235,7 +235,7 @@ public class GlobalCore implements SolverCacheInterface {
             AtomicBoolean isCanceled = new AtomicBoolean(false);
             new CancelWaitDialog("chk API Key", new DownloadAnimation(), new RunAndReady() {
                 @Override
-                public void ready(boolean isCanceled) {
+                public void ready() {
 
                 }
 

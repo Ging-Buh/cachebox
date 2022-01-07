@@ -350,7 +350,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                 AtomicBoolean isCanceled = new AtomicBoolean(false);
                 new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), new RunAndReady() {
                     @Override
-                    public void ready(boolean isCanceled) {
+                    public void ready() {
                         ShowSpoiler.getInstance().importSpoiler(false, isCanceled1 -> {
                             // do after import
                             if (!isCanceled1) {

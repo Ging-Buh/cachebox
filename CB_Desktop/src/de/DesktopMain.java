@@ -86,6 +86,7 @@ public class DesktopMain {
             DisplayMode dispMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
             lwjglAppCfg.setFromDisplayMode(dispMode);
             lwjglAppCfg.fullscreen = true;
+            lwjglAppCfg.forceExit = false;
 
             new LwjglApplication(CB_UI, lwjglAppCfg);
         } else {
@@ -100,6 +101,7 @@ public class DesktopMain {
             lwjglAppCfg.height = ui.Window.height;
             lwjglAppCfg.title = "DCB Desctop Cachebox";
             lwjglAppCfg.samples = 3;
+            lwjglAppCfg.forceExit = false;
 
             final LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
             App.getGraphics().setContinuousRendering(false);

@@ -29,7 +29,7 @@ public class GcApiLogin {
         lastCall = System.currentTimeMillis();
         new CancelWaitDialog("Please Wait", new DownloadAnimation(), new RunAndReady() {
             @Override
-            public void ready(boolean isCanceled) {
+            public void ready() {
 
             }
 

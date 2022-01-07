@@ -381,7 +381,7 @@ public class SearchDialog extends PopUp_Base {
                 AtomicBoolean isCanceled = new AtomicBoolean(false);
                 new CancelWaitDialog(Translation.get("Search"), new DownloadAnimation(), new RunAndReady() {
                     @Override
-                    public void ready(boolean isCanceled) {
+                    public void ready() {
 
                     }
 
@@ -416,7 +416,7 @@ public class SearchDialog extends PopUp_Base {
         AtomicBoolean isCanceled = new AtomicBoolean(false);
         new CancelWaitDialog(Translation.get("searchOverAPI"), new DownloadAnimation(), new RunAndReady() {
             @Override
-            public void ready(boolean isCanceled) {
+            public void ready() {
 
             }
 

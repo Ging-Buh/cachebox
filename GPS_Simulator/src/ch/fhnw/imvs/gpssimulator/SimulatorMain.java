@@ -19,7 +19,10 @@ import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -233,6 +236,21 @@ public class SimulatorMain {
 
             @Override
             public void getDirectoryAccess(String _DirectoryToAccess, StringReturner returnUri) {            }
+
+            @Override
+            public void getDocumentAccess(String directory, StringReturner value) {
+
+            }
+
+            @Override
+            public InputStream getInputStream(String absolutePath) throws FileNotFoundException {
+                return null;
+            }
+
+            @Override
+            public OutputStream getOutputStream(String contentFile) throws FileNotFoundException {
+                return null;
+            }
 
             @Override
             public boolean request_getLocationIfInBackground() {

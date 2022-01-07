@@ -56,7 +56,7 @@ public class OpenRouteService {
                     AtomicBoolean isCanceled = new AtomicBoolean(false);
                     wd = new CancelWaitDialog(Translation.get("generateRoute"), new DownloadAnimation(), new RunAndReady() {
                         @Override
-                        public void ready(boolean isCanceled) {
+                        public void ready() {
 
                         }
 

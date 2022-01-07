@@ -51,7 +51,7 @@ public class Download {
                     outStream.write(buffer, 0, count);
                     kiloByteCount = kiloByteCount + 1;
                     if (progressIndicator != null)
-                        progressIndicator.progressChanged("", "", kiloByteCount);
+                        progressIndicator.changedProgress("", "", kiloByteCount);
                     if (testCancel != null && testCancel.checkCanceled())
                         throw new Exception();
                 }

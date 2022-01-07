@@ -144,7 +144,7 @@ public class WebbUtils {
             output.write(buffer, 0, count);
             kiloByteCount = kiloByteCount + 1;
             if (streamBufferWritten != null)
-                streamBufferWritten.progressChanged("", "", kiloByteCount);
+                streamBufferWritten.changedProgress("", "", kiloByteCount);
         }
     }
 

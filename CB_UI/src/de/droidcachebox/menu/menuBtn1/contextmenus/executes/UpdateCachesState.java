@@ -93,9 +93,9 @@ public class UpdateCachesState {
                 }
 
                 @Override
-                public void ready(boolean canceled) {
+                public void ready() {
                     Log.debug(sClass, "chkState ready");
-                    String sCanceled = canceled ? Translation.get("isCanceld") + br : "";
+                    String sCanceled = isCanceled.get() ? Translation.get("isCanceld") + br : "";
                     if (result != -1) {
                         // Reload result from DB
                         synchronized (CBDB.getInstance().cacheList) {

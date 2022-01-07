@@ -134,7 +134,7 @@ public class ShowLogs extends AbstractShowAction {
                     GL.that.postAsync(() -> {
                         new CancelWaitDialog(Translation.get("LoadLogs"), new DownloadAnimation(), new RunAndReady() {
                             @Override
-                            public void ready(boolean isCanceled) {
+                            public void ready() {
 
                             }
 

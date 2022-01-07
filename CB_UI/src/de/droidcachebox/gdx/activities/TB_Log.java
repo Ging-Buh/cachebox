@@ -244,7 +244,7 @@ public class TB_Log extends ActivityBase {
         final int[] result = {OK};
         CancelWaitDialog wd = new CancelWaitDialog("Upload Log", new DownloadAnimation(), new RunAndReady() {
             @Override
-            public void ready(boolean isCanceled) {
+            public void ready() {
 
                 if (result[0] == ERROR) {
                     GL.that.toast(LastAPIError);

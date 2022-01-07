@@ -698,7 +698,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                 Log.info(sClass, "ImportGPXFile");
                 mainActivity.runOnUiThread(() -> new CancelWaitDialog(Translation.get("ImportGPX"), new WorkAnimation(), new RunAndReady() {
                     @Override
-                    public void ready(boolean isCanceled) {
+                    public void ready() {
                         CacheListChangedListeners.getInstance().cacheListChanged();
                         FilterProperties props = FilterInstances.getLastFilter();
                         EditFilterSettings.applyFilter(props);
