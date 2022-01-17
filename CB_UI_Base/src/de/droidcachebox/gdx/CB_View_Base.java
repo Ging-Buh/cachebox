@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 
+/**
+ * row handling by arbor95: makes live much easier
+ * Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
+ * the position and width (stretched equally, weighted, fixed or percentage) of the objects is calculated automatically
+ */
 public class CB_View_Base extends GL_View_Base {
 
     public static final int FIXED = -1;
     public static final boolean BOTTOMUp = false;
     public static final boolean TOPDown = true;
-    // row handling by arbor95: makes live much easier
-    // Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
-    // the position and width (stretched equally, weighted, fixed or percentage) of the objects is calculated automatically
     private ArrayList<GL_View_Base> row;
     private boolean topdown = TOPDown; // false = bottomUp
     private float rowYPos = 0;
@@ -153,6 +155,16 @@ public class CB_View_Base extends GL_View_Base {
             }
         }
         topdown = direction;
+    }
+
+    public void setDirection(boolean direction) {
+        topdown = direction;
+        if (topdown) {
+            rowYPos = topYAdd;
+        }
+        else {
+            rowYPos = bottomYAdd;
+        }
     }
 
     /**

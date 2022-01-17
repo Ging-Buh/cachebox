@@ -16,42 +16,37 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.translation.Translation;
 
 /**
  * A WaitDialog with a cancelButton
  * the runnable (runAndReady) starts onShow
  */
-public class CancelWaitDialog extends WaitDialog {
+public class CancelWaitDialog extends ButtonDialog {
 
     private static final String sClass = "CancelWaitDialog";
     private final RunAndReady runAndReady;
+    AnimationBase animation;
 
     public CancelWaitDialog(String msg, AnimationBase _animation, RunAndReady runAndReady) {
-        super(msg, calcMsgBoxSize(msg, false, false, true, false), sClass);
+        super(msg, "", MsgBoxButton.Cancel, MsgBoxIcon.Asterisk);
+        // using MsgBoxIcon.Asterisk as placeholder to generate the iconImage
         this.runAndReady = runAndReady;
-
-        // the cancel button (WaitDialog has none)
-        setButtonCaptions(MsgBoxButton.Cancel);
-        mMsgBoxClickListener = (which, data) -> {
+        buttonClickHandler = (which, data) -> {
             runAndReady.setIsCanceled();
             btnRightNegative.disable();
             btnRightNegative.setText(Translation.get("waitForCancel"));
             return false;
         };
-
-        // label with msg-text comes from WaitDialog
-
-        // set animation position and size from WaitDialog
-        if (animation != null) {
-            _animation.setRec(new CB_RectF(0, 0, animation.getWidth(), animation.getHeight()));
-            animation.setY(_animation.getY());
+        if (_animation == null)
+            animation = new WorkAnimation(iconImage);
+        else {
             animation = _animation;
-            addChild(animation);
-            animation.play();
+            animation.setRec(iconImage);
         }
+        removeChild(iconImage);
+        addChild(animation);
     }
 
     @Override

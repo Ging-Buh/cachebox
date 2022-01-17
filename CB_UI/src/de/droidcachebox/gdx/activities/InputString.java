@@ -1,8 +1,8 @@
 package de.droidcachebox.gdx.activities;
 
-import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -11,6 +11,7 @@ import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.translation.Translation;
 
 public class InputString extends ActivityBase {
+    // possibly use the StringInputBox instead
     private CB_Button btnOK;
     private CB_Button btnCancel;
     private ScrollBox scrollBox;

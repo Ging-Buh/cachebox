@@ -147,7 +147,7 @@ public class MapInfoPanel extends CB_View_Base {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         removeChilds();
 
         setBackground(Sprites.infoBack);
@@ -232,7 +232,7 @@ public class MapInfoPanel extends CB_View_Base {
 
     @Override
     protected void skinIsChanged() {
-        initialize();
+        renderInit();
     }
 
     public enum CoordType {

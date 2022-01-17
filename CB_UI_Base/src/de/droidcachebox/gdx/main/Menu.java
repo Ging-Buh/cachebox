@@ -7,19 +7,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
 import de.droidcachebox.gdx.graphics.ColorDrawable;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
@@ -85,13 +85,6 @@ public class Menu extends ButtonDialog {
         // setClickHandler(...); // auf titel geklickt
     }
 
-    @Override
-    public void close() {
-        GL.that.closeDialog(this);
-        if (isMoreMenu)
-            GL.that.closeDialog(mParentMenu);
-    }
-
     public void addMoreMenu(Menu menu, String TextLeft, String TextRight) {
         if (menu == null) {
             mMoreMenuTextRight = "";
@@ -154,6 +147,25 @@ public class Menu extends ButtonDialog {
     }
 
     @Override
+    public void show() {
+        layout();
+        super.show();
+    }
+
+    @Override
+    public void onResized(CB_RectF rec) {
+        super.onResized(rec);
+        layout();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (isMoreMenu)
+            GL.that.closeDialog(mParentMenu);
+    }
+
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (mMoreMenuToggleButton != null) {
@@ -164,8 +176,8 @@ public class Menu extends ButtonDialog {
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
+    protected void renderInit() {
+        super.renderInit();
 
         if (!isMoreMenu) {
             // Menu level 1
@@ -185,7 +197,7 @@ public class Menu extends ButtonDialog {
 
                 // initial more menus
                 if (mMoreMenu != null)
-                    mMoreMenu.initialize();
+                    mMoreMenu.renderInit();
 
             }
         } else {
@@ -202,7 +214,7 @@ public class Menu extends ButtonDialog {
         menuItemsListView.setAdapter(new MenuItemsListViewAdapter());
 
         if (mMoreMenu != null && !mMoreMenuIsInitial) {
-            mMoreMenu.initialize();
+            mMoreMenu.renderInit();
             mMoreMenu.setVisible(false);
             mMoreMenu.setZeroPos();
             mMoreMenu.setHeight(getHeight());
@@ -418,22 +430,10 @@ public class Menu extends ButtonDialog {
         }
     }
 
-    @Override
-    public void show() {
-        layout();
-        super.show();
-    }
-
     public void setPrompt(String Prompt) {
         // set Title with full width, add many blanks: that is bad
         // setTitle(Prompt + "                                                       ");
         setTitle(Prompt);
-        layout();
-    }
-
-    @Override
-    public void onResized(CB_RectF rec) {
-        super.onResized(rec);
         layout();
     }
 
@@ -491,42 +491,6 @@ public class Menu extends ButtonDialog {
         if (mParentMenu == null)
             return getWidth();
         return mParentMenu.getLeve0_Width();
-    }
-
-    @Override
-    public void dispose() {
-        mMoreMenuTextRight = null;
-        mMoreMenuTextLeft = null;
-        mParentMenu = null;
-
-        if (mMoreMenu != null) {
-            mMoreMenu.dispose();
-        }
-        mMoreMenu = null;
-
-        if (mMoreMenuToggleButton != null) {
-            mMoreMenuToggleButton.dispose();
-        }
-        mMoreMenuToggleButton = null;
-
-        if (mMoreMenuLabel != null) {
-            mMoreMenuLabel.dispose();
-        }
-        mMoreMenuLabel = null;
-
-        if (menuItems != null) {
-            for (MenuItem it : menuItems) {
-                it.dispose();
-            }
-            menuItems.clear();
-        }
-        menuItems = null;
-
-        if (menuItemsListView != null) {
-            menuItemsListView.dispose();
-        }
-        menuItemsListView = null;
-        super.dispose();
     }
 
     private class MenuItemsListViewAdapter implements Adapter {

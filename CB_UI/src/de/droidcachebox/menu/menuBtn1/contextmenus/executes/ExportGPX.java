@@ -12,10 +12,11 @@ import de.droidcachebox.core.GpxSerializer;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -40,7 +41,7 @@ public class ExportGPX {
                 ".gpx",
                 Translation.get("enterFileName"), // selectExportFolder
                 Translation.get("select"),
-                gpxFile -> GL.that.RunOnGL(() -> outputFile(gpxFile))).show();
+                gpxFile -> GL.that.runOnGL(() -> outputFile(gpxFile))).show();
     }
 
     private void outputFile(AbstractFile exportFile) {
@@ -82,17 +83,12 @@ public class ExportGPX {
                 @Override
                 public void ready() {
                     if (isCanceled.get()) {
-                        MsgBox.show(Translation.get("exportedCanceld",
-                                String.valueOf(actExportedCount),
-                                String.valueOf(numberOfGeoCachesToExport)),
-                                Translation.get("export"),
-                                MsgBoxIcon.Stop);
+                        new ButtonDialog(Translation.get("exportedCanceld", String.valueOf(actExportedCount), String.valueOf(numberOfGeoCachesToExport)),
+                                Translation.get("export"), MsgBoxButton.OK, MsgBoxIcon.Stop).show();
                     } else {
                         PlatformUIBase.addToMediaScannerList(exportFile.getAbsolutePath());
-                        MsgBox.show(Translation.get("exported",
-                                String.valueOf(actExportedCount)),
-                                Translation.get("export"),
-                                MsgBoxIcon.Information);
+                        new ButtonDialog(Translation.get("exported", String.valueOf(actExportedCount)),
+                                Translation.get("export"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
                     }
                 }
 
@@ -102,10 +98,8 @@ public class ExportGPX {
                 }
             };
 
-            progressDialog = new ProgressDialog("export", null, runAndReady);
-
-            GL.that.showDialog(progressDialog);
-
+            progressDialog = new ProgressDialog(Translation.get("GPX_EXPORT"), null, runAndReady);
+            progressDialog.show();
         } catch (IOException ignored) {
         }
     }

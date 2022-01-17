@@ -18,13 +18,13 @@ package de.droidcachebox.menu.menuBtn2.executes;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -62,7 +62,7 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
             final CB_Button b = (CB_Button) v;
             if (note.getText().length() > 0) {
                 b.setText("Cancel");
-                GL.that.RunOnGL(() -> {
+                GL.that.runOnGL(() -> {
                     String UploadText = note.getText().replace("<Import from Geocaching.com>", "").replace("</Import from Geocaching.com>", "").trim();
                     int result = GroundspeakAPI.uploadCacheNote(currentCache.getGeoCacheCode(), UploadText);
                     b.disable();
@@ -160,7 +160,7 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
         if (!notesText.equals(text)) {
             if (text != null) {
                 try {
-                    if (currentCache != null && !currentCache.isDisposed())
+                    if (currentCache != null)
                         CacheDAO.getInstance().setNote(currentCache, text);
                 } catch (Exception e) {
                     Log.err("NotesView", "Write note to database", e);

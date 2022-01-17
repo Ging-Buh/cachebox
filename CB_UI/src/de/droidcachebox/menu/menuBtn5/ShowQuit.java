@@ -16,28 +16,27 @@
 package de.droidcachebox.menu.menuBtn5;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.gdx.Quit;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.locator.map.MapTileLoader;
+import de.droidcachebox.menu.menuBtn5.executes.Quit;
 
 public class ShowQuit extends AbstractAction {
-    private static ShowQuit that;
+    private static ShowQuit showQuit;
 
     private ShowQuit() {
         super("quit");
     }
 
     public static ShowQuit getInstance() {
-        if (that == null) that = new ShowQuit();
-        return that;
+        if (showQuit == null) showQuit = new ShowQuit();
+        return showQuit;
     }
 
     @Override
     public void execute() {
-        MapTileLoader.getInstance().stopQueueProzessors();
-        Quit.quit();
+        new Quit().quit();
     }
 
     @Override

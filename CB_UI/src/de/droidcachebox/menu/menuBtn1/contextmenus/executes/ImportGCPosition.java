@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.CacheDAO;
@@ -42,6 +41,7 @@ import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.activities.SearchCoordinates;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;

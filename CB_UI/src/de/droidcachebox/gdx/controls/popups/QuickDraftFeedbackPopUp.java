@@ -1,13 +1,14 @@
 package de.droidcachebox.gdx.controls.popups;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class QuickDraftFeedbackPopUp extends PopUp_Base {
 
@@ -30,7 +31,7 @@ public class QuickDraftFeedbackPopUp extends PopUp_Base {
                         @Override
                         public void run() {
 
-                            if (isDisposed()) {
+                            if (isDisposed) {
                                 GL.that.renderOnce();
                                 return;
                             }

@@ -105,7 +105,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
     public void onShow() {
         currentGeoCache = GlobalCore.getSelectedCache();
         currentWaypoint = GlobalCore.getSelectedWayPoint();
-        initialize();
+        renderInit();
         setCache();
         if (chart != null) {
             chart.onShow();
@@ -137,7 +137,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         if (initDone)
             return;
         readSettings();
@@ -631,7 +631,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
 
     @Override
     public void positionChanged() {
-        if (this.isDisposed()) {
+        if (this.isDisposed) {
             return;
         }
         if (currentGeoCache == null) {
@@ -715,7 +715,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
 
     @Override
     public void orientationChanged() {
-        if (this.isDisposed())
+        if (this.isDisposed)
             return;
         if (currentGeoCache == null)
             return;

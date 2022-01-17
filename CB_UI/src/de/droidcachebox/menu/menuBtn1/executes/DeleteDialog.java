@@ -2,7 +2,6 @@ package de.droidcachebox.menu.menuBtn1.executes;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CacheListDAO;
@@ -11,16 +10,17 @@ import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.ImageButton;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -33,7 +33,7 @@ public class DeleteDialog extends ButtonDialog {
     private CB_Label lblDelFilter, lblDelArchived, lblDelFounds;
 
     public DeleteDialog() {
-        super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation.get("DeleteCaches"), MsgBoxButton.Cancel, null, null);
+        super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "", Translation.get("DeleteCaches"), MsgBoxButton.Cancel, null, null);
 
         msgBoxContentSize = getContentSize();
 

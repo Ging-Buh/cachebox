@@ -67,8 +67,8 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.ViewConst;
 import de.droidcachebox.gdx.controls.Android_TextInput;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.DevicesSizes;
 import de.droidcachebox.gdx.math.Size;
@@ -656,7 +656,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
             waitForGL.set(true);
 
-            GL.that.RunOnGL(() -> {
+            GL.that.runOnGL(() -> {
                 pWaitD.dismiss();
                 pWaitD = null;
                 waitForGL.set(false);

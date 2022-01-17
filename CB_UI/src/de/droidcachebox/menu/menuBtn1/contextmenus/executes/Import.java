@@ -64,15 +64,15 @@ import de.droidcachebox.gdx.controls.ProgressBar;
 import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.controls.Spinner;
 import de.droidcachebox.gdx.controls.SpinnerAdapter;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.SizeF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -182,7 +182,7 @@ public class Import extends ActivityBase {
                     PQ_LINE_ACTIVE = false;
                 }
             } else {
-                MsgBox.show(Translation.get("Desc_ImportPQsFromGeocachingCom"), Translation.get("apiKeyInvalid"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
+                new ButtonDialog(Translation.get("Desc_ImportPQsFromGeocachingCom"), Translation.get("apiKeyInvalid"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
             }
         }
         Log.debug(sClass, "is Premium = " + PQ_LINE_ACTIVE);
@@ -235,12 +235,14 @@ public class Import extends ActivityBase {
         addChild(btnCancel);
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (importStarted) {
-                MsgBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MsgBoxButton.YesNo, MsgBoxIcon.Stop, (which, data) -> {
-                    if (which == MsgBox.BTN_LEFT_POSITIVE) {
+                ButtonDialog bd = new ButtonDialog(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MsgBoxButton.YesNo, MsgBoxIcon.Stop);
+                bd.setButtonClickHandler((which, data) -> {
+                    if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
                         isCanceled.set(true);
                     }
                     return true;
                 });
+                bd.show();
             } else
                 finish();
             return true;
@@ -701,7 +703,7 @@ public class Import extends ActivityBase {
         new Thread(() -> {
             PqList = fetchPocketQueryList();
             if (APIError != OK) {
-                MsgBox.show(LastAPIError, Translation.get("PQfromGC"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                new ButtonDialog(LastAPIError, Translation.get("PQfromGC"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
             }
             // even if error: you can use PqList, may be empty
             Collections.sort(PqList, (p1, p2) -> p1.name.compareTo(p2.name));
@@ -773,7 +775,7 @@ public class Import extends ActivityBase {
         importStarted = true;
 
         ImportProgress importProgress = new ImportProgress(
-                (textWithinProgressBar, textInExtraLabel, percent) -> GL.that.RunOnGL(
+                (textWithinProgressBar, textInExtraLabel, percent) -> GL.that.runOnGL(
                         () -> {
                             progressBar.fillBarAt(percent);
                             lblProgressMsg.setText(textInExtraLabel);
@@ -845,7 +847,7 @@ public class Import extends ActivityBase {
                     }
                     if (APIError != OK) {
                         isCanceled.set(true);
-                        MsgBox.show(LastAPIError, Translation.get("PQfromGC"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                        new ButtonDialog(LastAPIError, Translation.get("PQfromGC"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
                     }
                 }
                 if (isCanceled.get()) {

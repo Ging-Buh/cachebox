@@ -18,7 +18,6 @@ package de.droidcachebox.menu.menuBtn4.executes;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WaypointListChangedEventList;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.dataclasses.Cache;
@@ -28,17 +27,18 @@ import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.activities.EditWaypoint;
 import de.droidcachebox.gdx.activities.SolverDialog2;
 import de.droidcachebox.gdx.activities.SolverDialog2.ISolverBackStringListener;
 import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -176,8 +176,8 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
     }
 
     @Override
-    public void initialize() {
-        super.initialize();
+    public void renderInit() {
+        super.renderInit();
         Log.debug(log, "SolverView2 => Initial()");
         setListPos(0, false);
         chkSlideBack();
@@ -231,7 +231,8 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
     }
 
     private void DeleteLine() {
-        MsgBox.show("Zeile löschen?", "Solver", MsgBoxButton.YesNo, MsgBoxIcon.Question, (which, data) -> {
+        ButtonDialog bd = new ButtonDialog("Zeile löschen?", "Solver", MsgBoxButton.YesNo, MsgBoxIcon.Question);
+        bd.setButtonClickHandler((which, data) -> {
             if (which == 1) {
                 solver.remove(selectedIndex);
                 solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());
@@ -247,6 +248,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
             } else
                 return false;
         });
+        bd.show();
     }
 
     private CoordinateGPS getSelectedCoordinateResult() {
@@ -362,7 +364,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
                 ChangeLine();
                 return true;
             });
-            solverViewItem.setOnLongClickListener((v, x, y, pointer, button) -> {
+            solverViewItem.setLongClickHandler((v, x, y, pointer, button) -> {
                 int selectionIndex = ((ListViewItemBase) v).getIndex();
                 setSelection(selectionIndex);
 
@@ -397,8 +399,8 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
             }
 
             @Override
-            protected void initialize() {
-                super.initialize();
+            protected void renderInit() {
+                super.renderInit();
                 lblSolverZeile = new CB_Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), COLOR.getFontColor(), WrapType.MULTILINE);
                 lblSolverZeile.setHeight(getHeight()); // todo ob das immer passt?
                 setBorders(UiSizes.getInstance().getMargin(), UiSizes.getInstance().getMargin());

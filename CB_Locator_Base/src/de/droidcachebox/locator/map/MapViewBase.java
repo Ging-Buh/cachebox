@@ -1136,7 +1136,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
         setNewSettings(INITIAL_THEME);
         mapScale.ZoomChanged();
 
-        GL.that.RunOnGLWithThreadCheck(() -> {
+        GL.that.runOnGLWithThreadCheck(() -> {
             if (CrossLines != null)
                 CrossLines.dispose();
             CrossLines = null;

@@ -127,26 +127,6 @@ public class CacheList extends MoveableList<Cache> {
         return retValue;
     }
 
-    /**
-     * Removes all of the elements from this list. The list will be empty after this call returns.<br>
-     * All Cache objects are disposed
-     */
-    @Override
-    public void clear() {
-        for (int i = 0, n = size(); i < n; i++) {
-            Cache cache = get(i);
-            if (!cache.isLive())
-                cache.dispose();
-        }
-        super.clear();
-    }
-
-    @Override
-    public void dispose() {
-        clear();
-        super.dispose();
-    }
-
     public ArrayList<String> getGcCodes() {
         ArrayList<String> list = new ArrayList<>();
         for (int i = 0, n = size(); i < n; i++) {

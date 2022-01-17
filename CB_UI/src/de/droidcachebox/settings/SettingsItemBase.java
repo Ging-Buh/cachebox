@@ -13,7 +13,7 @@ public class SettingsItemBase extends ListViewItemBackground {
 
     public SettingsItemBase(CB_RectF rec, int Index, String Name) {
         super(rec, Index, Name);
-        initialize();
+        renderInit();
 
         if (MeasuredLabelHeight == -1)
             MeasuredLabelHeight = Fonts.measureForSmallFont("Tg").height;

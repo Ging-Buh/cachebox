@@ -35,8 +35,8 @@ import android.widget.TextView;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;

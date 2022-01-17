@@ -109,48 +109,6 @@ public class CacheDetail implements Serializable {
 
     }
 
-    public void dispose() {
-        // clear all Lists
-        if (AttributeList != null) {
-            AttributeList.clear();
-            AttributeList = null;
-        }
-
-        if (spoilerRessources != null) {
-            for (int i = 0, n = spoilerRessources.size(); i < n; i++) {
-                ImageEntry entry = spoilerRessources.get(i);
-                entry.dispose();
-            }
-            spoilerRessources.clear();
-            spoilerRessources = null;
-        }
-
-        // if (waypoints != null)
-        // {
-        // for (int i = 0, n = waypoints.size(); i < n; i++)
-        // {
-        // Waypoint entry = waypoints.get(i);
-        // entry.dispose();
-        // }
-        //
-        // waypoints.clear();
-        // }
-
-        tmpNote = null;
-        tmpSolver = null;
-        TourName = null;
-        PlacedBy = null;
-        // setOwner(null);
-        DateHidden = null;
-        Url = null;
-        Country = null;
-        State = null;
-        // setHint(null);
-        shortDescription = null;
-        longDescription = null;
-
-    }
-
     public boolean isAttributePositiveSet(Attribute attribute) {
         return attributesPositive.BitAndBiggerNull(Attribute.GetAttributeDlong(attribute));
         // return (attributesPositive & Attributes.GetAttributeDlong(attribute))

@@ -44,9 +44,9 @@ import de.droidcachebox.gdx.Slider;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.ViewConst;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.main.CB_ActionButton.GestureDirection;
 import de.droidcachebox.gdx.main.CB_TabView;
 import de.droidcachebox.gdx.main.GestureButton;
@@ -130,7 +130,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         Log.debug(sClass, "initialize ViewManager");
 
         GlobalCore.receiver = new GlobalLocationReceiver();
@@ -151,14 +151,16 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.get("apiKeyInvalid") + br + br;
-                        Msg += Translation.get("wantApi");
+                        String msg = Translation.get("apiKeyInvalid") + br + br;
+                        msg += Translation.get("wantApi");
 
-                        MsgBox.show(Msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live, (which, data) -> {
-                            if (which == MsgBox.BTN_LEFT_POSITIVE)
+                        ButtonDialog bd = new ButtonDialog(msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live);
+                        bd.setButtonClickHandler((which, data) -> {
+                            if (which == ButtonDialog.BTN_LEFT_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
                         });
+                        bd.show();
                     }
                 };
                 new Timer().schedule(tt, 1500);
@@ -171,14 +173,16 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.get("apiKeyExpired") + br + br;
-                        Msg += Translation.get("wantApi");
+                        String msg = Translation.get("apiKeyExpired") + br + br;
+                        msg += Translation.get("wantApi");
 
-                        MsgBox.show(Msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live, (which, data) -> {
-                            if (which == MsgBox.BTN_LEFT_POSITIVE)
+                        ButtonDialog bd = new ButtonDialog(msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live);
+                        bd.setButtonClickHandler((which, data) -> {
+                            if (which == ButtonDialog.BTN_LEFT_POSITIVE)
                                 PlatformUIBase.getApiKey();
                             return true;
                         });
+                        bd.show();
                     }
                 };
                 t.schedule(tt, 1500);
@@ -192,15 +196,14 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
                     @Override
                     public void run() {
-                        String Msg = Translation.get("apiKeyNeeded") + br + br;
-                        Msg += Translation.get("wantApi");
-
-                        MsgBox.show(Msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live,
+                        String msg = Translation.get("apiKeyNeeded") + br + br;
+                        msg += Translation.get("wantApi");
+                        new ButtonDialog(msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live,
                                 (which, data) -> {
-                                    if (which == MsgBox.BTN_LEFT_POSITIVE)
+                                    if (which == ButtonDialog.BTN_LEFT_POSITIVE)
                                         PlatformUIBase.getApiKey();
                                     return true;
-                                }, Settings.RememberAsk_Get_API_Key);
+                                }, Settings.RememberAsk_Get_API_Key).show();
                     }
                 };
                 t.schedule(tt, 1500);
@@ -356,7 +359,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public void reloadSprites(boolean switchDayNight) {
 
         if (!isInitial)
-            initialize();
+            renderInit();
 
         try {
             GL.that.stopRendering();

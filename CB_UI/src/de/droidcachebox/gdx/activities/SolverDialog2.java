@@ -5,13 +5,13 @@ import com.badlogic.gdx.graphics.Color;
 import java.util.TreeMap;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_CheckBox.OnCheckChangedListener;

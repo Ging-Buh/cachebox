@@ -17,11 +17,16 @@ package de.droidcachebox.gdx.activities;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.*;
+import de.droidcachebox.gdx.controls.Box;
+import de.droidcachebox.gdx.controls.CB_Button;
+import de.droidcachebox.gdx.controls.ColorPickerRec;
+import de.droidcachebox.gdx.controls.GradiantFilledRectangle;
+import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.graphics.ColorDrawable;
 import de.droidcachebox.gdx.graphics.GradiantFill;
 import de.droidcachebox.gdx.graphics.HSV_Color;
@@ -256,7 +261,7 @@ public class ColorPicker extends ActivityBase {
 
     private void regenarateActColorBox() {
 
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             if (actColorDrawable == null) {
                 actColorDrawable = new ColorDrawable(currentColor);
             } else {

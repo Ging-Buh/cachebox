@@ -153,7 +153,7 @@ public class SelectDBDialog extends AbstractAction {
         CacheListChangedListeners.getInstance().cacheListChanged();
         ViewManager.that.filterSetChanged();
 
-        wd.dismis();
+        wd.closeWaitDialog();
 
     }
 }

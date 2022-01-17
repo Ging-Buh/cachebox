@@ -1,13 +1,13 @@
 package de.droidcachebox.gdx.controls;
 
+import java.util.Hashtable;
+import java.util.Iterator;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.MoveableList;
-
-import java.util.Hashtable;
-import java.util.Iterator;
 
 public class Linearlayout extends CB_View_Base {
 
@@ -101,14 +101,14 @@ public class Linearlayout extends CB_View_Base {
 
     @Override
     public void removeChilds() {
-        removeChildsDirect();
+        removeChildrenDirect();
         layout();
 
     }
 
     @Override
     public void removeChilds(final MoveableList<GL_View_Base> Childs) {
-        removeChildsDirect(Childs);
+        removeChildrenDirect(Childs);
         layout();
     }
 
@@ -131,7 +131,7 @@ public class Linearlayout extends CB_View_Base {
     }
 
     @Override
-    public void removeChildsDirect() {
+    public void removeChildrenDirect() {
         synchronized (childs) {
             childs.clear();
             layout();

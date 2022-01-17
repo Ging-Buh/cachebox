@@ -1,86 +1,61 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
-import de.droidcachebox.WrapType;
-import de.droidcachebox.gdx.GL;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.translation.Translation;
 
-public class NewDB_InputBox extends MsgBox {
-    public static EditTextField editText;
+public class NewDB_InputBox extends ButtonDialog {
+    public static EditTextField editTextField;
 
-    public NewDB_InputBox(Size size, String name) {
-        super(size, name);
-    }
+    public NewDB_InputBox(String newDBTitle, String insNewDBNameExplanation) {
+        super("", newDBTitle, MsgBoxButton.OKCancel, MsgBoxIcon.None);
+        removeChilds();
+        setHeight(getHeight() - contentBox.getHeight());
 
-    public static void Show(WrapType type, String msg, String title, String initialString, final OnMsgBoxClickListener Listener) {
+        editTextField = new EditTextField( this, "editTextField").setWrapType(WrapType.SINGLELINE);
+        editTextField.setText("");
+        editTextField.setCursorPosition(0);
+        editTextField.showFromLineNo(0);
+        float topBottom = editTextField.getStyle().getTopHeight(true) + editTextField.getStyle().getBottomHeight(true);
+        editTextField.setHeight(topBottom + editTextField.getFont().getLineHeight() + editTextField.getFont().getAscent() - editTextField.getFont().getDescent());
 
-        Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
+        CB_Label messageLabel = new CB_Label();
+        messageLabel.setWidth(contentBox.getWidth());
+        messageLabel.setWrapType(WrapType.WRAPPED);
+        messageLabel.setText(insNewDBNameExplanation);
+        messageLabel.setHeight(messageLabel.getTextHeight());
 
-        NewDB_InputBox msgBox = new NewDB_InputBox(msgBoxSize, "MsgBox");
-        msgBox.setTitle(title);
-
-        final CB_CheckBox chk = new CB_CheckBox();
-        msgBox.setMsgBoxClickListener((which, data) -> {
-            Listener.onClick(which, chk.isChecked());
+        CB_CheckBox commonRepositoryCheckBox = new CB_CheckBox();
+        commonRepositoryCheckBox.setChecked(true);
+        data = new AtomicBoolean(true); // useCommonRepository
+        commonRepositoryCheckBox.setClickHandler((view, x, y, pointer, button) -> {
+            ((AtomicBoolean)data).set(commonRepositoryCheckBox.isChecked());
             return true;
         });
-        CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
+        commonRepositoryCheckBox.setElementAlignment(1);
 
-        chk.setY(margin * 2);
-        chk.setChecked(true);
-        CB_RectF LabelRec = msgBox.getContentSize().getBounds();
-        LabelRec.setHeight(LabelRec.getHeight() - chk.getHeight());
+        CB_Label commonRepositoryLabel = new CB_Label();
+        commonRepositoryLabel.setWidth(contentBox.getWidth() - commonRepositoryCheckBox.getWidth());
+        commonRepositoryLabel.setWrappedText(Translation.get("UseDefaultRep"));
+        commonRepositoryLabel.setHeight(commonRepositoryLabel.getTextHeight());
 
-        CB_Label lbl = new CB_Label(LabelRec);
-        lbl.setX(chk.getMaxX() + margin);
-        lbl.setY(chk.getY());
-        lbl.setText(Translation.get("UseDefaultRep"));
+        contentBox.addLast(editTextField);
+        if (messageLabel.getText().length() > 0) contentBox.addLast(messageLabel);
+        contentBox.addNext(commonRepositoryCheckBox, FIXED);
+        contentBox.addLast(commonRepositoryLabel);
 
-        editText = new EditTextField(textFieldRec, msgBox, "editText", type);
-        editText.setZeroPos();
-        editText.setY(chk.getMaxY() + margin);
-        editText.setText(initialString);
-        editText.setCursorPosition(initialString.length());
-
-        float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true);
-
-        float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
-
-        if (type == WrapType.SINGLELINE) {
-            editText.setHeight(topBottom + SingleLineHeight);
-        } else {
-            editText.setHeight(topBottom + (SingleLineHeight * 5));
-        }
-        msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + (margin * 4) + chk.getHalfHeight());
-
-        LabelRec.setHeight(LabelRec.getHeight() - editText.getHeight());
-
-        CB_Label label = new CB_Label(LabelRec);
-        label.setZeroPos();
-        label.setY(editText.getMaxY());
-        label.setWrappedText(msg);
-
-        msgBox.addChild(editText);
-        msgBox.addChild(label);
-        msgBox.addChild(chk);
-        msgBox.addChild(lbl);
-
-        msgBox.addButtons(MsgBoxButton.OKCancel);
-
-        GL.that.showDialog(msgBox, true);
+        contentBox.adjustHeight();
+        setHeight(getHeight() + contentBox.getHeight());
 
     }
 
     @Override
     public void onShow() {
-        // register Textfield render
-        editText.setFocus(true);
+        editTextField.setFocus(true);
     }
 
 }

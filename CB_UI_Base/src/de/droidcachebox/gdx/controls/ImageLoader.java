@@ -356,7 +356,7 @@ public class ImageLoader {
         if (State == 3) {
             if (inGenerate)
                 return;
-            GL.that.RunOnGL(() -> {
+            GL.that.runOnGL(() -> {
                 try {
                     inGenerate = true;
 
@@ -397,7 +397,7 @@ public class ImageLoader {
             final TextureLoader tl = new TextureLoader(new AbsoluteFileHandleResolver());
             try {
                 tl.loadAsync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
-                GL.that.RunOnGL(() -> {
+                GL.that.runOnGL(() -> {
                     // Log.info(log, "LoadSync " + mPath + ":" + ImgName);
                     mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
                     Sprite sprite = new Sprite(mImageTex);
@@ -478,7 +478,7 @@ public class ImageLoader {
 
     public void dispose() {
 
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             if (mImageTex != null) {
                 try {
                     assetManager.unload(ImgName);

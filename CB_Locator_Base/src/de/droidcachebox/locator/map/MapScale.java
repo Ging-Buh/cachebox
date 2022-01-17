@@ -66,7 +66,7 @@ public class MapScale extends CB_View_Base implements InvalidateTextureListeners
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         generatedZomm = -1;
         zoomChanged();
     }

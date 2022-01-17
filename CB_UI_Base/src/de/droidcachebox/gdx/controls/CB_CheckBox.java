@@ -2,6 +2,7 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -26,7 +27,7 @@ public class CB_CheckBox extends CB_Button {
     @Override
     protected void render(Batch batch) {
         if (drawableNormal == null || drawablePressed == null || drawableDisabledChk == null || drawableDisabled == null) {
-            initialize();
+            this.renderInit();
             GL.that.renderOnce();
         }
 
@@ -51,7 +52,7 @@ public class CB_CheckBox extends CB_Button {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
 
         // die einzelnen Hintergründe werden hier anders benutzt
         // drawableNormal= unchecked

@@ -154,11 +154,11 @@ public class EditCoord extends ActivityBase {
             }
 
             if (mReturnListener != null) {
-                GL.that.RunOnGL(this::finish);
+                GL.that.runOnGL(this::finish);
 
                 mReturnListener.returnCoordinate(coord);
             } else {
-                GL.that.RunOnGL(this::finish);
+                GL.that.runOnGL(this::finish);
             }
             return true;
         });
@@ -174,7 +174,7 @@ public class EditCoord extends ActivityBase {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
 
         bDec.setTag(0);
         bDec.setClickHandler(mtbClicked);
@@ -575,7 +575,7 @@ public class EditCoord extends ActivityBase {
 
     private void setButtonValues(final int newPage) {
 
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
 
             String s;
             switch (newPage) {

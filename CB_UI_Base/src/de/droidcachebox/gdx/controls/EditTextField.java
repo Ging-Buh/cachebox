@@ -36,13 +36,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.popups.CopyPastePopUp;
 import de.droidcachebox.gdx.controls.popups.ICopyPaste;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -311,7 +311,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
 
     @Override
     protected void render(Batch batch) {
-        if (this.isDisposed() || !doRender)
+        if (isDisposed || !doRender)
             return;
 
         displayTextLock.lock();
@@ -1726,7 +1726,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
     }
 
     protected void registerPopUpLongClick() {
-        this.setOnLongClickListener(new OnClickListener() {
+        this.setLongClickHandler(new OnClickListener() {
             /**
              * shows PastePopUp<br>
              */

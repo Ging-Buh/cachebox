@@ -27,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.io.IOException;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
@@ -42,6 +41,7 @@ import de.droidcachebox.dataclasses.Categories;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.Image;
@@ -80,7 +80,7 @@ public class MainViewInit extends MainViewBase {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         GL.that.restartRendering();
         switcher = !switcher;
         if (switcher && !breakForWait) {
@@ -132,7 +132,7 @@ public class MainViewInit extends MainViewBase {
         }
 
         if (step <= 100)
-            resetIsInitialized();
+            resetRenderInitDone();
     }
 
     /**
@@ -397,7 +397,7 @@ public class MainViewInit extends MainViewBase {
 
     @Override
     public void dispose() {
-        this.removeChildsDirect();
+        this.removeChildrenDirect();
 
         if (descTextView != null)
             descTextView.dispose();

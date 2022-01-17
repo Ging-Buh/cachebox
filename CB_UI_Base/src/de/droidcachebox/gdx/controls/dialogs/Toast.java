@@ -18,7 +18,6 @@ package de.droidcachebox.gdx.controls.dialogs;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
-import de.droidcachebox.gdx.controls.Dialog;
 import de.droidcachebox.gdx.math.CB_RectF;
 
 /**
@@ -37,7 +36,7 @@ public class Toast extends Dialog {
 
         mTextField.setZeroPos();
 
-        super.removeChildsFromOverlay();
+        super.clearOverlay();
         super.addChildToOverlay(mTextField);
 
     }

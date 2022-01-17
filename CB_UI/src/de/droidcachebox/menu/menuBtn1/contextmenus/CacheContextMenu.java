@@ -4,7 +4,6 @@ import static de.droidcachebox.PlatformUIBase.callUrl;
 import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
-import static de.droidcachebox.gdx.controls.messagebox.MsgBox.BTN_LEFT_POSITIVE;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,11 +26,11 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.EditCache;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.menuBtn1.ShowTrackables;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
@@ -63,7 +62,7 @@ public class CacheContextMenu {
     }
 
     public Menu getCacheContextMenu(boolean _forCacheList) {
-        //if (theMenu == null || theMenu.isDisposed() || forCacheList != _forCacheList || geoCache != GlobalCore.getSelectedCache()) {
+        //if (theMenu == null || theMenu.isDisposed || forCacheList != _forCacheList || geoCache != GlobalCore.getSelectedCache()) {
 
         Menu theMenu = new Menu("DescriptionViewTitle");
         geoCache = GlobalCore.getSelectedCache();
@@ -94,7 +93,7 @@ public class CacheContextMenu {
         if (_forCacheList) {
             theMenu.addDivider();
             theMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + GeoCacheType.Trailhead.name()), () -> ShowWaypoints.getInstance().execute());
-            theMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> ShowHint.getInstance().showHint()).setEnabled(geoCache.hasHint());
+            theMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> ShowHint.getInstance().execute()).setEnabled(geoCache.hasHint());
             theMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.getInstance().execute());
             theMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.getInstance().execute());
             theMenu.addMenuItem("Notes", Sprites.getSprite(IconName.userdata.name()), () -> ShowNotes.getInstance().execute());
@@ -114,23 +113,24 @@ public class CacheContextMenu {
 
     private void rememberGeoCache() {
         if (GlobalCore.isSetSelectedCache()) {
-            MsgBox mb = MsgBox.show(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MsgBoxButton.AbortRetryIgnore, MsgBoxIcon.Question, null);
-            mb.setPositiveClickListener((v, x, y, pointer, button) -> {
-                Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-                Settings.getInstance().acceptChanges();
-                return mb.finish();
-            });
-            mb.setMiddleNeutralClickListener((v, x, y, pointer, button) -> {
-                Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
-                if (rememberedCache != null) GlobalCore.setSelectedCache(rememberedCache);
-                return mb.finish();
-            });
-            mb.setRightNegativeClickListener((v, x, y, pointer, button) -> {
-                Settings.rememberedGeoCache.setValue("");
-                Settings.getInstance().acceptChanges();
-                return mb.finish();
+            ButtonDialog mb = new ButtonDialog(Translation.get("rememberThisOrSelectRememberedGeoCache"), Translation.get("rememberGeoCacheTitle"), MsgBoxButton.AbortRetryIgnore, MsgBoxIcon.Question);
+            mb.setButtonClickHandler((btnNumber, data) -> {
+                if (btnNumber == ButtonDialog.BTN_LEFT_POSITIVE) {
+                    Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
+                    Settings.getInstance().acceptChanges();
+                }
+                else if (btnNumber == ButtonDialog.BTN_MIDDLE_NEUTRAL) {
+                    Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
+                    if (rememberedCache != null) GlobalCore.setSelectedCache(rememberedCache);
+                }
+                else {
+                    Settings.rememberedGeoCache.setValue("");
+                    Settings.getInstance().acceptChanges();
+                }
+                return true;
             });
             mb.setButtonText("rememberGeoCache", "selectGeoCache", "forgetGeoCache");
+            mb.show();
         }
     }
 
@@ -173,14 +173,14 @@ public class CacheContextMenu {
                                     }
                                 });
 
-                        GL.that.RunOnGL(() -> {
+                        GL.that.runOnGL(() -> {
                             ShowDescription.getInstance().updateDescriptionView(true);
                             GL.that.renderOnce();
                         });
 
                     } else {
                         if (GroundspeakAPI.APIError != OK) {
-                            GL.that.RunOnGL(() -> MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MsgBoxButton.OK, MsgBoxIcon.Information, null));
+                            new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
                         }
                     }
                 }
@@ -192,7 +192,7 @@ public class CacheContextMenu {
 
             }).show();
         } else {
-            MsgBox.show(Translation.get("NoCacheSelect"), Translation.get("Error"), MsgBoxIcon.Error);
+            new ButtonDialog(Translation.get("NoCacheSelect"), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
         }
     }
 
@@ -219,15 +219,16 @@ public class CacheContextMenu {
     }
 
     private void toggleShortClick() {
-        MsgBox.show(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MsgBoxButton.YesNo, MsgBoxIcon.Question,
-                (btnNumber, data) -> {
-                    if (btnNumber == BTN_LEFT_POSITIVE)
-                        Settings.CacheContextMenuShortClickToggle.setValue(false);
-                    else
-                        Settings.CacheContextMenuShortClickToggle.setValue(true);
-                    Settings.getInstance().acceptChanges();
-                    return true;
-                });
+        ButtonDialog bd = new ButtonDialog(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MsgBoxButton.YesNo, MsgBoxIcon.Question);
+        bd.setButtonClickHandler((btnNumber, data) -> {
+            if (btnNumber == ButtonDialog.BTN_LEFT_POSITIVE)
+                Settings.CacheContextMenuShortClickToggle.setValue(false);
+            else
+                Settings.CacheContextMenuShortClickToggle.setValue(true);
+            Settings.getInstance().acceptChanges();
+            return true;
+        });
+        bd.show();
     }
 
     private void toggleAsFavorite() {
@@ -242,15 +243,16 @@ public class CacheContextMenu {
     }
 
     private void deleteGeoCache() {
-        MsgBox.show(Translation.get("sure"), Translation.get("question"), MsgBoxButton.OKCancel, MsgBoxIcon.Question,
-                (which, data) -> {
-                    if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                        deleteSelectedCache();
-                        Log.debug(sClass, "deleteSelectedCache");
-                        GlobalCore.setSelectedWaypoint(null, null, true);
-                        Log.debug(sClass, "GlobalCore.setSelectedWaypoint");
-                    }
-                    return true;
-                });
+        ButtonDialog bd = new ButtonDialog(Translation.get("sure"), Translation.get("question"), MsgBoxButton.OKCancel, MsgBoxIcon.Question);
+        bd.setButtonClickHandler((which, data) -> {
+            if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
+                deleteSelectedCache();
+                Log.debug(sClass, "deleteSelectedCache");
+                GlobalCore.setSelectedWaypoint(null, null, true);
+                Log.debug(sClass, "GlobalCore.setSelectedWaypoint");
+            }
+            return true;
+        });
+        bd.show();
     }
 }

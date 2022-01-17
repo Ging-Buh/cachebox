@@ -34,7 +34,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 public class Box extends CB_View_Base {
 
     private final Color borderColor = Color.BLACK;
-    private float borderSize = 0;
+    private final float borderSize = 0;
     private Sprite borderSprite;
 
     public Box() {
@@ -63,7 +63,7 @@ public class Box extends CB_View_Base {
     private void drawBorder(Batch batch) {
         if (borderSprite == null) {
             try {
-                GL.that.RunOnGLWithThreadCheck(() -> {
+                GL.that.runOnGLWithThreadCheck(() -> {
 
                     int w = (int) getWidth();
                     int h = (int) getHeight();

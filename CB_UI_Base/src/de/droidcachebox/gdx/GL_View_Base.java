@@ -53,7 +53,7 @@ public class GL_View_Base extends CB_RectF {
     public boolean withoutScissor;
     public CB_RectF thisWorldRec;
     public ParentInfo myParentInfo;
-    protected boolean isInitialized = false;
+    protected boolean isRenderInitDone;
     protected Pixmap debugRegPixmap;
     protected Texture debugRegTexture;
     protected Vector2 lastTouchPos;
@@ -77,6 +77,7 @@ public class GL_View_Base extends CB_RectF {
     protected Object data;
     protected float weight;
     protected int elementAlignment = 0; // bottom
+    protected boolean isDisposed;
     private OnClickListener mOnLongClickListener;
     private OnClickListener mOnDoubleClickListener;
     private float mRotate = 0;
@@ -87,12 +88,11 @@ public class GL_View_Base extends CB_RectF {
     private boolean isClickable;
     private boolean isLongClickable;
     private boolean isDoubleClickable;
-    private boolean ChildIsClickable;
-    private boolean ChildIsLongClickable;
-    private boolean ChildIsDoubleClickable;
+    private boolean hasClickableChild;
+    private boolean hasLongClickableChild;
+    private boolean hasDoubleClickableChild;
     private boolean mVisible;
     private boolean enabled;
-    private boolean isDisposed;
 
     public GL_View_Base(CB_RectF rec, GL_View_Base parent, String name) {
         super(rec);
@@ -121,23 +121,19 @@ public class GL_View_Base extends CB_RectF {
         mScale = 1f;
         data = null;
         weight = 1f;
-        mSkinChangedEventListener = new SkinChangedEventListener() {
-            @Override
-            public void handleSkinChanged() {
-                GL_View_Base.this.skinIsChanged();
-            }
-        };
+        mSkinChangedEventListener = GL_View_Base.this::skinIsChanged;
         mColorFilter = null;
         forceHandleTouchEvents = false;
         isClickable = false;
         isLongClickable = false;
         isDoubleClickable = false;
-        ChildIsClickable = false;
-        ChildIsLongClickable = false;
-        ChildIsDoubleClickable = false;
+        hasClickableChild = false;
+        hasLongClickableChild = false;
+        hasDoubleClickableChild = false;
         mVisible = true;
         enabled = true;
         isDisposed = false;
+        isRenderInitDone = false;
     }
 
     public GL_View_Base(CB_RectF rec, String name) {
@@ -226,7 +222,7 @@ public class GL_View_Base extends CB_RectF {
     public GL_View_Base addChild(final GL_View_Base view, final boolean last) {
         if (childs.contains(view))
             return view;
-        GL.that.RunOnGLWithThreadCheck(() -> {
+        GL.that.runOnGLWithThreadCheck(() -> {
             if (last) {
                 childs.add(0, view);
             } else {
@@ -239,7 +235,7 @@ public class GL_View_Base extends CB_RectF {
     }
 
     public void removeChild(final GL_View_Base view) {
-        GL.that.RunOnGLWithThreadCheck(() -> {
+        GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (childs != null && childs.size() > 0)
                     childs.remove(view);
@@ -250,7 +246,7 @@ public class GL_View_Base extends CB_RectF {
     }
 
     public void removeChilds() {
-        GL.that.RunOnGLWithThreadCheck(() -> {
+        GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (childs != null && childs.size() > 0)
                     childs.clear();
@@ -261,7 +257,7 @@ public class GL_View_Base extends CB_RectF {
     }
 
     public void removeChilds(final MoveableList<GL_View_Base> Childs) {
-        GL.that.RunOnGLWithThreadCheck(() -> {
+        GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (childs != null && childs.size() > 0)
                     childs.remove(Childs);
@@ -300,7 +296,7 @@ public class GL_View_Base extends CB_RectF {
         return view;
     }
 
-    public void removeChildsDirect() {
+    public void removeChildrenDirect() {
         if (childs == null)
             return;
         synchronized (childs) {
@@ -320,7 +316,7 @@ public class GL_View_Base extends CB_RectF {
         }
     }
 
-    public void removeChildsDirect(MoveableList<GL_View_Base> children) {
+    public void removeChildrenDirect(MoveableList<GL_View_Base> children) {
         if (childs == null)
             return;
         synchronized (childs) {
@@ -342,35 +338,34 @@ public class GL_View_Base extends CB_RectF {
     }
 
     /**
-     * Checks whether any child has the status Clickable. </br>If so, then this view must also Clickable!
+     * Checks whether any child has the status Clickable. </br>If so, then this view is also Clickable!
      */
     protected void chkChildClickable() {
         boolean tmpClickable = false;
         boolean tmpDoubleClickable = false;
         boolean tmpLongClickable = false;
         if (childs != null) {
-
             try {
-
-                for (int i = 0, n = childs.size(); i < n; i++) {
-                    GL_View_Base tmp = childs.get(i);
+                for (GL_View_Base tmp : childs                     ) {
                     if (tmp != null) {
-                        if (tmp.isClickable())
+                        if (tmp.isClickable()) {
                             tmpClickable = true;
-                        if (tmp.isLongClickable())
+                        }
+                        if (tmp.isLongClickable()) {
                             tmpLongClickable = true;
-                        if (tmp.isDoubleClickable())
+                        }
+                        if (tmp.isDoubleClickable()) {
                             tmpDoubleClickable = true;
+                        }
                     }
-
                 }
             } catch (Exception ignored) {
             }
         }
 
-        ChildIsClickable = tmpClickable;
-        ChildIsDoubleClickable = tmpDoubleClickable;
-        ChildIsLongClickable = tmpLongClickable;
+        hasClickableChild = tmpClickable;
+        hasDoubleClickableChild = tmpDoubleClickable;
+        hasLongClickableChild = tmpLongClickable;
     }
 
     /**
@@ -529,7 +524,7 @@ public class GL_View_Base extends CB_RectF {
                     // hier nicht view.render(batch) aufrufen, da sonnst die in der
                     // view enthaldenen Childs nicht aufgerufen werden.
                     try {
-                        if (view != null && !view.isDisposed() && view.isVisible()) {
+                        if (view != null && !view.isDisposed && view.isVisible()) {
                             synchronized (childs) {
                                 if (childsInvalidate)
                                     view.invalidate();
@@ -541,18 +536,18 @@ public class GL_View_Base extends CB_RectF {
 
                                 batch.setProjectionMatrix(myInfoForChild.Matrix());
                                 nDepthCounter++;
-                                if (!view.isDisposed())
+                                if (!view.isDisposed)
                                     view.renderChildren(batch, myInfoForChild);
                                 nDepthCounter--;
                             }
                         } else {
-                            if (view != null && view.isDisposed()) {
+                            if (view != null && view.isDisposed) {
                                 // Remove disposedView from child list
                                 removeChild(view);
                             }
                         }
                     } catch (java.lang.IllegalStateException e) {
-                        if (view.isDisposed()) {
+                        if (view.isDisposed) {
                             // Remove disposedView from child list
                             removeChild(view);
                         }
@@ -581,14 +576,10 @@ public class GL_View_Base extends CB_RectF {
 
     }
 
-    public boolean isDisposed() {
-        return isDisposed;
-    }
-
     protected void createDebugSprite() {
         if (debugSprite == null) {
             try {
-                GL.that.RunOnGLWithThreadCheck(() -> {
+                GL.that.runOnGLWithThreadCheck(() -> {
                     int w = (int) getWidth();
                     int h = (int) getHeight();
                     debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
@@ -639,18 +630,18 @@ public class GL_View_Base extends CB_RectF {
     }
 
     protected void render(Batch batch) {
-        if (!isInitialized) {
-            isInitialized = true;
-            initialize();
+        if (!isRenderInitDone) {
+            isRenderInitDone = true;
+            renderInit();
         }
     }
 
-    public void resetIsInitialized() {
-        // for not to directly call initialize() in overwritten
-        isInitialized = false;
+    public void resetRenderInitDone() {
+        // renderInit will be done again on next render
+        isRenderInitDone = false;
     }
 
-    protected void initialize() {
+    protected void renderInit() {
     }
 
     public void setRotate(float Rotate) {
@@ -968,11 +959,11 @@ public class GL_View_Base extends CB_RectF {
     @Override
     public void dispose() {
         GL.that.removeRenderView(this);
-        GL.that.RunOnGLWithThreadCheck(() -> {
+        GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 synchronized (childs) {
                     for (GL_View_Base view : childs) {
-                        if (view != null && !view.isDisposed())
+                        if (view != null && !view.isDisposed)
                             view.dispose();
                     }
                     childs.clear();
@@ -1019,7 +1010,7 @@ public class GL_View_Base extends CB_RectF {
      * @param l The callback that will run
      * @see #setClickable(boolean)
      */
-    public void setOnLongClickListener(OnClickListener l) {
+    public void setLongClickHandler(OnClickListener l) {
         isLongClickable = l != null;
         mOnLongClickListener = l;
     }
@@ -1038,7 +1029,7 @@ public class GL_View_Base extends CB_RectF {
     boolean isDoubleClickable() {
         if (!isVisible())
             return false;
-        return isDoubleClickable || ChildIsDoubleClickable;
+        return isDoubleClickable || hasDoubleClickableChild;
     }
 
     protected void setDoubleClickable() {
@@ -1048,7 +1039,7 @@ public class GL_View_Base extends CB_RectF {
     boolean isLongClickable() {
         if (!isVisible())
             return false;
-        return isLongClickable || ChildIsLongClickable;
+        return isLongClickable || hasLongClickableChild;
     }
 
     public void setLongClickable(boolean value) {
@@ -1058,7 +1049,7 @@ public class GL_View_Base extends CB_RectF {
     protected boolean isClickable() {
         if (!isVisible())
             return false;
-        return isClickable || ChildIsClickable;
+        return isClickable || hasClickableChild;
     }
 
     /**
@@ -1149,6 +1140,10 @@ public class GL_View_Base extends CB_RectF {
 
     public void setData(Object data) {
         this.data = data;
+    }
+
+    public boolean isDisposed() {
+        return isDisposed;
     }
 
     /**

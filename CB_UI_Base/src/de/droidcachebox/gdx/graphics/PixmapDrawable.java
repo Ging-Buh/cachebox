@@ -3,6 +3,7 @@ package de.droidcachebox.gdx.graphics;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+
 import de.droidcachebox.gdx.GL;
 
 public class PixmapDrawable extends EmptyDrawable {
@@ -10,7 +11,7 @@ public class PixmapDrawable extends EmptyDrawable {
 
     public PixmapDrawable(final Pixmap pixmap) {
         // must create on GL Thread
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             tex = new Texture(pixmap);
             // tex.bind();
             pixmap.dispose();

@@ -1,6 +1,7 @@
 package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.Input.Keys;
+
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL_View_Base;
@@ -81,7 +82,7 @@ public class NumPad extends CB_View_Base {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         this.removeChilds();
         calcSizes();
         calcPositions();

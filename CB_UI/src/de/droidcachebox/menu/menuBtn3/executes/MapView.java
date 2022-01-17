@@ -64,11 +64,11 @@ import de.droidcachebox.gdx.controls.MapInfoPanel.CoordType;
 import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.ZoomButtons;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.graphics.CircleDrawable;
 import de.droidcachebox.gdx.graphics.GL_Paint;
 import de.droidcachebox.gdx.graphics.HSV_Color;
@@ -376,7 +376,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                             }
                         } else {
                             if (GroundspeakAPI.APIError != OK) {
-                                GL.that.RunOnGL(() -> MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MsgBoxButton.OK, MsgBoxIcon.Information, null));
+                                new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
                             }
                         }
 
@@ -975,7 +975,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     public void requestLayout() {
         // Log.debug(sKlasse, "requestLayout");
 
-        if (isDisposed()) return;
+        if (isDisposed) return;
 
         float margin = GL_UISizes.margin;
 

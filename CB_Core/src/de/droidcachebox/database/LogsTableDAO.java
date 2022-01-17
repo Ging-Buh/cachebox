@@ -37,7 +37,7 @@ public class LogsTableDAO {
     }
 
     public CB_List<LogEntry> getLogs(Cache cache) {
-        if (cache == null || cache.isDisposed()) {
+        if (cache == null) {
             cacheLogs.clear();
             return cacheLogs;
         }

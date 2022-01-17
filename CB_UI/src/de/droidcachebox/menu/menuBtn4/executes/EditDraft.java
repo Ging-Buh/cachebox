@@ -34,7 +34,6 @@ import java.util.TimerTask;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.dataclasses.Draft;
@@ -43,6 +42,7 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_CheckBox;
@@ -52,9 +52,9 @@ import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.FilterSetListViewItem;
 import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.ScrollBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.settings.Settings;
@@ -116,28 +116,19 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
                     currentDraft.timestamp = timestamp;
                 } catch (ParseException e) {
-                    final MsgBox msg = MsgBox.show(Translation.get("wrongDate"), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error,
-                            (which, data) -> {
-                                Timer runTimer = new Timer();
-                                TimerTask task = new TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        show();
-                                    }
-                                };
-                                runTimer.schedule(task, 200);
-                                return true;
-                            });
-                    Timer runTimer = new Timer();
-                    TimerTask task = new TimerTask() {
-
-                        @Override
-                        public void run() {
-                            GL.that.showDialog(msg);
-                        }
-                    };
-
-                    runTimer.schedule(task, 200);
+                    ButtonDialog bd = new ButtonDialog(Translation.get("wrongDate"), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error);
+                    bd.setButtonClickHandler((which, data) -> {
+                        Timer runTimer = new Timer();
+                        TimerTask task = new TimerTask() {
+                            @Override
+                            public void run() {
+                                show();
+                            }
+                        };
+                        runTimer.schedule(task, 200);
+                        return true;
+                    });
+                    bd.show();
                     return true;
                 }
 

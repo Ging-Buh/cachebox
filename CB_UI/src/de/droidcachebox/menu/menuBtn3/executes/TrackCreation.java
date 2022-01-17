@@ -36,7 +36,7 @@ public class TrackCreation extends AbstractShowAction {
     public CB_View_Base getView() {
         // don't return a view.
         // show menu direct.
-        GL.that.RunOnGL(this::execute);
+        GL.that.runOnGL(this::execute);
         return null;
     }
 

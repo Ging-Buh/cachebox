@@ -22,11 +22,11 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.executes.Logs;
@@ -89,7 +89,7 @@ public class ShowLogs extends AbstractShowAction {
             contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
             contextMenu.addCheckableMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), GlobalCore.filterLogsOfFriends, () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
-                Logs.getInstance().resetIsInitialized();
+                Logs.getInstance().resetRenderInitDone();
             });
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
@@ -119,7 +119,7 @@ public class ShowLogs extends AbstractShowAction {
             pd.close();
             if (result != -1) {
                 synchronized (CBDB.getInstance().cacheList) {
-                    MsgBox.show(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MsgBoxIcon.None);
+                    new ButtonDialog(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MsgBoxIcon.None).show();
                 }
 
             }
@@ -152,7 +152,7 @@ public class ShowLogs extends AbstractShowAction {
                                     CBDB.getInstance().setTransactionSuccessful();
                                     CBDB.getInstance().endTransaction();
                                     // update LogListView
-                                    Logs.getInstance().resetIsInitialized();
+                                    Logs.getInstance().resetRenderInitDone();
                                     // for update slider, ?, ?, ? with latest logs
                                     CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
                                 }
@@ -178,9 +178,9 @@ public class ShowLogs extends AbstractShowAction {
             if (GroundspeakAPI.APIError == OK) {
                 Settings.friends.setValue(friends);
                 Settings.getInstance().acceptChanges();
-                MsgBox.show(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                new ButtonDialog(Translation.get("ok") + ":\n" + friends, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
             } else {
-                MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
             }
         });
     }

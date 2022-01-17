@@ -50,8 +50,8 @@ public class QuickButtonList extends H_ListView {
     }
 
     @Override
-    public void initialize() {
-        super.initialize();
+    public void renderInit() {
+        super.renderInit();
         chkIsDraggable();
     }
 

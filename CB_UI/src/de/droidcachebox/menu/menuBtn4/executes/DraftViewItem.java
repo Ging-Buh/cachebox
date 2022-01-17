@@ -25,13 +25,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import de.droidcachebox.WrapType;
 import de.droidcachebox.dataclasses.Draft;
 import de.droidcachebox.dataclasses.GeoCacheType;
 import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -168,9 +168,9 @@ public class DraftViewItem extends ListViewItemBackground {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         backHeader = new NinePatch(Sprites.getSprite("listrec-header"), 8, 8, 8, 8);
-        super.initialize();
+        super.renderInit();
     }
 
     @Override
@@ -201,7 +201,7 @@ public class DraftViewItem extends ListViewItemBackground {
         if (backHeader != null) {
             backHeader.draw(batch, 0, getHeight() - headHeight, getWidth(), headHeight);
         } else {
-            resetIsInitialized();
+            resetRenderInitDone();
         }
 
         if (uploaded) {

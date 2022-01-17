@@ -18,17 +18,17 @@ package de.droidcachebox.menu.menuBtn4.executes;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.views.SelectSolverFunction;
 import de.droidcachebox.menu.ViewManager;
@@ -205,14 +205,14 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
             return true;
         });
 
-        edInput.addListPosChangedHandler(() -> GL.that.RunOnGL(() -> {
+        edInput.addListPosChangedHandler(() -> GL.that.runOnGL(() -> {
             int aktInputLine = edInput.getTopLineNo();
             int aktResultLine = edResult.getTopLineNo();
             if (aktInputLine != aktResultLine)
                 edResult.showFromLineNo(aktInputLine);
         }));
 
-        edResult.addListPosChangedHandler(() -> GL.that.RunOnGL(() -> {
+        edResult.addListPosChangedHandler(() -> GL.that.runOnGL(() -> {
             int aktInputLine = edInput.getTopLineNo();
             int aktResultLine = edResult.getTopLineNo();
             if (aktInputLine != aktResultLine)
@@ -305,19 +305,20 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
                 message.append(s);
             }
 
-            MsgBox.show(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MsgBoxButton.YesNo, MsgBoxIcon.Asterisk,
-                    (which, data) -> {
-                        // Behandle das ergebniss
-                        if (which == 1) {/* User clicked OK so do some stuff */
-                            StringBuilder missing = new StringBuilder();
-                            for (String s : solver.MissingVariables.keySet()) {
-                                missing.append(s).append("=\n");
-                                edResult.setText("\n" + edInput.getText());
-                            }
-                            edInput.setText(missing + edInput.getText());
-                        }
-                        return true;
-                    });
+            ButtonDialog bd = new ButtonDialog(Translation.get("insertVars") + "\n" + message, Translation.get("missingVars"), MsgBoxButton.YesNo, MsgBoxIcon.Asterisk);
+            bd.setButtonClickHandler((which, data) -> {
+                // Behandle das ergebniss
+                if (which == 1) {/* User clicked OK so do some stuff */
+                    StringBuilder missing = new StringBuilder();
+                    for (String s : solver.MissingVariables.keySet()) {
+                        missing.append(s).append("=\n");
+                        edResult.setText("\n" + edInput.getText());
+                    }
+                    edInput.setText(missing + edInput.getText());
+                }
+                return true;
+            });
+            bd.show();
         }
     }
 

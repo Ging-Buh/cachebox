@@ -62,8 +62,8 @@ public class LinearCollapseBox extends CollapseBox {
         return view;
     }
 
-    public void removeChildsDirect() {
-        linearLayout.removeChildsDirect();
+    public void removeChildrenDirect() {
+        linearLayout.removeChildrenDirect();
         layout();
 
     }

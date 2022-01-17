@@ -1,5 +1,9 @@
 package de.droidcachebox.gdx.main;
 
+import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
+
+import java.util.ArrayList;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -8,10 +12,6 @@ import de.droidcachebox.gdx.controls.list.H_ListView;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.ArrayList;
-
-import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 
 /**
  * the CB_TabView shows the currentView<br>
@@ -62,7 +62,7 @@ public class CB_TabView extends CB_View_Base {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         // Wenn die Anzahl der Buttons = der Anzahl der M�glichen Buttons ist, diese gleichm��ig verteilen
         if (mainButtons.size() <= mainButtonListView.getMaxNumberOfVisibleItems()) {
             float sollDivider = (mainButtonListView.getWidth() - (mainButtonSize.getHeight() * mainButtons.size())) / (mainButtons.size() + 1);
@@ -105,8 +105,8 @@ public class CB_TabView extends CB_View_Base {
     private void sendOnShow2CurrentView() {
         // on changing the view the children are perhaps not yet created, cause they are created in initializing method.
         // resulting they would not be shown. therefore doing RunOnGL twice (resulting in waittime 150ms)
-        GL.that.RunOnGL(
-                () -> GL.that.RunOnGL(
+        GL.that.runOnGL(
+                () -> GL.that.runOnGL(
                         () -> {
                             if (currentView != null && currentView.isVisible())
                                 currentView.onShow();

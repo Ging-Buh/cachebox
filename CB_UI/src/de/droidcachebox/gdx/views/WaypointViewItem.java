@@ -93,7 +93,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     private void setDistanceString(final String txt) {
-        if (this.isDisposed())
+        if (this.isDisposed)
             return;
         if (txt != null) {
             try {
@@ -235,7 +235,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
     public void requestLayout() {
         try {
-            if (this.isDisposed()) return;
+            if (this.isDisposed) return;
 
             if (viewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
             {

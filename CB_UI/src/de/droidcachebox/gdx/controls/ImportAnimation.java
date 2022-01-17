@@ -19,13 +19,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.utils.log.Log;
 
 public class ImportAnimation extends Box {
+    private static final String sClass = "ImportAnimation";
 
     private AnimationBase mAnimation;
     private Drawable back;
@@ -36,14 +37,12 @@ public class ImportAnimation extends Box {
     }
 
     public void setAnimationType(final AnimationType Type) {
-        GL.that.RunOnGL(() -> {
-            if (ImportAnimation.this.isDisposed())
-                return;
-            float size = ImportAnimation.this.getHalfWidth() / 2;
-            float halfSize = ImportAnimation.this.getHalfWidth() / 4;
-            CB_RectF imageRec = new CB_RectF(ImportAnimation.this.getHalfWidth() - halfSize, ImportAnimation.this.getHalfHeight() - halfSize, size, size);
+        try {
+            float size = getHalfWidth() / 2;
+            float halfSize = getHalfWidth() / 4;
+            CB_RectF imageRec = new CB_RectF(getHalfWidth() - halfSize, getHalfHeight() - halfSize, size, size);
 
-            ImportAnimation.this.removeChilds();
+            removeChilds();
 
             switch (Type) {
                 case Work:
@@ -55,9 +54,11 @@ public class ImportAnimation extends Box {
                     break;
             }
 
-            ImportAnimation.this.addChild(mAnimation);
-        });
-
+            addChild(mAnimation);
+        }
+        catch (Exception ex) {
+            Log.err(sClass, ex);
+        }
     }
 
     public void render(Batch batch) {

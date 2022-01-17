@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import de.droidcachebox.gdx.GL;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import de.droidcachebox.gdx.GL;
 
 public class GradiantFill {
 
@@ -129,7 +130,7 @@ public class GradiantFill {
     }
 
     private void disposeTexture() {
-        GL.that.RunOnGLWithThreadCheck(() -> {
+        GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (mPixmap != null)
                     mPixmap.dispose();

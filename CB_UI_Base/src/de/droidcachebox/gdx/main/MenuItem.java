@@ -76,8 +76,8 @@ public class MenuItem extends ListViewItemBackground {
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
+    protected void renderInit() {
+        super.renderInit();
         removeChilds();
 
         boolean hasIcon = iconDrawable != null;
@@ -193,7 +193,7 @@ public class MenuItem extends ListViewItemBackground {
      */
     public MenuItem setIcon(Drawable icon) {
         iconDrawable = icon;
-        resetIsInitialized();
+        resetRenderInitDone();
         return this;
     }
 
@@ -235,16 +235,16 @@ public class MenuItem extends ListViewItemBackground {
             // what is not necessary bad
             // ex. for spoilers (showing there is none, but perhaps act ...)
             setClickHandler(null);
-            setOnLongClickListener(null);
+            setLongClickHandler(null);
         }
 
-        resetIsInitialized();
+        resetRenderInitDone();
     }
 
     public void setDisabled(boolean enabled) {
         // same as enabled but without deleting the click listeners
         mIsEnabled = enabled;
-        resetIsInitialized();
+        resetRenderInitDone();
     }
 
     public boolean isChecked() {
@@ -253,12 +253,12 @@ public class MenuItem extends ListViewItemBackground {
 
     public void setChecked(boolean checked) {
         mIsChecked = checked;
-        resetIsInitialized();
+        resetRenderInitDone();
     }
 
     public void setCheckable(boolean isCheckable) {
         mIsCheckable = isCheckable;
-        resetIsInitialized();
+        resetRenderInitDone();
     }
 
 }

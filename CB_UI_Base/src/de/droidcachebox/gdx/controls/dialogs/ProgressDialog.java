@@ -5,13 +5,11 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.ProgressBar;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 
-public class ProgressDialog extends MsgBox {
+public class ProgressDialog extends ButtonDialog {
     private final CB_Label messageTextView;
     private final CB_Label progressMessageTextView;
     private final ProgressBar progressBar;
@@ -19,16 +17,16 @@ public class ProgressDialog extends MsgBox {
     private AnimationBase animation;
 
     public ProgressDialog(String title, AnimationBase animation, RunAndReady runAndReady) {
-        super(calcMsgBoxSize(title, true, true, true), title);
-        this.runAndReady = runAndReady;
-
-        addButtons(MsgBoxButton.Cancel);
-        btnRightNegative.setClickHandler((view, x, y, pointer, button) -> {
-            btnRightNegative.disable();
-            btnRightNegative.setText(Translation.get("waitForCancel"));
-            runAndReady.setIsCanceled();
+        super("", title, MsgBoxButton.Cancel, MsgBoxIcon.None);
+        buttonClickHandler = (btnNumber, data) -> {
+            if (btnNumber == BTN_RIGHT_NEGATIVE) {
+                btnRightNegative.disable();
+                btnRightNegative.setText(Translation.get("waitForCancel"));
+                runAndReady.setIsCanceled();
+            }
             return true;
-        });
+        };
+        this.runAndReady = runAndReady;
 
         float measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 
@@ -57,7 +55,7 @@ public class ProgressDialog extends MsgBox {
     }
 
     public void setAnimation(final AnimationBase animation) {
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             removeChild(this.animation);
             CB_RectF imageRec = new CB_RectF(0, progressBar.getMaxY() + margin, UiSizes.getInstance().getButtonHeight(), UiSizes.getInstance().getButtonHeight());
             this.animation = animation;
@@ -68,8 +66,8 @@ public class ProgressDialog extends MsgBox {
     }
 
     public void setProgress(final String msg, final String progressMessage, final int value) {
-        GL.that.RunOnGL(() -> {
-            if (ProgressDialog.this.isDisposed())
+        GL.that.runOnGL(() -> {
+            if (ProgressDialog.this.isDisposed)
                 return;
             progressBar.fillBarAt(value);
             progressMessageTextView.setText(progressMessage);

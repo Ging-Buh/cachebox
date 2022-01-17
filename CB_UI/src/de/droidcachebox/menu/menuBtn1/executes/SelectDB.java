@@ -21,10 +21,10 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
@@ -38,13 +38,13 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.NewDB_InputBox;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.Scrollbar;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -78,81 +78,6 @@ public class SelectDB extends ActivityBase {
     private Scrollbar scrollbar;
     private AbstractFile currentDBFile = null;
     private IReturnListener returnListener;
-    private final OnMsgBoxClickListener mDialogListenerNewDB = (which, data) -> {
-        String NewDB_Name = NewDB_InputBox.editText.getText();
-        switch (which) {
-            case 1: // ok clicked
-
-                FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
-                String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
-
-                // initialize Database
-
-                String database = GlobalCore.workPath + "/" + NewDB_Name + ".db3";
-                Settings.DatabaseName.setValue(NewDB_Name + ".db3");
-                Log.debug(log, "\r\nnew DB " + DatabaseName.getValue());
-                CBDB.getInstance().close();
-                CBDB.getInstance().startUp(database);
-
-                // OwnRepository?
-                if (data != null && !(Boolean) data) {
-                    String folder = "?/" + NewDB_Name + "/";
-
-                    Settings.DescriptionImageFolderLocal.setValue(folder + "Images");
-                    Settings.MapPackFolderLocal.setValue(folder + "Maps");
-                    Settings.SpoilerFolderLocal.setValue(folder + "Spoilers");
-                    Settings.tileCacheFolderLocal.setValue(folder + "Cache");
-                    Settings.getInstance().acceptChanges();
-                    Log.debug(log,
-                            NewDB_Name + " has own Repository:\n" + //
-                                    Settings.DescriptionImageFolderLocal.getValue() + ", \n" + //
-                                    Settings.MapPackFolderLocal.getValue() + ", \n" + //
-                                    Settings.SpoilerFolderLocal.getValue() + ", \n" + //
-                                    Settings.tileCacheFolderLocal.getValue()//
-                    );
-
-                    // Create Folder?
-                    boolean creationOK = FileIO.createDirectory(Settings.DescriptionImageFolderLocal.getValue());
-                    creationOK = creationOK && FileIO.createDirectory(Settings.MapPackFolderLocal.getValue());
-                    creationOK = creationOK && FileIO.createDirectory(Settings.SpoilerFolderLocal.getValue());
-                    creationOK = creationOK && FileIO.createDirectory(Settings.tileCacheFolderLocal.getValue());
-                    if (!creationOK)
-                        Log.debug(log,
-                                "Problem with creation of one of the Directories:" + //
-                                        Settings.DescriptionImageFolderLocal.getValue() + ", " + //
-                                        Settings.MapPackFolderLocal.getValue() + ", " + //
-                                        Settings.SpoilerFolderLocal.getValue() + ", " + //
-                                        Settings.tileCacheFolderLocal.getValue()//
-                        );
-                }
-
-                Settings.getInstance().acceptChanges();
-
-                CoreData.categories = new Categories();
-                CacheDAO.getInstance().updateCacheCountForGPXFilenames();
-
-                synchronized (CBDB.getInstance().cacheList) {
-                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
-                    GlobalCore.checkSelectedCacheValid();
-                }
-
-                if (!FileIO.createDirectory(GlobalCore.workPath + "/User"))
-                    return true;
-                DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
-
-                Settings.getInstance().acceptChanges();
-                currentDBFile = FileFactory.createFile(database);
-                selectDB();
-
-                break;
-            case 2: // cancel clicked
-            case 3:
-                activityBase.show();
-                break;
-        }
-
-        return true;
-    };
 
     public SelectDB(CB_RectF rec, String Name, boolean mustSelect) {
         super(rec, Name);
@@ -193,7 +118,77 @@ public class SelectDB extends ActivityBase {
         // New Button
         bNew.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
-            NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.get("NewDB"), Translation.get("InsNewDBName"), "NewDB", mDialogListenerNewDB);
+            NewDB_InputBox newDB_inputBox = new NewDB_InputBox(Translation.get("NewDB"), Translation.get("InsNewDBName"));
+            newDB_inputBox.setButtonClickHandler((which, data) -> {
+                if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
+                    String NewDB_Name = NewDB_InputBox.editTextField.getText();
+                    if (NewDB_Name.length() > 0) {
+
+                        FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
+                        String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
+
+                        // initialize Database
+
+                        String database = GlobalCore.workPath + "/" + NewDB_Name + ".db3";
+                        Settings.DatabaseName.setValue(NewDB_Name + ".db3");
+                        Log.debug(log, "\r\nnew DB " + DatabaseName.getValue());
+                        CBDB.getInstance().close();
+                        CBDB.getInstance().startUp(database);
+
+                        if (!((AtomicBoolean) data).get()) {
+                            // use an own Repository area for spoiler, images, maps, cache
+                            String folder = "?/" + NewDB_Name + "/";
+
+                            Settings.DescriptionImageFolderLocal.setValue(folder + "Images");
+                            Settings.MapPackFolderLocal.setValue(folder + "Maps");
+                            Settings.SpoilerFolderLocal.setValue(folder + "Spoilers");
+                            Settings.tileCacheFolderLocal.setValue(folder + "Cache");
+                            Settings.getInstance().acceptChanges();
+                            Log.debug(log,
+                                    NewDB_Name + " has own Repository:\n" + //
+                                            Settings.DescriptionImageFolderLocal.getValue() + ", \n" + //
+                                            Settings.MapPackFolderLocal.getValue() + ", \n" + //
+                                            Settings.SpoilerFolderLocal.getValue() + ", \n" + //
+                                            Settings.tileCacheFolderLocal.getValue()//
+                            );
+
+                            // Create Folder?
+                            boolean creationOK = FileIO.createDirectory(Settings.DescriptionImageFolderLocal.getValue());
+                            creationOK = creationOK && FileIO.createDirectory(Settings.MapPackFolderLocal.getValue());
+                            creationOK = creationOK && FileIO.createDirectory(Settings.SpoilerFolderLocal.getValue());
+                            creationOK = creationOK && FileIO.createDirectory(Settings.tileCacheFolderLocal.getValue());
+                            if (!creationOK)
+                                Log.debug(log,
+                                        "Problem with creation of one of the Directories:" + //
+                                                Settings.DescriptionImageFolderLocal.getValue() + ", " + //
+                                                Settings.MapPackFolderLocal.getValue() + ", " + //
+                                                Settings.SpoilerFolderLocal.getValue() + ", " + //
+                                                Settings.tileCacheFolderLocal.getValue()//
+                                );
+                        }
+
+                        Settings.getInstance().acceptChanges();
+
+                        CoreData.categories = new Categories();
+                        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+
+                        synchronized (CBDB.getInstance().cacheList) {
+                            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                            GlobalCore.checkSelectedCacheValid();
+                        }
+
+                        if (!FileIO.createDirectory(GlobalCore.workPath + "/User"))
+                            return true;
+                        DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
+
+                        Settings.getInstance().acceptChanges();
+                        currentDBFile = FileFactory.createFile(database);
+                        selectDB();
+                    }
+                }
+                return true;
+            });
+            newDB_inputBox.show();
             return true;
         });
 
@@ -296,9 +291,9 @@ public class SelectDB extends ActivityBase {
                     }
                 }
 
-                GL.that.RunOnGL(() -> setSelectedItemVisible());
+                GL.that.runOnGL(() -> setSelectedItemVisible());
 
-                resetIsInitialized();
+                resetRenderInitDone();
                 lvDBSelection.chkSlideBack();
             }
         };
@@ -330,7 +325,7 @@ public class SelectDB extends ActivityBase {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    GL.that.RunOnGL(() -> {
+                    GL.that.runOnGL(() -> {
                         if (lvDBSelection != null) {
                             lvDBSelection.chkSlideBack();
                             GL.that.renderOnce();
@@ -369,7 +364,7 @@ public class SelectDB extends ActivityBase {
 
     @Override
     public void finish() {
-        GL.that.RunOnGL(() -> GL.that.closeActivity(!MustSelect));
+        GL.that.runOnGL(() -> GL.that.closeActivity(!MustSelect));
     }
 
     private void setAutoStartText() {

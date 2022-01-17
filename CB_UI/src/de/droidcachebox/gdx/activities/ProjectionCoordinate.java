@@ -148,7 +148,7 @@ public class ProjectionCoordinate extends ActivityBase {
 
         valueDistance.setBecomesFocusListener(() -> {
             numPad.registerTextField(valueDistance);
-            GL.that.RunOnGL(() -> {
+            GL.that.runOnGL(() -> {
                 int textLength = valueDistance.getText().length();
                 valueDistance.setSelection(0, textLength);
             });
@@ -157,7 +157,7 @@ public class ProjectionCoordinate extends ActivityBase {
         valueBearing.setBecomesFocusListener(() -> {
             if (numPad != null)
                 numPad.registerTextField(valueBearing);
-            GL.that.RunOnGL(() -> {
+            GL.that.runOnGL(() -> {
                 int textLength = valueBearing.getText().length();
                 valueBearing.setSelection(0, textLength);
             });

@@ -10,9 +10,9 @@ import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.translation.Translation;
@@ -80,9 +80,8 @@ public class ContactOwner extends AbstractAction {
                             int stop = page.indexOf("&amp;", start);
                             String guid = page.substring(start, stop);
                             PlatformUIBase.callUrl("https://www.geocaching.com/account/messagecenter?recipientId=" + guid + "&gcCode=" + mGCCode);
-                        }
-                        else {
-                            MsgBox.show(Translation.get("noRecipient"), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
+                        } else {
+                            new ButtonDialog(Translation.get("noRecipient"), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
                         }
                     } catch (Exception ignored) {
                     }

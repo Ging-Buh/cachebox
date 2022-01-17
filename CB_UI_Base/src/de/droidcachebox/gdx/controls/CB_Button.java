@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.ButtonSprites;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
@@ -29,6 +28,7 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.utils.MoveableList;
@@ -115,28 +115,28 @@ public class CB_Button extends CB_View_Base {
             if (drawableNormal != null) {
                 drawableNormal.draw(batch, 0, 0, getWidth(), getHeight());
             } else {
-                initialize();
+                renderInit();
                 GL.that.renderOnce();
             }
         } else if (isPressed) {
             if (drawablePressed != null) {
                 drawablePressed.draw(batch, 0, 0, getWidth(), getHeight());
             } else {
-                initialize();
+                renderInit();
                 GL.that.renderOnce();
             }
         } else if (isFocused) {
             if (drawableFocused != null) {
                 drawableFocused.draw(batch, 0, 0, getWidth(), getHeight());
             } else {
-                initialize();
+                renderInit();
                 GL.that.renderOnce();
             }
         } else {
             if (drawableDisabled != null) {
                 drawableDisabled.draw(batch, 0, 0, getWidth(), getHeight());
             } else {
-                initialize();
+                renderInit();
                 GL.that.renderOnce();
             }
         }
@@ -244,7 +244,7 @@ public class CB_Button extends CB_View_Base {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         if (drawableNormal == null) {
             drawableNormal = Sprites.btn;
         }

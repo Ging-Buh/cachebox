@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
@@ -48,6 +47,7 @@ import de.droidcachebox.gdx.Slider;
 import de.droidcachebox.gdx.Slider.YPositionChanged;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
@@ -55,11 +55,11 @@ import de.droidcachebox.gdx.controls.EditTextField.TextFieldListener;
 import de.droidcachebox.gdx.controls.ImageButton;
 import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
@@ -75,7 +75,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class SearchDialog extends PopUp_Base {
-    private static final String log = "SearchDialog";
+    private static final String sClass = "SearchDialog";
     public static SearchDialog that;
 
     private final YPositionChanged listener = new YPositionChanged() {
@@ -94,7 +94,7 @@ public class SearchDialog extends PopUp_Base {
     private final CB_Button mBtnNext;
     private final CB_Button mBtnCancel;
     private final EditTextField mInput;
-    private MsgBox msgBox;
+    AtomicBoolean isCanceled = new AtomicBoolean(false);
     private boolean mSearchIsActive = false;
     /**
      * for current Search Mode <br/>
@@ -349,7 +349,7 @@ public class SearchDialog extends PopUp_Base {
                 if (!criterionMatches) {
                     mBtnNext.disable();
                     mSearchIsActive = false;
-                    MsgBox.show(Translation.get("NoCacheFound"), Translation.get("Search"), MsgBoxButton.OK, MsgBoxIcon.Asterisk, null);
+                    new ButtonDialog(Translation.get("NoCacheFound"), Translation.get("Search"), MsgBoxButton.OK, MsgBoxIcon.Asterisk).show();
                 } else {
                     Waypoint finalWp = tmp.getCorrectedFinal();
                     if (finalWp == null)
@@ -376,27 +376,27 @@ public class SearchDialog extends PopUp_Base {
         GlobalCore.chkAPiLogInWithWaitDialog(invalidAccessToken -> {
 
             if (invalidAccessToken) {
-                GL.that.RunOnGL(() -> MsgBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null));
+                new ButtonDialog(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation).show();
             } else {
-                AtomicBoolean isCanceled = new AtomicBoolean(false);
                 new CancelWaitDialog(Translation.get("Search"), new DownloadAnimation(), new RunAndReady() {
                     @Override
                     public void ready() {
-
+                        if (!isPremiumMember()) {
+                            ButtonDialog bd = new ButtonDialog(Translation.get("GC_basic"), Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live);
+                            bd.setButtonClickHandler((which, data) -> {
+                                if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
+                                    searchOnlineNow();
+                                }
+                                return true;
+                            });
+                            bd.show();
+                        }
                     }
 
                     @Override
                     public void run() {
                         if (isPremiumMember()) {
                             searchOnlineNow();
-                        } else {
-                            MsgBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live,
-                                    (which, data) -> {
-                                        if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                                            searchOnlineNow();
-                                        }
-                                        return true;
-                                    });
                         }
                     }
 
@@ -412,69 +412,12 @@ public class SearchDialog extends PopUp_Base {
     }
 
     private void searchOnlineNow() {
-        Log.debug(log, "searchOnlineNow");
-        AtomicBoolean isCanceled = new AtomicBoolean(false);
+        Log.debug(sClass, "searchOnlineNow");
         new CancelWaitDialog(Translation.get("searchOverAPI"), new DownloadAnimation(), new RunAndReady() {
+            ArrayList<GeoCacheRelated> geoCacheRelateds;
+            GpxFilename gpxFilename;
             @Override
             public void ready() {
-
-            }
-
-            @Override
-            public void run() {
-
-                Coordinate searchCoordinate;
-                if (ShowMap.getInstance().normalMapView.isVisible()) {
-                    searchCoordinate = ShowMap.getInstance().normalMapView.center;
-                } else {
-                    searchCoordinate = Locator.getInstance().getMyPosition();
-                }
-                if (searchCoordinate == null) {
-                    return;
-                }
-
-                Category category = CoreData.categories.getCategory("API-Import");
-                if (category == null)
-                    return; // should not happen!!!
-                GpxFilename gpxFilename = category.addGpxFilename("API-Import");
-                if (gpxFilename == null)
-                    return;
-
-                GroundspeakAPI.Query q = new GroundspeakAPI.Query()
-                        .setMaxToFetch(50)
-                        .resultWithFullFields()
-                        // .resultWithImages(30)
-                        ;
-                if (Settings.numberOfLogs.getValue() > 0) {
-                    q.resultWithLogs(Settings.numberOfLogs.getValue());
-                }
-
-                if (Settings.SearchWithoutFounds.getValue()) q.excludeFinds();
-                if (Settings.SearchWithoutOwns.getValue()) q.excludeOwn();
-                if (Settings.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
-
-                String searchPattern = mInput.getText();
-                ArrayList<GeoCacheRelated> geoCacheRelateds;
-                switch (mSearchState) {
-                    case Title:
-                        q.searchInCircleOf100Miles(searchCoordinate)
-                                .searchForTitle(searchPattern);
-                        geoCacheRelateds = searchGeoCaches(q);
-                        break;
-                    case Owner:
-                        q.searchInCircleOf100Miles(searchCoordinate)
-                                .searchForOwner(searchPattern);
-                        geoCacheRelateds = searchGeoCaches(q);
-                        break;
-                    default: // GCCode
-                        // API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
-                        if (searchPattern.contains(",")) {
-                            geoCacheRelateds = fetchGeoCaches(q, searchPattern);
-                        } else {
-                            geoCacheRelateds = fetchGeoCache(q, searchPattern);
-                        }
-                        break;
-                }
 
                 if (geoCacheRelateds.size() > 0) {
 
@@ -527,6 +470,62 @@ public class SearchDialog extends PopUp_Base {
             }
 
             @Override
+            public void run() {
+
+                Coordinate searchCoordinate;
+                if (ShowMap.getInstance().normalMapView.isVisible()) {
+                    searchCoordinate = ShowMap.getInstance().normalMapView.center;
+                } else {
+                    searchCoordinate = Locator.getInstance().getMyPosition();
+                }
+                if (searchCoordinate == null) {
+                    return;
+                }
+
+                Category category = CoreData.categories.getCategory("API-Import");
+                if (category == null)
+                    return; // should not happen!!!
+                gpxFilename = category.addGpxFilename("API-Import");
+                if (gpxFilename == null)
+                    return;
+
+                GroundspeakAPI.Query q = new GroundspeakAPI.Query()
+                        .setMaxToFetch(50)
+                        .resultWithFullFields()
+                        // .resultWithImages(30)
+                        ;
+                if (Settings.numberOfLogs.getValue() > 0) {
+                    q.resultWithLogs(Settings.numberOfLogs.getValue());
+                }
+
+                if (Settings.SearchWithoutFounds.getValue()) q.excludeFinds();
+                if (Settings.SearchWithoutOwns.getValue()) q.excludeOwn();
+                if (Settings.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
+
+                String searchPattern = mInput.getText();
+                switch (mSearchState) {
+                    case Title:
+                        q.searchInCircleOf100Miles(searchCoordinate)
+                                .searchForTitle(searchPattern);
+                        geoCacheRelateds = searchGeoCaches(q);
+                        break;
+                    case Owner:
+                        q.searchInCircleOf100Miles(searchCoordinate)
+                                .searchForOwner(searchPattern);
+                        geoCacheRelateds = searchGeoCaches(q);
+                        break;
+                    default: // GCCode
+                        // API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
+                        if (searchPattern.contains(",")) {
+                            geoCacheRelateds = fetchGeoCaches(q, searchPattern);
+                        } else {
+                            geoCacheRelateds = fetchGeoCache(q, searchPattern);
+                        }
+                        break;
+                }
+            }
+
+            @Override
             public void setIsCanceled() {
                 isCanceled.set(true);
             }
@@ -556,23 +555,23 @@ public class SearchDialog extends PopUp_Base {
     }
 
     public void doSearchOnline(final String searchPattern, final SearchMode searchMode) {
-        Log.debug(log, "doSearchOnline " + searchPattern);
+        Log.debug(sClass, "doSearchOnline " + searchPattern);
         try {
-            GL.that.RunOnGL(() -> {
+            GL.that.runOnGL(() -> {
                 mInput.setText(searchPattern);
-                GL.that.RunOnGL(() -> {
+                GL.that.runOnGL(() -> {
                     switchSearchMode(searchMode);
-                    GL.that.RunOnGL(() -> {
+                    GL.that.runOnGL(() -> {
                         mTglBtnOnline.setState(1);
-                        GL.that.RunOnGL(() -> {
+                        GL.that.runOnGL(() -> {
                             setFilterBtnState();
-                            GL.that.RunOnGL(mBtnSearch::performClick);
+                            GL.that.runOnGL(mBtnSearch::performClick);
                         });
                     });
                 });
             });
         } catch (Exception e) {
-            Log.err(log, "doSearchOnline", e);
+            Log.err(sClass, "doSearchOnline", e);
         }
     }
 
@@ -599,41 +598,24 @@ public class SearchDialog extends PopUp_Base {
     }
 
     private void askPremium() {
-
         // First check API-Key with visual Feedback
         GlobalCore.chkAPiLogInWithWaitDialog(invalidAccessToken -> {
             if (invalidAccessToken) {
-                GL.that.RunOnGL(() -> MsgBox.show(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null));
+                new ButtonDialog(Translation.get("apiKeyNeeded"), Translation.get("Clue"), MsgBoxButton.OK, MsgBoxIcon.Exclamation).show();
             } else {
-                GL.that.RunOnGL(() -> {
-                    if (isPremiumMember()) {
-                        showTargetApiDialog();
-                    } else {
-                        msgBox = MsgBox.show(Translation.get("GC_basic"), Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live,
-                                (which, data) -> {
-                                    closeMsgBox();
-                                    if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                                        showTargetApiDialog();
-                                    }
-                                    return true;
-                                });
-                    }
-                });
+                if (isPremiumMember()) {
+                    new ImportGCPosition().show();
+                } else {
+                    ButtonDialog bd = new ButtonDialog(Translation.get("GC_basic"), Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live);
+                    bd.setButtonClickHandler((which, data) -> {
+                        if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
+                            new ImportGCPosition().show();                                }
+                        return true;
+                    });
+                    bd.show();
+                }
             }
         });
-    }
-
-    private void closeMsgBox() {
-        msgBox.close();
-    }
-
-    private void showTargetApiDialog() {
-        GL.that.RunOnGL(() -> new ImportGCPosition().show());
-    }
-
-    @Override
-    public void dispose() {
-        // do nothing is static dialog
     }
 
     public enum SearchMode {

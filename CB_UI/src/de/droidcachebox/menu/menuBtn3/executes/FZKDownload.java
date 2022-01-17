@@ -1,5 +1,7 @@
 package de.droidcachebox.menu.menuBtn3.executes;
 
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
+
 import com.badlogic.gdx.utils.Array;
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
@@ -32,9 +34,9 @@ import de.droidcachebox.gdx.controls.ImportAnimation;
 import de.droidcachebox.gdx.controls.ImportAnimation.AnimationType;
 import de.droidcachebox.gdx.controls.ProgressBar;
 import de.droidcachebox.gdx.controls.ScrollBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
@@ -83,7 +85,7 @@ public class FZKDownload extends ActivityBase {
 
     public static FZKDownload getInstance() {
         // cause Activity gets disposed and a second run will produce an error
-        if (fzkDownload == null || fzkDownload.isDisposed()) {
+        if (fzkDownload == null || fzkDownload.isDisposed) {
             fzkDownload = new FZKDownload();
         }
         return fzkDownload;
@@ -112,14 +114,15 @@ public class FZKDownload extends ActivityBase {
         addChild(btnCancel);
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (importStarted) {
-                MsgBox.show(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MsgBoxButton.YesNo, MsgBoxIcon.Stop,
-                        (which, data) -> {
-                            if (which == MsgBox.BTN_LEFT_POSITIVE) {
-                                canceled.set(true);
-                                // finishImport(); // is done by dlProgressChecker
-                            }
-                            return true;
-                        });
+                ButtonDialog bd = new ButtonDialog(Translation.get("WantCancelImport"), Translation.get("CancelImport"), MsgBoxButton.YesNo, MsgBoxIcon.Stop);
+                bd.setButtonClickHandler((which, data) -> {
+                    if (which == BTN_LEFT_POSITIVE) {
+                        canceled.set(true);
+                        // finishImport(); // is done by dlProgressChecker
+                    }
+                    return true;
+                });
+                bd.show();
             } else
                 finish();
             return true;

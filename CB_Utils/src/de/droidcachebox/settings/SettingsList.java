@@ -191,13 +191,13 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
         isLoaded = true;
     }
 
-    public void LoadFromLastValue() {
+    public void loadFromLastValues() {
         for (SettingBase<?> setting : this) {
             setting.loadFromLastValue();
         }
     }
 
-    public void saveToLastValue() {
+    public void saveToLastValues() {
         for (SettingBase<?> setting : this) {
             setting.saveToLastValue();
         }

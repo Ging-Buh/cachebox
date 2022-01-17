@@ -82,8 +82,8 @@ public class Triangle implements IGeometry {
     /**
      * Calculates crossProduct of two 2D vectors / points.
      *
-     * @param p1 first point used as vector
-     * @param p2 second point used as vector
+     * @param p1X, p1Y first point used as vector
+     * @param p2X, p2Y second point used as vector
      * @return crossProduct of vectors
      */
     private float crossProduct(float p1X, float p1Y, float p2X, float p2Y) {

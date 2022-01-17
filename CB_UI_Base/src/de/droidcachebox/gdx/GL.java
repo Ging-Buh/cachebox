@@ -49,11 +49,11 @@ import de.droidcachebox.Energy;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.controls.Box;
-import de.droidcachebox.gdx.controls.Dialog;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.SelectionMarker;
 import de.droidcachebox.gdx.controls.TextInputInterface;
 import de.droidcachebox.gdx.controls.animation.Fader;
+import de.droidcachebox.gdx.controls.dialogs.Dialog;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
 import de.droidcachebox.gdx.controls.popups.PopUp_Base;
 import de.droidcachebox.gdx.graphics.HSV_Color;
@@ -89,21 +89,21 @@ public class GL implements ApplicationListener {
     private long GL_ThreadId;
     private Timer myTimer;
     private long timerValue;
-    private ArrayList<IRunOnGL> runIfInitial = new ArrayList<>();
-    private AtomicBoolean started = new AtomicBoolean(false);
+    private final ArrayList<IRunOnGL> runIfInitial = new ArrayList<>();
+    private final AtomicBoolean started = new AtomicBoolean(false);
     private PolygonSpriteBatch mPolygonSpriteBatch;
     private int FpsInfoPos = 0;
     private ParentInfo prjMatrix;
     private Sprite FpsInfoSprite;
-    private ArrayList<IRunOnGL> runOnGL_List = new ArrayList<>();
-    private ArrayList<IRunOnGL> runOnGL_ListWaitPool = new ArrayList<>();
-    private AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
+    private final ArrayList<IRunOnGL> runOnGL_List = new ArrayList<>();
+    private final ArrayList<IRunOnGL> runOnGL_ListWaitPool = new ArrayList<>();
+    private final AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
     // private RenderStarted renderStartedListener = null;
     private float stateTime = 0;
     private long FBO_RunBegin = System.currentTimeMillis();
     private boolean FBO_RunLapsed = false;
-    private HashMap<String, Float> caller = new HashMap<>();
-    private HashMap<String, Integer> callerCount = new HashMap<>();
+    private final HashMap<String, Float> caller = new HashMap<>();
+    private final HashMap<String, Integer> callerCount = new HashMap<>();
     private ModelBatch modelBatch;
     private float lastRenderOnceTime = -1;
     private float lastTouchX = 0;
@@ -112,7 +112,7 @@ public class GL implements ApplicationListener {
     private Sprite mDarknessSprite;
     private Pixmap mDarknessPixmap;
     private Texture mDarknessTexture;
-    private HashMap<GL_View_Base, Integer> renderViews = new HashMap<>();
+    private final HashMap<GL_View_Base, Integer> renderViews;
     private MainViewBase child;
     private CB_View_Base mDialog;
     private Dialog currentDialog;
@@ -124,11 +124,10 @@ public class GL implements ApplicationListener {
     private SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
     private boolean MarkerIsShown;
     private CB_View_Base mToastOverlay;
-    private Toast toastView;
     private boolean toastIsShown;
     private EditTextField focusedEditTextField;
-    private ArrayList<Dialog> dialogHistory = new ArrayList<>();
-    private ArrayList<ActivityBase> activityHistory = new ArrayList<>();
+    private final ArrayList<Dialog> dialogHistory;
+    private final ArrayList<ActivityBase> activityHistory;
     private PopUp_Base aktPopUp;
     private float darknessAlpha = 0f;
 
@@ -146,6 +145,9 @@ public class GL implements ApplicationListener {
         aktPopUp = null;
         that = this;
         allIsInitialized = false;
+        dialogHistory = new ArrayList<>();
+        activityHistory = new ArrayList<>();
+        renderViews = new HashMap<>();
     }
 
     @Override
@@ -243,7 +245,7 @@ public class GL implements ApplicationListener {
         isWorkOnRunOnGL.set(false);
 
         synchronized (runOnGL_ListWaitPool) {
-            if (runOnGL_ListWaitPool != null && runOnGL_ListWaitPool.size() > 0) {
+            if (runOnGL_ListWaitPool.size() > 0) {
                 for (IRunOnGL run : runOnGL_ListWaitPool) {
                     if (run != null) {
                         // Run only MAX_FBO_RENDER_CALLS
@@ -309,11 +311,11 @@ public class GL implements ApplicationListener {
             renderOnce();
         }
 
-        if (currentDialog != null && currentDialog.isDisposed()) {
+        if (currentDialog != null && currentDialog.isDisposed) {
             closeDialog(currentDialog);
         }
 
-        if (currentActivity != null && currentActivity.isDisposed()) {
+        if (currentActivity != null && currentActivity.isDisposed) {
             closeActivity();
         }
 
@@ -431,7 +433,6 @@ public class GL implements ApplicationListener {
         if (glListener != null)
             glListener.renderContinous();
         child.onStop();
-        toastView = null; // regenerate toast control
     }
 
     public void onStart() {
@@ -467,7 +468,7 @@ public class GL implements ApplicationListener {
         try {
             setFocusedEditTextField(null);
             clearRenderViews();
-            if (dialog.isDisposed())
+            if (dialog.isDisposed)
                 return;
 
             // Center Dialog on Screen
@@ -486,7 +487,7 @@ public class GL implements ApplicationListener {
             if (currentDialog != null && currentDialog != dialog) {
                 currentDialog.onHide();
                 currentDialog.setEnabled(false);
-                // am Anfang der Liste einfügen
+                // dialogHistory is a last in first out ArrayList with last on top (index 0)
                 dialogHistory.add(0, currentDialog);
                 mDialog.removeChildDirect(currentDialog);
             }
@@ -552,7 +553,7 @@ public class GL implements ApplicationListener {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    if (dialog == null || dialog.isDisposed())
+                    if (dialog == null || dialog.isDisposed)
                         return;
                     if (dialog.equals(mDialog))
                         throw new IllegalStateException("dialog can't dispose");
@@ -584,7 +585,7 @@ public class GL implements ApplicationListener {
             showDialog(currentDialog);
         } else {
             currentDialog = null;
-            mDialog.removeChildsDirect();
+            mDialog.removeChildrenDirect();
             child.setClickable(true);
             // child.invalidate();
             currentDialogIsShown = false;
@@ -592,7 +593,7 @@ public class GL implements ApplicationListener {
         }
 
         if (dialog != null) {
-            if (!dialog.isDisposed()) {
+            if (!dialog.isDisposed) {
                 dialog.dispose();
             }
         }
@@ -700,7 +701,7 @@ public class GL implements ApplicationListener {
             };
             disposeTimer.schedule(disposeTask, 700);
 
-            mActivity.removeChildsDirect();
+            mActivity.removeChildrenDirect();
             child.setClickable(true);
             // child.invalidate();
             currentActivityIsShown = false;
@@ -836,15 +837,15 @@ public class GL implements ApplicationListener {
      * Run on GL-Thread!<br>
      * If this Thread the GL_thread, run direct!
      */
-    public void RunOnGLWithThreadCheck(IRunOnGL run) {
+    public void runOnGLWithThreadCheck(IRunOnGL run) {
         if (isGlThread()) {
             run.run();
         } else {
-            RunOnGL(run);
+            runOnGL(run);
         }
     }
 
-    public void RunOnGL(IRunOnGL run) {
+    public void runOnGL(IRunOnGL run) {
         // if in progress put into pool
         if (isWorkOnRunOnGL.get()) {
             synchronized (runOnGL_ListWaitPool) {
@@ -858,7 +859,7 @@ public class GL implements ApplicationListener {
         }
     }
 
-    public void RunIfInitial(IRunOnGL run) {
+    public void runIfInitial(IRunOnGL run) {
         synchronized (runIfInitial) {
             runIfInitial.add(run);
         }
@@ -1162,9 +1163,7 @@ public class GL implements ApplicationListener {
     }
 
     public void toast(String string) {
-        if (toastView == null) {
-            toastView = new Toast(new CB_RectF(0, 0, 100, mainButtonSize.getHeight() / 1.5f), "StringToast");
-        }
+        Toast toastView = new Toast(new CB_RectF(0, 0, 100, mainButtonSize.getHeight() / 1.5f), "StringToast");
         toastView.setWrappedText(string);
         GlyphLayout bounds = null;
         try {

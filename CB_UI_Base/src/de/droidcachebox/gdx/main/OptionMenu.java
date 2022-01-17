@@ -1,8 +1,7 @@
 package de.droidcachebox.gdx.main;
 
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 
 public class OptionMenu extends Menu {
     public OptionMenu(String Name) {
@@ -11,7 +10,7 @@ public class OptionMenu extends Menu {
 
         setButtonCaptions(MsgBoxButton.OK);
 
-        mMsgBoxClickListener = new MsgBox.OnMsgBoxClickListener() {
+        buttonClickHandler = new ButtonClickHandler() {
             @Override
             public boolean onClick(int which, Object data) {
                 GL.that.closeDialog(OptionMenu.this);

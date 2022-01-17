@@ -43,7 +43,7 @@ public abstract class RunAndReady implements Runnable {
     public abstract void setIsCanceled();
 
     /**
-     * the runnable (and ready) in the ProgressDialog call this method for indication of progress
+     * the runnable (and ready) in the ImportProgress call this method for indication of progress
      * the
      *
      * @param msg the id text

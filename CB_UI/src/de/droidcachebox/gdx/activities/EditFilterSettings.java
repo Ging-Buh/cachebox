@@ -40,7 +40,6 @@ import java.util.TimerTask;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
@@ -59,20 +58,21 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.FilterSetListViewItem;
 import de.droidcachebox.gdx.controls.MultiToggleButton;
 import de.droidcachebox.gdx.controls.TextFilterView;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
@@ -276,7 +276,7 @@ public class EditFilterSettings extends ActivityBase {
                     GlobalCore.checkSelectedCacheValid();
                 }
                 CacheListChangedListeners.getInstance().cacheListChanged();
-                pd.dismis();
+                pd.closeWaitDialog();
                 ViewManager.that.filterSetChanged();
 
                 // Notify Map
@@ -296,7 +296,7 @@ public class EditFilterSettings extends ActivityBase {
                 Settings.getInstance().acceptChanges();
             } catch (Exception ex) {
                 Log.err(log, "applyFilter", ex);
-                pd.dismis();
+                pd.closeWaitDialog();
             }
         }).start();
 
@@ -391,38 +391,40 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         if (exist) {
-            MsgBox.show(Translation.get("PresetExist") + br + br + "\"" + existName + "\"", null, MsgBoxButton.OK, MsgBoxIcon.Warning,
-                    (which, data) -> {
-                        de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
-                        return true;
-                    });
+            ButtonDialog bd = new ButtonDialog(Translation.get("PresetExist") + br + br + "\"" + existName + "\"", null, MsgBoxButton.OK, MsgBoxIcon.Warning);
+            bd.setButtonClickHandler((which, data) -> {
+                de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
+                return true;
+            });
+            bd.show();
             return;
         }
 
-        StringInputBox.show(WrapType.SINGLELINE, Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset",
-                (which, data) -> {
-                    if (which == MsgBox.BTN_LEFT_POSITIVE) { // ok Clicked
-                        String nameOfNewFilter = StringInputBox.editText.getText();
-                        String userFilters = Settings.UserFilters.getValue();
-                        String newFilterString = tmpFilterProps.toString();
+        StringInputBox stringInputBox = new StringInputBox(Translation.get("NewUserPreset"), Translation.get("InsNewUserPreset"), "UserPreset", WrapType.SINGLELINE);
+        stringInputBox.setButtonClickHandler((which, data) -> {
+            if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
+                String nameOfNewFilter = StringInputBox.editTextField.getText();
+                String userFilters = Settings.UserFilters.getValue();
+                String newFilterString = tmpFilterProps.toString();
 
-                        // Category Filterungen aus Filter entfernen
-                        int pos = newFilterString.indexOf("^");
-                        if (pos > -1) {
-                            int posE = newFilterString.indexOf("\"", pos);
-                            String after = newFilterString.substring(posE);
-                            newFilterString = newFilterString.substring(0, pos) + after;
-                        }
+                // Category Filterungen aus Filter entfernen
+                int pos = newFilterString.indexOf("^");
+                if (pos > -1) {
+                    int posE = newFilterString.indexOf("\"", pos);
+                    String after = newFilterString.substring(posE);
+                    newFilterString = newFilterString.substring(0, pos) + after;
+                }
 
-                        userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + SettingStringList.SPLITTER;
-                        Settings.UserFilters.setValue(userFilters);
-                        Settings.getInstance().acceptChanges();
-                        presetView.fillPresetList();
-                        presetView.notifyDataSetChanged();
-                    }
-                    de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
-                    return true;
-                });
+                userFilters = userFilters + nameOfNewFilter + ";" + newFilterString + SettingStringList.SPLITTER;
+                Settings.UserFilters.setValue(userFilters);
+                Settings.getInstance().acceptChanges();
+                presetView.fillPresetList();
+                presetView.notifyDataSetChanged();
+            }
+            de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
+            return true;
+        });
+        stringInputBox.show();
     }
 
     @Override
@@ -503,33 +505,34 @@ public class EditFilterSettings extends ActivityBase {
                             tmpFilterProps = new FilterProperties(clickedItem.mPreset.filterProperties.toString());
                             return true;
                         });
-                        v.setOnLongClickListener((v1, x, y, pointer, button) -> {
+                        v.setLongClickHandler((v1, x, y, pointer, button) -> {
                             GL.that.closeActivity();
                             PresetListViewItem clickedItem = (PresetListViewItem) v1;
                             tmpFilterProps = new FilterProperties(clickedItem.mPreset.filterProperties.toString());
-                            MsgBox.show(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MsgBoxButton.YesNo, MsgBoxIcon.Question,
-                                    (which, data) -> {
-                                        // NO clicked
-                                        if (which == MsgBox.BTN_LEFT_POSITIVE) { // YES Clicked
-                                            try {
-                                                String userEntries = Settings.UserFilters.getValue();
-                                                int p1 = userEntries.indexOf(clickedItem.mPreset.mName);
-                                                int p2 = userEntries.indexOf(SettingStringList.SPLITTER, p1) + 1;
-                                                String newUserEntries;
-                                                if (p2 > p1)
-                                                    newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");
-                                                else newUserEntries = userEntries.substring(0, p1);
-                                                Settings.UserFilters.setValue(newUserEntries);
-                                                Settings.getInstance().acceptChanges();
-                                                fillPresetList();
-                                                notifyDataSetChanged();
-                                            } catch (Exception ex) {
-                                                Log.err(log, "DelUserPreset", ex);
-                                            }
-                                        }
-                                        de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
-                                        return true;
-                                    });
+                            ButtonDialog bd = new ButtonDialog(Translation.get("?DelUserPreset"), Translation.get("DelUserPreset"), MsgBoxButton.YesNo, MsgBoxIcon.Question);
+                            bd.setButtonClickHandler((which, data) -> {
+                                // NO clicked
+                                if (which == ButtonDialog.BTN_LEFT_POSITIVE) { // YES Clicked
+                                    try {
+                                        String userEntries = Settings.UserFilters.getValue();
+                                        int p1 = userEntries.indexOf(clickedItem.mPreset.mName);
+                                        int p2 = userEntries.indexOf(SettingStringList.SPLITTER, p1) + 1;
+                                        String newUserEntries;
+                                        if (p2 > p1)
+                                            newUserEntries = userEntries.replace(userEntries.substring(p1, p2), "");
+                                        else newUserEntries = userEntries.substring(0, p1);
+                                        Settings.UserFilters.setValue(newUserEntries);
+                                        Settings.getInstance().acceptChanges();
+                                        fillPresetList();
+                                        notifyDataSetChanged();
+                                    } catch (Exception ex) {
+                                        Log.err(log, "DelUserPreset", ex);
+                                    }
+                                }
+                                de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
+                                return true;
+                            });
+                            bd.show();
                             return true;
                         });
                     }
@@ -588,7 +591,7 @@ public class EditFilterSettings extends ActivityBase {
 
             @Override
             protected void render(Batch batch) {
-                if (isDisposed())
+                if (isDisposed)
                     return;
 
                 if (tmpFilterProps != null) {

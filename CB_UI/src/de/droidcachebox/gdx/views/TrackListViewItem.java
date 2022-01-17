@@ -1,7 +1,5 @@
 package de.droidcachebox.gdx.views;
 
-import static de.droidcachebox.gdx.controls.messagebox.MsgBox.BTN_LEFT_POSITIVE;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -12,17 +10,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.activities.ColorPicker;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -76,22 +74,25 @@ public class TrackListViewItem extends ListViewItemBackground {
                         if (!this.track.isActualTrack()) {
                             AbstractFile trackAbstractFile = FileFactory.createFile(this.track.getFileName());
                             if (trackAbstractFile.exists()) {
-                                cm.addMenuItem("delete", Sprites.getSprite(Sprites.IconName.DELETE.name()), () -> MsgBox.show(Translation.get("DeleteTrack"),
-                                        Translation.get("DeleteTrack"),
-                                        MsgBoxButton.YesNo,
-                                        MsgBoxIcon.Question,
-                                        (which, data) -> {
-                                            if (which == BTN_LEFT_POSITIVE) {
-                                                try {
-                                                    trackAbstractFile.delete();
-                                                    TrackList.getInstance().removeTrack(this.track);
-                                                    TrackListView.getInstance().notifyDataSetChanged();
-                                                } catch (Exception ex) {
-                                                    MsgBox.show(ex.toString(), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
-                                                }
+                                cm.addMenuItem("delete", Sprites.getSprite(Sprites.IconName.DELETE.name()), () -> {
+                                    ButtonDialog bd = new ButtonDialog(Translation.get("DeleteTrack"),
+                                            Translation.get("DeleteTrack"),
+                                            MsgBoxButton.YesNo,
+                                            MsgBoxIcon.Question);
+                                    bd.setButtonClickHandler((which, data) -> {
+                                        if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
+                                            try {
+                                                trackAbstractFile.delete();
+                                                TrackList.getInstance().removeTrack(TrackListViewItem.this.track);
+                                                TrackListView.getInstance().notifyDataSetChanged();
+                                            } catch (Exception ex) {
+                                                new ButtonDialog(ex.toString(), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
                                             }
-                                            return true;
-                                        }));
+                                        }
+                                        return true;
+                                    });
+                                    bd.show();
+                                });
                             }
                         }
                     }
@@ -190,7 +191,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void checkBoxIconClicked() {
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             track.setVisible(!track.isVisible());
             TrackList.getInstance().trackListChanged();
         });
@@ -198,7 +199,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void colorIconClicked() {
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             ColorPicker clrPick = new ColorPicker(track.getColor(), color -> {
                 if (color == null) return;
                 track.setColor(color);
@@ -219,15 +220,16 @@ public class TrackListViewItem extends ListViewItemBackground {
     }
 
     private void setTrackName() {
-        StringInputBox.show(WrapType.SINGLELINE, track.getName(), Translation.get("RenameTrack"), track.getName(), (which, data) -> {
-            String text = StringInputBox.editText.getText();
-            if (which == BTN_LEFT_POSITIVE) {
+        StringInputBox stringInputBox = new StringInputBox("", Translation.get("RenameTrack"), track.getName(), WrapType.SINGLELINE);
+        stringInputBox.setButtonClickHandler((which, data) -> {
+            String text = StringInputBox.editTextField.getText();
+            if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
                 track.setName(text);
                 TrackListView.getInstance().notifyDataSetChanged();
             }
             return true;
         });
-        TrackListView.getInstance().notifyDataSetChanged();
+        stringInputBox.show();
     }
 
     private void saveAsFile() {
@@ -325,7 +327,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 
     private void unloadTrack() {
         if (track.isActualTrack()) {
-            MsgBox.show(Translation.get("IsActualTrack"), null, MsgBoxButton.OK, MsgBoxIcon.Warning, null);
+            new ButtonDialog(Translation.get("IsActualTrack"), null, MsgBoxButton.OK, MsgBoxIcon.Warning).show();
         } else {
             TrackList.getInstance().removeTrack(track); // index passt nicht mehr
             TrackListView.getInstance().notifyDataSetChanged();

@@ -130,7 +130,7 @@ public class GalleryView extends H_ListView {
                 final float div1 = Math.abs(currentPosition - pos1);
                 final float div2 = Math.abs(currentPosition - pos2);
                 final int idx = i;
-                GL.that.RunOnGL(() -> {
+                GL.that.runOnGL(() -> {
                     if (div1 <= div2) {
                         //Snap to 1
                         bottomAnimation = false;
@@ -151,7 +151,7 @@ public class GalleryView extends H_ListView {
     }
 
     public void reloadItemsNow() {
-        removeChildsDirect();
+        removeChildrenDirect();
         addedIndexList.clear();
         addVisibleItems(true);
     }

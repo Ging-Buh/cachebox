@@ -69,7 +69,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         final Coordinate coord = mTrackMapView.center;
         if ((coord == null) || (!coord.isValid()))
             return false;
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             //Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
             Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), GeoCacheType.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
             addWP(newWP);
@@ -77,7 +77,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         return true;
     };
     private OnClickListener onCancelClik = (v, x, y, pointer, button) -> {
-        GL.that.RunOnGL(() -> finish());
+        GL.that.runOnGL(() -> finish());
         return true;
     };
 
@@ -115,7 +115,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         mTrackMapView = new MapView(mapRec, MapMode.Track);
         this.addChild(mTrackMapView);
 
-        mTrackMapView.setOnLongClickListener((v, x, y, pointer, button) -> {
+        mTrackMapView.setLongClickHandler((v, x, y, pointer, button) -> {
             // chk if any TrackPoint clicked
 
             double minDist = Double.MAX_VALUE;

@@ -1,56 +1,43 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
-import de.droidcachebox.WrapType;
-import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.math.Size;
 
-public class StringInputBox extends MsgBox {
-    public static EditTextField editText;
+public class StringInputBox extends ButtonDialog {
+    public static EditTextField editTextField;
 
-    private StringInputBox(Size size) {
-        super(size, "StringInputBox");
-    }
+    public StringInputBox(String msg, String title, String initialString, WrapType wrapType) {
+        super(msg, title, MsgBoxButton.OKCancel, MsgBoxIcon.None);
+        removeChilds();
+        setHeight(getHeight() - contentBox.getHeight());
 
-    public static void show(WrapType type, String msg, String title, String initialString, OnMsgBoxClickListener Listener) {
-
-        StringInputBox msgBox = new StringInputBox(calcMsgBoxSize(msg, true, true, false));
-
-        editText = new EditTextField(msgBox, "StringInputBox editText").setWrapType(type);
-        editText.setWidth(msgBox.getWidth());
-        editText.setText(initialString);
-        editText.setCursorPosition(initialString.length());
-        editText.showFromLineNo(0);
-        float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true);
-        if (type == WrapType.SINGLELINE) {
-            editText.setHeight(topBottom + editText.getFont().getLineHeight() + editText.getFont().getAscent() - editText.getFont().getDescent());
+        editTextField = new EditTextField(this,"StringInputBox editText").setWrapType(wrapType);
+        editTextField.setText(initialString);
+        editTextField.setCursorPosition(initialString.length());
+        editTextField.showFromLineNo(0);
+        float topBottom = editTextField.getStyle().getTopHeight(true) + editTextField.getStyle().getBottomHeight(true);
+        if (wrapType == WrapType.SINGLELINE) {
+            editTextField.setHeight(topBottom + editTextField.getFont().getLineHeight() + editTextField.getFont().getAscent() - editTextField.getFont().getDescent());
         } else {
-            editText.setHeight(topBottom + editText.getFont().getLineHeight() * 5 + editText.getFont().getAscent() - editText.getFont().getDescent());
+            editTextField.setHeight(topBottom + editTextField.getFont().getLineHeight() * 5 + editTextField.getFont().getAscent() - editTextField.getFont().getDescent());
         }
 
-        CB_Label label = new CB_Label(msg, null, null, WrapType.WRAPPED);
-        label.setWidth(msgBox.getWidth());
+        CB_Label label = new CB_Label();
+        label.setWidth(contentBox.getWidth());
+        label.setWrappedText(msg);
         label.setHeight(label.getTextHeight());
 
-        msgBox.setHeight(label.getHeight() + editText.getHeight() + calcFooterHeight(true) + getTitleHeight());
+        contentBox.addLast(editTextField);
+        if (label.getText().length() > 0) contentBox.addLast(label);
 
-        msgBox.setTitle(title);
-        msgBox.addLast(editText);
-        msgBox.addLast(label);
-        msgBox.addButtons(MsgBoxButton.OKCancel);
-
-        msgBox.setMsgBoxClickListener(Listener);
-
-        GL.that.showDialog(msgBox, true);
-
+        contentBox.adjustHeight();
+        setHeight(getHeight() + contentBox.getHeight());
     }
 
     @Override
     public void onShow() {
-        editText.setFocus(true);
+        editTextField.setFocus(true);
     }
 
 }

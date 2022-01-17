@@ -100,7 +100,7 @@ public class TileGL_Bmp extends TileGL {
             }
         } else {
             // create Texture on next GlThread
-            GL.that.RunOnGL(() -> {
+            GL.that.runOnGL(() -> {
                 if (bitmap == null)
                     getTexture();
                 else {
@@ -179,7 +179,7 @@ public class TileGL_Bmp extends TileGL {
             }
             texture = null;
         } else {
-            GL.that.RunOnGL(() -> {
+            GL.that.runOnGL(() -> {
                 try {
                     if (texture != null)
                         texture.dispose();

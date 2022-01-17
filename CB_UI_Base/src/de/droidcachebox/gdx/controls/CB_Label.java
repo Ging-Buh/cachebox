@@ -27,11 +27,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.graphics.GL_Paint;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.graphics.PolygonDrawable;
@@ -90,32 +90,32 @@ public class CB_Label extends CB_View_Base {
     /**
      * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
      **/
-    public CB_Label(String text, BitmapFont Font, Color fontColor, WrapType WrapType) {
+    public CB_Label(String text, BitmapFont font, Color fontColor, WrapType wrapType) {
         super(0, 0, UiSizes.getInstance().getButtonWidthWide(), UiSizes.getInstance().getButtonHeight(), "Label");
         mText = (text == null ? "" : text.replace("\r\n", "\n"));
-        if (Font != null)
-            mFont = Font;
+        if (font != null)
+            mFont = font;
         if (fontColor != null)
             mColor = fontColor;
-        if (WrapType != null)
-            mWrapType = WrapType;
+        if (wrapType != null)
+            mWrapType = wrapType;
         setText();
     }
 
-    public CB_Label(String Name, float X, float Y, float Width, float Height, String Text) {
-        super(X, Y, Width, Height, Name);
-        mText = Text == null ? "" : Text.replace("\r\n", "\n");
+    public CB_Label(String name, float x, float y, float width, float height, String text) {
+        super(x, y, width, height, name);
+        mText = text == null ? "" : text.replace("\r\n", "\n");
         setText();
     }
 
-    public CB_Label(String Name, float X, float Y, float Width, float Height) {
-        super(X, Y, Width, Height, Name);
+    public CB_Label(String name, float x, float Y, float width, float height) {
+        super(x, Y, width, height, name);
         mText = "";
         setText();
     }
 
-    public CB_Label(String Name, CB_RectF rec, String Text) {
-        super(rec, Name);
+    public CB_Label(String name, CB_RectF rec, String Text) {
+        super(rec, name);
         mText = Text == null ? "" : Text.replace("\r\n", "\n");
         setText();
     }
@@ -344,7 +344,7 @@ public class CB_Label extends CB_View_Base {
             TimerTask later = new TimerTask() {
                 @Override
                 public void run() {
-                    GL.that.RunOnGL(() -> setText());
+                    GL.that.runOnGL(() -> setText());
                 }
             };
             new Timer().schedule(later, 100);
@@ -399,7 +399,7 @@ public class CB_Label extends CB_View_Base {
             // Try again
             ErrorCount++;
             if (ErrorCount < 5)
-                GL.that.RunOnGL(this::setTextPosition);
+                GL.that.runOnGL(this::setTextPosition);
         }
         GL.that.renderOnce();
     }
@@ -546,7 +546,7 @@ public class CB_Label extends CB_View_Base {
 
     @Override
     protected void skinIsChanged() {
-        // todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
+        // todo set the correct Font (original FontSize not known)
         mFont = Fonts.getNormal();
         Color c = COLOR.getFontColor();
         if (c != null) mColor = c;
@@ -564,15 +564,6 @@ public class CB_Label extends CB_View_Base {
     public void setBackground(Drawable background) {
         super.setBackground(background);
         setText();
-    }
-
-    @Override
-    public void dispose() {
-        mTextObject = null;
-        mVAlignment = null;
-        mHAlignment = null;
-        mText = null;
-        bounds = null;
     }
 
     public void setText(String text, HSV_Color color) {

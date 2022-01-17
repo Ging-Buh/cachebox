@@ -52,16 +52,16 @@ public class ActivityBase extends CB_View_Base {
 
     @Override
     public void removeChilds() {
-        removeChildsDirect();
+        removeChildrenDirect();
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         // do not call super, it wants clear childs
     }
 
     public void finish() {
-        GL.that.RunOnGL(() -> GL.that.closeActivity());
+        GL.that.runOnGL(() -> GL.that.closeActivity());
     }
 
     public void show() {
@@ -70,11 +70,6 @@ public class ActivityBase extends CB_View_Base {
 
     public boolean canCloseWithBackKey() {
         return true;
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
     }
 
 }

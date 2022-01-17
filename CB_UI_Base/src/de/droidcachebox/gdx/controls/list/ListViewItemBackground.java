@@ -2,6 +2,7 @@ package de.droidcachebox.gdx.controls.list;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.Sprites;
@@ -45,7 +46,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         if (!backGroundIsInitialized) {
             backGroundColorForSelectedLine = new NinePatch(Sprites.getSprite("listrec-selected"), 13, 13, 13, 13);
             backGroundColorForEvenLine = new NinePatch(Sprites.getSprite("listrec-first"), 13, 13, 13, 13);
@@ -60,14 +61,14 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
             isPressed = GL_Input.that.getIsTouchDown();
         }
 
-        if (isDisposed() || !isVisible())
+        if (isDisposed || !isVisible())
             return;
 
         super.render(batch);
 
         // Draw Background
         if (!backGroundIsInitialized) {
-            initialize();
+            renderInit();
         }
         if (isSelected) {
             backGroundColorForSelectedLine.draw(batch, 0, 0, getWidth(), getHeight());
@@ -98,7 +99,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     @Override
     public float getLeftWidth() {
         if (!backGroundIsInitialized)
-            initialize();
+            renderInit();
         if (isSelected) {
             return backGroundColorForSelectedLine.getLeftWidth();
         } else if ((mIndex % 2) == 1) {
@@ -111,7 +112,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     @Override
     public float getBottomHeight() {
         if (!backGroundIsInitialized)
-            initialize();
+            renderInit();
         if (isSelected) {
             return backGroundColorForSelectedLine.getBottomHeight();
         } else if ((mIndex % 2) == 1) {
@@ -124,7 +125,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     @Override
     public float getRightWidth() {
         if (!backGroundIsInitialized)
-            initialize();
+            renderInit();
         if (isSelected) {
             return backGroundColorForSelectedLine.getRightWidth();
         } else if ((mIndex % 2) == 1) {
@@ -137,7 +138,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
     @Override
     public float getTopHeight() {
         if (!backGroundIsInitialized)
-            initialize();
+            renderInit();
         if (isSelected) {
             return backGroundColorForSelectedLine.getTopHeight();
         } else if ((mIndex % 2) == 1) {

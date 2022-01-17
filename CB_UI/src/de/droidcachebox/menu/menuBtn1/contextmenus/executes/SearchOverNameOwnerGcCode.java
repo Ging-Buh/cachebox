@@ -26,7 +26,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.CacheDAO;
@@ -37,6 +36,7 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_CheckBox;
@@ -123,16 +123,12 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void cancelImport() {
-
-        // breche den Import Thread ab
         if (thread != null)
             thread.interrupt();
-
         importRuns = false;
         removeChildDirect(importAnimation);
         importAnimation.dispose();
         importAnimation = null;
-
     }
 
     private void createBox() {
@@ -333,7 +329,6 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                                     break;
                             }
 
-                            importAnimation.setAnimationType(AnimationType.Work);
                             if (geoCacheRelateds.size() > 0) {
                                 try {
                                     importAnimation.setAnimationType(AnimationType.Work);

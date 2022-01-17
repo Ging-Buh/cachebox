@@ -15,15 +15,12 @@
  */
 package de.droidcachebox.menu.menuBtn2;
 
-import static de.droidcachebox.gdx.controls.messagebox.MsgBox.calcMsgBoxSize;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
-import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.menu.menuBtn2.executes.Hint;
 import de.droidcachebox.utils.UnitFormatter;
 
@@ -43,7 +40,7 @@ public class ShowHint extends AbstractAction {
     @Override
     public void execute() {
         if (getEnabled()) {
-            showHint();
+            new Hint(UnitFormatter.Rot13(GlobalCore.getSelectedCache().getHint()) + "\n ").show();
         }
     }
 
@@ -55,17 +52,5 @@ public class ShowHint extends AbstractAction {
     @Override
     public Sprite getIcon() {
         return Sprites.getSprite(IconName.hintIcon.name());
-    }
-
-    public void showHint() {
-        String HintFromDB = GlobalCore.getSelectedCache().getHint();
-
-        String hintTextEncoded = UnitFormatter.Rot13(HintFromDB) + "\n "; // in DB is readable
-        String hintTextDecoded = HintFromDB + "\n ";
-
-        Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
-        Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
-
-        new Hint(decodedSize.height > encodedSize.height ? decodedSize : encodedSize, hintTextEncoded).show();
     }
 }

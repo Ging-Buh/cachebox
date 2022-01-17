@@ -17,9 +17,9 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.EditCache;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
@@ -37,7 +37,6 @@ import de.droidcachebox.utils.log.Log;
 public class ShowGeoCaches extends AbstractShowAction {
     private static ShowGeoCaches that;
     private EditCache editCache;
-    private MsgBox gL_MsgBox;
 
     private ShowGeoCaches() {
         super("cacheList", "  (" + CBDB.getInstance().cacheList.size() + ")");
@@ -139,9 +138,9 @@ public class ShowGeoCaches extends AbstractShowAction {
                 msgText = "askResetFavorites";
             }
             final boolean finalChecked = checked;
-            gL_MsgBox = MsgBox.show(Translation.get(msgText), Translation.get("Favorites"), MsgBoxButton.OKCancel, MsgBoxIcon.Question, (which, data) -> {
-                gL_MsgBox_close();
-                if (which == MsgBox.BTN_LEFT_POSITIVE) {
+            ButtonDialog bd = new ButtonDialog(Translation.get(msgText), Translation.get("Favorites"), MsgBoxButton.OKCancel, MsgBoxIcon.Question);
+            bd.setButtonClickHandler((which, data) -> {
+                if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
                     CBDB.getInstance().beginTransaction();
                     Database_Core.Parameters args = new Database_Core.Parameters();
                     args.put("Favorit", finalChecked ? 1 : 0);
@@ -153,6 +152,7 @@ public class ShowGeoCaches extends AbstractShowAction {
                 }
                 return true;
             });
+            bd.show();
             return true;
         });
         mi.setCheckable(true);
@@ -188,10 +188,6 @@ public class ShowGeoCaches extends AbstractShowAction {
             applyFilter(FilterInstances.ALL);
             FilterInstances.setLastFilter(FilterInstances.ALL);
         }
-    }
-
-    private void gL_MsgBox_close() {
-        gL_MsgBox.close();
     }
 
     public void setNameExtension(String newExtension) {

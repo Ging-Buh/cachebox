@@ -1,6 +1,7 @@
 package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.controls.list.Adapter;
@@ -41,8 +42,8 @@ public class ScrollBox extends CB_View_Base {
         scrollBoxContent.setClickable(true);
         contentItem = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
             @Override
-            protected void initialize() {
-                isInitialized = true;
+            protected void renderInit() {
+                isRenderInitDone = true;
             }
         };
         contentItem.setHeight(virtualHeight);
@@ -55,7 +56,7 @@ public class ScrollBox extends CB_View_Base {
     }
 
     protected void layout() {
-        if (isDisposed())
+        if (isDisposed)
             return;
         if (scrollBoxContent == null) {
             initScrollBox();
@@ -115,8 +116,8 @@ public class ScrollBox extends CB_View_Base {
     }
 
     @Override
-    public void removeChildsDirect() {
-        contentItem.removeChildsDirect();
+    public void removeChildrenDirect() {
+        contentItem.removeChildrenDirect();
         scrollBoxContent.notifyDataSetChanged();
     }
 
@@ -136,8 +137,8 @@ public class ScrollBox extends CB_View_Base {
     }
 
     @Override
-    protected void initialize() {
-        isInitialized = true;
+    protected void renderInit() {
+        isRenderInitDone = true;
     }
 
     @Override

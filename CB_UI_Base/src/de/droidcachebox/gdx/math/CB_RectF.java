@@ -395,9 +395,9 @@ public class CB_RectF {
     }
 
     /**
-     * Returns the largest X coordinate of the framing rectangle of the <code>CB_RectF</code> in <code>double</code> precision.
+     * Returns the lowest X position for the next object (without collision)
      *
-     * @return the largest x coordinate of the framing rectangle of the <code>CB_RectF</code>.
+     * @return the highest x coordinate of the framing rectangle of the <code>CB_RectF</code>.
      */
     public float getMaxX() {
         return getX() + getWidth();

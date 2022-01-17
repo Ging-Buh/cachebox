@@ -5,14 +5,15 @@ import android.content.Context;
 import android.text.InputType;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import de.droidcachebox.WrapType;
+
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.views.forms.MessageBox;
 
 public class Android_TextInput implements TextInputInterface {
-    private Activity activity;
+    private final Activity activity;
 
     public Android_TextInput(Activity activity) {
         this.activity = activity;
@@ -42,15 +43,14 @@ public class Android_TextInput implements TextInputInterface {
             input.setSingleLine(false);
             if (editTextField.getWrapType() == WrapType.SINGLELINE) {
                 input.setLines(1);
-            }
-            else {
+            } else {
                 input.setLines(10); // Math.min(editTextField.getLineCount(), 10)
             }
             // builder.setView(input);
-            builder.setContentView(input).setPositiveButton(Translation.get("ok"), (dialog, which) -> GL.that.RunOnGL(() -> {
-                editTextField.setText(input.getText().toString());
-                editTextField.setFocus(false);
-            })
+            builder.setContentView(input).setPositiveButton(Translation.get("ok"), (dialog, which) -> GL.that.runOnGL(() -> {
+                        editTextField.setText(input.getText().toString());
+                        editTextField.setFocus(false);
+                    })
             ).setNegativeButton(Translation.get("cancel"), (dialog, which) -> {
                 editTextField.setFocus(false);
                 dialog.cancel();

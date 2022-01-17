@@ -25,10 +25,10 @@ import java.util.Locale;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.dataclasses.LogEntry;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.Image;
@@ -170,9 +170,9 @@ public class LogListViewItem extends ListViewItemBackground implements ICopyPast
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         headerBackground = new NinePatch(Sprites.getSprite("listrec-header"), 8, 8, 8, 8);
-        super.initialize();
+        super.renderInit();
     }
 
     @Override
@@ -181,7 +181,7 @@ public class LogListViewItem extends ListViewItemBackground implements ICopyPast
         if (headerBackground != null) {
             headerBackground.draw(batch, 0, getHeight() - headHeight, getWidth(), headHeight);
         } else {
-            resetIsInitialized();
+            resetRenderInitDone();
         }
 
     }

@@ -132,7 +132,7 @@ public class GL_Paint implements GDXPaint {
 
     private void createFont() {
         if (textSize > 0) {
-            GL.that.RunOnGL(() -> GL_Paint.this.font = FontCache.get(GL_Paint.this.getGLFontFamily(), GL_Paint.this.getGLFontStyle(), GL_Paint.this.getTextSize()));
+            GL.that.runOnGL(() -> GL_Paint.this.font = FontCache.get(GL_Paint.this.getGLFontFamily(), GL_Paint.this.getGLFontStyle(), GL_Paint.this.getTextSize()));
         } else {
             font = null;
         }

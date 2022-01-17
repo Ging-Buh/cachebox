@@ -16,6 +16,8 @@
 package de.droidcachebox.menu.menuBtn4.executes;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_RIGHT_NEGATIVE;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -52,15 +54,15 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.InputString;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.popups.PopUp_Base;
 import de.droidcachebox.gdx.controls.popups.QuickDraftFeedbackPopUp;
 import de.droidcachebox.gdx.main.Menu;
@@ -132,7 +134,7 @@ public class DraftsView extends V_ListView {
             writer.close();
         } catch (IOException e) {
             Log.err(log, e.toString() + " at\n" + txtAbstractFile.getAbsolutePath());
-            MsgBox.show(e.toString() + " at\n" + txtAbstractFile.getAbsolutePath(), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
+            new ButtonDialog(e.toString() + " at\n" + txtAbstractFile.getAbsolutePath(), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
         }
     }
 
@@ -207,7 +209,7 @@ public class DraftsView extends V_ListView {
         Cache cache = GlobalCore.getSelectedCache();
 
         if (cache == null) {
-            MsgBox.show(Translation.get("NoCacheSelect"), Translation.get("thisNotWork"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
+            new ButtonDialog(Translation.get("NoCacheSelect"), Translation.get("thisNotWork"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
             return;
         }
 
@@ -215,9 +217,9 @@ public class DraftsView extends V_ListView {
         if (cache.getGeoCacheCode().equalsIgnoreCase("CBPark")) {
 
             if (type == LogType.found) {
-                MsgBox.show(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                new ButtonDialog(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
             } else if (type == LogType.didnt_find) {
-                MsgBox.show(Translation.get("My_Parking_Area_DNF"), Translation.get("thisNotWork"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
+                new ButtonDialog(Translation.get("My_Parking_Area_DNF"), Translation.get("thisNotWork"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
             }
 
             return;
@@ -441,41 +443,29 @@ public class DraftsView extends V_ListView {
     }
 
     private void deleteAllDrafts() {
-        final MsgBox.OnMsgBoxClickListener dialogClickListener = (which, data) -> {
-            switch (which) {
-                case MsgBox.BTN_LEFT_POSITIVE:
-                    // Yes button clicked
-                    // delete all Drafts
-                    // reload all Drafts!
-                    drafts.loadDrafts(LoadingType.Loadall);
+        ButtonDialog bd = new ButtonDialog(Translation.get("DelDrafts?"), Translation.get("DeleteAllDrafts"), MsgBoxButton.YesNo, MsgBoxIcon.Warning);
+        bd.setButtonClickHandler((which, data) -> {
+            if (which == BTN_LEFT_POSITIVE) {
+                // delete all Drafts, reload all Drafts!
+                drafts.loadDrafts(LoadingType.Loadall);
 
-                    for (Draft entry : drafts) {
-                        entry.deleteFromDatabase();
+                for (Draft entry : drafts) {
+                    entry.deleteFromDatabase();
 
-                    }
+                }
 
-                    drafts.clear();
-                    currentDraft = null;
+                drafts.clear();
+                currentDraft = null;
 
-                    draftsView.setAdapter(null);
-                    draftsViewAdapter = new DraftsViewAdapter();
-                    draftsView.setAdapter(draftsViewAdapter);
+                draftsView.setAdapter(null);
+                draftsViewAdapter = new DraftsViewAdapter();
+                draftsView.setAdapter(draftsViewAdapter);
 
-                    // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
-                    break;
-
-                case MsgBox.BTN_RIGHT_NEGATIVE:
-                    // No button clicked
-                    // do nothing
-                    break;
+                // hint: geocache-visits is not deleted! comment : simply don't upload, if local drafts are deleted
             }
             return true;
-
-        };
-
-        final String message = Translation.get("DelDrafts?");
-        MsgBox.show(message, Translation.get("DeleteAllDrafts"), MsgBoxButton.YesNo, MsgBoxIcon.Warning, dialogClickListener);
-
+        });
+        bd.show();
     }
 
     @Override
@@ -539,7 +529,7 @@ public class DraftsView extends V_ListView {
                 });
             } else {
                 v.setClickHandler((v12, x, y, pointer, button) -> onItemClicked((DraftViewItem) v12));
-                v.setOnLongClickListener((v13, x, y, pointer, button) -> onItemClicked((DraftViewItem) v13));
+                v.setLongClickHandler((v13, x, y, pointer, button) -> onItemClicked((DraftViewItem) v13));
             }
 
             fixViewList.addAndGetLastOut(v);
@@ -597,9 +587,9 @@ public class DraftsView extends V_ListView {
                             String image = Base64.encodeBytes(WebbUtils.readBytes(abstractFile.getFileInputStream()));
                             GroundspeakAPI.uploadLogImage(currentDraft.gcLogReference, image, description);
                             if (GroundspeakAPI.APIError == OK) {
-                                MsgBox.show(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                                new ButtonDialog(Translation.get("ok") + ":\n", Translation.get("uploadLogImage"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
                             } else {
-                                MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("uploadLogImage"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                                new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("uploadLogImage"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
                             }
                         } catch (Exception ignored) {
                         }
@@ -620,31 +610,33 @@ public class DraftsView extends V_ListView {
                         draft.uploaded = true;
                         if (isLog && !draft.isTbDraft) {
                             draft.gcLogReference = GroundspeakAPI.logReferenceCode;
-                            Logs.getInstance().resetIsInitialized(); // if own log is written !
+                            Logs.getInstance().resetRenderInitDone(); // if own log is written !
                         }
                         addOrChangeDraft(draft, false, EditDraft.SaveMode.LocalUpdate);
                     } else {
-                        MsgBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question, (which, data) -> {
+                        ButtonDialog bd = new ButtonDialog(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question);
+                        bd.setButtonClickHandler((which, data) -> {
                             switch (which) {
-                                case MsgBox.BTN_RIGHT_NEGATIVE:
+                                case BTN_RIGHT_NEGATIVE:
                                     uploadDraftOrLog(draft, true);
                                     // addOrChangeDraft(draft, isNewDraft, true);// try again
                                     break;
-                                case MsgBox.BTN_MIDDLE_NEUTRAL:
+                                case ButtonDialog.BTN_MIDDLE_NEUTRAL:
                                     break;
-                                case MsgBox.BTN_LEFT_POSITIVE:
+                                case BTN_LEFT_POSITIVE:
                                     // is alread in local database
                                     // addOrChangeDraft(draft, isNewDraft, false);// create Draft
                                     uploadDraftOrLog(draft, false); // or nothing
                             }
                             return true;
                         });
+                        bd.show();
 
-                        // todo 2x MsgBox geht nicht
+                        // todo 2x MsgBox geht nicht ?
                         /*
                         if (GroundspeakAPI.LastAPIError.length() > 0) {
-                            MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("Error"), MsgBoxIcon.Error, (which, data) -> {
-                            });
+                            new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("Error"), MsgBoxIcon.Error, (which, data) -> {
+                            }).show();
                         }
 
                          */
@@ -692,7 +684,7 @@ public class DraftsView extends V_ListView {
             if (cache == null) {
                 String message = Translation.get("cacheOtherDb", currentDraft.CacheName);
                 message += "\n" + Translation.get("DraftNoSelect");
-                MsgBox.show(message);
+                new ButtonDialog(message, "", MsgBoxButton.OK, null).show();
                 return;
             }
 
@@ -731,7 +723,7 @@ public class DraftsView extends V_ListView {
             if (cache == null && !currentDraft.isTbDraft) {
                 String message = Translation.get("cacheOtherDb", currentDraft.CacheName);
                 message += "\n" + Translation.get("draftNoDelete");
-                MsgBox.show(message);
+                new ButtonDialog(message, "", MsgBoxButton.OK, null).show();
                 return;
             }
 
@@ -744,8 +736,9 @@ public class DraftsView extends V_ListView {
                     message += Translation.get("confirmDraftDeletionRst");
             }
 
-            MsgBox.show(message, Translation.get("deleteDraft"), MsgBoxButton.YesNo, MsgBoxIcon.Question, (which, data) -> {
-                if (which == MsgBox.BTN_LEFT_POSITIVE) {
+            ButtonDialog bd = new ButtonDialog(message, Translation.get("deleteDraft"), MsgBoxButton.YesNo, MsgBoxIcon.Question);
+            bd.setButtonClickHandler((which, data) -> {
+                if (which == BTN_LEFT_POSITIVE) {
                     if (cache != null) {
                         if (cache.isFound()) {
                             cache.setFound(false);
@@ -773,7 +766,7 @@ public class DraftsView extends V_ListView {
                 }
                 return true;
             });
-
+            bd.show();
         }
 
         @Override

@@ -1,12 +1,16 @@
 package de.droidcachebox;
 
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_MIDDLE_NEUTRAL;
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_RIGHT_NEGATIVE;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Plattform;
@@ -20,7 +24,6 @@ public class AppRater {
     private final static int DAYS_UNTIL_PROMPT = 30;// 30;
     private final static int LAUNCHES_UNTIL_PROMPT = 15;// 15;
     private final static int MINIMUM_RUN = 10 * 60 * 1000;// 10 min
-    private static MsgBox msgBox;
 
     public static void app_launched() {
         if (Settings.AppRaterDontShowAgain.getValue())
@@ -50,7 +53,7 @@ public class AppRater {
         // Wait at least n days before opening
         if (launch_count >= LAUNCHES_UNTIL_PROMPT) {
             if (System.currentTimeMillis() >= date_firstLaunch + (long) DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000) {
-                GL.that.RunOnGL(AppRater::showRateDialog);
+                GL.that.runOnGL(AppRater::showRateDialog);
             }
         }
 
@@ -64,39 +67,41 @@ public class AppRater {
         String later = Translation.get("Rate_later");
         String never = Translation.get("Rate_never");
 
-        msgBox = MsgBox.show(message, title, MsgBoxButton.YesNoCancel, MsgBoxIcon.Question,
-                (which, data) -> {
-                    switch (which) {
-                        case 1:
-                            // Rate
+        ButtonDialog msgBox = new ButtonDialog(message, title, MsgBoxButton.YesNoCancel, MsgBoxIcon.Question);
+        msgBox.setButtonClickHandler((which, data) -> {
+            switch (which) {
+                case 1:
+                    // Rate
 
-                            StringBuilder sb = new StringBuilder();
-                            if (Plattform.used == Plattform.Android) {
-                                sb.append("market://details?id=");
-                            } else {
-                                sb.append("https://play.google.com/store/apps/details?id=");
-                            }
-
-                            sb.append(APP_PACKAGE_NAME);
-
-                            PlatformUIBase.callUrl(sb.toString());
-                            break;
-                        case 2:
-                            // later
-                            if (msgBox != null)
-                                msgBox.close();
-                            break;
-                        case 3:
-                            // never
-                            Settings.AppRaterDontShowAgain.setValue(true);
-                            Settings.getInstance().acceptChanges();
-                            break;
+                    StringBuilder sb = new StringBuilder();
+                    if (Plattform.used == Plattform.Android) {
+                        sb.append("market://details?id=");
+                    } else {
+                        sb.append("https://play.google.com/store/apps/details?id=");
                     }
-                    return true;
-                });
-        msgBox.setButtonText(MsgBox.BTN_LEFT_POSITIVE, now);
-        msgBox.setButtonText(MsgBox.BTN_MIDDLE_NEUTRAL, later);
-        msgBox.setButtonText(MsgBox.BTN_RIGHT_NEGATIVE, never);
+
+                    sb.append(APP_PACKAGE_NAME);
+
+                    PlatformUIBase.callUrl(sb.toString());
+                    break;
+                case 2:
+                    // later
+                    if (msgBox != null)
+                        msgBox.close();
+                    break;
+                case 3:
+                    // never
+                    Settings.AppRaterDontShowAgain.setValue(true);
+                    Settings.getInstance().acceptChanges();
+                    break;
+            }
+            return true;
+        });
+
+        msgBox.setButtonText(BTN_LEFT_POSITIVE, now);
+        msgBox.setButtonText(BTN_MIDDLE_NEUTRAL, later);
+        msgBox.setButtonText(BTN_RIGHT_NEGATIVE, never);
+        msgBox.show();
 
     }
 }

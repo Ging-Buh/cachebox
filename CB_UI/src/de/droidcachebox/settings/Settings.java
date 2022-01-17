@@ -5,9 +5,9 @@ import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Database_Core;
 import de.droidcachebox.database.SettingsDatabase;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.translation.Translation;
 
 public class Settings extends SettingsList implements AllSettings {
@@ -29,7 +29,7 @@ public class Settings extends SettingsList implements AllSettings {
 
     public void acceptChanges() {
         if (writeToDatabases()) {
-            MsgBox.show(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+            new ButtonDialog(Translation.get("Desc_SettingChangesNeedRestart"), Translation.get("SettingChangesNeedRestart"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
         }
     }
 

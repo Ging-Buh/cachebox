@@ -42,11 +42,11 @@ import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.settings.Settings;
@@ -57,11 +57,6 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
-/**
- * @author ging-buh
- * @author arbor95
- * @author longri
- */
 public class GlobalCore implements SolverCacheInterface {
     public static final String aboutMsg1 = "Team Cachebox (2011-2022)" + br;
     public static final String teamLink = "www.team-cachebox.de";
@@ -128,9 +123,6 @@ public class GlobalCore implements SolverCacheInterface {
     }
 
     public static void setSelectedWaypoint(Cache cache, Waypoint waypoint) {
-        if (cache != null)
-            if (cache.isDisposed())
-                cache = null;
         setSelectedWaypoint(cache, waypoint, true);
         if (cache != null) {
             if (!CoreData.cacheHistory.startsWith(cache.getGeoCacheCode())) {
@@ -217,9 +209,9 @@ public class GlobalCore implements SolverCacheInterface {
 
     public static void MsgDownloadLimit() {
         if (GroundspeakAPI.APIError == 401) {
-            GL.that.RunOnGLWithThreadCheck(() -> MsgBox.show(Translation.get("apiKeyInvalid"), Translation.get("chkApiState"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null));
+            new ButtonDialog(Translation.get("apiKeyInvalid"), Translation.get("chkApiState"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
         } else {
-            GL.that.RunOnGLWithThreadCheck(() -> MsgBox.show(Translation.get("Limit_msg"), Translation.get("Limit_title"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null));
+            new ButtonDialog(Translation.get("Limit_msg"), Translation.get("Limit_title"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
         }
     }
 

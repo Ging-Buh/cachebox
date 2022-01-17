@@ -377,7 +377,7 @@ public class FileOrFolderPicker extends ActivityBase {
                 }
                 return true;
             });
-            v.setOnLongClickListener((view, x, y, pointer, button) -> {
+            v.setLongClickHandler((view, x, y, pointer, button) -> {
                 FileItem v1 = (FileItem) view;
                 String fn = containedFoldersAndFiles.get(v1.getIndex());
                 final String fileName;

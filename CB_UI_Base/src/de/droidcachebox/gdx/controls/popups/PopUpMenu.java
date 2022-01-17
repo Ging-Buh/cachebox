@@ -156,7 +156,7 @@ public class PopUpMenu extends PopUp_Base {
     protected void createDebugSprite() {
         if (debugSprite == null) {
             try {
-                GL.that.RunOnGLWithThreadCheck(() -> {
+                GL.that.runOnGLWithThreadCheck(() -> {
                     // int w = getNextHighestPO2((int) getWidth());
                     // int h = getNextHighestPO2((int) getHeight());
 

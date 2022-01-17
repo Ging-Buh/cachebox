@@ -1,4 +1,4 @@
-package de.droidcachebox.gdx.controls.messagebox;
+package de.droidcachebox.gdx.controls.dialogs;
 
 public enum MsgBoxIcon {
     Asterisk,    //	Kleinbuchstabe i in einem Kreis

@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Draft;
 import de.droidcachebox.dataclasses.GeoCacheType;
@@ -35,6 +34,7 @@ import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
@@ -44,11 +44,11 @@ import de.droidcachebox.gdx.controls.ImageButton;
 import de.droidcachebox.gdx.controls.RadioButton;
 import de.droidcachebox.gdx.controls.RadioGroup;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.menuBtn1.executes.Trackables;
@@ -154,11 +154,13 @@ public class TB_Log extends ActivityBase {
 
             Cache c = GlobalCore.getSelectedCache();
             if (c == null) {
-                // Log Inposible, close Activity and give a Message
-                final String errorMsg = Translation.get("NoCacheSelect");
-                this.finish();
-
-                GL.that.RunOnGL(() -> MsgBox.show(errorMsg, "", MsgBoxIcon.Error));
+                // no log without geocache possible
+                ButtonDialog bd = new ButtonDialog(Translation.get("NoCacheSelect"), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error);
+                bd.setButtonClickHandler((btnNumber, data) -> {
+                    TB_Log.this.finish();
+                    return true;
+                });
+                bd.show();
                 return;
             }
 
@@ -248,54 +250,57 @@ public class TB_Log extends ActivityBase {
 
                 if (result[0] == ERROR) {
                     GL.that.toast(LastAPIError);
-                    MsgBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question, (which, data) -> {
+                    ButtonDialog bd = new ButtonDialog(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question);
+                    bd.setButtonClickHandler((which, data) -> {
                         switch (which) {
-                            case MsgBox.BTN_RIGHT_NEGATIVE:
+                            case ButtonDialog.BTN_RIGHT_NEGATIVE:
                                 logOnline();
                                 return true;
 
-                            case MsgBox.BTN_MIDDLE_NEUTRAL:
+                            case ButtonDialog.BTN_MIDDLE_NEUTRAL:
                                 return true;
 
-                            case MsgBox.BTN_LEFT_POSITIVE:
+                            case ButtonDialog.BTN_LEFT_POSITIVE:
                                 createTBDraft();
                                 return true;
                         }
                         return true;
                     });
+                    bd.show();
                     return;
                 }
 
                 if (result[0] != OK) {
                     GL.that.toast(LastAPIError);
-                    MsgBox.show(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question,
-                            (which, data) -> {
-                                switch (which) {
-                                    case MsgBox.BTN_RIGHT_NEGATIVE:
-                                        logOnline();
-                                        return true;
-
-                                    case MsgBox.BTN_MIDDLE_NEUTRAL:
-                                        return true;
-
-                                    case MsgBox.BTN_LEFT_POSITIVE:
-                                        createTBDraft();
-                                        return true;
-                                }
+                    ButtonDialog bd = new ButtonDialog(Translation.get("CreateDraftInstead"), Translation.get("UploadFailed"), MsgBoxButton.YesNoRetry, MsgBoxIcon.Question);
+                    bd.setButtonClickHandler((which, data) -> {
+                        switch (which) {
+                            case ButtonDialog.BTN_RIGHT_NEGATIVE:
+                                logOnline();
                                 return true;
-                            });
+
+                            case ButtonDialog.BTN_MIDDLE_NEUTRAL:
+                                return true;
+
+                            case ButtonDialog.BTN_LEFT_POSITIVE:
+                                createTBDraft();
+                                return true;
+                        }
+                        return true;
+                    });
+                    bd.show();
                     return;
                 }
 
                 if (LastAPIError.length() > 0) {
-                    GL.that.RunOnGL(() -> MsgBox.show(LastAPIError, Translation.get("Error"), MsgBoxIcon.Error));
+                    new ButtonDialog(LastAPIError, Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
                 }
 
                 TB_Log.this.finish();
 
                 // Refresh TB List after Droped Off or Picked or Grabed
                 if (LT == LogType.dropped_off || LT == LogType.retrieve || LT == LogType.grab_it) {
-                    GL.that.RunOnGL(() -> Trackables.trackables.refreshTbList());
+                    GL.that.runOnGL(() -> Trackables.trackables.refreshTbList());
                 }
             }
 

@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.DraftsDatabase;
@@ -20,17 +19,18 @@ import de.droidcachebox.dataclasses.TBList;
 import de.droidcachebox.dataclasses.Trackable;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.activities.TB_Details;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.math.UiSizes;
@@ -61,7 +61,7 @@ public class Trackables extends V_ListView {
     }
 
     @Override
-    public void initialize() {
+    public void renderInit() {
         setAdapter(trackableListViewAdapter);
         setEmptyMsgItem(Translation.get("TB_List_Empty"));
     }
@@ -103,9 +103,9 @@ public class Trackables extends V_ListView {
                         public void ready() {
                             if (GroundspeakAPI.APIError != OK) {
                                 if (APIError == 404) {
-                                    MsgBox.show(GroundspeakAPI.LastAPIError, Translation.get("NoTbFound"), MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                                    new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("NoTbFound"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
                                 } else {
-                                    MsgBox.show(GroundspeakAPI.LastAPIError, "", MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                                    new ButtonDialog(GroundspeakAPI.LastAPIError, "", MsgBoxButton.OK, MsgBoxIcon.Information).show();
                                 }
                             }
                         }
@@ -169,7 +169,7 @@ public class Trackables extends V_ListView {
             public void run() {
                 for (Trackable tb : trackableList) {
                     if (uploadTrackableLog(tb, GlobalCore.getSelectedCache().getGeoCacheCode(), LogTypeId, new Date(), LogText) != OK) {
-                        MsgBox.show(GroundspeakAPI.LastAPIError, "", MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                        new ButtonDialog(GroundspeakAPI.LastAPIError, "", MsgBoxButton.OK, MsgBoxIcon.Information).show();
                     }
                 }
             }
@@ -183,15 +183,17 @@ public class Trackables extends V_ListView {
     }
 
     private void searchTB() {
-        StringInputBox.show(WrapType.SINGLELINE, Translation.get("InputTB_Code"), Translation.get("SearchTB"), "", (which, data) -> {
+        StringInputBox stringInputBox = new StringInputBox(Translation.get("InputTB_Code"), Translation.get("SearchTB"), "", WrapType.SINGLELINE);
+        stringInputBox.setButtonClickHandler((which, data) -> {
             switch (which) {
                 case 1: // ok
-                    return fetchTB(StringInputBox.editText.getText());
+                    return fetchTB(StringInputBox.editTextField.getText());
                 case 3: // cancel
                     break;
             }
             return true;
         });
+        stringInputBox.show();
     }
 
     public Menu getContextMenu() {

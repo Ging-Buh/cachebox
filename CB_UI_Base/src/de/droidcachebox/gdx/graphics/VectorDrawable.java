@@ -27,15 +27,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Disposable;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.IRenderFBO;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
 import de.droidcachebox.utils.CB_List;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Longri
@@ -168,7 +169,7 @@ public class VectorDrawable implements GDXBitmap, Drawable, Disposable {
         if (!RunOnGlSetted && m_fboEnabled && m_fboRegion == null) {
             RunOnGlSetted = true;
 
-            GL.that.RunOnGL((IRenderFBO) () -> {
+            GL.that.runOnGL((IRenderFBO) () -> {
                 synchronized (isDisposed) {
 
                     if (isDisposed.get()) {

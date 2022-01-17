@@ -10,9 +10,6 @@ import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.VAlignment;
 import de.droidcachebox.gdx.controls.ImageMultiToggleButton;
 import de.droidcachebox.gdx.controls.Linearlayout;
-import de.droidcachebox.gdx.controls.messagebox.ButtonDialog;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.Size;
@@ -29,7 +26,7 @@ public class RouteDialog extends ButtonDialog {
     private final IReturnListener mReturnListener;
 
     public RouteDialog(IReturnListener listener) {
-        super(GL_UISizes.menuRectangle, "RouteDialog", "", Translation.get("RouteToWaypoit"), MsgBoxButton.OKCancel, null, null);
+        super(GL_UISizes.menuRectangle, "", Translation.get("RouteToWaypoit"), MsgBoxButton.OKCancel, null, null);
         mReturnListener = listener;
 
         // SizeF msgBoxContentSize = getContentSize();
@@ -83,12 +80,12 @@ public class RouteDialog extends ButtonDialog {
 
         this.addChild(layout);
 
-        Size msgBoxSize = MsgBox.calcMsgBoxSize("teste", true, true, false);
+        Size msgBoxSize = calcMsgBoxSize("teste", true, true, false);
         msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (textFieldHeight / 2));
         this.setSize(msgBoxSize.asFloat());
 
-        mMsgBoxClickListener = (which, data) -> {
-            if (which == MsgBox.BTN_LEFT_POSITIVE) {
+        buttonClickHandler = (which, data) -> {
+            if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
                 if (mReturnListener != null)
                     mReturnListener.returnFromRoute_Dialog(false, state == 0, state == 1, state == 2, chkTmc.isChecked());
             } else {

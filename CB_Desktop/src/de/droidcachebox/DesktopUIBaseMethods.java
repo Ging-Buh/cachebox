@@ -19,6 +19,7 @@ import java.util.prefs.Preferences;
 import de.GcApiLogin;
 import de.droidcachebox.database.SQLiteClass;
 import de.droidcachebox.database.SQLiteInterface;
+import de.droidcachebox.locator.map.MapTileLoader;
 import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.SettingInt;
@@ -157,9 +158,10 @@ public class DesktopUIBaseMethods implements PlatformUIBase.UIBaseMethods {
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
             Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Settings.getInstance().acceptChanges();
             Log.debug(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
+        MapTileLoader.getInstance().stopQueueProzessors();
+        Settings.getInstance().acceptChanges();
         Gdx.app.exit();
         new Timer().schedule(new TimerTask() {
             @Override

@@ -92,7 +92,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
      */
 
     private void setDistanceString(String txt) {
-        if (this.isDisposed())
+        if (this.isDisposed)
             return;
 
         if (txt == null)

@@ -1,15 +1,15 @@
 package de.droidcachebox.gdx.controls.popups;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
- * Eine View Base zur anzeige eines PopUp�s
+ * Popup based on CB_View_Base
  *
  * @author Longri
  */
@@ -24,16 +24,14 @@ public abstract class PopUp_Base extends CB_View_Base {
     }
 
     public void show(int msec) {
-        float x = (UiSizes.getInstance().getWindowWidth() / 2) - this.getHalfWidth();
-        float y = (UiSizes.getInstance().getWindowHeight() / 2) - this.getHalfHeight();
-
+        float x = (UiSizes.getInstance().getWindowWidth() >> 1) - getHalfWidth();
+        float y = (UiSizes.getInstance().getWindowHeight() >> 1) - getHalfHeight();
         show(x, y, msec);
     }
 
     public void show() {
-        float x = (UiSizes.getInstance().getWindowWidth() / 2) - this.getHalfWidth();
-        float y = (UiSizes.getInstance().getWindowHeight() / 2) - this.getHalfHeight();
-
+        float x = (UiSizes.getInstance().getWindowWidth() >> 1) - getHalfWidth();
+        float y = (UiSizes.getInstance().getWindowHeight() >> 1) - getHalfHeight();
         show(x, y, SHOW_TIME_NORMAL);
     }
 

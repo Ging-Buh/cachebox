@@ -6,12 +6,12 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.IRunOnGL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RouteDialog;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Locator;
@@ -33,7 +33,7 @@ public class OpenRouteService {
     private void generateOpenRoute() {
 
         if (!Locator.getInstance().isGPSprovided()) {
-            MsgBox.show("GPS ungültig", "Error", MsgBoxButton.OK, MsgBoxIcon.Error, null);
+            new ButtonDialog("GPS ungültig", "Error", MsgBoxButton.OK, MsgBoxIcon.Error).show();
             return;
         } else {
             start = Locator.getInstance().getMyPosition();
@@ -44,7 +44,7 @@ public class OpenRouteService {
         } else if (GlobalCore.isSetSelectedCache()) {
             target = GlobalCore.getSelectedCache().getCoordinate();
         } else {
-            MsgBox.show("Cache / WP ungültig", "Error", MsgBoxButton.OK, MsgBoxIcon.Error, null);
+            new ButtonDialog("Cache / WP ungültig", "Error", MsgBoxButton.OK, MsgBoxIcon.Error).show();
             return;
         }
 
@@ -52,7 +52,7 @@ public class OpenRouteService {
             routeDia.close();
 
             if (!canceld)
-                GL.that.RunOnGL(() -> {
+                GL.that.runOnGL(() -> {
                     AtomicBoolean isCanceled = new AtomicBoolean(false);
                     wd = new CancelWaitDialog(Translation.get("generateRoute"), new DownloadAnimation(), new RunAndReady() {
                         @Override
@@ -98,12 +98,12 @@ public class OpenRouteService {
                                             int endIdx = line.indexOf("\"", errorIdx + 9);
                                             final String errorMessage = line.substring(errorIdx + 9, endIdx);
                                             wd.close();
-                                            GL.that.RunOnGL(new IRunOnGL() {
+                                            GL.that.runOnGL(new IRunOnGL() {
                                                 // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
                                                 // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
                                                 @Override
                                                 public void run() {
-                                                    MsgBox.show(errorMessage, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
+                                                    new ButtonDialog(errorMessage, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error).show();
                                                 }
                                             });
 
@@ -152,24 +152,24 @@ public class OpenRouteService {
 
                                         wd.close();
 
-                                        GL.that.RunOnGL(new IRunOnGL() {
+                                        GL.that.runOnGL(new IRunOnGL() {
                                             // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
                                             // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
                                             @Override
                                             public void run() {
                                                 String msg = Translation.get("generateRouteLength") + sDistance;
-                                                MsgBox.show(msg, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Information, null);
+                                                new ButtonDialog(msg, "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Information).show();
                                             }
                                         });
                                     } else {
                                         wd.close();
 
-                                        GL.that.RunOnGL(new IRunOnGL() {
+                                        GL.that.runOnGL(new IRunOnGL() {
                                             // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
                                             // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
                                             @Override
                                             public void run() {
-                                                MsgBox.show("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
+                                                new ButtonDialog("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error).show();
                                             }
                                         });
 
@@ -179,12 +179,12 @@ public class OpenRouteService {
                                 } catch (Exception e) {
                                     wd.close();
 
-                                    GL.that.RunOnGL(new IRunOnGL() {
+                                    GL.that.runOnGL(new IRunOnGL() {
                                         // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
                                         // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
                                         @Override
                                         public void run() {
-                                            MsgBox.show("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null);
+                                            new ButtonDialog("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error).show();
                                         }
                                     });
                                 }
@@ -192,7 +192,7 @@ public class OpenRouteService {
                                 // String page = builder.toString(); //page enthüllt komplette zurückgelieferte Web-Seite
                             } catch (Exception e) {
                                 wd.close();
-                                GL.that.RunOnGL(() -> MsgBox.show("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error, null));
+                                new ButtonDialog("no route found", "OpenRouteService", MsgBoxButton.OK, MsgBoxIcon.Error).show();
                             }
                             TrackList.getInstance().trackListChanged();
                         }

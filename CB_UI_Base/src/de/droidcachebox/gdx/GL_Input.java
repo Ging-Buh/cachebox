@@ -117,7 +117,7 @@ public class GL_Input implements InputProcessor {
         // InputProcessor Implementation keyUp
         if (value == Input.Keys.BACK) {
             if (!GL.that.closeCurrentDialogOrActivity()) {
-                Quit.quit();
+                PlatformUIBase.quit();
             }
             return true;
         }

@@ -62,11 +62,11 @@ import de.droidcachebox.ex_import.Importer;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.activities.EditFilterSettings;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.Coordinate;
@@ -75,6 +75,7 @@ import de.droidcachebox.locator.GPS;
 import de.droidcachebox.locator.GpsStateChangeEventList;
 import de.droidcachebox.locator.GpsStrength;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.locator.map.MapTileLoader;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
@@ -356,7 +357,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                 handlingGetApiAuth = (requestCode, resultCode, data) -> {
                     androidApplication.removeAndroidEventListener(handlingGetApiAuth);
                     if (requestCode == REQUEST_GET_APIKEY) {
-                        GL.that.RunIfInitial(SettingsActivity::resortList);
+                        GL.that.runIfInitial(SettingsActivity::resortList);
                         Settings.getInstance().acceptChanges();
                     }
                 };
@@ -416,9 +417,10 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             // speichere selektierten Cache, da nicht alles über die
             // SelectedCacheEventList läuft
             Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Settings.getInstance().acceptChanges();
             Log.info(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
+        MapTileLoader.getInstance().stopQueueProzessors();
+        Settings.getInstance().acceptChanges();
         CBDB.getInstance().close();
         mainActivity.finish();
     }
@@ -599,30 +601,31 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                 }
 
                 // hint & explanation
-                MsgBox.show(
+                ButtonDialog bd = new ButtonDialog(
                         Translation.get("PleaseConfirm") + "\n\n" + permissionlabel + "\n\n" + Translation.get("GPSDisclosureText"),
                         Translation.get("GPSDisclosureTitle"),
                         MsgBoxButton.YesNo,
-                        MsgBoxIcon.Information,
-                        (btnNumber, data) -> {
-                            if (btnNumber == MsgBox.BTN_LEFT_POSITIVE) {
-                                if (ActivityCompat.shouldShowRequestPermissionRationale(mainActivity, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-                                    final String[] requestedPermissions = new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION};
-                                    ActivityCompat.requestPermissions(mainActivity, requestedPermissions, Main.Request_getLocationIfInBackground);
-                                } else {
-                                    // frage trotzdem, aber es popt nicht mehr auf. Daher
-                                    mainActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)); // dialog gps ein
-                                }
-                            }
+                        MsgBoxIcon.Information
+                );
+                bd.setButtonClickHandler((btnNumber, data) -> {
+                    if (btnNumber == ButtonDialog.BTN_LEFT_POSITIVE) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(mainActivity, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                            final String[] requestedPermissions = new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION};
+                            ActivityCompat.requestPermissions(mainActivity, requestedPermissions, Main.Request_getLocationIfInBackground);
+                        } else {
+                            // frage trotzdem, aber es popt nicht mehr auf. Daher
+                            mainActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)); // dialog gps ein
+                        }
+                    }
                             /*
                             else {
                                 // if you don't want
                             }
 
                              */
-                            return true; // click is handled
-                        }
-                );
+                    return true; // click is handled
+                });
+                bd.show();
                 return false;
             }
         }

@@ -11,7 +11,6 @@ import java.util.Locale;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CacheDAO;
@@ -22,6 +21,7 @@ import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CoordinateButton;
@@ -143,7 +143,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         mainContent.addLast(noHtml);
         mainContent.adjustHeight();
 
-        mainPanel.removeChildsDirect();
+        mainPanel.removeChildrenDirect();
         mainPanel.setVirtualHeight(mainContent.getHeight());
         mainPanel.addChild(mainContent);
 
@@ -269,7 +269,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
             // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
             cache.setLongDescription("");
-            GL.that.RunOnGL(this::finish);
+            GL.that.runOnGL(this::finish);
             return true;
         });
     }

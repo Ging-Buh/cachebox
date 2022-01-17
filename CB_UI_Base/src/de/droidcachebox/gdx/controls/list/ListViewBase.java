@@ -667,7 +667,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             // Remove first
             childs.remove(view);
         }
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             if (last) {
                 childs.add(0, view);
             } else {
@@ -681,7 +681,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
     @Override
     public void removeChild(final GL_View_Base view) {
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             try {
                 if (childs.size() > 0)
                     childs.remove(view);
@@ -694,7 +694,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     @Override
     public void removeChilds() {
 
-        GL.that.RunOnGLWithThreadCheck(() -> {
+        GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (childs.size() > 0)
                     childs.clear();
@@ -706,7 +706,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
     @Override
     public void removeChilds(final MoveableList<GL_View_Base> Childs) {
-        GL.that.RunOnGLWithThreadCheck(() -> {
+        GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (childs.size() > 0)
                     childs.remove(Childs);

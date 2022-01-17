@@ -556,7 +556,7 @@ public class CacheInfo extends CB_View_Base {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         cacheIsInitial = true;
         requestLayout();
     }

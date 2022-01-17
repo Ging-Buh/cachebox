@@ -132,7 +132,7 @@ public class QuickButtonItem extends ListViewItemBase {
             }
         } else if (quickAction == QuickAction.rememberGeoCache) {
             if (getOnLongClickListener() == null) {
-                setOnLongClickListener(RememberGeoCache.getInstance().getLongClickListener());
+                setLongClickHandler(RememberGeoCache.getInstance().getLongClickListener());
                 setLongClickable(true);
             }
             if (Settings.rememberedGeoCache.getValue().length() > 0) {

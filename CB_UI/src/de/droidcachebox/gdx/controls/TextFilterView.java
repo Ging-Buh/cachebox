@@ -17,9 +17,9 @@
 package de.droidcachebox.gdx.controls;
 
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;

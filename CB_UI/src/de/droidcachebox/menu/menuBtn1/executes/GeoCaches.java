@@ -82,7 +82,7 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
     }
 
     @Override
-    public void initialize() {
+    public void renderInit() {
         geoCacheListView.chkSlideBack();
         GL.that.renderOnce();
     }
@@ -152,7 +152,7 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
                 } else
                     geoCacheListView.setSelection(0);
 
-                resetIsInitialized();
+                resetRenderInitDone();
                 geoCacheListView.chkSlideBack();
             }
         }, 150);
@@ -190,7 +190,7 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    GL.that.RunOnGL(() -> {
+                    GL.that.runOnGL(() -> {
                         if (geoCacheListView != null)
                             geoCacheListView.chkSlideBack();
                         GL.that.renderOnce();
@@ -383,7 +383,7 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
                     return true;
                 });
 
-                v.setOnLongClickListener((v1, x, y, pointer, button) -> {
+                v.setLongClickHandler((v1, x, y, pointer, button) -> {
                     int selectionIndex = ((ListViewItemBase) v1).getIndex();
                     Cache geoCache;
                     synchronized (CBDB.getInstance().cacheList) {

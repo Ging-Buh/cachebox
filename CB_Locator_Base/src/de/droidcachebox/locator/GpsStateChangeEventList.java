@@ -18,7 +18,7 @@ public class GpsStateChangeEventList {
 
     }
 
-    public static void Remove(GpsStateChangeEvent event) {
+    public static void remove(GpsStateChangeEvent event) {
         synchronized (list) {
             list.remove(event);
         }

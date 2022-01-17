@@ -1,51 +1,20 @@
 package de.droidcachebox.menu.menuBtn2.executes;
 
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.controls.CB_Label;
-import de.droidcachebox.gdx.controls.ScrollBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.gdx.math.Size;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.UnitFormatter;
 
-public class Hint extends MsgBox {
-
-    ScrollBox scrollBox;
-
-    public Hint(Size size, String hint) {
-        super(size, "");
-        setTitle(Translation.get("hint"));
-        addButtons(Translation.get("decode"), null, Translation.get("close"));
-        CB_RectF rec = getContentSize().getBounds();
-        scrollBox = new ScrollBox(rec);
-        label = new CB_Label("Hint"); // oder ohne Parameter aufrufen
-        // damit label.Pos auf (leftBorder, bottomBorder) gesetzt wird (ev. 0,0)
-        scrollBox.initRow(BOTTOMUp);
-        // damit die Breite des Labels zur Bestimmung des Umbruchs gesetzt ist:
-        scrollBox.addLast(label);
-        label.setWrappedText(UnitFormatter.Rot13(hint)); // , Fonts.getBig()
-        float lblHeight = label.getTextHeight();
-        // der decodierte Text wird per Default zuerst angezeigt
-        label.setWrappedText(hint);// , Fonts.getBig()
-        float lblHeigtTextDecoded = label.getTextHeight();
-        // Falls der decodierte Text mehr Höhe benötigt, dann diese nehmen
-        if (lblHeigtTextDecoded > lblHeight)
-            lblHeight = lblHeigtTextDecoded;
-        // vorsichtshalber oben und unten die margin berücksichtigen
-        lblHeight = lblHeight + 2f * margin;
-        // Anpassung der Label Höhe, damit der ganze Text drauf passt
-        label.setHeight(lblHeight);
-        // nur der Label ist auf der Scrollbox
-        scrollBox.setVirtualHeight(lblHeight);
-        addChild(scrollBox);
-        getButton(MsgBox.BTN_LEFT_POSITIVE).setClickHandler((v, x, y, pointer, button) -> {
-            setMessage(UnitFormatter.Rot13(label.getText()));
+public class Hint extends ButtonDialog {
+    public Hint(String hint) {
+        super(hint, Translation.get("hint"), MsgBoxButton.OKCancel, MsgBoxIcon.None);
+        buttonClickHandler = (btnNumber, data) -> true;
+        setButtonText("decode", null, "close");
+        btnLeftPositive.setClickHandler((view, x, y, pointer, button) -> {
+            setMessage(UnitFormatter.Rot13(msgLbl.getText()));
             return true;
         });
     }
 
-    public void show() {
-        GL.that.showDialog(this);
-    }
 }

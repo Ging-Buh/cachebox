@@ -731,7 +731,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                         // Intent Result Take Photo
                         if (requestCode == REQUEST_CAPTURE_IMAGE) {
                             if (resultCode == Activity.RESULT_OK) {
-                                GL.that.RunIfInitial(() -> {
+                                GL.that.runIfInitial(() -> {
                                     Log.info(sKlasse, "Photo taken");
                                     try {
                                         // move the photo from temp to UserImageFolder
@@ -835,7 +835,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                         // Intent Result Record Video
                         if (requestCode == REQUEST_CAPTURE_VIDEO) {
                             if (resultCode == Activity.RESULT_OK) {
-                                GL.that.RunIfInitial(() -> {
+                                GL.that.runIfInitial(() -> {
                                     Log.info(sKlasse, "Video recorded.");
                                     String ext;
                                     try {

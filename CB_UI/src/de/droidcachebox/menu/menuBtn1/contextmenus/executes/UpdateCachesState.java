@@ -19,10 +19,11 @@ import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -104,9 +105,8 @@ public class UpdateCachesState {
                         }
                         CacheListChangedListeners.getInstance().cacheListChanged();
                         synchronized (CBDB.getInstance().cacheList) {
-                            MsgBox.show(sCanceled + Translation.get("CachesUpdated") + " " + changedCount + "/" + CBDB.getInstance().cacheList.size(),
-                                    Translation.get("chkState"),
-                                    MsgBoxIcon.None);
+                            new ButtonDialog(sCanceled + Translation.get("CachesUpdated") + " " + changedCount + "/" + CBDB.getInstance().cacheList.size(),
+                                    Translation.get("chkState"), MsgBoxButton.OK, MsgBoxIcon.None).show();
                         }
 
                     }
@@ -120,7 +120,7 @@ public class UpdateCachesState {
             });
 
             if (!isAccessTokenInvalid) {
-                GL.that.postAsync(() -> GL.that.showDialog(progressDialog));
+                GL.that.postAsync(progressDialog::show);
             }
         });
     }

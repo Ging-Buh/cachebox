@@ -737,7 +737,7 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
     }
 
     private void unregisterGpsStateChangedListener() {
-        GpsStateChangeEventList.Remove(this);
+        GpsStateChangeEventList.remove(this);
         mGpsStateChabgedListenerRegistred = false;
     }
 

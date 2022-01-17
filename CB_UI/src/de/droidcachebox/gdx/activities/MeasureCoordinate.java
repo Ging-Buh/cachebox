@@ -98,7 +98,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         bOK.setClickHandler((v, x, y, pointer, button) -> {
             if (mCoordReturnListener != null) {
                 synchronized (mMeasureList) {
-                    GL.that.RunOnGL(() -> mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord()));
+                    GL.that.runOnGL(() -> mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord()));
                 }
             }
             finish();
@@ -175,7 +175,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         repaintPreview();
     }
 

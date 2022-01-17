@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.main.Menu;
@@ -54,8 +55,8 @@ public class Spinner extends CB_Button {
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
+    protected void renderInit() {
+        super.renderInit();
 
         if (triangle == null) {
             Sprite tr = Sprites.getSprite("spinner-triangle");
@@ -98,7 +99,7 @@ public class Spinner extends CB_Button {
     @Override
     protected void skinIsChanged() {
         triangle = null;
-        resetIsInitialized();
+        resetRenderInitDone();
     }
 
     public void setSelection(int i) {

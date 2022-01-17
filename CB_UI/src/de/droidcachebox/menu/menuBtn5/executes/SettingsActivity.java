@@ -11,11 +11,11 @@ import java.util.Comparator;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.SoundCache;
 import de.droidcachebox.SoundCache.Sounds;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.QuickButtonList;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.activities.ColorPicker;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
@@ -28,13 +28,14 @@ import de.droidcachebox.gdx.controls.Linearlayout;
 import de.droidcachebox.gdx.controls.ScrollBox;
 import de.droidcachebox.gdx.controls.Spinner;
 import de.droidcachebox.gdx.controls.SpinnerAdapter;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListenerDouble;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListenerTime;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox.OnMsgBoxClickListener;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
@@ -85,8 +86,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     private static int EditKey = -1;
     private static SettingsActivity that;
-    private final OnMsgBoxClickListener msgBoxReturnListener = (which, data) -> {
-        show();
+    private final OnClickListener showDescription = (v, x, y, pointer, button) -> {
+        ButtonDialog bd = new ButtonDialog(Translation.get("Desc_" + v.getData()), "", MsgBoxButton.OK, MsgBoxIcon.None);
+        bd.setButtonClickHandler((which, data) -> {
+            show();
+            return true;
+        });
+        bd.show();
         return true;
     };
     private ArrayList<SettingsItem_Audio> audioSettingsList;
@@ -107,7 +113,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     public static void resortList() {
-        // show();
         if (that != null) {
             float scrollPos = that.scrollBox.getScrollY();
             that.scrollBox = null;
@@ -121,7 +126,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     private void initial() {
         setLongClickable(true);
-        Settings.getInstance().saveToLastValue();
+        Settings.getInstance().saveToLastValues();
         ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight());
 
         itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UiSizes.getInstance().getButtonHeight());
@@ -193,7 +198,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
             Settings.quickButtonList.setValue(ActionsString.toString());
 
-            Settings.getInstance().saveToLastValue();
+            Settings.getInstance().saveToLastValues();
             Settings.getInstance().acceptChanges();
 
             // Notify QuickButtonList
@@ -207,7 +212,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         addChild(btnCancel);
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
-            Settings.getInstance().LoadFromLastValue();
+            Settings.getInstance().loadFromLastValues();
 
             finish();
             return true;
@@ -425,18 +430,15 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         return null;
     }
 
-    private CB_View_Base getColorView(final SettingColor SB, int backgroundChanger) {
-        SettingsItemBase item = new SettingsItem_Color(itemRec, backgroundChanger, SB);
-        final String trans = Translation.get(SB.getName());
-
-        item.setName(trans);
-        item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
-
+    private CB_View_Base getColorView(final SettingColor sb, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItem_Color(itemRec, backgroundChanger, sb);
+        item.setName(Translation.get(sb.getName()));
+        item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(SB);
+            EditKey = Settings.getInstance().indexOf(sb);
 
-            GL.that.RunOnGLWithThreadCheck(() -> {
-                ColorPicker clrPick = new ColorPicker(SB.getValue(), color -> {
+            GL.that.runOnGLWithThreadCheck(() -> {
+                ColorPicker clrPick = new ColorPicker(sb.getValue(), color -> {
                     if (color == null)
                         return; // nothing changed
 
@@ -452,91 +454,66 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             return true;
         });
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return false;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
     }
 
-    private CB_View_Base getStringView(final SettingString SB, int backgroundChanger) {
-        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-        final String trans = Translation.get(SB.getName());
-        item.setName(trans);
-
+    private CB_View_Base getStringView(final SettingString sb, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, sb.getName());
+        item.setName(Translation.get(sb.getName()));
         String toShow;
-        if (SB.isDefault()) {
+        if (sb.isDefault()) {
             toShow = Translation.get("default");
         } else {
-            toShow = SB.getValue();
+            toShow = sb.getValue();
         }
-        item.setDefault(toShow + "\n\n" + Translation.get("Desc_" + SB.getName()));
-
+        item.setDefault(toShow + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(SB);
+            EditKey = Settings.getInstance().indexOf(sb);
+            WrapType wrapType;
 
-            WrapType type;
+            wrapType = (sb instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
 
-            type = (SB instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
-
-            StringInputBox.show(type, "default:" + br + SB.getDefaultValue(), trans, SB.getValue(),
+            StringInputBox stringInputBox = new StringInputBox("default:" + br + sb.getDefaultValue(), Translation.get(sb.getName()), sb.getValue(), wrapType);
+            stringInputBox.setButtonClickHandler(
                     (which, data) -> {
-                        String text = StringInputBox.editText.getText();
-                        if (which == MsgBox.BTN_LEFT_POSITIVE) {
+                        String text = StringInputBox.editTextField.getText();
+                        if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
                             SettingString value = (SettingString) Settings.getInstance().get(EditKey);
-
                             // api ohne lineBreak
                             if (value.getName().equalsIgnoreCase("AccessToken")) {
                                 text = text.replace("\r", "");
                                 text = text.replace("\n", "");
                             }
-
                             value.setValue(text);
-
                             resortList();
                         }
                         // Activity wieder anzeigen
                         activityBase.show();
                         return true;
                     });
+            stringInputBox.show();
 
             return true;
         });
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return true;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
-
     }
 
-    private CB_View_Base getEnumView(final SettingEnum<?> SB, int backgroundChanger) {
-
-        SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
-
-        item.setName(Translation.get(SB.getName()));
-
-        item.setDefault("\n" + Translation.get("Desc_" + SB.getName()) + "\n");
+    private CB_View_Base getEnumView(final SettingEnum<?> sb, int backgroundChanger) {
+        SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, sb.getName());
+        item.setName(Translation.get(sb.getName()));
+        item.setDefault("\n" + Translation.get("Desc_" + sb.getName()) + "\n");
 
         final Spinner spinner = item.getSpinner();
-
         spinner.setDraggable();
-
         final SpinnerAdapter adapter = new SpinnerAdapter() {
 
             @Override
             public String getText(int position) {
-                return Translation.get(SB.getValues().get(position));
+                return Translation.get(sb.getValues().get(position));
             }
 
             @Override
@@ -546,43 +523,30 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             @Override
             public int getCount() {
-                return SB.getValues().size();
+                return sb.getValues().size();
             }
         };
 
         spinner.setAdapter(adapter);
-        spinner.setSelection(SB.getValues().indexOf(SB.getValue()));
+        spinner.setSelection(sb.getValues().indexOf(sb.getValue()));
+        spinner.setSelectionChangedListener(index -> sb.setValue(sb.getValues().get(index)));
 
-        spinner.setSelectionChangedListener(index -> SB.setValue(SB.getValues().get(index)));
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return false;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
     }
 
-    private CB_View_Base getIntArrayView(final SettingIntArray SB, int backgroundChanger) {
-
-        SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
-
-        item.setName(Translation.get(SB.getName()));
-
-        item.setDefault("\n" + Translation.get("Desc_" + SB.getName()) + "\n");
+    private CB_View_Base getIntArrayView(final SettingIntArray sb, int backgroundChanger) {
+        SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, sb.getName());
+        item.setName(Translation.get(sb.getName()));
+        item.setDefault("\n" + Translation.get("Desc_" + sb.getName()) + "\n");
 
         final Spinner spinner = item.getSpinner();
-
         spinner.setDraggable();
-
         final SpinnerAdapter adapter = new SpinnerAdapter() {
-
             @Override
             public String getText(int position) {
-                return String.valueOf(SB.getValues()[position]);
+                return String.valueOf(sb.getValues()[position]);
             }
 
             @Override
@@ -592,44 +556,32 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             @Override
             public int getCount() {
-                return SB.getValues().length;
+                return sb.getValues().length;
             }
         };
-
         spinner.setAdapter(adapter);
-        spinner.setSelection(SB.getIndex());
+        spinner.setSelection(sb.getIndex());
+        spinner.setSelectionChangedListener(index -> sb.setValue(sb.getValueFromIndex(index)));
 
-        spinner.setSelectionChangedListener(index -> SB.setValue(SB.getValueFromIndex(index)));
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return false;
-        });
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
 
         return item;
 
     }
 
-    private CB_View_Base getStringArrayView(final SettingStringArray SB, int backgroundChanger) {
-
-        SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
-
-        item.setName(Translation.get(SB.getName()));
-
-        item.setDefault("\n" + Translation.get("Desc_" + SB.getName()) + "\n");
+    private CB_View_Base getStringArrayView(final SettingStringArray sb, int backgroundChanger) {
+        SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, sb.getName());
+        item.setName(Translation.get(sb.getName()));
+        item.setDefault("\n" + Translation.get("Desc_" + sb.getName()) + "\n");
 
         final Spinner spinner = item.getSpinner();
-
         spinner.setDraggable();
-
         final SpinnerAdapter adapter = new SpinnerAdapter() {
 
             @Override
             public String getText(int position) {
-                return SB.possibleValues()[position];
+                return sb.possibleValues()[position];
             }
 
             @Override
@@ -639,40 +591,27 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             @Override
             public int getCount() {
-                return SB.possibleValues().length;
+                return sb.possibleValues().length;
             }
         };
-
         spinner.setAdapter(adapter);
-        spinner.setSelection(SB.getIndexOfValue());
+        spinner.setSelection(sb.getIndexOfValue());
+        spinner.setSelectionChangedListener(index -> sb.setValue(sb.getValueFromIndex(index)));
 
-        spinner.setSelectionChangedListener(index -> SB.setValue(SB.getValueFromIndex(index)));
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return false;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
-
     }
 
-    private CB_View_Base getIntView(final SettingInt SB, int backgroundChanger) {
-
-        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-        final String trans = Translation.get(SB.getName());
-
+    private CB_View_Base getIntView(final SettingInt sb, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, sb.getName());
+        final String trans = Translation.get(sb.getName());
         item.setName(trans);
-        item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
-
+        item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(SB);
-
+            EditKey = Settings.getInstance().indexOf(sb);
             // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListener() {
+            NumericInputBox.Show("default: " + br + sb.getDefaultValue(), trans, sb.getValue(), new IReturnValueListener() {
                 @Override
                 public void returnValue(int value) {
                     SettingInt SetValue = (SettingInt) Settings.getInstance().get(EditKey);
@@ -693,28 +632,20 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             return true;
         });
 
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return false;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
     }
 
-    private CB_View_Base getDblView(final SettingDouble SB, int backgroundChanger) {
-        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-        final String trans = Translation.get(SB.getName());
+    private CB_View_Base getDblView(final SettingDouble sb, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, sb.getName());
+        final String trans = Translation.get(sb.getName());
         item.setName(trans);
-        item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
-
+        item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(SB);
-
+            EditKey = Settings.getInstance().indexOf(sb);
             // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
+            NumericInputBox.Show("default: " + br + sb.getDefaultValue(), trans, sb.getValue(), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
                     SettingDouble SetValue = (SettingDouble) Settings.getInstance().get(EditKey);
@@ -734,29 +665,20 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             return true;
         });
 
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return false;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
-
     }
 
-    private CB_View_Base getFloatView(final SettingFloat SB, int backgroundChanger) {
-        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-        final String trans = Translation.get(SB.getName());
+    private CB_View_Base getFloatView(final SettingFloat sb, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, sb.getName());
+        final String trans = Translation.get(sb.getName());
         item.setName(trans);
-        item.setDefault(SB.getValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
-
+        item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(SB);
-
+            EditKey = Settings.getInstance().indexOf(sb);
             // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + br + SB.getDefaultValue(), trans, SB.getValue(), new IReturnValueListenerDouble() {
+            NumericInputBox.Show("default: " + br + sb.getDefaultValue(), trans, sb.getValue(), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
                     SettingFloat SetValue = (SettingFloat) Settings.getInstance().get(EditKey);
@@ -776,33 +698,23 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             return true;
         });
 
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return false;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
-
     }
 
-    private CB_View_Base getFolderView(final SettingFolder settingFolder, int backgroundChanger) {
-
-        final boolean needWritePermission = settingFolder.needWritePermission();
-        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, settingFolder.getName());
-
-        item.setName(Translation.get(settingFolder.getName()));
-        if (settingFolder.isDefault()) {
-            item.setDefault(Translation.get("default") + "\n\n" + Translation.get("Desc_" + settingFolder.getName()));
+    private CB_View_Base getFolderView(final SettingFolder sb, int backgroundChanger) {
+        final boolean needWritePermission = sb.needWritePermission();
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, sb.getName());
+        item.setName(Translation.get(sb.getName()));
+        if (sb.isDefault()) {
+            item.setDefault(Translation.get("default") + "\n\n" + Translation.get("Desc_" + sb.getName()));
         } else {
-            item.setDefault(settingFolder.getValue() + "\n\n" + Translation.get("Desc_" + settingFolder.getName()));
+            item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         }
-
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(settingFolder);
-            AbstractFile abstractFile = FileFactory.createFile(settingFolder.getValue());
+            EditKey = Settings.getInstance().indexOf(sb);
+            AbstractFile abstractFile = FileFactory.createFile(sb.getValue());
             final String absolutePath = (abstractFile != null) ? abstractFile.getAbsolutePath() : "";
             Menu icm = new Menu("SelectPathTitle");
             icm.addMenuItem("select_folder", null,
@@ -812,76 +724,56 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                             String WriteProtectionMsg = Translation.get("NoWriteAcces");
                             GL.that.toast(WriteProtectionMsg);
                         } else {
-                            settingFolder.setValue(abstractFile1.getAbsolutePath());
+                            sb.setValue(abstractFile1.getAbsolutePath());
                             resortList();
                         }
                     }).show());
             icm.addMenuItem("ClearPath", null, () -> {
-                settingFolder.setValue(settingFolder.getDefaultValue());
+                sb.setValue(sb.getDefaultValue());
                 resortList();
             });
             icm.show();
             return true;
         });
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            MsgBox.show(Translation.get("Desc_" + settingFolder.getName()), msgBoxReturnListener);
-            return false;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
-
     }
 
-    private CB_View_Base getFileView(final SettingFile settingFile, int backgroundChanger) {
-        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, settingFile.getName());
-
-        item.setName(Translation.get(settingFile.getName()));
-        item.setDefault(settingFile.getValue() + "\n\n" + Translation.get("Desc_" + settingFile.getName()));
-
+    private CB_View_Base getFileView(final SettingFile sb, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, sb.getName());
+        item.setName(Translation.get(sb.getName()));
+        item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(settingFile);
-            AbstractFile abstractFile = FileFactory.createFile(settingFile.getValue());
-
+            EditKey = Settings.getInstance().indexOf(sb);
+            AbstractFile abstractFile = FileFactory.createFile(sb.getValue());
             final String Path = (abstractFile.getParent() != null) ? abstractFile.getParent() : "";
-
             Menu icm = new Menu("SelectFileTitle");
-
             icm.addMenuItem("select_file", null,
-                    () -> new FileOrFolderPicker(Path, settingFile.getExt(), Translation.get("select_file"), Translation.get("select"), abstractFile1 -> {
-                        settingFile.setValue(abstractFile1.getAbsolutePath());
+                    () -> new FileOrFolderPicker(Path, sb.getExt(), Translation.get("select_file"), Translation.get("select"), abstractFile1 -> {
+                        sb.setValue(abstractFile1.getAbsolutePath());
                         resortList();
                     }).show());
             icm.addMenuItem("ClearPath", null, () -> {
-                settingFile.setValue(settingFile.getDefaultValue());
+                sb.setValue(sb.getDefaultValue());
                 resortList();
             });
             icm.show();
             return true;
         });
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            MsgBox.show(Translation.get("Desc_" + settingFile.getName()), msgBoxReturnListener);
-            return false;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
-
     }
 
-    private CB_View_Base getButtonView(final SettingsListCategoryButton<?> SB) {
-        CB_Button btn = new CB_Button(ButtonRec, "Button");
-
-        btn.setDraggable();
-
-        btn.setText(Translation.get(SB.getName()));
-
-        if (SB.getName().equals("DebugDisplayInfo")) {
-            btn.setClickHandler((v, x, y, pointer, button) -> {
-
-                if (SB.getName().equals("DebugDisplayInfo")) {
+    private CB_View_Base getButtonView(final SettingsListCategoryButton<?> sb) {
+        CB_Button item = new CB_Button(ButtonRec, "Button");
+        item.setDraggable();
+        item.setText(Translation.get(sb.getName()));
+        if (sb.getName().equals("DebugDisplayInfo")) {
+            item.setClickHandler((v, x, y, pointer, button) -> {
+                if (sb.getName().equals("DebugDisplayInfo")) {
                     String info = "";
-
                     info += "Density= " + GL_UISizes.dpi + br;
                     info += "Height= " + UiSizes.getInstance().getWindowHeight() + br;
                     info += "Width= " + UiSizes.getInstance().getWindowWidth() + br;
@@ -889,25 +781,20 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     info += "FontSize= " + UiSizes.getInstance().getScaledFontSize() + br;
                     info += "GPS min pos Time= " + PositionChangedListeners.minPosEventTime + br;
                     info += "GPS min Orientation Time= " + PositionChangedListeners.minOrientationEventTime + br;
-
-                    MsgBox.show(info, msgBoxReturnListener);
-
+                    ButtonDialog bd = new ButtonDialog(info, "", MsgBoxButton.OK, MsgBoxIcon.None);
+                    bd.setButtonClickHandler((which, data) -> {
+                        show();
+                        return true;
+                    });
+                    bd.show();
                     return true;
                 }
-
                 return false;
             });
         }
-
-        btn.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return false;
-        });
-
-        return btn;
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
+        return item;
     }
 
     private CB_View_Base getApiKeyButtonView() {
@@ -916,16 +803,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         return apiBtn;
     }
 
-    private CB_View_Base getAudioView(final SettingsAudio settingsAudio, int backgroundChanger) {
-
-        final String audioName = settingsAudio.getName();
+    private CB_View_Base getAudioView(final SettingsAudio sb, int backgroundChanger) {
+        final String audioName = sb.getName();
         final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, audioName, value -> {
-            Audio aud = new Audio(settingsAudio.getValue());
+            Audio aud = new Audio(sb.getValue());
             aud.Volume = value / 100f;
-            settingsAudio.setValue(aud);
-
+            sb.setValue(aud);
             // play Audio now
-
             if (audioName.equalsIgnoreCase("GlobalVolume"))
                 SoundCache.play(Sounds.Global, true);
             if (audioName.equalsIgnoreCase("Approach"))
@@ -937,42 +821,30 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             if (audioName.equalsIgnoreCase("AutoResortSound"))
                 SoundCache.play(Sounds.AutoResortSound);
         });
-
-        item.setName(Translation.get(settingsAudio.getName()));
-        item.setDefault("default: " + settingsAudio.getDefaultValue() + "\n\n" + Translation.get("Desc_" + settingsAudio.getName()));
-        item.setVolume((int) (settingsAudio.getValue().Volume * 100));
+        item.setName(Translation.get(sb.getName()));
+        item.setDefault("default: " + sb.getDefaultValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
+        item.setVolume((int) (sb.getValue().Volume * 100));
         CB_CheckBox chk = item.getCheckBox();
-
         if (!audioName.contains("Global")) {
             if (audioSettingsList == null)
                 audioSettingsList = new ArrayList<>();
             audioSettingsList.add(item);
         }
-
-        chk.setChecked(settingsAudio.getValue().Mute);
+        chk.setChecked(sb.getValue().Mute);
         chk.setOnCheckChangedListener((view, isChecked) -> {
-            Audio aud = new Audio(settingsAudio.getValue());
+            Audio aud = new Audio(sb.getValue());
             aud.Mute = isChecked;
-            settingsAudio.setValue(aud);
+            sb.setValue(aud);
             item.setMuteDisabeld(isChecked);
             if (audioName.contains("Global")) {
                 // Enable or disable all other
                 setVolumeState(isChecked);
             }
         });
-
         item.setMuteDisabeld(chk.isChecked());
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + settingsAudio.getName()), msgBoxReturnListener);
-
-            return true;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
-
     }
 
     private void setVolumeState(boolean globalEnabled) {
@@ -987,24 +859,19 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         }
     }
 
-    private CB_View_Base getTimeView(final SettingTime SB, int backgroundChanger) {
-
-        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-        final String trans = Translation.get(SB.getName());
+    private CB_View_Base getTimeView(final SettingTime sb, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, sb.getName());
+        final String trans = Translation.get(sb.getName());
         item.setName(trans);
-        item.setDefault(intToTime(SB.getValue()) + "\n\n" + Translation.get("Desc_" + SB.getName()));
-
+        item.setDefault(intToTime(sb.getValue()) + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(SB);
-
-            String Value = intToTime(SB.getValue());
+            EditKey = Settings.getInstance().indexOf(sb);
+            String Value = intToTime(sb.getValue());
             String[] s = Value.split(":");
-
             int intValueMin = Integer.parseInt(s[0]);
             int intValueSec = Integer.parseInt(s[1]);
-
             // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
+            NumericInputBox.Show("default: " + br + intToTime(sb.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
                 @Override
                 public void returnValue(int min, int sec) {
                     SettingTime SetValue = (SettingTime) Settings.getInstance().get(EditKey);
@@ -1015,7 +882,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     // Activity wieder anzeigen
                     activityBase.show();
                 }
-
                 @Override
                 public void cancelClicked() {
                     // Activity wieder anzeigen
@@ -1024,48 +890,33 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             });
             return true;
         });
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return false;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
-
     }
 
     private String intToTime(int milliseconds) {
         int seconds = milliseconds / 1000 % 60;
         int minutes = (milliseconds / (1000 * 60)) % 60;
         // int hours = (int) ((milliseconds / (1000*60*60)) % 24);
-
         return minutes + ":" + seconds;
     }
 
     private CB_View_Base getLangSpinnerView() {
         Sprachen = Translation.that.getLangs(Settings.languagePath.getValue());
-
         if (Sprachen == null || Sprachen.size() == 0)
             return null;
-
         final String[] items = new String[Sprachen.size()];
         int index = 0;
         int selection = -1;
-
         AbstractFile abstractFile1 = FileFactory.createFile(Settings.Sel_LanguagePath.getValue());
-
         for (Lang tmp : Sprachen) {
             AbstractFile abstractFile2 = FileFactory.createFile(tmp.Path);
             if (abstractFile1.getAbsoluteFile().compareTo(abstractFile2.getAbsoluteFile()) == 0) {
                 selection = index;
             }
-
             items[index++] = tmp.Name;
         }
-
         Spinner spinner = new Spinner(ButtonRec,
                 "SelectLanguage",
                 new SpinnerAdapter() {
@@ -1161,86 +1012,32 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 Settings.skinFolder.setValue(GlobalCore.workPath + "/skins/" + selected);
             }
         });
-
         spinner.setSelection(selection);
-
         // spinner.setPrompt(Translation.get("SelectSkin"));
-
         spinner.setDraggable();
-
         return spinner;
     }
 
-    private CB_View_Base getBoolView(final SettingBool SB, int backgroundChanger) {
-
-        SettingsItem_Bool item = new SettingsItem_Bool(itemRec, backgroundChanger, SB.getName());
-
-        item.setName(Translation.get(SB.getName()));
-        item.setDefault("default: " + SB.getDefaultValue() + "\n\n" + Translation.get("Desc_" + SB.getName()));
-
+    private CB_View_Base getBoolView(final SettingBool sb, int backgroundChanger) {
+        SettingsItem_Bool item = new SettingsItem_Bool(itemRec, backgroundChanger, sb.getName());
+        item.setName(Translation.get(sb.getName()));
+        item.setDefault("default: " + sb.getDefaultValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         CB_CheckBox chk = item.getCheckBox();
-
-        chk.setChecked(SB.getValue());
+        chk.setChecked(sb.getValue());
         chk.setOnCheckChangedListener((view, isChecked) -> {
-            SB.setValue(isChecked);
-            if (SB.getName().equalsIgnoreCase("DraftsLoadAll")) {
+            sb.setValue(isChecked);
+            if (sb.getName().equalsIgnoreCase("DraftsLoadAll")) {
                 resortList();
             }
         });
-
-        item.setOnLongClickListener((v, x, y, pointer, button) -> {
-            // zeige Beschreibung der Einstellung
-
-            MsgBox.show(Translation.get("Desc_" + SB.getName()), msgBoxReturnListener);
-
-            return true;
-        });
-
+        item.setLongClickHandler(showDescription);
+        item.setData(sb.getName());
         return item;
-
     }
 
     @Override
     public void SelectedLangChangedEventCalled() {
         initial();
-    }
-
-    @Override
-    public void dispose() {
-        that = null;
-
-        if (Categories != null)
-            Categories.clear();
-        Categories = null;
-
-        if (btnOk != null)
-            btnOk.dispose();
-        btnOk = null;
-        if (btnCancel != null)
-            btnCancel.dispose();
-        btnCancel = null;
-        if (btnMenu != null)
-            btnMenu.dispose();
-        btnMenu = null;
-        if (scrollBox != null)
-            scrollBox.dispose();
-        scrollBox = null;
-        if (ButtonRec != null)
-            ButtonRec.dispose();
-        ButtonRec = null;
-        if (itemRec != null)
-            itemRec.dispose();
-        itemRec = null;
-        if (apiBtn != null)
-            apiBtn.dispose();
-        apiBtn = null;
-        if (LinearLayout != null)
-            LinearLayout.dispose();
-        LinearLayout = null;
-
-        SelectedLangChangedEventList.Remove(this);
-
-        super.dispose();
     }
 
     static class SettingsOrder implements Comparator<SettingBase<?>> {

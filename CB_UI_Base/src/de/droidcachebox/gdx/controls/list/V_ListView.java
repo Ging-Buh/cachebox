@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.gdx.controls.list;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.GL_View_Base;
@@ -22,8 +24,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class V_ListView extends ListViewBase {
 
@@ -129,7 +129,7 @@ public class V_ListView extends ListViewBase {
         try {
 
             if (adapter == null) return;
-            if (isDisposed()) return;
+            if (isDisposed) return;
             if (mPosDefault == null)
                 calculateItemPosition();
 
@@ -151,7 +151,7 @@ public class V_ListView extends ListViewBase {
                                 tmp.setY(itemPos);
                                 if (i == selectedIndex) {
                                     tmp.isSelected = true;
-                                    tmp.resetIsInitialized();
+                                    tmp.resetRenderInitDone();
                                 }
                                 addChild(tmp);
                             }
@@ -208,7 +208,7 @@ public class V_ListView extends ListViewBase {
 
     @Override
     public void calculateItemPosition() {
-        if (isDisposed() || isInCalculation.get()) {
+        if (isDisposed || isInCalculation.get()) {
             return;
         }
         isInCalculation.set(true);

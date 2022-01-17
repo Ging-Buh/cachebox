@@ -17,6 +17,7 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -160,7 +161,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
 
     @Override
     public void dispose() {
-        GpsStateChangeEventList.Remove(this);
+        GpsStateChangeEventList.remove(this);
     }
 
     @Override
@@ -171,7 +172,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
 
     @Override
     public void onHide() {
-        GpsStateChangeEventList.Remove(this);
+        GpsStateChangeEventList.remove(this);
     }
 
     @Override

@@ -43,9 +43,9 @@ import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.Image;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.graphics.GL_Paint;
 import de.droidcachebox.gdx.graphics.PolygonDrawable;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -107,7 +107,7 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
             boolean dontAsk = isPremiumMember() && me.remaining > 3;
             if (dontAsk) {
                 // simply download, if Premium,..
-                GL.that.RunOnGL(() -> CacheContextMenu.getInstance().reloadSelectedCache());
+                GL.that.runOnGL(() -> CacheContextMenu.getInstance().reloadSelectedCache());
                 selectedCache.setApiStatus(Cache.IS_FULL); // hack to prevent endless looping, hopefully does not go into Database
             } else {
                 showDownloadButton();
@@ -222,9 +222,9 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
             fetchMyCacheLimits();
             if (fetchMyUserInfos().remaining <= 0) {
                 if (isPremiumMember()) {
-                    MsgBox.show(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
+                    new ButtonDialog(Translation.get("LiveDescLimit"), Translation.get("Limit_msg"), MsgBoxButton.OK, MsgBoxIcon.Exclamation).show();
                 } else {
-                    MsgBox.show(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
+                    new ButtonDialog(Translation.get("LiveDescLimitBasic"), Translation.get("Limit_msg"), MsgBoxButton.OK, MsgBoxIcon.Exclamation).show();
                 }
                 return;
             }
@@ -259,7 +259,7 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
         addChild(btnDownload);
 
         btnDownload.setClickHandler((v, x, y, pointer, button) -> {
-            GL.that.RunOnGL(() -> CacheContextMenu.getInstance().reloadSelectedCache());
+            GL.that.runOnGL(() -> CacheContextMenu.getInstance().reloadSelectedCache());
             return true;
         });
 

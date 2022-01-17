@@ -121,7 +121,7 @@ public class H_ListView extends ListViewBase {
                             // Log.debug(log, "Add: " + tmp.getName());
                             if (i == selectedIndex) {
                                 tmp.isSelected = true;
-                                tmp.resetIsInitialized();
+                                tmp.resetRenderInitDone();
                             }
                             addChild(tmp);
                             addedIndexList.add(tmp.getIndex());

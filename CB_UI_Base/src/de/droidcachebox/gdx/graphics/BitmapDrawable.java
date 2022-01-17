@@ -25,14 +25,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.IRenderFBO;
-import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
-import de.droidcachebox.utils.CB_List;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.IRenderFBO;
+import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
+import de.droidcachebox.utils.CB_List;
 
 /**
  * @author Longri
@@ -102,7 +103,7 @@ public class BitmapDrawable implements GDXBitmap, Disposable {
         if (GL.that.isGlThread()) {
             createData();
         } else {
-            GL.that.RunOnGL((IRenderFBO) () -> createData());
+            GL.that.runOnGL((IRenderFBO) () -> createData());
         }
     }
 
@@ -119,7 +120,7 @@ public class BitmapDrawable implements GDXBitmap, Disposable {
         if (GL.that.isGlThread()) {
             createData();
         } else {
-            GL.that.RunOnGL((IRenderFBO) () -> createData());
+            GL.that.runOnGL((IRenderFBO) () -> createData());
         }
     }
 

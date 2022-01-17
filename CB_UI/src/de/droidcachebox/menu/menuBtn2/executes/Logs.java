@@ -83,7 +83,7 @@ public class Logs extends V_ListView implements CacheSelectionChangedListeners.C
     }
 
     @Override
-    public void initialize() {
+    public void renderInit() {
         currentCache = null;
         setCache(GlobalCore.getSelectedCache());
     }

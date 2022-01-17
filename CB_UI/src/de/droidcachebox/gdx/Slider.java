@@ -162,7 +162,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                 quickButtonList.setHeight(0);
             }
             quickButtonList.notifyDataSetChanged();
-            initialize();
+            renderInit();
         });
 
     }
@@ -193,7 +193,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         float initialPos;
         if (Settings.quickButtonShow.getValue()) {
             initialPos = this.getHeight() - mSlideBox.getHeight() - QuickButtonMaxHeight;
@@ -219,7 +219,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
         actCache = cache; // normally these are the same objects
         actWaypoint = waypoint; // normally these are the same objects
 
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             if (cache != null) {
                 fillCacheWpInfo();
                 String header = "";
@@ -259,7 +259,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
                 for (int i = 0; i < 5; i++) {
                     last5Logs[i].setBackground(this.getBackground());
                 }
-                mSlideBoxContent.removeChildsDirect();
+                mSlideBoxContent.removeChildrenDirect();
             }
         });
     }
@@ -389,7 +389,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
 
     private void setPos_onUI(final int newValue) {
 
-        GL.that.RunOnGL(() -> setSliderPos(newValue));
+        GL.that.runOnGL(() -> setSliderPos(newValue));
 
     }
 
@@ -405,7 +405,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
     }
 
     private void fillCacheWpInfo() {
-        mSlideBoxContent.removeChildsDirect();
+        mSlideBoxContent.removeChildrenDirect();
 
         CB_RectF rec = UiSizes.getInstance().getCacheListItemRec().asFloat();
         rec.setWidth(this.getWidth());

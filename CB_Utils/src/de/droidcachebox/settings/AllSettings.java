@@ -229,7 +229,7 @@ public interface AllSettings {
     SettingBool CompassShowSDT = new SettingBool("CompassShowSDT", Internal, NEVER, true, Global);
     SettingBool CompassShowLastFound = new SettingBool("CompassShowLastFound", Internal, NEVER, true, Global);
     SettingString rememberedGeoCache = new SettingString("rememberedGeoCache", Internal, NEVER, "", Global);
-    SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", Internal, NEVER, "data/lang/en-GB/strings.ini", Platform, "lan");
+    SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", Internal, EXPERT, "data/lang/en-GB/strings.ini", Platform, "lan");
     SettingBool disableLiveMap = new SettingBool("DisableLiveMap", Internal, NEVER, false, Global);
     SettingDouble ParkingLatitude = new SettingDouble("ParkingLatitude", Internal, NEVER, 0, Global);
     SettingDouble ParkingLongitude = new SettingDouble("ParkingLongitude", Internal, NEVER, 0, Global);

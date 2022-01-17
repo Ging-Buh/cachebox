@@ -31,7 +31,7 @@ public class ProgressBar extends CB_Label {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         if (drawableBackground == null) {
             setBackground(Sprites.progressBack);
         }
@@ -63,7 +63,7 @@ public class ProgressBar extends CB_Label {
      * @param newMessage ?
      */
     public void setValues(int newPercent, final String newMessage) {
-        if (!isDisposed()) {
+        if (!isDisposed) {
             fillBarAt(newPercent);
             if (!newMessage.equals(message)) {
                 setText(newMessage);
@@ -97,10 +97,10 @@ public class ProgressBar extends CB_Label {
 
     @Override
     protected void render(Batch batch) {
-        if (this.isDisposed())
+        if (isDisposed)
             return;
         if (progressFill == null || progressFillDisabled == null)
-            initialize();
+            renderInit();
 
         if (isDisabled) {
             if (progressFillDisabled != null) {

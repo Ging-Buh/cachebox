@@ -1,6 +1,7 @@
 package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.Color;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.graphics.ColorDrawable;
@@ -30,7 +31,7 @@ public class ColorPickerRec extends CB_View_Base {
     }
 
     private void colorChanged() {
-        GL.that.RunOnGL(() -> setBackground(new ColorDrawable(mColor)));
+        GL.that.runOnGL(() -> setBackground(new ColorDrawable(mColor)));
 
     }
 }

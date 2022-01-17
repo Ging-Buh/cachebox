@@ -38,7 +38,7 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
                     wait(1000);
                 } catch (Exception ignored) {
                 }
-                // return;
+                return; // else return from fire event (sometimes endless loop, after cache deletion. todo check why)
             }
         }
 

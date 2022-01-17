@@ -100,7 +100,6 @@ public class Cache implements Comparable<Cache>, Serializable {
      * 0 nein
      */
     private int isMyCache = -1;
-    private boolean isDisposed = false;
 
     public Cache(boolean withDetails) {
         numTravelbugs = 0;
@@ -174,7 +173,6 @@ public class Cache implements Comparable<Cache>, Serializable {
     public void deleteDetail(boolean showAllWaypoints) {
         if (geoCacheDetail == null)
             return;
-        geoCacheDetail.dispose();
         geoCacheDetail = null;
         // remove all Detail Information from Waypoints
         // remove all Waypoints != Start and Final
@@ -293,8 +291,6 @@ public class Cache implements Comparable<Cache>, Serializable {
     }
 
     public float recalculateAndGetDistance(CalculationType type, boolean useFinal, Coordinate fromPos) {
-        if (isDisposed)
-            return 0;
         Waypoint waypoint = null;
         if (useFinal)
             waypoint = getCorrectedFinal();
@@ -331,8 +327,6 @@ public class Cache implements Comparable<Cache>, Serializable {
     }
 
     private Waypoint findWayPointByGc(String gc) {
-        if (isDisposed)
-            return null;
         for (Waypoint wayPoint : wayPoints) {
             if (wayPoint.getWaypointCode().equals(gc)) {
                 return wayPoint;
@@ -398,33 +392,6 @@ public class Cache implements Comparable<Cache>, Serializable {
     @Override
     public String toString() {
         return "Cache:" + getGeoCacheCode();
-    }
-
-    public void dispose() {
-        isDisposed = true;
-
-        if (geoCacheDetail != null)
-            geoCacheDetail.dispose();
-        geoCacheDetail = null;
-
-        geoCacheCode = null;
-        geoCacheName = null;
-        coordinate = null;
-        geoCacheSize = null;
-        geoCacheType = null;
-        owner = null;
-
-        if (wayPoints != null) {
-            for (int i = 0, n = wayPoints.size(); i < n; i++) {
-                Waypoint entry = wayPoints.get(i);
-                entry.dispose();
-            }
-
-            wayPoints.clear();
-            wayPoints = null;
-        }
-        owner = null;
-
     }
 
     public boolean getSolver1Changed() {
@@ -926,10 +893,6 @@ public class Cache implements Comparable<Cache>, Serializable {
         } else {
             return false;
         }
-    }
-
-    public boolean isDisposed() {
-        return isDisposed;
     }
 
     /**

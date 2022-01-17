@@ -60,7 +60,7 @@ public class RadioButton extends CB_CheckBox {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         // do neither explicit nor implicit a super.Initial();
     }
 

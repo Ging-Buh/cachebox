@@ -17,6 +17,7 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+
 import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
@@ -61,7 +62,7 @@ public class GalleryItem extends ListViewItemBackground {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         if (!mBackIsInitial) {
             backSelect = new NinePatch(Sprites.getSprite("listrec-first"), 13, 13, 13, 13);
             mBackIsInitial = true;
@@ -74,7 +75,7 @@ public class GalleryItem extends ListViewItemBackground {
             isPressed = GL_Input.that.getIsTouchDown();
         }
 
-        if (this.isDisposed() || !this.isVisible())
+        if (isDisposed || !this.isVisible())
             return;
         super.render(batch);
         // Draw Background
@@ -84,7 +85,7 @@ public class GalleryItem extends ListViewItemBackground {
             }
 
         } else {
-            initialize();
+            renderInit();
         }
 
     }

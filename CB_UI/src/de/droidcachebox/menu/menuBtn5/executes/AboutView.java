@@ -17,6 +17,8 @@ package de.droidcachebox.menu.menuBtn5.executes;
 
 import static de.droidcachebox.PlatformUIBase.callUrl;
 import static de.droidcachebox.PlatformUIBase.hideForDialog;
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_RIGHT_NEGATIVE;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -27,7 +29,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Waypoint;
@@ -35,20 +36,19 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.SatBarChart;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
-import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.CBLocation.ProviderType;
@@ -67,12 +67,13 @@ import de.droidcachebox.utils.log.Log;
 public class AboutView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent, PositionChangedEvent {
     private static final String sClass = "AboutView";
     private static AboutView aboutView;
+    ButtonDialog msgBox;
+    private int result = -1;
     private CB_Label descTextView, CachesFoundLabel, WaypointLabel, CoordinateLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoordinate, lblCurrent, Current;
     private Image CB_Logo;
     private float margin;
     private CancelWaitDialog wd;
     private SatBarChart chart;
-    private int result = -1;
     private boolean mustShowNewInstallInfo;
 
     private AboutView() {
@@ -98,8 +99,8 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
         positionChanged();
 
-        if (!isInitialized)
-            initialize();
+        if (!isRenderInitDone)
+            renderInit();
 
         if (chart != null)
             chart.onShow();
@@ -110,7 +111,9 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
             mustShowNewInstallInfo = false;
             String langId = Settings.Sel_LanguagePath.getValue().substring(Settings.languagePath.getValue().length()).substring(1, 3);
             String Welcome = Translation.that.getTextFile("welcome", langId) + Translation.that.getTextFile("changelog", langId);
-            MsgBox.show(Welcome, Translation.get("welcome"), MsgBoxButton.OK, MsgBoxIcon.Information, (btnNumber, data) -> true);
+            ButtonDialog bd = new ButtonDialog(Welcome, Translation.get("welcome"), MsgBoxButton.OK, MsgBoxIcon.Information);
+            bd.setButtonClickHandler((btnNumber, data) -> true);
+            bd.show();
         }
 
         hideForDialog();
@@ -120,7 +123,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     public void onHide() {
         // remove Event Handler
         CacheSelectionChangedListeners.getInstance().remove(this);
-        GpsStateChangeEventList.Remove(this);
+        GpsStateChangeEventList.remove(this);
         PositionChangedListeners.removeListener(this);
 
         if (chart != null)
@@ -132,13 +135,13 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         super.render(batch);
 
         if (getBackground() == null)
-            initialize();
+            renderInit();
     }
 
     private void createControls() {
         removeChilds();
 
-        if (isDisposed())
+        if (isDisposed)
             return;
 
         setBackground(Sprites.aboutback);
@@ -164,63 +167,65 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         CachesFoundLabel = new CB_Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
         CachesFoundLabel.setWidth(getWidth());
 
-        CachesFoundLabel.setClickHandler(new OnClickListener() {
-            MsgBox msgBox;
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                msgBox = MsgBox.show(Translation.get("LoadFinds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live,
-                        (which, data) -> {
-                            switch (which) {
-                                case MsgBox.BTN_LEFT_POSITIVE:
-                                    msgBox.close();
-                                    AtomicBoolean isCanceled = new AtomicBoolean(false);
-                                    wd = new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
-                                        @Override
-                                        public void ready() {
-                                            if (result > -1) {
-                                                String Text = Translation.get("FoundsSetTo", String.valueOf(result));
-                                                MsgBox.show(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live, null);
-                                                Settings.FoundOffset.setValue(result);
-                                                Settings.getInstance().acceptChanges();
-                                                AboutView.this.refreshText();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void run() {
-                                            result = GroundspeakAPI.forceFetchMyUserInfos().findCount;
-                                        }
-
-                                        @Override
-                                        public void setIsCanceled() {
-                                            isCanceled.set(true);
-                                        }
-
-                                    });
-                                    wd.show();
-                                    break;
-                                case MsgBox.BTN_RIGHT_NEGATIVE:
-                                    msgBox.close();
-                                    GL.that.RunOnGL(() -> NumericInputBox.Show(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"), Settings.FoundOffset.getValue(), new IReturnValueListener() {
-                                        @Override
-                                        public void returnValue(int value) {
-                                            Settings.FoundOffset.setValue(value);
+        CachesFoundLabel.setClickHandler((view, x, y, pointer, button) -> {
+            msgBox = new ButtonDialog(Translation.get("LoadFinds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live);
+            msgBox.setButtonClickHandler(
+                    (which, data) -> {
+                        switch (which) {
+                            case BTN_LEFT_POSITIVE:
+                                msgBox.close();
+                                AtomicBoolean isCanceled = new AtomicBoolean(false);
+                                wd = new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
+                                    @Override
+                                    public void ready() {
+                                        if (result > -1) {
+                                            String Text = Translation.get("FoundsSetTo", String.valueOf(result));
+                                            new ButtonDialog(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
+                                            Settings.FoundOffset.setValue(result);
                                             Settings.getInstance().acceptChanges();
                                             AboutView.this.refreshText();
                                         }
+                                    }
 
-                                        @Override
-                                        public void cancelClicked() {
-                                        }
-                                    }));
-                                    break;
-                            }
-                            return true;
-                        });
-                return true;
-            }
+                                    @Override
+                                    public void run() {
+                                        result = GroundspeakAPI.forceFetchMyUserInfos().findCount;
+                                    }
+
+                                    @Override
+                                    public void setIsCanceled() {
+                                        isCanceled.set(true);
+                                    }
+
+                                });
+                                wd.show();
+                                break;
+                            case BTN_RIGHT_NEGATIVE:
+                                msgBox.close();
+                                GL.that.runOnGL(() -> NumericInputBox.Show(
+                                        Translation.get("TelMeFounds"),
+                                        Translation.get("AdjustFinds"),
+                                        Settings.FoundOffset.getValue(),
+                                        new NumericInputBox.IReturnValueListener() {
+                                            @Override
+                                            public void returnValue(int value) {
+                                                Settings.FoundOffset.setValue(value);
+                                                Settings.getInstance().acceptChanges();
+                                                AboutView.this.refreshText();
+                                            }
+
+                                            @Override
+                                            public void cancelClicked() {
+                                            }
+                                        }));
+                                break;
+                        }
+                        return true;
+                    });
+            msgBox.show();
+            return true;
         });
+
         addChild(CachesFoundLabel);
         createTable();
         refreshText();
@@ -387,7 +392,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
     @Override
     public void handleCacheChanged(Cache cache, Waypoint waypoint) {
-        GL.that.RunOnGL(this::refreshText);
+        GL.that.runOnGL(this::refreshText);
     }
 
     @Override
@@ -464,7 +469,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         wd = null;
 
         CacheSelectionChangedListeners.getInstance().remove(this);
-        GpsStateChangeEventList.Remove(this);
+        GpsStateChangeEventList.remove(this);
         PositionChangedListeners.removeListener(this);
 
         super.dispose();

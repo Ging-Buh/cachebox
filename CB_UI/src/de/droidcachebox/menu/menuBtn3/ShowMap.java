@@ -16,6 +16,9 @@
 
 package de.droidcachebox.menu.menuBtn3;
 
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_MIDDLE_NEUTRAL;
+import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_RIGHT_NEGATIVE;
 import static de.droidcachebox.locator.LocatorMethods.getMapsForgeGraphicFactory;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_CAR;
@@ -56,9 +59,9 @@ import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.SearchCoordinates;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.gdx.main.OptionMenu;
@@ -248,31 +251,33 @@ public class ShowMap extends AbstractShowAction {
         } else {
             // if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
             if (MapTileLoader.getInstance().getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
-                MsgBox msgBox = MsgBox.show(
+                ButtonDialog msgBox = new ButtonDialog(
                         Translation.get("AddOrChangeMap"),
                         Translation.get("Layer"),
                         MsgBoxButton.YesNoCancel,
-                        MsgBoxIcon.Question,
-                        (which, data) -> {
-                            Layer layer1 = (Layer) data;
-                            switch (which) {
-                                case MsgBox.BTN_LEFT_POSITIVE:
-                                    // add the selected map to the current layer
-                                    normalMapView.addAdditionalLayer(layer1);
-                                    break;
-                                case MsgBox.BTN_MIDDLE_NEUTRAL:
-                                    // switch current layer to selected
-                                    normalMapView.setCurrentLayer(layer1);
-                                    break;
-                                default:
-                                    normalMapView.removeAdditionalLayer();
-                            }
-                            return true;
-                        });
-                msgBox.setButtonText(1, "+");
-                msgBox.setButtonText(2, "=");
-                msgBox.setButtonText(3, "-");
+                        MsgBoxIcon.Question
+                );
+                msgBox.setButtonClickHandler((which, data) -> {
+                    Layer layer1 = (Layer) data;
+                    switch (which) {
+                        case BTN_LEFT_POSITIVE:
+                            // add the selected map to the current layer
+                            normalMapView.addAdditionalLayer(layer1);
+                            break;
+                        case BTN_MIDDLE_NEUTRAL:
+                            // switch current layer to selected
+                            normalMapView.setCurrentLayer(layer1);
+                            break;
+                        default:
+                            normalMapView.removeAdditionalLayer();
+                    }
+                    return true;
+                });
+                msgBox.setButtonText(BTN_LEFT_POSITIVE, "+");
+                msgBox.setButtonText(BTN_MIDDLE_NEUTRAL, "=");
+                msgBox.setButtonText(BTN_RIGHT_NEGATIVE, "-");
                 msgBox.setData(layer);
+                msgBox.show();
             } else {
                 normalMapView.setCurrentLayer(layer);
             }
@@ -392,7 +397,7 @@ public class ShowMap extends AbstractShowAction {
         cm2.addDivider();
         cm2.addMenuItem("TrackDistance", null, () -> {
             OptionMenu tdMenu = new OptionMenu("TrackDistance");
-            tdMenu.mMsgBoxClickListener = (btnNumber, data) -> {
+            tdMenu.buttonClickHandler = (btnNumber, data) -> {
                 int newValue = (Integer) data;
                 Settings.TrackDistance.setValue(newValue);
                 Settings.getInstance().acceptChanges();
@@ -521,7 +526,7 @@ public class ShowMap extends AbstractShowAction {
                                     UnZip.extract(target, false);
                                 } catch (Exception ex) {
                                     Log.err(log, target + ": Unzip error: " + ex.toString());
-                                    MsgBox.show(target + ": " + ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
+                                    new ButtonDialog(target + ": " + ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation).show();
                                 }
                                 Gdx.files.absolute(target).delete();
                                 ((MenuItem) v).setDisabled(true);
@@ -536,14 +541,14 @@ public class ShowMap extends AbstractShowAction {
                 mapViewThemeMenu.addDivider();
                 mapViewThemeMenu.addMenuItem("Download", null, () -> {
                     // MakeRenderThemePathWritable
-                    MsgBox.show(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MsgBoxButton.YesNo, MsgBoxIcon.Hand,
+                    new ButtonDialog(Translation.get("MakeRenderThemePathWritable"), Translation.get("Download"), MsgBoxButton.YesNo, MsgBoxIcon.Hand,
                             (btnNumber, data) -> {
-                                if (btnNumber == 1) { // change path
+                                if (btnNumber == BTN_LEFT_POSITIVE) { // change path
                                     RenderThemesFolder.setValue(RenderThemesFolder.getDefaultValue());
                                     Settings.getInstance().acceptChanges();
                                 }
                                 return true;
-                            }, Settings.RememberAsk_RenderThemePathWritable);
+                            }, Settings.RememberAsk_RenderThemePathWritable).show();
                 });
             }
         }
@@ -588,7 +593,7 @@ public class ShowMap extends AbstractShowAction {
                                 UnZip.extractHere(target);
                             } catch (Exception ex) {
                                 Log.err(log, "Unzip error: " + ex.toString());
-                                MsgBox.show(ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation, null);
+                                new ButtonDialog(ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation).show();
                             }
                             Gdx.files.absolute(target).delete();
                             ((MenuItem) v).setDisabled(true);
@@ -759,7 +764,7 @@ public class ShowMap extends AbstractShowAction {
             mi.setChecked(overlayEnabled);
         }
 
-        menuMapStyleOverlays.mMsgBoxClickListener = (btnNumber, data) -> {
+        menuMapStyleOverlays.buttonClickHandler = (btnNumber, data) -> {
             StringBuilder mapStyleValues = new StringBuilder(mapStyleId);
             for (MenuItem mi : menuMapStyleOverlays.getItems()) {
                 if (mi.isChecked())

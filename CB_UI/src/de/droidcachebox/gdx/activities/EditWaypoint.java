@@ -7,12 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.WrapType;
 import de.droidcachebox.dataclasses.GeoCacheType;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_Label;

@@ -115,7 +115,7 @@ public class CreditsView extends CB_View_Base {
     }
 
     @Override
-    protected void initialize() {
+    protected void renderInit() {
         margin = UiSizes.getInstance().getMargin();
 
         lineHeight = Fonts.Measure("Tg").height * 1.6f;

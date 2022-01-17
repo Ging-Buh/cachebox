@@ -15,7 +15,6 @@
  */
 package de.droidcachebox.gdx.activities;
 
-import de.droidcachebox.WrapType;
 import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.dataclasses.Trackable;
 import de.droidcachebox.gdx.ActivityBase;
@@ -24,6 +23,7 @@ import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;

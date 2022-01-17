@@ -9,11 +9,11 @@ import de.droidcachebox.dataclasses.Drafts;
 import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
-import de.droidcachebox.gdx.controls.messagebox.MsgBox;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxButton;
-import de.droidcachebox.gdx.controls.messagebox.MsgBoxIcon;
 import de.droidcachebox.menu.menuBtn2.executes.Logs;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -94,7 +94,7 @@ public class UploadDraftsOrLogs {
                             draft.uploaded = true;
                             if (asLog && !draft.isTbDraft) {
                                 draft.gcLogReference = GroundspeakAPI.logReferenceCode;
-                                Logs.getInstance().resetIsInitialized(); // if own log is written !
+                                Logs.getInstance().resetRenderInitDone(); // if own log is written !
                             }
                             draft.updateDatabase();
                         }
@@ -108,10 +108,10 @@ public class UploadDraftsOrLogs {
             public void ready() {
                 if (!isCanceled.get()) {
                     if (uploadMeldung.length() == 0) {
-                        MsgBox.show(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MsgBoxIcon.GC_Live);
+                        new ButtonDialog(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
                     } else {
                         if (!apiKeyError)
-                            MsgBox.show(uploadMeldung, Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error, null);
+                            new ButtonDialog(uploadMeldung, Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
                     }
                 }
                 DraftsView.getInstance().notifyDataSetChanged();
@@ -124,7 +124,7 @@ public class UploadDraftsOrLogs {
 
         };
 
-        GL.that.RunOnGL(() -> {
+        GL.that.runOnGL(() -> {
             progressDialog = new ProgressDialog("uploadDrafts", new DownloadAnimation(), uploadDrafts);
             GL.that.showDialog(progressDialog);
         });
