@@ -493,7 +493,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         activityBase.show();
                         return true;
                     });
-            stringInputBox.show();
+            stringInputBox.showAtTop();
 
             return true;
         });
@@ -886,6 +886,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     // Activity wieder anzeigen
                     activityBase.show();
                 }
+
                 @Override
                 public void cancelClicked() {
                     // Activity wieder anzeigen

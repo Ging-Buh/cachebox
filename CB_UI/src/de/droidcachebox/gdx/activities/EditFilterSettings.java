@@ -424,7 +424,7 @@ public class EditFilterSettings extends ActivityBase {
             de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
             return true;
         });
-        stringInputBox.show();
+        stringInputBox.showAtTop();
     }
 
     @Override

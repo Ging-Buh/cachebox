@@ -193,7 +193,7 @@ public class Trackables extends V_ListView {
             }
             return true;
         });
-        stringInputBox.show();
+        stringInputBox.showAtTop();
     }
 
     public Menu getContextMenu() {

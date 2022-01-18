@@ -38,14 +38,14 @@ public class LinearCollapseBox extends CollapseBox {
         layout();
     }
 
-    public void removeChilds() {
-        linearLayout.removeChilds();
+    public void removeChildren() {
+        linearLayout.removeChildren();
         layout();
 
     }
 
-    public void removeChilds(final MoveableList<GL_View_Base> Childs) {
-        linearLayout.removeChilds(Childs);
+    public void removeChildren(final MoveableList<GL_View_Base> Childs) {
+        linearLayout.removeChildren(Childs);
         layout();
     }
 

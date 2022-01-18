@@ -100,14 +100,14 @@ public class Linearlayout extends CB_View_Base {
     }
 
     @Override
-    public void removeChilds() {
+    public void removeChildren() {
         removeChildrenDirect();
         layout();
 
     }
 
     @Override
-    public void removeChilds(final MoveableList<GL_View_Base> Childs) {
+    public void removeChildren(final MoveableList<GL_View_Base> Childs) {
         removeChildrenDirect(Childs);
         layout();
     }

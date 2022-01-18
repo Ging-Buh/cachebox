@@ -44,7 +44,7 @@ public class TrackListViewItem extends ListViewItemBackground {
     private static CB_RectF colorIcon;
     private static CB_RectF checkBoxIcon;
     private static CB_RectF scaledCheckBoxIcon;
-    private Track track;
+    private final Track track;
     private float left;
     private CB_Label trackName;
     private CB_Label trackLength;
@@ -229,7 +229,7 @@ public class TrackListViewItem extends ListViewItemBackground {
             }
             return true;
         });
-        stringInputBox.show();
+        stringInputBox.showAtTop();
     }
 
     private void saveAsFile() {

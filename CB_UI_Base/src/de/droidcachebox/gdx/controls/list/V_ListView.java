@@ -54,7 +54,7 @@ public class V_ListView extends ListViewBase {
                         }
                     }
                 }
-                removeChilds();
+                removeChildren();
             } else {
                 for (int i = 0, n = childs.size(); i < n; i++) {
                     ListViewItemBase tmp = (ListViewItemBase) childs.get(i);

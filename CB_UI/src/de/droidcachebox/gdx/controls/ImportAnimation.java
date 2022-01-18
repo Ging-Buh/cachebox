@@ -42,7 +42,7 @@ public class ImportAnimation extends Box {
             float halfSize = getHalfWidth() / 4;
             CB_RectF imageRec = new CB_RectF(getHalfWidth() - halfSize, getHalfHeight() - halfSize, size, size);
 
-            removeChilds();
+            removeChildren();
 
             switch (Type) {
                 case Work:

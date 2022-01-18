@@ -378,7 +378,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
             fireSkinChanged();
 
-            removeChilds();
+            removeChildren();
 
             GestureButton.refreshContextMenuSprite();
             addPhoneTab();

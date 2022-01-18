@@ -91,7 +91,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     public ImportGCPosition() {
         super("searchOverPosActivity");
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        this.removeChilds();
+        this.removeChildren();
 
         // add to this
         // createHeaderLine();

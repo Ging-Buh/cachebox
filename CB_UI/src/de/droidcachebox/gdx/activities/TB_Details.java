@@ -110,7 +110,7 @@ public class TB_Details extends ActivityBase {
     }
 
     private void layout() {
-        removeChilds();
+        removeChildren();
         initRow(BOTTOMUp);
         addNext(btnAction);
         addLast(btnClose);

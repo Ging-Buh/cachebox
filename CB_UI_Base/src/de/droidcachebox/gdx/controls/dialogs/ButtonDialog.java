@@ -79,9 +79,8 @@ public class ButtonDialog extends Dialog {
     }
 
     /**
-     * could be a private one, if removed in RouteDialog, ParkingMenu
+     * could be a private one, if removed in RouteDialog, SelectSolverFunction
      * RouteDialog is obsolete
-     * todo rework ParkingMenu
      */
     public ButtonDialog(CB_RectF cbRectF, String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, ButtonClickHandler listener) {
         super(cbRectF, "ButtonDialog");
@@ -143,6 +142,10 @@ public class ButtonDialog extends Dialog {
             }
         }
         GL.that.runOnGLWithThreadCheck(() -> GL.that.showDialog(this));
+    }
+
+    public void showAtTop() {
+        GL.that.runOnGLWithThreadCheck(() -> GL.that.showDialog(this, true));
     }
 
     public void close() {

@@ -148,7 +148,7 @@ public class MapInfoPanel extends CB_View_Base {
 
     @Override
     protected void renderInit() {
-        removeChilds();
+        removeChildren();
 
         setBackground(Sprites.infoBack);
 

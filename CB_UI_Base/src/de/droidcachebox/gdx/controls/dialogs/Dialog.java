@@ -41,17 +41,17 @@ import de.droidcachebox.utils.CB_List;
 public abstract class Dialog extends CB_View_Base {
     protected static float margin = -1;
     private static boolean lastNightMode = false;
-    private static float mTitleVersatz = 6;
+    private static float mTitleOffset = 6;
     private static NinePatch mTitle9patch;
     private static NinePatch mHeader9patch;
     private static NinePatch mCenter9patch;
     private static NinePatch mFooter9patch;
     protected final Box contentBox;
-    private final CB_List<GL_View_Base> contentChilds = new CB_List<>();
+    private final CB_List<GL_View_Base> contentChildren = new CB_List<>();
     private final ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<>();
     private final ArrayList<GL_View_Base> overlay = new ArrayList<>();
     protected String callerName = "";
-    protected boolean dontRenderDialogBackground = false;
+    protected boolean doNotRenderDialogBackground = false;
     protected float mTitleHeight = 0;
     protected float mTitleWidth = 100;
     protected boolean mHasTitle = false;
@@ -62,7 +62,7 @@ public abstract class Dialog extends CB_View_Base {
 
     public Dialog(CB_RectF rec, String Name) {
         super(rec, Name);
-        // ctor without title and footer
+        // constructor without title and footer
         mHeaderHeight = calcHeaderHeight();
         mFooterHeight = mHeaderHeight;
 
@@ -75,7 +75,7 @@ public abstract class Dialog extends CB_View_Base {
             mHeader9patch = new NinePatch(Sprites.Dialog.get(DialogElement.header.ordinal()), pW, pW, pW, 3);
             mCenter9patch = new NinePatch(Sprites.Dialog.get(DialogElement.center.ordinal()), pW, pW, 1, 1);
             mFooter9patch = new NinePatch(Sprites.Dialog.get(DialogElement.footer.ordinal()), pW, pW, 3, pW);
-            mTitleVersatz = pW;
+            mTitleOffset = pW;
             lastNightMode = nightMode.getValue();
         }
 
@@ -123,10 +123,10 @@ public abstract class Dialog extends CB_View_Base {
             height = (height + UiSizes.getInstance().getChkBoxSize().getHeight());
         height = (height + calcHeaderHeight());
 
-        // min Height festlegen
+        // define min Height
         height = Math.max(height, UiSizes.getInstance().getButtonHeight() * 2.5f);
 
-        // max Height festlegen
+        // define max Height
         height = Math.min(height, UiSizes.getInstance().getWindowHeight() * 0.95f);
 
         return new Size((int) width, (int) height);
@@ -140,7 +140,7 @@ public abstract class Dialog extends CB_View_Base {
 
     @Override
     public GL_View_Base addChild(GL_View_Base view) {
-        // die Childs in die Box umleiten ausser TextMarker
+        // add everything to contentBox except TextMarker
 
         if (view instanceof SelectionMarker) {
             overlayForTextMarker.add(view);
@@ -149,8 +149,8 @@ public abstract class Dialog extends CB_View_Base {
             if (contentBox != null) {
                 contentBox.addChildDirect(view);
             } else {
-                if (contentChilds != null)
-                    contentChilds.add(view);
+                if (contentChildren != null)
+                    contentChildren.add(view);
             }
         }
 
@@ -171,27 +171,27 @@ public abstract class Dialog extends CB_View_Base {
             if (contentBox != null) {
                 contentBox.removeChildDirect(view);
             } else {
-                if (contentChilds != null)
-                    contentChilds.remove(view);
+                if (contentChildren != null)
+                    contentChildren.remove(view);
             }
         }
 
     }
 
     @Override
-    public void removeChilds() {
-        if (contentChilds != null)
-            contentChilds.clear();
+    public void removeChildren() {
+        if (contentChildren != null)
+            contentChildren.clear();
         if (contentBox != null)
-            contentBox.removeChilds();
+            contentBox.removeChildren();
     }
 
     protected void initialDialog() {
 
         resizeContentBox();
 
-        for (int i = 0; i < contentChilds.size(); i++) {
-            GL_View_Base view = contentChilds.get(i);
+        for (int i = 0; i < contentChildren.size(); i++) {
+            GL_View_Base view = contentChildren.get(i);
             if (view != null && !view.isDisposed())
                 contentBox.addChildDirect(view);
         }
@@ -225,13 +225,13 @@ public abstract class Dialog extends CB_View_Base {
 
             mTitleHeight = titleLabel.getHeight();
             mTitleWidth = titleLabel.getWidth();
-            mTitleWidth += rightBorder + leftBorder; // sonst sieht es blöd aus
+            mTitleWidth += rightBorder + leftBorder; // else looks bad
         }
 
         contentBox.setHeight((getHeight() - mHeaderHeight - mFooterHeight - mTitleHeight - margin));
-        float centerversatzX = getHalfWidth() - contentBox.getHalfWidth();
-        float centerversatzY = mFooterHeight;// halfHeight - mContent.getHalfHeight();
-        contentBox.setPos(centerversatzX, centerversatzY);
+        float centerOffsetX = getHalfWidth() - contentBox.getHalfWidth();
+        float centerOffsetY = mFooterHeight; // halfHeight - mContent.getHalfHeight();
+        contentBox.setPos(centerOffsetX, centerOffsetY);
 
     }
 
@@ -242,24 +242,24 @@ public abstract class Dialog extends CB_View_Base {
         batch.flush();
 
         try {
-            if (mHeader9patch != null && !dontRenderDialogBackground) {
+            if (mHeader9patch != null && !doNotRenderDialogBackground) {
                 mHeader9patch.draw(batch, 0, getHeight() - mTitleHeight - mHeaderHeight, getWidth(), mHeaderHeight);
             }
-            if (mFooter9patch != null && !dontRenderDialogBackground) {
+            if (mFooter9patch != null && !doNotRenderDialogBackground) {
                 mFooter9patch.draw(batch, 0, 0, getWidth(), mFooterHeight + 2);
             }
-            if (mCenter9patch != null && !dontRenderDialogBackground) {
+            if (mCenter9patch != null && !doNotRenderDialogBackground) {
                 mCenter9patch.draw(batch, 0, mFooterHeight, getWidth(), (getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
             }
 
             if (mHasTitle) {
                 if (mTitleWidth < getWidth()) {
-                    if (mTitle9patch != null && !dontRenderDialogBackground) {
-                        mTitle9patch.draw(batch, 0, getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+                    if (mTitle9patch != null && !doNotRenderDialogBackground) {
+                        mTitle9patch.draw(batch, 0, getHeight() - mTitleHeight - mTitleOffset, mTitleWidth, mTitleHeight);
                     }
                 } else {
-                    if (mHeader9patch != null && !dontRenderDialogBackground) {
-                        mHeader9patch.draw(batch, 0, getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+                    if (mHeader9patch != null && !doNotRenderDialogBackground) {
+                        mHeader9patch.draw(batch, 0, getHeight() - mTitleHeight - mTitleOffset, mTitleWidth, mTitleHeight);
                     }
                 }
             }
@@ -277,7 +277,7 @@ public abstract class Dialog extends CB_View_Base {
             if (overlay != null) {
                 for (GL_View_Base view : overlay) {
                     try {
-                        // do not call view.render(batch), else contained childs aren't called
+                        // do not call view.render(batch), else contained children aren't called
                         if (view != null && view.isVisible()) {
 
                             if (childsInvalidate)
@@ -297,7 +297,7 @@ public abstract class Dialog extends CB_View_Base {
                         }
 
                     } catch (java.util.ConcurrentModificationException e) {
-                        // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+                        // cause the list is no longer correct, we cancel here
                         break;
                     }
                 }

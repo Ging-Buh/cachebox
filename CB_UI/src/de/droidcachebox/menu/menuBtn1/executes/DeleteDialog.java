@@ -74,7 +74,6 @@ public class DeleteDialog extends ButtonDialog {
     }
 
     /**
-     *
      * @param what the sql where selection string
      * @return the deletion method
      */

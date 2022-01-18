@@ -6,67 +6,35 @@ import de.droidcachebox.database.CBDB;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.CB_Label.HAlignment;
 import de.droidcachebox.gdx.controls.ImageButton;
-import de.droidcachebox.gdx.controls.Linearlayout;
 import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.gdx.math.Size;
-import de.droidcachebox.gdx.math.SizeF;
-import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
 public class ParkingMenu extends ButtonDialog {
 
-    private SizeF msgBoxContentSize;
-    private ImageButton btSetGPS, btSelectWP, btDeleteP;
-    private CB_Label lblSetGPS, lblSelectWP, lblDeleteP;
-
     public ParkingMenu() {
-        super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "", Translation.get("My_Parking_Area_Title"), MsgBoxButton.Cancel, null, null);
+        super("", Translation.get("My_Parking_Area_Title"), MsgBoxButton.Cancel, MsgBoxIcon.None);
+        newContentBox();
 
-        msgBoxContentSize = getContentSize();
-        // initial VariableField
-        float textFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
+        CB_RectF imageSize = new CB_RectF(0, 0, innerWidth / 3);
+        ImageButton btnSetGPS = new ImageButton(imageSize, "btSetGPS");
+        ImageButton btnSelectWP = new ImageButton(imageSize, "btSelectWP");
+        ImageButton btnDeleteP = new ImageButton(imageSize, "btDeleteP");
 
-        float innerWidth = msgBoxContentSize.getWidth();
+        btnSetGPS.setImage(Sprites.getSpriteDrawable("my-parking-set"));
+        btnSelectWP.setImage(Sprites.getSpriteDrawable("my-parking-wp"));
+        btnDeleteP.setImage(Sprites.getSpriteDrawable("my-parking-delete"));
 
-        Linearlayout layout = new Linearlayout(innerWidth, "layout");
-        layout.setX(0);
-        // layout.setBackground(new ColorDrawable(Color.GREEN));
-
-        CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UiSizes.getInstance().getButtonHeight() * 2);
-
-        btSetGPS = new ImageButton(MTBRec, "btSetGPS");
-        btSelectWP = new ImageButton(MTBRec, "btSelectWP");
-        btDeleteP = new ImageButton(MTBRec, "btDeleteP");
-
-        btSetGPS.setImage(Sprites.getSpriteDrawable("my-parking-set"));
-        btSelectWP.setImage(Sprites.getSpriteDrawable("my-parking-wp"));
-        btDeleteP.setImage(Sprites.getSpriteDrawable("my-parking-delete"));
-
-        btSetGPS.setX(0);
-        btSelectWP.setX(btSetGPS.getMaxX());
-        btDeleteP.setX(btSelectWP.getMaxX());
-
-        Box box = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 2), "");
-
-        box.addChild(btSetGPS);
-        box.addChild(btSelectWP);
-        box.addChild(btDeleteP);
-
-        layout.addChild(box);
-
-        Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 2), "");
-
-        lblSetGPS = new CB_Label(btSetGPS.scaleCenter(0.8f));
-        lblSelectWP = new CB_Label(btSelectWP.scaleCenter(0.8f));
-        lblDeleteP = new CB_Label(btDeleteP.scaleCenter(0.8f));
+        CB_Label lblSetGPS = new CB_Label();
+        CB_Label lblSelectWP = new CB_Label();
+        CB_Label lblDeleteP = new CB_Label();
 
         lblSetGPS.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
         lblSelectWP.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
@@ -76,39 +44,35 @@ public class ParkingMenu extends ButtonDialog {
         lblSetGPS.setWrappedText(Translation.get("My_Parking_Area_Add"));
         lblDeleteP.setWrappedText(Translation.get("My_Parking_Area_Del"));
 
-        box2.addChild(lblSetGPS);
-        box2.addChild(lblSelectWP);
-        box2.addChild(lblDeleteP);
+        contentBox.addNext(btnSetGPS);
+        contentBox.addNext(btnSelectWP);
+        contentBox.addLast(btnDeleteP);
 
-        layout.addChild(box2);
+        contentBox.addNext(lblSetGPS);
+        contentBox.addNext(lblSelectWP);
+        contentBox.addLast(lblDeleteP);
 
-        this.addChild(layout);
+        readyContentBox();
 
         // chk disable select and delete Button
         synchronized (CBDB.getInstance().cacheList) {
             Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
             if (cache == null) {
-                btSelectWP.disable();
-                btDeleteP.disable();
+                btnSelectWP.disable();
+                btnDeleteP.disable();
             }
         }
 
-        Size msgBoxSize = calcMsgBoxSize("teste", true, true, false);
-        msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (textFieldHeight / 2));
-        this.setSize(msgBoxSize.asFloat());
-
-        btSetGPS.setClickHandler((view, x, y, pointer, button) -> {
-
+        btnSetGPS.setClickHandler((view, x, y, pointer, button) -> {
             Settings.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
             Settings.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
             Settings.getInstance().acceptChanges();
             CacheListChangedListeners.getInstance().cacheListChanged();
-
             close();
             return true;
         });
 
-        btSelectWP.setClickHandler((view, x, y, pointer, button) -> {
+        btnSelectWP.setClickHandler((view, x, y, pointer, button) -> {
             synchronized (CBDB.getInstance().cacheList) {
                 Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
                 if (cache != null)
@@ -118,7 +82,7 @@ public class ParkingMenu extends ButtonDialog {
             return true;
         });
 
-        btDeleteP.setClickHandler((view, x, y, pointer, button) -> {
+        btnDeleteP.setClickHandler((view, x, y, pointer, button) -> {
             Settings.ParkingLatitude.setValue(0.0);
             Settings.ParkingLongitude.setValue(0.0);
             Settings.getInstance().acceptChanges();
@@ -126,31 +90,5 @@ public class ParkingMenu extends ButtonDialog {
             close();
             return true;
         });
-
     }
-
-    @Override
-    public void dispose() {
-        msgBoxContentSize = null;
-        if (btSetGPS != null)
-            btSetGPS.dispose();
-        if (btSelectWP != null)
-            btSelectWP.dispose();
-        if (btDeleteP != null)
-            btDeleteP.dispose();
-        if (lblSetGPS != null)
-            lblSetGPS.dispose();
-        if (lblSelectWP != null)
-            lblSelectWP.dispose();
-        if (lblDeleteP != null)
-            lblDeleteP.dispose();
-        super.dispose();
-        btSetGPS = null;
-        btSelectWP = null;
-        btDeleteP = null;
-        lblSetGPS = null;
-        lblSelectWP = null;
-        lblDeleteP = null;
-    }
-
 }

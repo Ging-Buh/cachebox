@@ -119,7 +119,7 @@ public class CreditsView extends CB_View_Base {
         margin = UiSizes.getInstance().getMargin();
 
         lineHeight = Fonts.measure("Tg").height * 1.6f;
-        layout.removeChilds();
+        layout.removeChildren();
 
         captioned("conception");
         addPersonToLayout(Job.idea);

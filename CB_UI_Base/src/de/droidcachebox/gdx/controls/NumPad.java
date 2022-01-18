@@ -83,7 +83,7 @@ public class NumPad extends CB_View_Base {
 
     @Override
     protected void renderInit() {
-        this.removeChilds();
+        this.removeChildren();
         calcSizes();
         calcPositions();
 

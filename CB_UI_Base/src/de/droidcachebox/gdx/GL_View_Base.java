@@ -245,7 +245,7 @@ public class GL_View_Base extends CB_RectF {
         });
     }
 
-    public void removeChilds() {
+    public void removeChildren() {
         GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (childs != null && childs.size() > 0)
@@ -256,7 +256,7 @@ public class GL_View_Base extends CB_RectF {
         });
     }
 
-    public void removeChilds(final MoveableList<GL_View_Base> Childs) {
+    public void removeChildren(final MoveableList<GL_View_Base> Childs) {
         GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (childs != null && childs.size() > 0)

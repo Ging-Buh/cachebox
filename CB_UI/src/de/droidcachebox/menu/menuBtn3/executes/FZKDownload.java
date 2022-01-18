@@ -302,7 +302,7 @@ public class FZKDownload extends ActivityBase {
     }
 
     private void fillDownloadList() {
-        scrollBox.removeChilds();
+        scrollBox.removeChildren();
         mapInfos.clear();
 
         System.setProperty("sjxp.namespaces", "false");

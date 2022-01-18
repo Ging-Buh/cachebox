@@ -188,7 +188,7 @@ public class SelectDB extends ActivityBase {
                 }
                 return true;
             });
-            newDB_inputBox.show();
+            newDB_inputBox.showAtTop();
             return true;
         });
 

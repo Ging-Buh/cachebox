@@ -51,7 +51,7 @@ public class ActivityBase extends CB_View_Base {
     }
 
     @Override
-    public void removeChilds() {
+    public void removeChildren() {
         removeChildrenDirect();
     }
 

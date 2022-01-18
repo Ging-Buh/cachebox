@@ -76,12 +76,22 @@ public class GL implements ApplicationListener {
     public static final int FRAME_RATE_FAST_ACTION = 40;
     public static final boolean isTestVersion = false;
     public static GL that;
+    private final MainViewBase mMainView;
+    private final ArrayList<IRunOnGL> runIfInitial = new ArrayList<>();
+    private final AtomicBoolean started = new AtomicBoolean(false);
+    private final ArrayList<IRunOnGL> runOnGL_List = new ArrayList<>();
+    private final ArrayList<IRunOnGL> runOnGL_ListWaitPool = new ArrayList<>();
+    private final AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
+    private final HashMap<String, Float> caller = new HashMap<>();
+    private final HashMap<String, Integer> callerCount = new HashMap<>();
+    private final HashMap<GL_View_Base, Integer> renderViews;
+    private final ArrayList<Dialog> dialogHistory;
+    private final ArrayList<ActivityBase> activityHistory;
     private TextInputInterface textInput;
     private GL_Listener_Interface glListener; // implementation in ../ViewGL : Desktop-Launcher/DesktopMain/start
     private AsyncExecutor asyncExecutor;
     private int width, height;
     private MainViewBase mSplash;
-    private MainViewBase mMainView;
     private boolean allIsInitialized;
     private boolean renderingIsStopped;
     private boolean darknessAnimationRuns;
@@ -89,21 +99,14 @@ public class GL implements ApplicationListener {
     private long GL_ThreadId;
     private Timer myTimer;
     private long timerValue;
-    private final ArrayList<IRunOnGL> runIfInitial = new ArrayList<>();
-    private final AtomicBoolean started = new AtomicBoolean(false);
     private PolygonSpriteBatch mPolygonSpriteBatch;
     private int FpsInfoPos = 0;
     private ParentInfo prjMatrix;
     private Sprite FpsInfoSprite;
-    private final ArrayList<IRunOnGL> runOnGL_List = new ArrayList<>();
-    private final ArrayList<IRunOnGL> runOnGL_ListWaitPool = new ArrayList<>();
-    private final AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
     // private RenderStarted renderStartedListener = null;
     private float stateTime = 0;
     private long FBO_RunBegin = System.currentTimeMillis();
     private boolean FBO_RunLapsed = false;
-    private final HashMap<String, Float> caller = new HashMap<>();
-    private final HashMap<String, Integer> callerCount = new HashMap<>();
     private ModelBatch modelBatch;
     private float lastRenderOnceTime = -1;
     private float lastTouchX = 0;
@@ -112,7 +115,6 @@ public class GL implements ApplicationListener {
     private Sprite mDarknessSprite;
     private Pixmap mDarknessPixmap;
     private Texture mDarknessTexture;
-    private final HashMap<GL_View_Base, Integer> renderViews;
     private MainViewBase child;
     private CB_View_Base mDialog;
     private Dialog currentDialog;
@@ -126,8 +128,6 @@ public class GL implements ApplicationListener {
     private CB_View_Base mToastOverlay;
     private boolean toastIsShown;
     private EditTextField focusedEditTextField;
-    private final ArrayList<Dialog> dialogHistory;
-    private final ArrayList<ActivityBase> activityHistory;
     private PopUp_Base aktPopUp;
     private float darknessAlpha = 0f;
 
@@ -167,14 +167,14 @@ public class GL implements ApplicationListener {
     }
 
     @Override
-    public void resize(int Width, int Height) {
+    public void resize(int width, int height) {
         // ApplicationListener Implementation resize()
-        width = Width;
-        height = Height;
+        this.width = width;
+        this.height = height;
         if (child != null)
-            child.setSize(width, height);
+            child.setSize(this.width, this.height);
         // camera = new OrthographicCamera(width, height);
-        prjMatrix = new ParentInfo(new Matrix4().setToOrtho2D(0, 0, width, height), new Vector2(0, 0), new CB_RectF(0, 0, width, height));
+        prjMatrix = new ParentInfo(new Matrix4().setToOrtho2D(0, 0, this.width, this.height), new Vector2(0, 0), new CB_RectF(0, 0, this.width, this.height));
     }
 
     @Override
@@ -471,11 +471,11 @@ public class GL implements ApplicationListener {
             if (dialog.isDisposed)
                 return;
 
-            // Center Dialog on Screen
+            // Center Dialog on Screen or position at top of screen
             float x = (width - dialog.getWidth()) / 2;
             float y;
             if (atTop)
-                y = height - dialog.getHeight();// - (UI_Size_Base.that.getMargin() * 4);
+                y = height - dialog.getHeight();
             else
                 y = (height - dialog.getHeight()) / 2;
             dialog.setPos(x, y);
@@ -496,8 +496,7 @@ public class GL implements ApplicationListener {
 
             mDialog.addChildDirect(dialog);
             mDialog.setClickHandler((v, x1, y1, pointer, button) -> {
-                // Sollte bei einem Click neben dem Dialog ausgelöst werden.
-                // Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
+                // if you click outside and dialog is menu: close
                 if (currentDialogIsShown) {
                     GL_View_Base vDialog = mDialog.getChild(0);
                     if (vDialog instanceof Menu)
@@ -1134,7 +1133,7 @@ public class GL implements ApplicationListener {
     public void closeToast() {
         if (mToastOverlay != null) {
             toastIsShown = false;
-            mToastOverlay.removeChilds();
+            mToastOverlay.removeChildren();
             renderOnce();
         }
     }
@@ -1144,7 +1143,7 @@ public class GL implements ApplicationListener {
             mToastOverlay = new Box(new CB_RectF(0, 0, width, height), "ToastView");
         }
         synchronized (mToastOverlay) {
-            mToastOverlay.removeChilds();
+            mToastOverlay.removeChildren();
 
             mToastOverlay.addChild(view);
             toastIsShown = true;

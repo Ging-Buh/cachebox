@@ -322,15 +322,15 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
     }
 
     private void createControls() {
-        this.removeChilds();
+        this.removeChildren();
 
         if (distanceBack != null) {
-            distanceBack.removeChilds();
+            distanceBack.removeChildren();
             distanceBack.dispose();
         }
 
         if (topContentBox != null) {
-            topContentBox.removeChilds();
+            topContentBox.removeChildren();
             topContentBox.dispose();
         }
 

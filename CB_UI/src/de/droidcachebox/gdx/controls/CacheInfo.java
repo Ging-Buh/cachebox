@@ -248,7 +248,7 @@ public class CacheInfo extends CB_View_Base {
             if (mCache.geoCacheSize == null)
                 return;
 
-            this.removeChilds();
+            this.removeChildren();
 
             float mLeft = mMargin;
             float mTop = mMargin;

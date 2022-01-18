@@ -54,7 +54,7 @@ public class InfoBubble extends CB_View_Base {
         if (cache == null) {
             mCache = null;
             mCacheId = -1;
-            this.removeChilds();
+            this.removeChildren();
             cacheInfo = null;
             return;
         }
@@ -80,7 +80,7 @@ public class InfoBubble extends CB_View_Base {
         cacheInfo.setY(getHeight() - size.getHeight());
         cacheInfo.setFont(Fonts.getBubbleNormal());
         cacheInfo.setSmallFont(Fonts.getBubbleSmall());
-        this.removeChilds();
+        this.removeChildren();
         this.addChild(cacheInfo);
         requestLayout();
     }

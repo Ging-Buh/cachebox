@@ -259,7 +259,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                 }
             }
         }
-        removeChilds();
+        removeChildren();
 
         if (adapter != null) {
             calculateItemPosition();
@@ -692,7 +692,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     @Override
-    public void removeChilds() {
+    public void removeChildren() {
 
         GL.that.runOnGLWithThreadCheck(() -> {
             try {
@@ -705,7 +705,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     @Override
-    public void removeChilds(final MoveableList<GL_View_Base> Childs) {
+    public void removeChildren(final MoveableList<GL_View_Base> Childs) {
         GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (childs.size() > 0)

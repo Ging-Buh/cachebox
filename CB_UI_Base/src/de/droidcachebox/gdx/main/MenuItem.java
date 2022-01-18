@@ -78,7 +78,7 @@ public class MenuItem extends ListViewItemBackground {
     @Override
     protected void renderInit() {
         super.renderInit();
-        removeChilds();
+        removeChildren();
 
         boolean hasIcon = iconDrawable != null;
 

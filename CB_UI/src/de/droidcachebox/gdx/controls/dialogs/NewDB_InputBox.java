@@ -6,7 +6,6 @@ import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_CheckBox;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
-import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 
 public class NewDB_InputBox extends ButtonDialog {
@@ -15,7 +14,7 @@ public class NewDB_InputBox extends ButtonDialog {
     public NewDB_InputBox(String newDBTitle, String insNewDBNameExplanation) {
         super("", newDBTitle, MsgBoxButton.OKCancel, MsgBoxIcon.None);
         newContentBox();
-        editTextField = new EditTextField( this, "editTextField").setWrapType(WrapType.SINGLELINE);
+        editTextField = new EditTextField(this, "editTextField").setWrapType(WrapType.SINGLELINE);
         editTextField.setText("");
         editTextField.setCursorPosition(0);
         editTextField.showFromLineNo(0);
@@ -32,7 +31,7 @@ public class NewDB_InputBox extends ButtonDialog {
         commonRepositoryCheckBox.setChecked(true);
         data = new AtomicBoolean(true); // useCommonRepository
         commonRepositoryCheckBox.setClickHandler((view, x, y, pointer, button) -> {
-            ((AtomicBoolean)data).set(commonRepositoryCheckBox.isChecked());
+            ((AtomicBoolean) data).set(commonRepositoryCheckBox.isChecked());
             return true;
         });
         commonRepositoryCheckBox.setElementAlignment(1);
@@ -52,7 +51,6 @@ public class NewDB_InputBox extends ButtonDialog {
 
     @Override
     public void onShow() {
-        setY(UiSizes.getInstance().getWindowHeight() - getHeight()); // to show at top and keyboard doesn't hide part of the view
         editTextField.setFocus(true);
     }
 

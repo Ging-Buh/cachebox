@@ -139,7 +139,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     }
 
     private void createControls() {
-        removeChilds();
+        removeChildren();
 
         if (isDisposed)
             return;

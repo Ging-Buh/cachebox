@@ -210,7 +210,7 @@ public class MultiToggleButton extends CB_Button {
         drawableDisabled = null;
         mFont = null;
         lblTxt = null;
-        removeChilds();
+        removeChildren();
         setState(getState(), true);
     }
 

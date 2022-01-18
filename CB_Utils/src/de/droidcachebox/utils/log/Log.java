@@ -19,57 +19,57 @@ import org.slf4j.LoggerFactory;
 
 public class Log {
 
-    public static void err(String sKlasse, String logText) {
+    public static void err(String sClass, String logText) {
         LogLevel old = LogLevel.getLogLevel();
         LogLevel.setLogLevel(LogLevel.ERROR);
-        LoggerFactory.getLogger(sKlasse).error(logText);
+        LoggerFactory.getLogger(sClass).error(logText);
         LogLevel.setLogLevel(old);
     }
 
-    public static void err(String sKlasse, Throwable t) {
+    public static void err(String sClass, Throwable t) {
         LogLevel old = LogLevel.getLogLevel();
         LogLevel.setLogLevel(LogLevel.ERROR);
-        LoggerFactory.getLogger(sKlasse).error("", t);
+        LoggerFactory.getLogger(sClass).error("", t);
         LogLevel.setLogLevel(old);
     }
 
-    public static void err(String sKlasse, String logText, Throwable t) {
+    public static void err(String sClass, String logText, Throwable t) {
         LogLevel old = LogLevel.getLogLevel();
         LogLevel.setLogLevel(LogLevel.ERROR);
-        LoggerFactory.getLogger(sKlasse).error(logText, t);
+        LoggerFactory.getLogger(sClass).error(logText, t);
         LogLevel.setLogLevel(old);
     }
 
-    public static void err(String sKlasse, String logText, String logText1, Throwable t) {
+    public static void err(String sClass, String logText, String logText1, Throwable t) {
         LogLevel old = LogLevel.getLogLevel();
         LogLevel.setLogLevel(LogLevel.ERROR);
-        LoggerFactory.getLogger(sKlasse).error(logText, logText1, t);
+        LoggerFactory.getLogger(sClass).error(logText, logText1, t);
         LogLevel.setLogLevel(old);
     }
 
-    public static void debug(String sKlasse, String logText) {
+    public static void debug(String sClass, String logText) {
         if (LogLevel.shouldWriteLog(LogLevel.DEBUG))
-            LoggerFactory.getLogger(sKlasse).debug(logText);
+            LoggerFactory.getLogger(sClass).debug(logText);
     }
 
-    public static void info(String sKlasse, String logText) {
+    public static void info(String sClass, String logText) {
         if (LogLevel.shouldWriteLog(LogLevel.INFO))
-            LoggerFactory.getLogger(sKlasse).info(logText);
+            LoggerFactory.getLogger(sClass).info(logText);
     }
 
-    public static void trace(String sKlasse, String logText) {
+    public static void trace(String sClass, String logText) {
         if (LogLevel.shouldWriteLog(LogLevel.TRACE))
-            LoggerFactory.getLogger(sKlasse).trace(logText);
+            LoggerFactory.getLogger(sClass).trace(logText);
     }
 
-    public static void trace(String sKlasse, Throwable t) {
+    public static void trace(String sClass, Throwable t) {
         if (LogLevel.shouldWriteLog(LogLevel.TRACE))
-            LoggerFactory.getLogger(sKlasse).trace("", t);
+            LoggerFactory.getLogger(sClass).trace("", t);
     }
 
-    public static void warn(String sKlasse, String logText) {
+    public static void warn(String sClass, String logText) {
         if (LogLevel.shouldWriteLog(LogLevel.WARN))
-            LoggerFactory.getLogger(sKlasse).warn(logText);
+            LoggerFactory.getLogger(sClass).warn(logText);
     }
 
 }

@@ -276,7 +276,7 @@ public class CB_Button extends CB_View_Base {
         drawableDisabled = null;
         mFont = null;
         lblTxt = null;
-        this.removeChilds();
+        this.removeChildren();
     }
 
     public String getText() {
