@@ -3,6 +3,7 @@ package de.droidcachebox.gdx.controls.dialogs;
 import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
+import de.droidcachebox.gdx.math.UiSizes;
 
 public class StringInputBox extends ButtonDialog {
     public static EditTextField editTextField;
@@ -35,6 +36,7 @@ public class StringInputBox extends ButtonDialog {
 
     @Override
     public void onShow() {
+        setY(UiSizes.getInstance().getWindowHeight() - getHeight()); // to show at top and keyboard doesn't hide part of the view
         editTextField.setFocus(true);
     }
 

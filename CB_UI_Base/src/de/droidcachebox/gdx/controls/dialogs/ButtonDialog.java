@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.Box;
@@ -54,10 +55,10 @@ public class ButtonDialog extends Dialog {
     /**
      * a contentBox with a frame appearance defined in Dialog
      *
-     * @param msg the text of the message area box (contentBox).
-     * @param title (optional) text on index tab
+     * @param msg     the text of the message area box (contentBox).
+     * @param title   (optional) text on index tab
      * @param buttons (optional) up to three predefined buttons at bottom (left positive, middle neutral, right negative)
-     * @param icon (optional) a small image top left on the message area box
+     * @param icon    (optional) a small image top left on the message area box
      */
     public ButtonDialog(String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon) {
         this(calcMsgBoxSize(msg, (title != null && title.length() > 0), (buttons != MsgBoxButton.NOTHING), false).getBounds().asFloat(), msg, title, buttons, icon, null);
@@ -78,9 +79,9 @@ public class ButtonDialog extends Dialog {
     }
 
     /**
-     * could be a private one, if removed in RouteDialog, DeleteDialog, ParkingMenu
+     * could be a private one, if removed in RouteDialog, ParkingMenu
      * RouteDialog is obsolete
-     * todo rework DeleteDialog and ParkingMenu
+     * todo rework ParkingMenu
      */
     public ButtonDialog(CB_RectF cbRectF, String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, ButtonClickHandler listener) {
         super(cbRectF, "ButtonDialog");
@@ -154,8 +155,9 @@ public class ButtonDialog extends Dialog {
 
     /**
      * without translation
+     *
      * @param number .number of Button (BTN_LEFT_POSITIVE, BTN_MIDDLE_NEUTRAL, BTN_RIGHT_NEGATIVE)
-     * @param text .
+     * @param text   .
      */
     public void setButtonText(int number, String text) {
         switch (number) {
@@ -311,7 +313,10 @@ public class ButtonDialog extends Dialog {
      * and finalize with ready contentBox
      */
     public void newContentBox() {
-        removeChilds();
+        // removeChilds(); does not work direct so do it with this for loop
+        for (GL_View_Base child : contentBox.getchilds()) {
+            contentBox.removeChild(child);
+        }
         setHeight(getHeight() - contentBox.getHeight());
     }
 
