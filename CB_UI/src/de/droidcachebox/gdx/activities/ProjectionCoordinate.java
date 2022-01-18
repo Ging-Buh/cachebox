@@ -109,12 +109,12 @@ public class ProjectionCoordinate extends ActivityBase {
         String sDistance = projectionType == ProjectionType.circle ? "Radius" : Translation.get("Distance");
         String sUnit = imperialUnits ? "yd" : "m";
 
-        float wB = Fonts.Measure(sBearing).width;
-        float wD = Fonts.Measure(sDistance).width;
+        float wB = Fonts.measure(sBearing).width;
+        float wD = Fonts.measure(sDistance).width;
         float wMax = Math.max(wB, wD);
 
         float y = btnCoordinate.getY() - ButtonHeight;
-        float eWidth = Fonts.Measure(sUnit).width;
+        float eWidth = Fonts.measure(sUnit).width;
         CB_RectF labelRec = new CB_RectF(leftBorder, y, wMax, ButtonHeight);
         CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, innerWidth - labelRec.getWidth() - eWidth - (margin * 2), ButtonHeight);
         CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);

@@ -611,7 +611,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Settings.getInstance().indexOf(sb);
             // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + br + sb.getDefaultValue(), trans, sb.getValue(), new IReturnValueListener() {
+            NumericInputBox numericInputBox = new NumericInputBox("default: " + br + sb.getDefaultValue(), trans);
+            numericInputBox.initIntInput(sb.getValue(), new IReturnValueListener() {
                 @Override
                 public void returnValue(int value) {
                     SettingInt SetValue = (SettingInt) Settings.getInstance().get(EditKey);
@@ -629,6 +630,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 }
 
             });
+            numericInputBox.show();
             return true;
         });
 
@@ -644,8 +646,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Settings.getInstance().indexOf(sb);
-            // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + br + sb.getDefaultValue(), trans, sb.getValue(), new IReturnValueListenerDouble() {
+            NumericInputBox numericInputBox = new NumericInputBox("default: " + br + sb.getDefaultValue(), trans);
+            numericInputBox.initDoubleInput(String.valueOf(sb.getValue()), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
                     SettingDouble SetValue = (SettingDouble) Settings.getInstance().get(EditKey);
@@ -662,6 +664,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     activityBase.show();
                 }
             });
+            numericInputBox.show();
             return true;
         });
 
@@ -677,8 +680,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
             EditKey = Settings.getInstance().indexOf(sb);
-            // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + br + sb.getDefaultValue(), trans, sb.getValue(), new IReturnValueListenerDouble() {
+            NumericInputBox numericInputBox = new NumericInputBox("default: " + br + sb.getDefaultValue(), trans);
+            numericInputBox.initDoubleInput(String.valueOf(sb.getValue()), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
                     SettingFloat SetValue = (SettingFloat) Settings.getInstance().get(EditKey);
@@ -695,6 +698,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     activityBase.show();
                 }
             });
+            numericInputBox.show();
             return true;
         });
 
@@ -870,8 +874,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             String[] s = Value.split(":");
             int intValueMin = Integer.parseInt(s[0]);
             int intValueSec = Integer.parseInt(s[1]);
-            // Show NumPad Int Edit
-            NumericInputBox.Show("default: " + br + intToTime(sb.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
+            NumericInputBox numericInputBox = new NumericInputBox("default: " + br + intToTime(sb.getDefaultValue()), trans);
+            numericInputBox.initTimeInput(intValueMin, intValueSec, new IReturnValueListenerTime() {
                 @Override
                 public void returnValue(int min, int sec) {
                     SettingTime SetValue = (SettingTime) Settings.getInstance().get(EditKey);
@@ -888,6 +892,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     activityBase.show();
                 }
             });
+            numericInputBox.show();
             return true;
         });
         item.setLongClickHandler(showDescription);

@@ -45,7 +45,7 @@ public class InputString extends ActivityBase {
         scrollBox.addChild(box);
 
         CB_Label lblResult = new CB_Label(Translation.get(title));
-        lblResult.setWidth(Fonts.Measure(lblResult.getText()).width);
+        lblResult.setWidth(Fonts.measure(lblResult.getText()).width);
         box.addLast(lblResult, FIXED);
         if (oneLine) {
             edtResult = new EditTextField(this, "edtResult");

@@ -42,12 +42,12 @@ public class SearchCoordinates extends ActivityBase {
         scrollBox.addChild(box);
 
         CB_Label lblCity = new CB_Label(Translation.get("city"));
-        lblCity.setWidth(Fonts.Measure(lblCity.getText()).width);
+        lblCity.setWidth(Fonts.measure(lblCity.getText()).width);
         box.addNext(lblCity, FIXED);
         edtCity = new EditTextField(this, "edtCity");
         box.addLast(edtCity);
         CB_Label lblStreet = new CB_Label(Translation.get("street"));
-        lblStreet.setWidth(Fonts.Measure(lblStreet.getText()).width);
+        lblStreet.setWidth(Fonts.measure(lblStreet.getText()).width);
         box.addNext(lblStreet, FIXED);
         edtStreet = new EditTextField(this, "edtStreet");
         box.addLast(edtStreet);

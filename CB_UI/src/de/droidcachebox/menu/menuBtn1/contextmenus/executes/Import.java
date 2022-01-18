@@ -538,7 +538,8 @@ public class Import extends ActivityBase {
         input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());
         logCollapseBox.addChild(input);
         input.setClickHandler((v, x, y, pointer, button) -> {
-            NumericInputBox.Show(Translation.get("ButKeepLeast"), Translation.get("DeleteLogs"), Settings.LogMinCount.getValue(), new IReturnValueListener() {
+            NumericInputBox numericInputBox = new NumericInputBox(Translation.get("ButKeepLeast"), Translation.get("DeleteLogs"));
+            numericInputBox.initIntInput(Settings.LogMinCount.getValue(), new IReturnValueListener() {
                 @Override
                 public void returnValue(int value) {
                     Settings.LogMinCount.setValue(value);
@@ -551,6 +552,7 @@ public class Import extends ActivityBase {
                 }
 
             });
+            numericInputBox.show();
             return true;
         });
     }

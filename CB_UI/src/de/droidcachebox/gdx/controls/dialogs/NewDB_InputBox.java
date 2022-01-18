@@ -13,9 +13,7 @@ public class NewDB_InputBox extends ButtonDialog {
 
     public NewDB_InputBox(String newDBTitle, String insNewDBNameExplanation) {
         super("", newDBTitle, MsgBoxButton.OKCancel, MsgBoxIcon.None);
-        removeChilds();
-        setHeight(getHeight() - contentBox.getHeight());
-
+        newContentBox();
         editTextField = new EditTextField( this, "editTextField").setWrapType(WrapType.SINGLELINE);
         editTextField.setText("");
         editTextField.setCursorPosition(0);
@@ -48,9 +46,7 @@ public class NewDB_InputBox extends ButtonDialog {
         contentBox.addNext(commonRepositoryCheckBox, FIXED);
         contentBox.addLast(commonRepositoryLabel);
 
-        contentBox.adjustHeight();
-        setHeight(getHeight() + contentBox.getHeight());
-
+        readyContentBox();
     }
 
     @Override

@@ -66,7 +66,7 @@ public class DraftViewItem extends ListViewItemBackground {
             addLast(btnLoadMore);
         } else {
             backGroundIsInitialized = false;
-            float measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+            float measuredLabelHeight = Fonts.measure("T").height * 1.5f;
             headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
 
             Box header = new Box(getWidth(), headHeight);
@@ -89,7 +89,7 @@ public class DraftViewItem extends ListViewItemBackground {
             float DateLength = 100;
 
             try {
-                DateLength = Fonts.Measure(dateString).width;
+                DateLength = Fonts.measure(dateString).width;
             } catch (Exception ex) {
                 Log.err(sClass, "iniDateLabel", ex);
             }

@@ -100,13 +100,13 @@ public class Import_GSAK extends ActivityBase {
 
     private void addScrollBox(Box box) {
         CB_Label lblCategory = new CB_Label(Translation.get("category"));
-        lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
+        lblCategory.setWidth(Fonts.measure(lblCategory.getText()).width);
         box.addLast(lblCategory, FIXED);
         edtCategory = new EditTextField(this, "*" + Translation.get("category"));
         edtCategory.setInputType(InputType.TYPE_CLASS_NUMBER);
         box.addLast(edtCategory);
         CB_Label lblDBName = new CB_Label(Translation.get("GSAKDatabase"));
-        lblDBName.setWidth(Fonts.Measure(lblDBName.getText()).width);
+        lblDBName.setWidth(Fonts.measure(lblDBName.getText()).width);
         box.addLast(lblDBName, FIXED);
         edtDBName = new EditTextField(this, "*" + Translation.get("GSAKDatabase"));
         box.addNext(edtDBName);

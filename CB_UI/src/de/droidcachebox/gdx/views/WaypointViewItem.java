@@ -261,7 +261,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 float mLeft = 3 * scaleFactor;
                 float mTop = 3 * scaleFactor;
 
-                float mIconSize = Fonts.Measure("T").height * 3.5f * scaleFactor;
+                float mIconSize = Fonts.measure("T").height * 3.5f * scaleFactor;
 
                 Vector2 mSpriteCachePos = new Vector2(mLeft + mLeft, getHeight() - mTop - mIconSize);
 

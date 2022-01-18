@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import de.droidcachebox.dataclasses.Cache;
 
 public class WaypointListChangedEventList {
-    public static ArrayList<WaypointListChangedEvent> list = new ArrayList<WaypointListChangedEvent>();
+    public static ArrayList<WaypointListChangedEvent> list = new ArrayList<>();
 
     public static void Add(WaypointListChangedEvent event) {
         synchronized (list) {

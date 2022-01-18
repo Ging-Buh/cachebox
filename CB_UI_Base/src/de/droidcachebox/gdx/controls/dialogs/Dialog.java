@@ -50,7 +50,6 @@ public abstract class Dialog extends CB_View_Base {
     private final CB_List<GL_View_Base> contentChilds = new CB_List<>();
     private final ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<>();
     private final ArrayList<GL_View_Base> overlay = new ArrayList<>();
-    private final ArrayList<CB_View_Base> footerItems = new ArrayList<>();
     protected String callerName = "";
     protected boolean dontRenderDialogBackground = false;
     protected float mTitleHeight = 0;
@@ -88,13 +87,12 @@ public abstract class Dialog extends CB_View_Base {
         innerHeight = getHeight() - topBorder - bottomBorder;
         margin = UiSizes.getInstance().getMargin();
         contentBox = new Box(scaleCenter(0.95f), "contentBox");
-        contentBox.setWidth(getWidth() * 0.95f);
         super.addChild(contentBox);
 
     }
 
     public static float calcHeaderHeight() {
-        return (Fonts.Measure("T").height) / 2;
+        return (Fonts.measure("T").height) / 2;
     }
 
     public static float calcFooterHeight(boolean hasButtons) {
@@ -135,7 +133,7 @@ public abstract class Dialog extends CB_View_Base {
     }
 
     public static float getTitleHeight() {
-        GlyphLayout titleBounds = Fonts.Measure("T");
+        GlyphLayout titleBounds = Fonts.measure("T");
         float h = (titleBounds.height * 3);
         return h + margin * 2;
     }
@@ -186,11 +184,6 @@ public abstract class Dialog extends CB_View_Base {
             contentChilds.clear();
         if (contentBox != null)
             contentBox.removeChilds();
-    }
-
-    public void addFooterChild(CB_View_Base view) {
-        footerItems.add(view);
-        childs.add(view);
     }
 
     protected void initialDialog() {

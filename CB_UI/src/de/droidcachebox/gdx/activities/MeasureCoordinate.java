@@ -116,7 +116,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
     private void iniLabels() {
         float y = bOK.getMaxY() + innerWidth + (margin * 3);
-        float w = Math.max(Fonts.Measure(Translation.get("MeasureCoord")).width, Fonts.Measure(Translation.get("MeasureCount")).width);
+        float w = Math.max(Fonts.measure(Translation.get("MeasureCoord")).width, Fonts.measure(Translation.get("MeasureCount")).width);
         CB_RectF rec = new CB_RectF(leftBorder + margin, y, w, MeasuredLabelHeight);
         CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, innerWidth - w - margin, MeasuredLabelHeight);
 

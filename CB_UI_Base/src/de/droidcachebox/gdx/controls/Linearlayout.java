@@ -23,7 +23,7 @@ public class Linearlayout extends CB_View_Base {
      */
     public Linearlayout(float width, String name) {
         super(new CB_RectF(0, 0, width, 0), name);
-        margin = (Fonts.Measure("T").height) / 2;
+        margin = (Fonts.measure("T").height) / 2;
     }
 
     public void setLayoutChangedListener(LayoutChanged listener) {

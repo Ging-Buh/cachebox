@@ -50,7 +50,7 @@ public class LogListViewItem extends ListViewItemBackground implements ICopyPast
         setLongClickable(false);
         this.logEntry = logEntry;
         backGroundIsInitialized = false;
-        measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+        measuredLabelHeight = Fonts.measure("T").height * 1.5f;
         headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
 
         iniImage();
@@ -148,7 +148,7 @@ public class LogListViewItem extends ListViewItemBackground implements ICopyPast
         // SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
         SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
         String dateString = postFormater.format(logEntry.logDate);
-        float DateLength = Fonts.Measure(dateString).width;
+        float DateLength = Fonts.measure(dateString).width;
 
         CB_Label lblDate = new CB_Label(name + " lblDate", getWidth() - getRightWidth() - DateLength, getHeight() - (headHeight / 2) - (measuredLabelHeight / 2), DateLength, measuredLabelHeight, dateString);
         addChild(lblDate);

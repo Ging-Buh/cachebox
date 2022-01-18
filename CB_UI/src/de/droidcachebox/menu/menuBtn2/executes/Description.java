@@ -239,7 +239,7 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
 
         powerdBy = new CB_Label("");
 
-        powerdBy.setHeight(Fonts.Measure(STRING_POWERD_BY).height + (margin * 2));
+        powerdBy.setHeight(Fonts.measure(STRING_POWERD_BY).height + (margin * 2));
         powerdBy.setFont(Fonts.getNormal()).setHAlignment(HAlignment.CENTER);
         powerdBy.setWidth(contentWidth);
         powerdBy.setWrappedText(STRING_POWERD_BY);

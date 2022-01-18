@@ -785,7 +785,7 @@ public class DraftsView extends V_ListView {
 
         private float MeasureItemHeight(Draft fne) {
             float headHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + (UiSizes.getInstance().getMargin());
-            float cacheIfoHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + UiSizes.getInstance().getMargin() + Fonts.Measure("T").height;
+            float cacheIfoHeight = (UiSizes.getInstance().getButtonHeight() / 1.5f) + UiSizes.getInstance().getMargin() + Fonts.measure("T").height;
             float mesurdWidth = itemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (UiSizes.getInstance().getMargin() * 2);
 
             float mh = 0;

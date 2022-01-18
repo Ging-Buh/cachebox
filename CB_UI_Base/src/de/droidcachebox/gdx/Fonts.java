@@ -122,7 +122,7 @@ public class Fonts {
 
     //
 
-    public static GlyphLayout Measure(String txt) {
+    public static GlyphLayout measure(String txt) {
         if (txt == null || txt.equals(""))
             txt = "Text";
         if (measureNormalCache == null)

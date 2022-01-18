@@ -28,7 +28,7 @@ public class ProgressDialog extends ButtonDialog {
         };
         this.runAndReady = runAndReady;
 
-        float measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+        float measuredLabelHeight = Fonts.measure("T").height * 1.5f;
 
         progressMessageTextView = new CB_Label(this.name + " progressMessageTextView", leftBorder, margin, innerWidth, measuredLabelHeight);
         this.addChild(progressMessageTextView);

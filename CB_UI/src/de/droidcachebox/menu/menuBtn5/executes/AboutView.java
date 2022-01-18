@@ -202,22 +202,24 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                 break;
                             case BTN_RIGHT_NEGATIVE:
                                 msgBox.close();
-                                GL.that.runOnGL(() -> NumericInputBox.Show(
-                                        Translation.get("TelMeFounds"),
-                                        Translation.get("AdjustFinds"),
-                                        Settings.FoundOffset.getValue(),
-                                        new NumericInputBox.IReturnValueListener() {
-                                            @Override
-                                            public void returnValue(int value) {
-                                                Settings.FoundOffset.setValue(value);
-                                                Settings.getInstance().acceptChanges();
-                                                AboutView.this.refreshText();
-                                            }
+                                GL.that.runOnGL(() -> {
+                                    NumericInputBox numericInputBox = new NumericInputBox(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"));
+                                    numericInputBox.initIntInput(Settings.FoundOffset.getValue(),
+                                            new NumericInputBox.IReturnValueListener() {
+                                                @Override
+                                                public void returnValue(int value) {
+                                                    Settings.FoundOffset.setValue(value);
+                                                    Settings.getInstance().acceptChanges();
+                                                    AboutView.this.refreshText();
+                                                }
 
-                                            @Override
-                                            public void cancelClicked() {
-                                            }
-                                        }));
+                                                @Override
+                                                public void cancelClicked() {
+                                                }
+                                            });
+                                    numericInputBox.show();
+                                });
+
                                 break;
                         }
                         return true;

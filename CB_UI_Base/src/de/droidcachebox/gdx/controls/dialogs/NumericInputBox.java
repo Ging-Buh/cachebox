@@ -1,308 +1,178 @@
 package de.droidcachebox.gdx.controls.dialogs;
 
-import static de.droidcachebox.gdx.controls.dialogs.Dialog.calcMsgBoxSize;
-
 import com.badlogic.gdx.Input.Keys;
 
-import de.droidcachebox.gdx.CB_View_Base;
-import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.NumPad;
 import de.droidcachebox.gdx.controls.NumPad.IKeyPressedListener;
 import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.gdx.math.Size;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 
-public class NumericInputBox extends CB_View_Base {
+public class NumericInputBox extends ButtonDialog {
 
     public static IReturnValueListener mReturnListener;
     public static IReturnValueListenerDouble mReturnListenerDouble;
     public static IReturnValueListenerTime mReturnListenerTime;
-    private static type mType;
+    private static Type mType; // using a String (or object or generic ) as return value would reduce code here
     private static EditTextField editText;
 
-    public NumericInputBox(String name) {
-        super(name);
+    public NumericInputBox(String msg, String title) {
+        super(msg, title, MsgBoxButton.NOTHING, MsgBoxIcon.None);
+        newContentBox();
+
+        editText = new EditTextField(null, "NumericInputBox editText");
+        float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
+        float singleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
+        editText.setHeight(topBottom + singleLineHeight);
+        editText.disableKeyboardPopup();
+
+        CB_Label label = new CB_Label();
+        label.setWrappedText(msg);
+
+        contentBox.addLast(label);
+        contentBox.addLast(editText);
     }
 
-    /**
-     * * show msgbox for input of int
-     **/
-    public static ButtonDialog Show(String msg, String title, int initialValue, IReturnValueListener listener) {
+    public void initIntInput(int initialValue, IReturnValueListener listener) {
         mReturnListener = listener;
-        mType = type.intType;
-
-        Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
-
-        float margin = UiSizes.getInstance().getMargin();
-        ButtonDialog msgBox = new ButtonDialog( msg, title, MsgBoxButton.NOTHING, MsgBoxIcon.None);
-
-        editText = new EditTextField(null, "NumerikInputBox editText");
-        float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
-        float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
-        editText.setHeight(topBottom + SingleLineHeight);
-
-        CB_Label label = new CB_Label("MsgBoxLabel");
-
-        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getInstance().getButtonHeight() * 6);
-        msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
-
-        msgBox.setMargins(0, margin);
-        msgBox.setBorders(margin, margin);
-
-        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withoutDotOkCancel, getKeyListener(msgBox));
-
-        msgBox.initRow(BOTTOMUp, margin);
-        msgBox.addLast(numPad);
-
-        msgBox.setFooterHeight(msgBox.getHeightFromBottom());
-        msgBox.addLast(editText);
-
-        msgBox.addLast(label);
-
-        msgBox.adjustHeight();
-
-        msgBox.setTitle(title);
-        msgBox.setHeight(msgBox.getHeight() + 2 * SingleLineHeight);
-
-        label.setWrappedText(msg);
-
+        mType = Type.intType;
         editText.setText(String.valueOf(initialValue));
         editText.setCursorPosition((String.valueOf(initialValue)).length());
-        editText.disableKeyboardPopup();
-        editText.setFocus(true);
-
-        GL.that.showDialog(msgBox);
-        return msgBox;
+        CB_RectF numPadRec = new CB_RectF(0, 0, contentBox.getWidth(), UiSizes.getInstance().getButtonHeight() * 6);
+        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withoutDotOkCancel, getKeyListener());
+        contentBox.addLast(numPad);
+        readyContentBox();
     }
 
-    /**
-     * * show msgbox for input of double
-     **/
-    public static ButtonDialog Show(String msg, String title, double initialValue, IReturnValueListenerDouble listener) {
+    public void initDoubleInput(String initialValue, IReturnValueListenerDouble listener) {
+        // initialValue is String cause implicit conversion of float to double gives ugly results
         mReturnListenerDouble = listener;
-        mType = type.doubleType;
-        Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
-
-        float margin = UiSizes.getInstance().getMargin();
-        ButtonDialog msgBox = new ButtonDialog( msg, title, MsgBoxButton.NOTHING, MsgBoxIcon.None);
-        msgBox.setTitle(title);
-
-        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getInstance().getButtonHeight() * 6);
-
-        CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
-
-        textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
-
-        editText = new EditTextField(textFieldRec, msgBox, "NumerikInputBox editText");
-        editText.disableKeyboardPopup();
-        editText.setZeroPos();
-        editText.setY(margin * 3);
-        editText.setText(String.valueOf(initialValue));
-        editText.setCursorPosition((String.valueOf(initialValue)).length());
-
-        float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
-        float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
-
-        editText.setHeight(topBottom + SingleLineHeight);
-        editText.setFocus(true);
-
-        CB_RectF LabelRec = msgBox.getContentSize().getBounds();
-        LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
-
-        CB_Label label = new CB_Label(LabelRec);
-        label.setZeroPos();
-        label.setY(editText.getMaxY() + margin);
-        label.setWrappedText(msg);
-        msgBox.addChild(label);
-
-        msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
-
-        msgBox.addChild(editText);
-
-        // ######### NumPad ################
-
-        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withOkCancel, getKeyListener(msgBox));
-        numPad.setY(margin);
-
-        msgBox.initRow(BOTTOMUp, margin);
-        msgBox.addLast(numPad);
-        msgBox.setFooterHeight(msgBox.getHeightFromBottom());
-
-        GL.that.showDialog(msgBox);
-
-        return msgBox;
+        mType = Type.doubleType;
+        editText.setText(initialValue);
+        editText.setCursorPosition(initialValue.length());
+        CB_RectF numPadRec = new CB_RectF(0, 0, contentBox.getWidth(), UiSizes.getInstance().getButtonHeight() * 6);
+        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withOkCancel, getKeyListener());
+        contentBox.addLast(numPad);
+        readyContentBox();
     }
 
     /**
-     * * show msgbox for input of min + sec (int)
-     **/
-    public static ButtonDialog Show(String msg, String title, int initialMin, int initialSec, IReturnValueListenerTime listener) {
+     * Time here means minutes and seconds (not really used anywhere)
+     * simply two integers separated by :
+     * there is no value check
+     *
+     * @param initialMin minute value to change
+     * @param initialSec seconds value to change
+     * @param listener   for handling the result
+     */
+    public void initTimeInput(int initialMin, int initialSec, IReturnValueListenerTime listener) {
         mReturnListenerTime = listener;
-        mType = type.timeType;
-
-        Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
-
-        float margin = UiSizes.getInstance().getMargin();
-        ButtonDialog msgBox = new ButtonDialog( msg, title, MsgBoxButton.NOTHING, MsgBoxIcon.None);
-        msgBox.setTitle(title);
-
-        CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getInstance().getButtonHeight() * 6);
-
-        CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
-
-        textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
-
-        editText = new EditTextField(textFieldRec, msgBox, "NumerikInputBox editText");
-        editText.disableKeyboardPopup();
-        editText.setZeroPos();
-        editText.setY(margin * 3);
-
+        mType = Type.timeType;
         String initialValue = "" + initialMin + ":" + initialSec;
         editText.setText(initialValue);
         editText.setCursorPosition(initialValue.length());
-
-        float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
-        float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
-
-        editText.setHeight(topBottom + SingleLineHeight);
-        editText.setFocus(true);
-
-        CB_RectF LabelRec = msgBox.getContentSize().getBounds();
-        LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
-
-        CB_Label label = new CB_Label(LabelRec);
-        label.setZeroPos();
-        label.setY(editText.getMaxY() + margin);
-        label.setWrappedText(msg);
-        msgBox.addChild(label);
-
-        msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
-
-        msgBox.addChild(editText);
-
-        // ######### NumPad ################
-
-        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withDoubleDotOkCancel, getKeyListener(msgBox));
-        numPad.setY(margin);
-
-        msgBox.initRow(BOTTOMUp, margin);
-        msgBox.addLast(numPad);
-        msgBox.setFooterHeight(msgBox.getHeightFromBottom());
-
-        GL.that.showDialog(msgBox);
-
-        return msgBox;
+        CB_RectF numPadRec = new CB_RectF(0, 0, contentBox.getWidth(), UiSizes.getInstance().getButtonHeight() * 6);
+        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withDoubleDotOkCancel, getKeyListener());
+        contentBox.addLast(numPad);
+        readyContentBox();
     }
 
-    static IKeyPressedListener getKeyListener(final ButtonDialog msgBox) {
+    private IKeyPressedListener getKeyListener() {
+        return value -> {
+            if (editText == null || value == null)
+                return;
+            char c = value.charAt(0);
 
-        IKeyPressedListener keyListener = new IKeyPressedListener() {
+            switch (c) {
+                case 'O':
+                    String inputString = editText.getText();
 
-            @Override
-            public void KeyPressed(String value) {
-                if (editText == null || value == null)
-                    return;
-                char c = value.charAt(0);
+                    // replace linebreak
+                    inputString = inputString.replace("\n", "");
+                    inputString = inputString.replace("\r", "");
 
-                switch (c) {
-                    case 'O':
-                        String StringValue = editText.getText();
+                    boolean ParseError = false;
 
-                        // Replase Linebraek
-                        StringValue = StringValue.replace("\n", "");
-                        StringValue = StringValue.replace("\r", "");
-
-                        boolean ParseError = false;
-
-                        if (mType == type.doubleType) {
-                            if (mReturnListenerDouble != null) {
-                                try {
-                                    double dblValue = Double.parseDouble(StringValue);
-                                    mReturnListenerDouble.returnValue(dblValue);
-                                } catch (NumberFormatException e) {
-                                    ParseError = true;
-                                }
-                            }
-                        } else if (mType == type.intType) {
-                            if (mReturnListener != null) {
-                                try {
-
-                                    int intValue = Integer.parseInt(StringValue);
-                                    mReturnListener.returnValue(intValue);
-                                } catch (NumberFormatException e) {
-                                    ParseError = true;
-                                }
-                            }
-                        } else if (mType == type.timeType) {
-                            if (mReturnListenerTime != null) {
-                                try {
-                                    String[] s = StringValue.split(":");
-
-                                    int intValueMin = Integer.parseInt(s[0]);
-                                    int intValueSec = Integer.parseInt(s[1]);
-                                    mReturnListenerTime.returnValue(intValueMin, intValueSec);
-                                } catch (NumberFormatException e) {
-                                    ParseError = true;
-                                }
+                    if (mType == Type.doubleType) {
+                        if (mReturnListenerDouble != null) {
+                            try {
+                                double dblValue = Double.parseDouble(inputString);
+                                mReturnListenerDouble.returnValue(dblValue);
+                            } catch (NumberFormatException e) {
+                                ParseError = true;
                             }
                         }
-
-                        if (ParseError) {
-                            GL.that.toast(Translation.get("wrongValue"));
-                        } else {
-                            close(msgBox);
-                        }
-                        break;
-
-                    case 'C':
-                        if (mType == type.doubleType) {
-                            if (mReturnListenerDouble != null) {
-                                mReturnListenerDouble.cancelClicked();
-                            }
-                        } else if (mType == type.intType) {
-                            if (mReturnListener != null) {
-                                mReturnListener.cancelClicked();
-                            }
-                        } else if (mType == type.timeType) {
-                            if (mReturnListenerTime != null) {
-                                mReturnListenerTime.cancelClicked();
+                    } else if (mType == Type.intType) {
+                        if (mReturnListener != null) {
+                            try {
+                                int intValue = Integer.parseInt(inputString);
+                                mReturnListener.returnValue(intValue);
+                            } catch (NumberFormatException e) {
+                                ParseError = true;
                             }
                         }
+                    } else if (mType == Type.timeType) {
+                        if (mReturnListenerTime != null) {
+                            try {
+                                String[] s = inputString.split(":");
 
-                        close(msgBox);
-                        break;
+                                int intValueMin = Integer.parseInt(s[0]);
+                                int intValueSec = Integer.parseInt(s[1]);
+                                mReturnListenerTime.returnValue(intValueMin, intValueSec);
+                            } catch (NumberFormatException e) {
+                                ParseError = true;
+                            }
+                        }
+                    }
 
-                    case '<':
-                        editText.keyDown(Keys.LEFT);
-                        break;
+                    if (ParseError) {
+                        GL.that.toast(Translation.get("wrongValue"));
+                    } else {
+                        close();
+                    }
+                    break;
 
-                    case '>':
-                        editText.keyDown(Keys.RIGHT);
-                        break;
+                case 'C':
+                    if (mType == Type.doubleType) {
+                        if (mReturnListenerDouble != null) {
+                            mReturnListenerDouble.cancelClicked();
+                        }
+                    } else if (mType == Type.intType) {
+                        if (mReturnListener != null) {
+                            mReturnListener.cancelClicked();
+                        }
+                    } else if (mType == Type.timeType) {
+                        if (mReturnListenerTime != null) {
+                            mReturnListenerTime.cancelClicked();
+                        }
+                    }
 
-                    case 'D':
-                        editText.keyTyped(EditTextField.DELETE);
-                        break;
-                    case 'B':
-                        editText.keyTyped(EditTextField.BACKSPACE);
-                        break;
+                    close();
+                    break;
 
-                    default:
-                        editText.keyTyped(c);
-                }
+                case '<':
+                    editText.keyDown(Keys.LEFT);
+                    break;
 
+                case '>':
+                    editText.keyDown(Keys.RIGHT);
+                    break;
+
+                case 'D':
+                    editText.keyTyped(EditTextField.DELETE);
+                    break;
+                case 'B':
+                    editText.keyTyped(EditTextField.BACKSPACE);
+                    break;
+
+                default:
+                    editText.keyTyped(c);
             }
+
         };
-        return keyListener;
-    }
-
-    private static void close(final ButtonDialog msgBox) {
-        GL.that.runOnGL(() -> GL.that.closeDialog(msgBox));
-
     }
 
     @Override
@@ -310,26 +180,26 @@ public class NumericInputBox extends CB_View_Base {
         editText.setFocus(true);
     }
 
-    private enum type {
+    private enum Type {
         intType, doubleType, timeType
     }
 
     public interface IReturnValueListener {
-        public void returnValue(int value);
+        void returnValue(int value);
 
-        public void cancelClicked();
+        void cancelClicked();
     }
 
     public interface IReturnValueListenerDouble {
-        public void returnValue(double value);
+        void returnValue(double value);
 
-        public void cancelClicked();
+        void cancelClicked();
     }
 
     public interface IReturnValueListenerTime {
-        public void returnValue(int min, int sec);
+        void returnValue(int min, int sec);
 
-        public void cancelClicked();
+        void cancelClicked();
     }
 
 }

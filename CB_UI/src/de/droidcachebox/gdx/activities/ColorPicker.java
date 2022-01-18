@@ -135,7 +135,7 @@ public class ColorPicker extends ActivityBase {
         viewHue.setDrawable(new SpriteDrawable(Sprites.ambilwarna_hue));
         addChild(viewHue);
 
-        float cursorSize = Fonts.Measure("T").height;
+        float cursorSize = Fonts.measure("T").height;
 
         viewCursor = new Image(0, 0, cursorSize, cursorSize, "", false);
         viewCursor.setDrawable(new SpriteDrawable(Sprites.ambilwarna_cursor));
@@ -168,7 +168,7 @@ public class ColorPicker extends ActivityBase {
         GradiantFilledRectangle FillRecBlack = new GradiantFilledRectangle(rec, gradientBlack);
         addChild(FillRecBlack);
 
-        float cursorSize = Fonts.Measure("T").height;
+        float cursorSize = Fonts.measure("T").height;
 
         viewTarget = new Image(0, 0, cursorSize, cursorSize, "", false);
         viewTarget.setDrawable(new SpriteDrawable(Sprites.ambilwarna_target));

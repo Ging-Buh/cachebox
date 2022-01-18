@@ -221,17 +221,13 @@ public class NumPad extends CB_View_Base {
         btn_left.setClickHandler(onBtnClick);
         btn_right.setClickHandler(onBtnClick);
 
-        btn_OK.setClickHandler(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                if (mKeyPressedListener != null) {
-                    PlatformUIBase.vibrate();
-                    mKeyPressedListener.KeyPressed("O");
-                    return true;
-                }
-                return false;
+        btn_OK.setClickHandler((view, x, y, pointer, button) -> {
+            if (mKeyPressedListener != null) {
+                PlatformUIBase.vibrate();
+                mKeyPressedListener.KeyPressed("O");
+                return true;
             }
+            return false;
         });
         btn_Cancel.setClickHandler(new OnClickListener() {
 

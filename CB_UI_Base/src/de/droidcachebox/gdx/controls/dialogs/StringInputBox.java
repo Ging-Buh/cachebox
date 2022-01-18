@@ -9,8 +9,7 @@ public class StringInputBox extends ButtonDialog {
 
     public StringInputBox(String msg, String title, String initialString, WrapType wrapType) {
         super(msg, title, MsgBoxButton.OKCancel, MsgBoxIcon.None);
-        removeChilds();
-        setHeight(getHeight() - contentBox.getHeight());
+        newContentBox();
 
         editTextField = new EditTextField(this,"StringInputBox editText").setWrapType(wrapType);
         editTextField.setText(initialString);
@@ -31,8 +30,7 @@ public class StringInputBox extends ButtonDialog {
         contentBox.addLast(editTextField);
         if (label.getText().length() > 0) contentBox.addLast(label);
 
-        contentBox.adjustHeight();
-        setHeight(getHeight() + contentBox.getHeight());
+        readyContentBox();
     }
 
     @Override

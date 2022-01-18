@@ -51,10 +51,21 @@ public class ButtonDialog extends Dialog {
     private OnClickListener btnMiddleNeutralClickListener;
     private OnClickListener btnRightNegativeClickListener;
 
+    /**
+     * a contentBox with a frame appearance defined in Dialog
+     *
+     * @param msg the text of the message area box (contentBox). todo make optional (empty contentBox of height 0, for content other than text)
+     * @param title (optional) text on index tab
+     * @param buttons (optional) up to three predefined buttons at bottom (left positive, middle neutral, right negative)
+     * @param icon (optional) a small image top left on the message area box
+     */
     public ButtonDialog(String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon) {
         this(calcMsgBoxSize(msg, (title != null && title.length() > 0), (buttons != MsgBoxButton.NOTHING), false).getBounds().asFloat(), msg, title, buttons, icon, null);
     }
 
+    /**
+     * for the two cases with a settings remember checkbox
+     */
     public ButtonDialog(String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, ButtonClickHandler listener, SettingBool remember) {
         super(calcMsgBoxSize(msg, (title != null && title.length() > 0), (buttons != MsgBoxButton.NOTHING), false).getBounds().asFloat(), "ButtonDialog");
         this.title = title;
@@ -66,6 +77,11 @@ public class ButtonDialog extends Dialog {
         construct();
     }
 
+    /**
+     * could be a private one, if removed in RouteDialog, DeleteDialog, ParkingMenu
+     * RouteDialog is obsolete
+     * todo rework DeleteDialog and ParkingMenu
+     */
     public ButtonDialog(CB_RectF cbRectF, String msg, String title, MsgBoxButton buttons, MsgBoxIcon icon, ButtonClickHandler listener) {
         super(cbRectF, "ButtonDialog");
         this.title = title;
@@ -77,10 +93,7 @@ public class ButtonDialog extends Dialog {
     }
 
     /**
-     * for Menu Extension
-     *
-     * @param rec  .
-     * @param Name .
+     * mainly for Menu Extension
      */
     public ButtonDialog(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -290,6 +303,16 @@ public class ButtonDialog extends Dialog {
                 icon = null;
         }
         return icon;
+    }
+
+    public void newContentBox() {
+        removeChilds();
+        setHeight(getHeight() - contentBox.getHeight());
+    }
+
+    public void readyContentBox() {
+        contentBox.adjustHeight();
+        setHeight(getHeight() + contentBox.getHeight());
     }
 
     public void setButtonClickHandler(ButtonClickHandler buttonClickHandler) {

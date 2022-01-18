@@ -140,8 +140,8 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         String sRadius = Translation.get("Radius");
         String sUnit = Settings.ImperialUnits.getValue() ? "mi" : "km";
 
-        float wRadius = Fonts.Measure(sRadius).width;
-        float wUnit = Fonts.Measure(sUnit).width;
+        float wRadius = Fonts.measure(sRadius).width;
+        float wUnit = Fonts.measure(sUnit).width;
 
         CB_Label lblRadius = new CB_Label(sRadius);
         lblRadius.setWidth(wRadius);
@@ -168,7 +168,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     private void createCategoryLine() {
         CB_Label lblCategory = new CB_Label(Translation.get("category"));
-        lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
+        lblCategory.setWidth(Fonts.measure(lblCategory.getText()).width);
         box.addNext(lblCategory, FIXED);
         edtCategory = new EditTextField(this, "*" + Translation.get("category"));
         box.addLast(edtCategory);
@@ -176,7 +176,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     private void createImportLimitLine() {
         CB_Label lblImportLimit = new CB_Label(Translation.get("ImportLimit"));
-        lblImportLimit.setWidth(Fonts.Measure(lblImportLimit.getText()).width);
+        lblImportLimit.setWidth(Fonts.measure(lblImportLimit.getText()).width);
         box.addNext(lblImportLimit, FIXED);
         edtImportLimit = new EditTextField(this, "*" + Translation.get("ImportLimit"));
         edtImportLimit.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -185,7 +185,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     private void createCacheNameLine() {
         CB_Label lblCacheName = new CB_Label(Translation.get("Title"));
-        lblCacheName.setWidth(Fonts.Measure(lblCacheName.getText()).width);
+        lblCacheName.setWidth(Fonts.measure(lblCacheName.getText()).width);
         box.addNext(lblCacheName, FIXED);
         edtCacheName = new EditTextField(this, "*" + Translation.get("Title"));
         box.addLast(edtCacheName);
@@ -193,7 +193,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
     private void createOwnerLine() {
         CB_Label lblOwner = new CB_Label(Translation.get("Owner"));
-        lblOwner.setWidth(Fonts.Measure(lblOwner.getText()).width);
+        lblOwner.setWidth(Fonts.measure(lblOwner.getText()).width);
         box.addNext(lblOwner, FIXED);
         edtOwner = new EditTextField(this, "*" + Translation.get("Owner"));
         box.addLast(edtOwner);
@@ -203,11 +203,11 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         CB_Label lblPublished = new CB_Label(Translation.get("published"));
         box.addNext(lblPublished);
         btnBeforeAfterEqual = new CB_Button("<=");
-        btnBeforeAfterEqual.setWidth(Fonts.Measure(". <= .").width);
+        btnBeforeAfterEqual.setWidth(Fonts.measure(". <= .").width);
         box.addNext(btnBeforeAfterEqual, FIXED);
         edtDate = new EditTextField(this, "*" + Translation.get("published"));
         edtDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
-        edtDate.setWidth(Fonts.Measure(". 2018-12-31 .").width);
+        edtDate.setWidth(Fonts.measure(". 2018-12-31 .").width);
         edtDate.setText(simpleDateFormat.format(new Date()));
         box.addLast(edtDate, FIXED);
     }

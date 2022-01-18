@@ -118,7 +118,7 @@ public class CreditsView extends CB_View_Base {
     protected void renderInit() {
         margin = UiSizes.getInstance().getMargin();
 
-        lineHeight = Fonts.Measure("Tg").height * 1.6f;
+        lineHeight = Fonts.measure("Tg").height * 1.6f;
         layout.removeChilds();
 
         captioned("conception");
@@ -192,7 +192,7 @@ public class CreditsView extends CB_View_Base {
 
                     float sideRatio = item.image.getHeight() / item.image.getWidth();
                     float imageWidth = itemHeight / sideRatio;
-                    float xPos = (this.getHalfWidth() - (Fonts.Measure(entry).width / 2)) - itemHeight - margin - margin;
+                    float xPos = (this.getHalfWidth() - (Fonts.measure(entry).width / 2)) - itemHeight - margin - margin;
                     if (entry == null)
                         xPos = this.getHalfWidth() - (imageWidth / 2);
                     Image img = new Image(xPos, 0, imageWidth, itemHeight, "", false);

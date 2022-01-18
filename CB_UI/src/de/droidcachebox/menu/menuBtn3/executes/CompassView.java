@@ -334,7 +334,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
             topContentBox.dispose();
         }
 
-        lblHeight = Fonts.Measure("Tg").height * 1.3f;
+        lblHeight = Fonts.measure("Tg").height * 1.3f;
         float attHeight = (this.getWidth() / 9) - margin;
 
         // Calc content height
@@ -489,7 +489,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
         }
 
         // add GC-Code and Coordinate line
-        float measuredCoordinateWidth = Fonts.Measure("52° 27.130N / 13° 33.117E").width + margin;
+        float measuredCoordinateWidth = Fonts.measure("52° 27.130N / 13° 33.117E").width + margin;
         if (showGcCode || showCoordinate) {
             if (showCoordinate) {
                 lblCoordinate = new CB_Label("");
