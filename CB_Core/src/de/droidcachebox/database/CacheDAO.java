@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.GroundspeakAPI;
@@ -635,6 +636,7 @@ public class CacheDAO {
      */
 
     public void writeCachesAndLogsAndImagesIntoDB(ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds, GpxFilename forCategory) throws InterruptedException {
+        AtomicBoolean isCanceled = new AtomicBoolean(false); // todo implement
 
         CBDB.getInstance().beginTransaction();
 

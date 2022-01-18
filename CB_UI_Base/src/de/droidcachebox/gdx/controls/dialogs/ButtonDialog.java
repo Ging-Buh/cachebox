@@ -54,7 +54,7 @@ public class ButtonDialog extends Dialog {
     /**
      * a contentBox with a frame appearance defined in Dialog
      *
-     * @param msg the text of the message area box (contentBox). todo make optional (empty contentBox of height 0, for content other than text)
+     * @param msg the text of the message area box (contentBox).
      * @param title (optional) text on index tab
      * @param buttons (optional) up to three predefined buttons at bottom (left positive, middle neutral, right negative)
      * @param icon (optional) a small image top left on the message area box
@@ -305,6 +305,11 @@ public class ButtonDialog extends Dialog {
         return icon;
     }
 
+    /**
+     * to make empty contentBox of height 0, for content other than text
+     * do adds to contentBox
+     * and finalize with ready contentBox
+     */
     public void newContentBox() {
         removeChilds();
         setHeight(getHeight() - contentBox.getHeight());

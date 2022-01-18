@@ -21,6 +21,7 @@ import com.badlogic.gdx.files.FileHandle;
 import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.CacheList;
@@ -96,7 +97,7 @@ public class CacheListDAO {
         }
         query += " order by CacheId";
         CoreCursor reader = CBDB.getInstance().rawQuery(query, null);
-        if (reader == null) return ;
+        if (reader == null) return;
 
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
@@ -164,59 +165,32 @@ public class CacheListDAO {
     }
 
     /**
-     * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
-     * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
-     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
-     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
-     * @return count deleted
-     */
-    public long deleteArchived(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
-        try {
-            delCacheImages(getGcCodes("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-            long ret = CBDB.getInstance().delete("Caches", "Archived=1", null);
-            CacheDAO.getInstance().updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
-            return ret;
-        } catch (Exception e) {
-            Log.err(log, "CacheListDAO.DelArchiv()", "Archiv ERROR", e);
-            return -1;
-        }
-    }
-
-    /**
-     * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
-     * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
-     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
-     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
-     * @return count deleted
-     */
-    public long deleteFinds(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
-        try {
-            delCacheImages(getGcCodes("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-            long ret = CBDB.getInstance().delete("Caches", "Found=1", null);
-            CacheDAO.getInstance().updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
-            return ret;
-        } catch (Exception e) {
-            Log.err(log, "CacheListDAO.DelFound()", "Found ERROR", e);
-            return -1;
-        }
-    }
-
-    /**
      * @param Where                       sql
      * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
      * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
      * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
      * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
+     * @param isCanceled                  may be
      * @return count deleted
      */
-    public long deleteFiltered(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+    public long delete(String Where,
+                       String SpoilerFolder,
+                       String SpoilerFolderLocal,
+                       String DescriptionImageFolder,
+                       String DescriptionImageFolderLocal,
+                       AtomicBoolean isCanceled) {
         try {
             delCacheImages(getGcCodes(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
             CBDB.getInstance().beginTransaction();
             long ret = CBDB.getInstance().delete("Caches", Where, null);
-            CBDB.getInstance().setTransactionSuccessful();
-            CBDB.getInstance().endTransaction();
-            CacheDAO.getInstance().updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
+            if (isCanceled.get()) {
+                ret = 0;
+                CBDB.getInstance().endTransaction();
+            } else {
+                CBDB.getInstance().setTransactionSuccessful();
+                CBDB.getInstance().endTransaction();
+                CacheDAO.getInstance().updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
+            }
             return ret;
         } catch (Exception e) {
             Log.err(log, "CacheListDAO.DelFilter()", "Filter ERROR", e);

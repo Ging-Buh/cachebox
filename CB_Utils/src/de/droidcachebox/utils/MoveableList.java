@@ -276,8 +276,4 @@ public class MoveableList<T> extends CB_List<T> {
         super.removeAll(items);
     }
 
-    public void dispose() {
-        super.dispose();
-    }
-
 }

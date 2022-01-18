@@ -26,8 +26,8 @@ import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.SelectDBDialog;
-import de.droidcachebox.menu.menuBtn1.contextmenus.ShowDeleteDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
+import de.droidcachebox.menu.menuBtn1.executes.DeleteDialog;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
 import de.droidcachebox.settings.Settings;
@@ -176,7 +176,7 @@ public class ShowGeoCaches extends AbstractShowAction {
             if (editCache.isDisposed()) editCache = new EditCache();
             editCache.create();
         });
-        cm.addMenuItem("DeleteCaches", Sprites.getSprite(IconName.DELETE.name()), () -> ShowDeleteDialog.getInstance().execute());
+        cm.addMenuItem("DeleteCaches", Sprites.getSprite(IconName.DELETE.name()), () -> new DeleteDialog().show());
         cm.addMenuItem("ClearHistory", Sprites.getSprite("HISTORY"), this::clearHistory);
 
         return cm;
