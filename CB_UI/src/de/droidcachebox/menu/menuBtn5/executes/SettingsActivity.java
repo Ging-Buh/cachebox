@@ -44,6 +44,7 @@ import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.MapView;
+import de.droidcachebox.menu.menuBtn5.SettingsAction;
 import de.droidcachebox.settings.API_Button;
 import de.droidcachebox.settings.Audio;
 import de.droidcachebox.settings.SettingBase;
@@ -97,31 +98,35 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     };
     private ArrayList<SettingsItem_Audio> audioSettingsList;
     private ArrayList<Lang> Sprachen;
-    private CB_List<SettingCategory> Categories = new CB_List<>();
+    private CB_List<SettingCategory> settingCategories = new CB_List<>();
     private CB_Button btnOk, btnCancel, btnMenu;
     private ScrollBox scrollBox;
     private CB_RectF ButtonRec, itemRec;
     private API_Button apiBtn;
-    private Linearlayout LinearLayout;
+    private Linearlayout linearLayout;
     private SettingsItem_QuickButton settingsItem_QuickButton;
 
     public SettingsActivity() {
         super("Settings");
         initial();
-        SelectedLangChangedEventList.Add(this);
+        SelectedLangChangedEventList.add(this);
         that = this;
     }
 
-    public static void resortList() {
-        if (that != null) {
-            float scrollPos = that.scrollBox.getScrollY();
-            that.scrollBox = null;
-            that.LinearLayout = null;
+    public static SettingsActivity getInstance() {
+        return that;
+    }
 
-            that.fillContent();
-            that.scrollBox.scrollTo(scrollPos);
-        }
+    public void onHide() {
+        SettingsAction.getInstance().isExecuting = false;
+    }
 
+    public void resortList() {
+        float scrollPos = scrollBox.getScrollY();
+        scrollBox = null;
+        linearLayout = null;
+        fillContent();
+        scrollBox.scrollTo(scrollPos);
     }
 
     private void initial() {
@@ -222,19 +227,19 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     private void fillContent() {
 
-        if (Categories == null) {
-            Categories = new CB_List<>();
+        if (settingCategories == null) {
+            settingCategories = new CB_List<>();
         }
-        Categories.clear();
+        settingCategories.clear();
         SettingCategory[] tmp = SettingCategory.values();
         for (SettingCategory item : tmp) {
-            Categories.add(item);
+            settingCategories.add(item);
         }
 
         // SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<>("Lang", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
         CB_View_Base langView = getLangSpinnerView();
 
-        addControlToLinearLayout(langView, margin);
+        addControlToLinearLayout(langView, margin); // recreates scrollbox
 
         ArrayList<SettingBase<?>> AllSettingList = new ArrayList<>();// Config.settings.values().toArray();
         for (SettingBase<?> settingItem : Settings.getInstance()) {
@@ -245,18 +250,18 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
         }
 
-        for (SettingCategory cat : Categories) {
-            ArrayList<SettingBase<?>> CatList = new ArrayList<>();
+        for (SettingCategory settingCategory : settingCategories) {
+            ArrayList<SettingBase<?>> categoryList = new ArrayList<>();
             for (SettingBase<?> settingItem : AllSettingList) {
-                if (settingItem.getCategory().name().equals(cat.name())) {
-                    CatList.add(settingItem);
+                if (settingItem.getCategory().name().equals(settingCategory.name())) {
+                    categoryList.add(settingItem);
                 }
             }
-            Collections.sort(CatList, new SettingsOrder());
+            Collections.sort(categoryList, new SettingsOrder());
 
             int position = 0;
 
-            SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<>(cat.name());
+            SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<>(settingCategory.name());
 
             final CB_View_Base btn = getView(catBtn, 1);
 
@@ -264,18 +269,18 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
             lay.setClickable(true);
             lay.setAnimationListener(Height -> {
-                LinearLayout.layout();
+                linearLayout.layout();
 
-                LinearLayout.setZeroPos();
-                scrollBox.setVirtualHeight(LinearLayout.getHeight());
+                linearLayout.setZeroPos();
+                scrollBox.setVirtualHeight(linearLayout.getHeight());
 
             });
 
             int entryCount = 0;
 
-            switch (cat) {
+            switch (settingCategory) {
                 case Login:
-                    SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<>(cat.name());
+                    SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<>(settingCategory.name());
                     lay.addChild(getView(lgIn, 1));
                     entryCount++;
                     break;
@@ -290,7 +295,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     entryCount++;
                     break;
                 case Sounds:
-                    if (CatList.size() > 0) {
+                    if (categoryList.size() > 0) {
                         // top line for sound settings
                         CB_RectF rec = new CB_RectF(itemRec);
                         Box lblBox = new Box(rec, "LabelBox");
@@ -318,7 +323,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             boolean expandLayout = false;
 
-            for (SettingBase<?> settingItem : CatList) {
+            for (SettingBase<?> settingItem : categoryList) {
                 final CB_View_Base view = getView(settingItem, position++);
                 if (view != null) {
 
@@ -363,18 +368,18 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private void addControlToLinearLayout(CB_View_Base view, float itemMargin) {
-        if (LinearLayout == null || scrollBox == null) {
+        if (linearLayout == null || scrollBox == null) {
 
             CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, getWidth(), getHeight() - btnOk.getMaxY() - margin);
 
             scrollBox = new ScrollBox(rec);
             scrollBox.setClickable(true);
             scrollBox.setLongClickable(true);
-            LinearLayout = new Linearlayout(ButtonRec.getWidth(), "SettingsActivity-LinearLayout");
-            LinearLayout.setClickable(true);
-            LinearLayout.setLongClickable(true);
-            LinearLayout.setZeroPos();
-            scrollBox.addChild(LinearLayout);
+            linearLayout = new Linearlayout(ButtonRec.getWidth(), "SettingsActivity-LinearLayout");
+            linearLayout.setClickable(true);
+            linearLayout.setLongClickable(true);
+            linearLayout.setZeroPos();
+            scrollBox.addChild(linearLayout);
             // LinearLayout.setBackground(new ColorDrawable(Color.RED));
             scrollBox.setBackground(getBackground());
             addChild(scrollBox);
@@ -384,9 +389,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         view.setClickable(true);
         view.setLongClickable(true);
 
-        LinearLayout.addChild(view, itemMargin);
-        LinearLayout.setZeroPos();
-        scrollBox.setVirtualHeight(LinearLayout.getHeight());
+        linearLayout.addChild(view, itemMargin);
+        linearLayout.setZeroPos();
+        scrollBox.setVirtualHeight(linearLayout.getHeight());
 
     }
 

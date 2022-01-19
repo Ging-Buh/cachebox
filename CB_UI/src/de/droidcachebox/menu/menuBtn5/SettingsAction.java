@@ -6,19 +6,20 @@ import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.menu.menuBtn5.executes.SettingsActivity;
-import de.droidcachebox.settings.Settings;
 
 public class SettingsAction extends AbstractAction {
 
     private static SettingsAction that;
-    boolean lastNightValue;
+    public boolean isExecuting;
 
     private SettingsAction() {
         super("settings");
     }
 
     public static SettingsAction getInstance() {
-        if (that == null) that = new SettingsAction();
+        if (that == null) {
+            that = new SettingsAction();
+        }
         return that;
     }
 
@@ -34,11 +35,8 @@ public class SettingsAction extends AbstractAction {
 
     @Override
     public void execute() {
-
-        SettingsActivity settingsActivity = new SettingsActivity();
-        lastNightValue = Settings.nightMode.getValue();
-
-        settingsActivity.show();
+        isExecuting = true;
+        new SettingsActivity().show();
     }
 
 }

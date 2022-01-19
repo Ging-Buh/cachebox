@@ -35,21 +35,18 @@ public class Linearlayout extends CB_View_Base {
             return; // gibt nix zu layouten
 
         Iterator<GL_View_Base> iterator = this.childs.reverseIterator();
-
         float lastYPos = margin;
-
         do {
             GL_View_Base view = iterator.next();
             if (view != null && view.getHeight() > 0) {
                 view.setY(lastYPos);
-                float ItemMargin = margin;
+                float itemMargin = margin;
                 if (sonderMargins != null) {
                     if (sonderMargins.containsKey(view)) {
-                        ItemMargin = sonderMargins.get(view);
+                        itemMargin = sonderMargins.get(view);
                     }
                 }
-
-                lastYPos += view.getHeight() + ItemMargin;
+                lastYPos += view.getHeight() + itemMargin;
             }
         } while (iterator.hasNext());
 
@@ -58,7 +55,7 @@ public class Linearlayout extends CB_View_Base {
         this.setZeroPos();
 
         if (mLayoutChangedListener != null)
-            mLayoutChangedListener.LayoutIsChanged(this, lastYPos);
+            mLayoutChangedListener.layoutIsChanged(this, lastYPos);
 
     }
 
@@ -139,7 +136,7 @@ public class Linearlayout extends CB_View_Base {
     }
 
     public interface LayoutChanged {
-        void LayoutIsChanged(Linearlayout linearLayout, float newHeight);
+        void layoutIsChanged(Linearlayout linearLayout, float newHeight);
     }
 
 }

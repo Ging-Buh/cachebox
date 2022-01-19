@@ -80,6 +80,7 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.FZKDownload;
+import de.droidcachebox.menu.menuBtn5.SettingsAction;
 import de.droidcachebox.menu.menuBtn5.executes.SettingsActivity;
 import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.settings.SettingBool;
@@ -357,8 +358,9 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                 handlingGetApiAuth = (requestCode, resultCode, data) -> {
                     androidApplication.removeAndroidEventListener(handlingGetApiAuth);
                     if (requestCode == REQUEST_GET_APIKEY) {
-                        GL.that.runIfInitial(SettingsActivity::resortList);
-                        Settings.getInstance().acceptChanges();
+                        if (SettingsAction.getInstance().isExecuting) {
+                            SettingsActivity.getInstance().resortList(); // to view the new setting
+                        }
                     }
                 };
             androidApplication.addAndroidEventListener(handlingGetApiAuth);

@@ -141,7 +141,7 @@ public class SelectSolverFunction extends ButtonDialog {
         // hier setzen wir ein LayoutChanged Listener, um die innere Höhe der ScrollBox bei einer Veränderung der Höhe zu setzen!
         mLinearLayout.setLayoutChangedListener(new LayoutChanged() {
             @Override
-            public void LayoutIsChanged(Linearlayout linearLayout, float newHeight) {
+            public void layoutIsChanged(Linearlayout linearLayout, float newHeight) {
                 mLinearLayout.setZeroPos();
                 scrollBox.setVirtualHeight(newHeight);
             }

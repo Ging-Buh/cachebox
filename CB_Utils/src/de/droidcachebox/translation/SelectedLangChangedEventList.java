@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class SelectedLangChangedEventList {
     private static ArrayList<SelectedLangChangedEvent> list = new ArrayList<SelectedLangChangedEvent>();
 
-    public static void Add(SelectedLangChangedEvent event) {
+    public static void add(SelectedLangChangedEvent event) {
         list.add(event);
     }
 
