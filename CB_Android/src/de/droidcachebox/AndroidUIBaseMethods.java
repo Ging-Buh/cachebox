@@ -674,18 +674,18 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             public void run() {
                 if (externalRequestGCCode != null) {
                     mainActivity.runOnUiThread(() -> {
+                        Log.info("importCacheByGCCode","mustShowCacheList: " + mustShowCacheList);
                         if (mustShowCacheList) {
                             // show cachelist first then search dialog
                             mustShowCacheList = false;
                             ViewManager.leftTab.showView(GeoCaches.getInstance());
+                            Log.info("importCacheByGCCode", "do it again");
                             importCacheByGCCode(externalRequestGCCode); // now the search can start (doSearchOnline)
                         } else {
                             mustShowCacheList = true;
-                            if (SearchDialog.that == null) {
-                                new SearchDialog();
-                            }
-                            SearchDialog.that.showNotCloseAutomaticly();
-                            SearchDialog.that.doSearchOnline(externalRequestGCCode, SearchDialog.SearchMode.GcCode);
+                            SearchDialog searchDialog = new SearchDialog();
+                            searchDialog.showNotCloseAutomaticly();
+                            searchDialog.doSearchOnline(externalRequestGCCode, SearchDialog.SearchMode.GcCode);
                         }
                     });
                 }

@@ -20,7 +20,6 @@ import de.droidcachebox.gdx.activities.EditCache;
 import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
-import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.locator.Locator;
@@ -30,6 +29,7 @@ import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
 import de.droidcachebox.menu.menuBtn1.executes.DeleteDialog;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
+import de.droidcachebox.menu.quickBtns.ShowSearchDialog;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -120,10 +120,7 @@ public class ShowGeoCaches extends AbstractShowAction {
         if (!FilterInstances.isLastFilterSet())
             mi.setCheckable(false);
         cm.addMenuItem("Search", Sprites.getSprite(IconName.lupe.name()), () -> {
-            if (SearchDialog.that == null) {
-                new SearchDialog();
-            }
-            SearchDialog.that.showNotCloseAutomaticly();
+            ShowSearchDialog.getInstance().execute();
         });
         cm.addMenuItem("importExport", Sprites.getSprite(IconName.importIcon.name()), () -> ShowImportMenu.getInstance().execute());
         mi = cm.addMenuItem("setOrResetFavorites", "", Sprites.getSprite(IconName.favorit.name()), (v, x, y, pointer, button) -> {

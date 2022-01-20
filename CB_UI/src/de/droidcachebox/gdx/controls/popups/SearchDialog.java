@@ -76,13 +76,12 @@ import de.droidcachebox.utils.log.Log;
  */
 public class SearchDialog extends PopUp_Base {
     private static final String sClass = "SearchDialog";
-    public static SearchDialog that;
 
     private final YPositionChanged listener = new YPositionChanged() {
 
         @Override
         public void Position(float SliderTop, float SliderBottom) {
-            setY(GeoCaches.getInstance().getMaxY() - that.getHeight());
+            setY(GeoCaches.getInstance().getMaxY() - SearchDialog.this.getHeight());
         }
     };
     private final MultiToggleButton mTglBtnTitle;
@@ -107,8 +106,6 @@ public class SearchDialog extends PopUp_Base {
 
     public SearchDialog() {
         super(new CB_RectF(), "SearchDialog");
-
-        that = this;
 
         this.setSize(UiSizes.getInstance().getCacheListItemSize().asFloat());
 
@@ -319,11 +316,7 @@ public class SearchDialog extends PopUp_Base {
             boolean criterionMatches = false;
 
             synchronized (CBDB.getInstance().cacheList) {
-
-                if (!mSearchIsActive) {
-                    mSearchIsActive = true;
-                }
-
+                mSearchIsActive = true;
                 Cache tmp = null;
                 if (beginSearchIndex < 0) beginSearchIndex = 0;
                 for (int i = beginSearchIndex, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
@@ -349,7 +342,8 @@ public class SearchDialog extends PopUp_Base {
                 if (!criterionMatches) {
                     mBtnNext.disable();
                     mSearchIsActive = false;
-                    new ButtonDialog(Translation.get("NoCacheFound"), Translation.get("Search"), MsgBoxButton.OK, MsgBoxIcon.Asterisk).show();
+                    // new ButtonDialog(Translation.get("NoCacheFound"), Translation.get("Search"), MsgBoxButton.OK, MsgBoxIcon.Asterisk).show();
+                    // ButtonDialog implicit closes/disposes the search when shown, so no message
                 } else {
                     Waypoint finalWp = tmp.getCorrectedFinal();
                     if (finalWp == null)
@@ -357,9 +351,7 @@ public class SearchDialog extends PopUp_Base {
                     GlobalCore.setSelectedWaypoint(tmp, finalWp);
                     // deactivate autoResort when Cache is selected by hand
                     GlobalCore.setAutoResort(false);
-
                     mBtnNext.enable();
-
                 }
             }
         } else {
@@ -583,7 +575,7 @@ public class SearchDialog extends PopUp_Base {
             GeoCaches.getInstance().setTopPlaceHolder(this.getHeight());
 
             if (GL.that.PopUpIsHidden())
-                that.showNotCloseAutomaticly();
+                showNotCloseAutomaticly();
         } catch (Exception e) {
             e.printStackTrace();
         }

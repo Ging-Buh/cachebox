@@ -42,7 +42,7 @@ import de.droidcachebox.menu.quickBtns.AddWayPoint;
 import de.droidcachebox.menu.quickBtns.CreateRoute;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
 import de.droidcachebox.menu.quickBtns.RememberGeoCache;
-import de.droidcachebox.menu.quickBtns.SearchDialog;
+import de.droidcachebox.menu.quickBtns.ShowSearchDialog;
 import de.droidcachebox.menu.quickBtns.SwitchAutoresort;
 
 /**
@@ -108,7 +108,7 @@ public enum QuickAction {
             case VoiceRecord:
                 return actionRecordVoice;
             case Search:
-                return SearchDialog.getInstance();
+                return ShowSearchDialog.getInstance();
             case Filter:
                 return EditFilterSettings.getInstance();
             case AutoResort:

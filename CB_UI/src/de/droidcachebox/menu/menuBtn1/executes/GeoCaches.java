@@ -38,7 +38,6 @@ import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.Scrollbar;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.popups.SearchDialog;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.CacheListViewItem;
@@ -46,6 +45,7 @@ import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.CacheContextMenu;
+import de.droidcachebox.menu.quickBtns.ShowSearchDialog;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
@@ -64,8 +64,6 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
     private GeoCaches() {
         super(ViewManager.leftTab.getContentRec(), "CacheListView");
         registerSkinChangedEvent();
-        CacheListChangedListeners.getInstance().addListener(this);
-        CacheSelectionChangedListeners.getInstance().addListener(this);
         geoCacheListView = new V_ListView(ViewManager.leftTab.getContentRec(), "CacheListView");
         geoCacheListView.setZeroPos();
 
@@ -118,8 +116,7 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
 
         if (searchPlaceholder > 0) {
             // show Search Dialog again
-            if (SearchDialog.that != null)
-                SearchDialog.that.showNotCloseAutomaticly();
+            ShowSearchDialog.getInstance().showAgain();
         }
 
         isShown = true;
@@ -158,6 +155,10 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
         }, 150);
 
         GL.that.renderOnce();
+
+        CacheListChangedListeners.getInstance().addListener(this);
+        CacheSelectionChangedListeners.getInstance().addListener(this);
+
     }
 
     public void setSelectedCacheVisible() {
@@ -210,12 +211,11 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
         isShown = false;
         Log.debug(log, "CacheList onHide");
         PositionChangedListeners.removeListener(this);
-
+        CacheListChangedListeners.getInstance().removeListener(this);
+        CacheSelectionChangedListeners.getInstance().remove(this);
         if (searchPlaceholder < 0) {
-            // Blende Search Dialog aus
-            SearchDialog.that.close();
+            ShowSearchDialog.getInstance().closeSearchDialog();
         }
-
         geoCacheListViewAdapter = null;
         geoCacheListView.setAdapter(null);
     }
@@ -297,8 +297,8 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
         geoCacheListView.setZeroPos();
     }
 
-    public void setTopPlaceHolder(float PlaceHoldHeight) {
-        searchPlaceholder = -PlaceHoldHeight;
+    public void setTopPlaceHolder(float placeHoldHeight) {
+        searchPlaceholder = -placeHoldHeight;
         onResized(this);
     }
 
@@ -314,28 +314,6 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
 
     @Override
     public void speedChanged() {
-    }
-
-    @Override
-    public void dispose() {
-        geoCaches = null;
-
-        if (geoCacheListView != null)
-            geoCacheListView.dispose();
-        geoCacheListView = null;
-        if (scrollBar != null)
-            scrollBar.dispose();
-        scrollBar = null;
-        geoCacheListViewAdapter = null;
-        if (emptyMsg != null)
-            emptyMsg.clear();
-        emptyMsg = null;
-
-        CacheListChangedListeners.getInstance().removeListener(this);
-        CacheSelectionChangedListeners.getInstance().remove(this);
-        PositionChangedListeners.removeListener(this);
-
-        super.dispose();
     }
 
     private class GeoCacheListViewAdapter implements Adapter {
