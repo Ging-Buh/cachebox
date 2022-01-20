@@ -136,7 +136,7 @@ public class CacheInfoList {
      * @param GcCode ?
      * @return ?
      */
-    public static boolean ExistCache(String GcCode) {
+    public static boolean existCache(String GcCode) {
         if (mCacheInfoList == null)
             return false;
         return mCacheInfoList.containsKey(GcCode);

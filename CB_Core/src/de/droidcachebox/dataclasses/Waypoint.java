@@ -61,6 +61,10 @@ public class Waypoint implements Serializable {
         }
     }
 
+    /**
+     * this waypoint is created as a user created waypoint (isUserWaypoint),
+     * what will change the color of the cache, if this waypoint is of GeoCacheType Final
+     */
     public Waypoint(String gcCode, GeoCacheType waypointType, String description, double latitude, double longitude, long geoCacheId, String clue, String title) {
         setWaypointCode(gcCode);
         this.geoCacheId = geoCacheId;

@@ -54,6 +54,10 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.TestCancel;
 import de.droidcachebox.utils.log.Log;
 
+/**
+ * imports one gpx-file (given as AbstractFile)
+ * calls progress for each imported <wpt> </wpt>
+ */
 public class GPXFileImporter {
     private final static String sClass = "GPXFileImporter";
     private final static SimpleDateFormat DATE_PATTERN_1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S", Locale.US);
@@ -174,7 +178,7 @@ public class GPXFileImporter {
         if (testCancel != null && testCancel.checkCanceled()) {
             throw new Exception(TestCancel.canceled);
         }
-        WaypointDAO.getInstance().WriteImportToDatabase(wayPoint);
+        WaypointDAO.getInstance().writeImportToDatabase(wayPoint);
     }
 
     private Category getCategory(String fileName) throws Exception {
@@ -1363,9 +1367,9 @@ public class GPXFileImporter {
                         }
                     }
 
-                    Waypoint FinalWp = new Waypoint(newGcCode, GeoCacheType.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.generatedId, "", "Final GSAK Corrected");
+                    Waypoint finalGsakCorrected = new Waypoint(newGcCode, GeoCacheType.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.generatedId, "", "Final GSAK Corrected");
 
-                    cache.getWayPoints().add(FinalWp);
+                    cache.getWayPoints().add(finalGsakCorrected);
 
                     // the coordinates of the Cache are not changed. we have a Final with valid coordinates
                 }
@@ -1396,7 +1400,7 @@ public class GPXFileImporter {
         importProgress.incrementStep("ImportGPX", info.toString());
 
         // Merge mit cache info
-        if (CacheInfoList.ExistCache(cache.getGeoCacheCode())) {
+        if (CacheInfoList.existCache(cache.getGeoCacheCode())) {
             CacheInfoList.mergeCacheInfo(cache);
         } else {
             // Neue CacheInfo erstellen und zur Liste Hinzufügen

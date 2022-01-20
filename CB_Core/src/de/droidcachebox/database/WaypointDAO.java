@@ -161,7 +161,7 @@ public class WaypointDAO {
         }
     }
 
-    public void WriteImportToDatabase(Waypoint waypoint) {
+    public void writeImportToDatabase(Waypoint waypoint) {
         Parameters args = new Parameters();
         args.put("gccode", waypoint.getWaypointCode());
         args.put("cacheid", waypoint.geoCacheId);
