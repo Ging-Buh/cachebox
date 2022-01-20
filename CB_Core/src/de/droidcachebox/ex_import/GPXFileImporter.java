@@ -1395,14 +1395,6 @@ public class GPXFileImporter {
 
         importProgress.incrementStep("ImportGPX", info.toString());
 
-        // Write Note and Solver
-        if (values.containsKey("cachebox-extension_solver")) {
-            CacheDAO.getInstance().setSolver(cache, values.get("cachebox-extension_solver"));
-        }
-        if (values.containsKey("cachebox-extension_note")) {
-            CacheDAO.getInstance().setNote(cache, values.get("cachebox-extension_note"));
-        }
-
         // Merge mit cache info
         if (CacheInfoList.ExistCache(cache.getGeoCacheCode())) {
             CacheInfoList.mergeCacheInfo(cache);
@@ -1413,6 +1405,18 @@ public class GPXFileImporter {
 
         // write to Database
         handleCache(cache);
+
+        /*
+        Write Note and Solver!
+        Attention: the cache must already exist in the db, else these values are overwritten
+        so the setSolver and setNote have to be executed after handleCache
+         */
+        if (values.containsKey("cachebox-extension_solver")) {
+            CacheDAO.getInstance().setSolver(cache, values.get("cachebox-extension_solver"));
+        }
+        if (values.containsKey("cachebox-extension_note")) {
+            CacheDAO.getInstance().setNote(cache, values.get("cachebox-extension_note"));
+        }
 
     }
 

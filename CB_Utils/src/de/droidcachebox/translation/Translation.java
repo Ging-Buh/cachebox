@@ -151,7 +151,7 @@ public class Translation {
         // mLangID = getLangNameFromFile(filePath);
         mLangID = getTranslation("lang");
 
-        SelectedLangChangedEventList.Call();
+        LanguageChanged.fire();
     }
 
     private Array<Translations> readFile(String filePath, boolean asTranslation) {

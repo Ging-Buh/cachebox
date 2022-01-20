@@ -137,7 +137,6 @@ public class Import extends ActivityBase {
     private CB_RectF itemRec;
     private float itemHeight = -1;
     private ImportAnimation importAnimation;
-    private CB_Button btnCancel;
 
     public Import() {
         this(0);
@@ -220,7 +219,7 @@ public class Import extends ActivityBase {
 
     private void createOkCancelBtn() {
         btnOK = new CB_Button(leftBorder, leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "OK Import");
-        btnCancel = new CB_Button(btnOK.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Import");
+        CB_Button btnCancel = new CB_Button(btnOK.getMaxX(), leftBorder, innerWidth / 2, UiSizes.getInstance().getButtonHeight(), "Cancel Import");
 
         // Translations
         btnOK.setText(Translation.get("import"));

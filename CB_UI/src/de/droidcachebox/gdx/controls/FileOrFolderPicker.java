@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 
-import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.activities.InputString;
@@ -28,7 +27,6 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.FilenameFilter;
-import de.droidcachebox.utils.StringReturner;
 import de.droidcachebox.utils.log.Log;
 
 /**
@@ -86,30 +84,12 @@ public class FileOrFolderPicker extends ActivityBase {
         btnSD1.setClickHandler((view, x, y, pointer, button) -> {
             currentFolder = FileFactory.createFile(firstSDCard);
             updateView();
-            if (containedFoldersAndFiles.isEmpty()) {
-                // show info for filepicker access
-                PlatformUIBase.getDirectoryAccess(currentFolder.getAbsolutePath(), new StringReturner() {
-                    @Override
-                    public void returnString(String value) {
-                        // value is the uri for sd1 access
-                    }
-                });
-            }
             return true;
         });
         btnSD2 = new CB_Button("sd2");
         btnSD2.setClickHandler((view, x, y, pointer, button) -> {
             currentFolder = FileFactory.createFile(secondSDCard);
             updateView();
-            // show info for filepicker access
-            if (containedFoldersAndFiles.isEmpty()) {
-                PlatformUIBase.getDirectoryAccess(currentFolder.getAbsolutePath(), new StringReturner() {
-                    @Override
-                    public void returnString(String value) {
-                        // value is the uri for sd1 access
-                    }
-                });
-            }
             return true;
         });
         btnParent = new CB_Button(PARENT_DIR);
@@ -382,7 +362,7 @@ public class FileOrFolderPicker extends ActivityBase {
 
         @Override
         public ListViewItemBase getView(int position) {
-            // cause a filelist can be very long, the items view is not created in advance (we don't/won't have different item heights)
+            // cause a file-list can be very long, the items view is not created in advance (we don't/won't have different item heights)
             FileItem v = new FileItem(new CB_RectF(0, 0, itemWidth, itemHeight), position, "FileItem" + position);
             v.setClickHandler((view, x, y, pointer, button) -> {
                 FileItem v1 = (FileItem) view;

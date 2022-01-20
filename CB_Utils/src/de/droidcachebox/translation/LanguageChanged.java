@@ -16,11 +16,27 @@
 
 package de.droidcachebox.translation;
 
-/**
- * this is an interface for all Objects which should receive the selectedCacheChanged Event
- *
- * @author Longri
- */
-public interface SelectedLangChangedEvent {
-    public void SelectedLangChangedEventCalled();
+import java.util.ArrayList;
+
+public class LanguageChanged {
+    private static final ArrayList<event> handlers = new ArrayList<>();
+
+    public static void add(event handler) {
+        handlers.add(handler);
+    }
+
+    public static void fire() {
+        for (event handler : handlers) {
+            handler.changeLanguage();
+        }
+    }
+
+    public static void remove(event handler) {
+        handlers.remove(handler);
+    }
+
+    public interface event {
+        void changeLanguage();
+    }
+
 }

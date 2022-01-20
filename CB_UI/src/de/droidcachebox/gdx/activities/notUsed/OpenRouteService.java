@@ -10,7 +10,6 @@ import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
-import de.droidcachebox.gdx.controls.dialogs.RouteDialog;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;

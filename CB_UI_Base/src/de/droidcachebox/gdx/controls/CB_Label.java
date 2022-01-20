@@ -328,7 +328,7 @@ public class CB_Label extends CB_View_Base {
                     break;
             }
         } catch (Exception e) {
-            Log.err(log, "Für " + mText, e);
+            Log.err(log, "Für " + mText + "\n" + e);
         }
         if (underlineStrikeoutDrawable != null) {
             underlineStrikeoutDrawable.dispose();

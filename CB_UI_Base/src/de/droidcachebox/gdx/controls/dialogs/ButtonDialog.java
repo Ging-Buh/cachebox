@@ -53,7 +53,7 @@ public class ButtonDialog extends Dialog {
     private OnClickListener btnRightNegativeClickListener;
 
     /**
-     * a contentBox with a frame appearance defined in Dialog
+     * a box with a frame appearance defined in Dialog
      *
      * @param msg     the text of the message area box (contentBox).
      * @param title   (optional) text on index tab

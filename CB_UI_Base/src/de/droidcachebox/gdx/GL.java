@@ -649,12 +649,12 @@ public class GL implements ApplicationListener {
         }
 
         currentActivity = activity;
-
         mActivity.addChildDirect(activity);
 
         child.setClickable(false);
-        currentActivityIsShown = true;
         child.onHide();
+
+        currentActivityIsShown = true;
         currentActivity.onShow();
 
         PlatformUIBase.showForDialog();

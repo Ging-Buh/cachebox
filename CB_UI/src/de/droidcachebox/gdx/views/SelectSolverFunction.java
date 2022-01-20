@@ -279,7 +279,7 @@ public class SelectSolverFunction extends ButtonDialog {
                     categoryButton.setClickHandler(new OnClickListener() {
                         @Override
                         public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                            lay.Toggle();
+                            lay.toggle();
                             return false;
                         }
                     });

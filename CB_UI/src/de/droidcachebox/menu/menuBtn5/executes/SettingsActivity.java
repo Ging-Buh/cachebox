@@ -76,14 +76,13 @@ import de.droidcachebox.settings.SettingsListButtonSkinSpinner;
 import de.droidcachebox.settings.SettingsListCategoryButton;
 import de.droidcachebox.settings.SettingsListGetApiButton;
 import de.droidcachebox.translation.Lang;
-import de.droidcachebox.translation.SelectedLangChangedEvent;
-import de.droidcachebox.translation.SelectedLangChangedEventList;
+import de.droidcachebox.translation.LanguageChanged;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 
-public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent {
+public class SettingsActivity extends ActivityBase implements LanguageChanged.event {
 
     private static int EditKey = -1;
     private static SettingsActivity that;
@@ -97,7 +96,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         return true;
     };
     private ArrayList<SettingsItem_Audio> audioSettingsList;
-    private ArrayList<Lang> Sprachen;
+    private ArrayList<Lang> languages;
     private CB_List<SettingCategory> settingCategories = new CB_List<>();
     private CB_Button btnOk, btnCancel, btnMenu;
     private ScrollBox scrollBox;
@@ -108,8 +107,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     public SettingsActivity() {
         super("Settings");
-        initial();
-        SelectedLangChangedEventList.add(this);
+        initialize();
+        LanguageChanged.add(this);
         that = this;
     }
 
@@ -122,22 +121,20 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     public void resortList() {
-        float scrollPos = scrollBox.getScrollY();
+        float scrollPos;
+        scrollPos = scrollBox == null ? 0 : scrollBox.getScrollY();
         scrollBox = null;
         linearLayout = null;
         fillContent();
         scrollBox.scrollTo(scrollPos);
     }
 
-    private void initial() {
+    private void initialize() {
         setLongClickable(true);
         Settings.getInstance().saveToLastValues();
         ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight());
-
         itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UiSizes.getInstance().getButtonHeight());
-
         createButtons();
-        fillContent();
         resortList();
     }
 
@@ -148,7 +145,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         removeChild(btnCancel);
         removeChild(btnMenu);
         createButtons();
-        fillContent();
         resortList();
     }
 
@@ -218,7 +214,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         addChild(btnCancel);
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             Settings.getInstance().loadFromLastValues();
-
             finish();
             return true;
         });
@@ -265,15 +260,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             final CB_View_Base btn = getView(catBtn, 1);
 
-            // add Cat einträge
-            final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
-            lay.setClickable(true);
-            lay.setAnimationListener(Height -> {
+            // add Cat entries
+            final LinearCollapseBox linearCollapseBox = new LinearCollapseBox(btn, "");
+            linearCollapseBox.setClickable(true);
+            linearCollapseBox.setAnimationListener(Height -> {
                 linearLayout.layout();
-
                 linearLayout.setZeroPos();
                 scrollBox.setVirtualHeight(linearLayout.getHeight());
-
             });
 
             int entryCount = 0;
@@ -281,17 +274,17 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             switch (settingCategory) {
                 case Login:
                     SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<>(settingCategory.name());
-                    lay.addChild(getView(lgIn, 1));
+                    linearCollapseBox.addChild(getView(lgIn, 1));
                     entryCount++;
                     break;
                 case QuickList:
-                    lay.addChild(settingsItem_QuickButton = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor"));
+                    linearCollapseBox.addChild(settingsItem_QuickButton = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor"));
                     entryCount++;
                     break;
                 case Skin:
                     // SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<>("Skin");
                     CB_View_Base skinView = getSkinSpinnerView();
-                    lay.addChild(skinView);
+                    linearCollapseBox.addChild(skinView);
                     entryCount++;
                     break;
                 case Sounds:
@@ -315,7 +308,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         lblBox.addChild(lblMute);
                         lblBox.addChild(lblVolume);
 
-                        lay.addChild(lblBox);
+                        linearCollapseBox.addChild(lblBox);
                         entryCount++;
                     }
                     break;
@@ -335,7 +328,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                         view.setSize(itemRec);
                     }
 
-                    lay.addChild(view);
+                    linearCollapseBox.addChild(view);
                     entryCount++;
                     Settings.getInstance().indexOf(settingItem);
                     if (Settings.getInstance().indexOf(settingItem) == EditKey) {
@@ -347,16 +340,16 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             if (entryCount > 0) {
 
-                lay.setBackground(getBackground());// Activity Background
+                linearCollapseBox.setBackground(getBackground());// Activity Background
                 if (!expandLayout)
-                    lay.setAnimationHeight(0f);
+                    linearCollapseBox.setAnimationHeight(0f);
 
                 addControlToLinearLayout(btn, margin);
-                addControlToLinearLayout(lay, -(drawableBackground.getBottomHeight()) / 2);
+                addControlToLinearLayout(linearCollapseBox, -(drawableBackground.getBottomHeight()) / 2);
 
                 if (btn != null)
                     btn.setClickHandler((v, x, y, pointer, button) -> {
-                        lay.Toggle();
+                        linearCollapseBox.toggle();
                         return true;
                     });
             }
@@ -914,14 +907,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private CB_View_Base getLangSpinnerView() {
-        Sprachen = Translation.that.getLangs(Settings.languagePath.getValue());
-        if (Sprachen == null || Sprachen.size() == 0)
+        languages = Translation.that.getLangs(Settings.languagePath.getValue());
+        if (languages == null || languages.size() == 0)
             return null;
-        final String[] items = new String[Sprachen.size()];
+        final String[] items = new String[languages.size()];
         int index = 0;
         int selection = -1;
         AbstractFile abstractFile1 = FileFactory.createFile(Settings.Sel_LanguagePath.getValue());
-        for (Lang tmp : Sprachen) {
+        for (Lang tmp : languages) {
             AbstractFile abstractFile2 = FileFactory.createFile(tmp.Path);
             if (abstractFile1.getAbsoluteFile().compareTo(abstractFile2.getAbsoluteFile()) == 0) {
                 selection = index;
@@ -948,7 +941,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                 },
                 index1 -> {
                     String selected = items[index1];
-                    for (Lang tmp : Sprachen) {
+                    for (Lang tmp : languages) {
                         if (selected.equals(tmp.Name)) {
                             Settings.Sel_LanguagePath.setValue(tmp.Path);
                             try {
@@ -1047,8 +1040,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     @Override
-    public void SelectedLangChangedEventCalled() {
-        initial();
+    public void changeLanguage() {
+        initialize();
     }
 
     static class SettingsOrder implements Comparator<SettingBase<?>> {

@@ -1,10 +1,10 @@
 package de.droidcachebox.gdx.controls;
 
-import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.math.CB_RectF;
-
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.droidcachebox.gdx.GL;
+import de.droidcachebox.gdx.math.CB_RectF;
 
 public class CollapseBox extends Box {
     private final CollapseBox that;
@@ -23,7 +23,7 @@ public class CollapseBox extends Box {
         that = this;
     }
 
-    public void Toggle() {
+    public void toggle() {
         if (collapse) {
             expand();
         } else {

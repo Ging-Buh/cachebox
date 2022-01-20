@@ -358,7 +358,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
                         try {
                             style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
                         } catch (Exception ex) {
-                            Log.err(log, "not displayed: " + line.displayText + " length: " + line.displayText.length(), ex);
+                            Log.err(log, "not displayed: " + line.displayText + " length: " + line.displayText.length() + "\n" + ex);
                         }
                         textY -= style.font.getLineHeight();
                     }
