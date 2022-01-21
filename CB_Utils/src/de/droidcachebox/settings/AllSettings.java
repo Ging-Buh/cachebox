@@ -151,7 +151,7 @@ public interface AllSettings {
     SettingIntArray numberOfLogs = new SettingIntArray("NumberOfLogs", Misc, EXPERT, 5, Global, numberOfLogsArray);
     SettingBool UseCorrectedFinal = new SettingBool("UseCorrectedFinal", Misc, EXPERT, true, Global);
     // base settings, read directly from Platform, before the database can be accessed
-    SettingBool AskAgain = new SettingBool("AskAgain", Misc, EXPERT, false, Platform);
+    SettingBool askAgain = new SettingBool("AskAgain", Misc, EXPERT, false, Platform);
     SettingFolder UserImageFolder = new SettingFolder("UserImageFolder", Misc, EXPERT, Config_Core.workPath + "/User/Media", Global, true);
     SettingBool RememberAsk_RenderThemePathWritable = new SettingBool("RememberAsk_RenderThemePathWritable", Misc, EXPERT, false, Global);
     SettingBool TrackRecorderStartup = new SettingBool("TrackRecorderStartup", Misc, EXPERT, false, Global);
@@ -241,11 +241,11 @@ public interface AllSettings {
     SettingInt connection_timeout = new SettingInt("conection_timeout", Internal, NEVER, 10000, Global);
     SettingInt socket_timeout = new SettingInt("socket_timeout", Internal, NEVER, 60000, Global);
     SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", Internal, NEVER, 3, Global, trackDistanceArray);
-    SettingLongString FilterNew = new SettingLongString("FilterNew", Internal, NEVER, "", SettingStoreType.Local);
+    SettingLongString lastFilter = new SettingLongString("", Internal, NEVER, "", SettingStoreType.Local);
     SettingLongString UserFilters = new SettingLongString("UserFilters", Internal, NEVER, "", Global);
     SettingInt installedRev = new SettingInt("installRev", Internal, NEVER, 0, Global);
     SettingInt FoundOffset = new SettingInt("FoundOffset", Internal, NEVER, 0, Global);
-    SettingString LastSelectedCache = new SettingString("LastSelectedCache", Internal, NEVER, "", SettingStoreType.Local);
+    SettingString lastSelectedCache = new SettingString("LastSelectedCache", Internal, NEVER, "", SettingStoreType.Local);
     SettingInt routeProfile = new SettingInt("routeProfile", Internal, NEVER, 0, Global); // perhaps change to enum
     SettingBool ImportGpx = new SettingBool("ImportGpx", Internal, NEVER, false, Global);
     SettingBool SearchWithoutFounds = new SettingBool("SearchWithoutFounds", Internal, NEVER, true, Global);

@@ -69,6 +69,8 @@ import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox.IReturnValueListener;
+import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
+import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
@@ -80,7 +82,7 @@ import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.Copy;
-import de.droidcachebox.utils.CopyRule;
+import de.droidcachebox.utils.CopyJobDefinition;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.Log;
@@ -981,22 +983,28 @@ public class Import extends ActivityBase {
         if (abstractFile.getAbsolutePath().startsWith(Settings.PocketQueryFolder.getValue()))
             return;
 
-        importAnimation = new ImportAnimation(scrollBox);
-        importAnimation.setBackground(getBackground());
-        addChild(importAnimation, false);
-        importAnimation.setAnimationType(AnimationType.Work);
+        new WaitDialog(Translation.get("copyingFile"), new RunAndReady() {
+            @Override
+            public void ready() {
 
-        Thread copyThread = new Thread(() -> {
-            CopyRule rule = new CopyRule(abstractFile, Settings.PocketQueryFolder.getValue());
-            Copy copyHelper = new Copy(rule);
-            try {
-                copyHelper.Run();
-            } catch (IOException ex) {
-                Log.err(sClass, "copyGPX2PQ_Folder", ex);
             }
-        });
 
-        copyThread.start();
+            @Override
+            public void setIsCanceled() {
+
+            }
+
+            @Override
+            public void run() {
+                Copy copyHelper = new Copy(new CopyJobDefinition(abstractFile, Settings.PocketQueryFolder.getValue()));
+                try {
+                    copyHelper.run();
+                } catch (IOException ex) {
+                    Log.err(sClass, "copyGPX2PQ_Folder", ex);
+                }
+            }
+        }).show();
+
     }
 
     private void animatedHeightChanged() {

@@ -67,6 +67,7 @@ import de.droidcachebox.gdx.controls.TextFilterView;
 import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.dialogs.WaitDialog;
 import de.droidcachebox.gdx.controls.list.Adapter;
@@ -97,7 +98,6 @@ public class EditFilterSettings extends ActivityBase {
     private static final int textFilterViewId = 3;
     private static CB_RectF itemRec;
     private static FilterProperties tmpFilterProps; // this is the storage for the filter
-    private static WaitDialog pd;
     private final MultiToggleButton btnPresetFilters;
     private final MultiToggleButton btnFilterSetFilters;
     private final MultiToggleButton btnCategoryFilters;
@@ -151,9 +151,9 @@ public class EditFilterSettings extends ActivityBase {
                     if (filter.isHistory) {
                         FilterProperties tmp = new FilterProperties(filter.toString());
                         tmp.isHistory = false;
-                        Settings.FilterNew.setValue(tmp.toString());
+                        Settings.lastFilter.setValue(tmp.toString());
                     } else {
-                        Settings.FilterNew.setValue(filter.toString());
+                        Settings.lastFilter.setValue(filter.toString());
                     }
                     Settings.getInstance().acceptChanges();
                 }
@@ -264,22 +264,10 @@ public class EditFilterSettings extends ActivityBase {
 
     public static void applyFilter(final FilterProperties filterProperties) {
 
-        pd = new WaitDialog(Translation.get("FilterCaches"));
-        pd.show();
-
-        new Thread(() -> {
-            try {
-                synchronized (CBDB.getInstance().cacheList) {
-                    String sqlWhere = filterProperties.getSqlWhere(Settings.GcLogin.getValue());
-                    Log.info(log, "Main.applyFilter: " + sqlWhere);
-                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
-                    GlobalCore.checkSelectedCacheValid();
-                }
-                CacheListChangedListeners.getInstance().cacheListChanged();
-                pd.closeWaitDialog();
+        new WaitDialog(Translation.get("FilterCaches"), new RunAndReady() {
+            @Override
+            public void ready() {
                 ViewManager.that.filterSetChanged();
-
-                // Notify Map
                 ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
 
                 // Save selected filter (new JSON Format)
@@ -289,16 +277,32 @@ public class EditFilterSettings extends ActivityBase {
                 if (FilterInstances.getLastFilter().isHistory) {
                     FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
                     tmp.isHistory = false;
-                    Settings.FilterNew.setValue(tmp.toString());
+                    Settings.lastFilter.setValue(tmp.toString());
                 } else {
-                    Settings.FilterNew.setValue(FilterInstances.getLastFilter().toString());
+                    Settings.lastFilter.setValue(FilterInstances.getLastFilter().toString());
                 }
                 Settings.getInstance().acceptChanges();
-            } catch (Exception ex) {
-                Log.err(log, "applyFilter", ex);
-                pd.closeWaitDialog();
             }
-        }).start();
+
+            @Override
+            public void setIsCanceled() {
+
+            }
+
+            @Override
+            public void run() {
+                try {
+                    synchronized (CBDB.getInstance().cacheList) {
+                        String sqlWhere = filterProperties.getSqlWhere(Settings.GcLogin.getValue());
+                        CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                        GlobalCore.checkSelectedCacheValid();
+                    }
+                    CacheListChangedListeners.getInstance().cacheListChanged();
+                } catch (Exception ex) {
+                    Log.err(log, "applyFilter", ex);
+                }
+            }
+        }).show();
 
     }
 

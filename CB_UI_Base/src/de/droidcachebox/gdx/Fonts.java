@@ -50,10 +50,10 @@ public class Fonts {
     private static BitmapFontCache measureSmallCache;
     private static BitmapFontCache measureBigCache;
 
-    static String getCyrilCharSet() {
-        int CharSize = 0x04ff - 0x0400;
-        char[] cyril = new char[CharSize + 1];
-        for (int i = 0x0400; i < 0x04ff + 1; i++) {
+    private static String getCyrilCharSet() {
+        int numberOfCharacters = 0x04ff - 0x0400 + 1;
+        char[] cyril = new char[numberOfCharacters];
+        for (int i = 0x0400; i <= 0x04ff; i++) {
             cyril[i - 0x0400] = (char) i;
         }
         return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + "—–" + "•ŐőŰű√€†„”“’‘☺čěřšťůž…";
@@ -130,8 +130,7 @@ public class Fonts {
         GlyphLayout bounds;
         try {
             bounds = measureNormalCache.setText(txt, 0, 0);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             bounds = measureNormalCache.setText("Text", 0, 0);
         }
         bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
@@ -147,8 +146,7 @@ public class Fonts {
         GlyphLayout bounds;
         try {
             bounds = measureSmallCache.setText(txt, 0, 0);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             bounds = measureSmallCache.setText("Text", 0, 0);
         }
         bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
@@ -163,8 +161,7 @@ public class Fonts {
         GlyphLayout bounds;
         try {
             bounds = measureBigCache.setText(txt, 0, 0);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             bounds = measureBigCache.setText("Text", 0, 0);
         }
         bounds.height = bounds.height - measureBigCache.getFont().getDescent();
@@ -179,8 +176,7 @@ public class Fonts {
         GlyphLayout bounds;
         try {
             bounds = measureNormalCache.setText(txt, 0, 0, width, 0, true);//measureNormalCache.setWrappedText(txt, 0, 0, width);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             bounds = measureNormalCache.setText("Text", 0, 0, width, 0, true);//measureNormalCache.setWrappedText(txt, 0, 0, width);
         }
         bounds.height = bounds.height - measureNormalCache.getFont().getDescent();

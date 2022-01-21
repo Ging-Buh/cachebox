@@ -24,8 +24,8 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.main.MenuItem;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn1.contextmenus.SelectDBDialog;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
+import de.droidcachebox.menu.menuBtn1.contextmenus.ShowSelectDB;
 import de.droidcachebox.menu.menuBtn1.executes.DeleteDialog;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.quickBtns.EditFilterSettings;
@@ -154,7 +154,7 @@ public class ShowGeoCaches extends AbstractShowAction {
         });
         mi.setCheckable(true);
         mi.setChecked(true); // default is to mark as Favorite
-        cm.addMenuItem("manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()), () -> SelectDBDialog.getInstance().execute());
+        cm.addMenuItem("manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()), () -> ShowSelectDB.getInstance().execute());
         mi = cm.addMenuItem("AutoResort", null, () -> {
             GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
             if (GlobalCore.getAutoResort()) {

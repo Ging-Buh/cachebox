@@ -72,8 +72,7 @@ public class MainViewInit extends MainViewBase {
     private Image GC_Logo;
     private CB_Label descTextView;
     private int step = 0;
-    private boolean switcher = false;
-    private boolean breakForWait = false;
+    private boolean waitUntilDBSelected = false;
 
     public MainViewInit(CB_RectF rec) {
         super(rec);
@@ -82,14 +81,12 @@ public class MainViewInit extends MainViewBase {
     @Override
     protected void renderInit() {
         GL.that.restartRendering();
-        switcher = !switcher;
-        if (switcher && !breakForWait) {
+        if (!waitUntilDBSelected) {
             // one step per render cycle
             switch (step) {
                 case 0:
                     atlas = new TextureAtlas(Gdx.files.internal("skins/default/day/SplashPack.spp.atlas"));
                     setBackground(new SpriteDrawable(atlas.createSprite("splash-back")));
-
                     break;
                 case 1:
                     ini_Progressbar();
@@ -315,17 +312,16 @@ public class MainViewInit extends MainViewBase {
         }
         if (fileList != null) {
             if ((fileList.size() > 1) && Settings.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill) {
-                breakForWait = true;
-                SelectDB selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
-                selectDBDialog.setReturnListener(this::returnFromSelectDB);
-                selectDBDialog.show();
+                waitUntilDBSelected = true;
+                SelectDB selectDB = new SelectDB(this, "SelectDbDialog", true);
+                selectDB.setReturnListener(this::returnFromSelectDB);
+                selectDB.show();
             }
         }
     }
 
     private void returnFromSelectDB() {
-        breakForWait = false;
-        switcher = true;
+        waitUntilDBSelected = false;
     }
 
     /**
@@ -340,7 +336,7 @@ public class MainViewInit extends MainViewBase {
         Settings.getInstance().readFromDB();
         Log.debug(log, "\r\nini_CacheDB " + Settings.DatabaseName.getValue());
 
-        FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
+        FilterInstances.setLastFilter(new FilterProperties(Settings.lastFilter.getValue()));
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
 
         CoreData.categories = new Categories();

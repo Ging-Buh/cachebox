@@ -19,8 +19,8 @@ public class FileList extends ArrayList<AbstractFile> implements Comparator<Abst
             if (fileNames.length > 0) {
                 for (String fileName : fileNames) {
                     if (FileIO.getFileExtension(fileName).equalsIgnoreCase(extension)) {
-                        AbstractFile newfile = FileFactory.createFile(absolutePath + fileName);
-                        this.add(newfile);
+                        AbstractFile newFile = FileFactory.createFile(absolutePath + fileName);
+                        this.add(newFile);
                     }
                 }
             }

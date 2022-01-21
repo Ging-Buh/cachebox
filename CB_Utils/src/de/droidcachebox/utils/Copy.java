@@ -6,13 +6,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Copy {
-    ArrayList<CopyRule> mRules;
+    ArrayList<CopyJobDefinition> mRules;
 
-    public Copy(ArrayList<CopyRule> rules) {
+    public Copy(ArrayList<CopyJobDefinition> rules) {
         mRules = rules;
     }
 
-    public Copy(CopyRule rule) {
+    public Copy(CopyJobDefinition rule) {
         mRules = new ArrayList<>();
         mRules.add(rule);
     }
@@ -64,19 +64,19 @@ public class Copy {
         }
     }
 
-    public void Run() throws IOException {
-        Run(null);
+    public void run() throws IOException {
+        run(null);
     }
 
-    public void Run(CopyMsg MsgCallBack) throws IOException {
-        for (CopyRule rule : mRules) {
-            if (MsgCallBack != null)
-                MsgCallBack.Msg("Copy: " + rule.Name);
+    public void run(CopyMsg msgCallBack) throws IOException {
+        for (CopyJobDefinition rule : mRules) {
+            if (msgCallBack != null)
+                msgCallBack.msg("Copy: " + rule.nameOfJob);
             copyFolder(rule.sourcePath, rule.targetPath);
         }
     }
 
     public interface CopyMsg {
-        void Msg(String msg);
+        void msg(String msg);
     }
 }

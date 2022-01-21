@@ -228,7 +228,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         Settings.TrackDistance.addSettingChangedListener(() -> TrackRecorder.distanceForNextTrackpoint = Settings.TrackDistance.getValue());
 
         // set last selected Cache
-        String sGc = Settings.LastSelectedCache.getValue();
+        String sGc = Settings.lastSelectedCache.getValue();
         if (sGc != null && sGc.length() > 0) {
             synchronized (CBDB.getInstance().cacheList) {
                 for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {

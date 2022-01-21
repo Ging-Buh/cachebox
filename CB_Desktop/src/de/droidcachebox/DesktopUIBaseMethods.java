@@ -157,7 +157,7 @@ public class DesktopUIBaseMethods implements PlatformUIBase.UIBaseMethods {
     public void quit() {
         if (GlobalCore.isSetSelectedCache()) {
             // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-            Settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
+            Settings.lastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
             Log.debug(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
         MapTileLoader.getInstance().stopQueueProzessors();

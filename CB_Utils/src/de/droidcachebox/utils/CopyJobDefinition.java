@@ -16,15 +16,10 @@
 
 package de.droidcachebox.utils;
 
-/**
- * A structure inherits the Name,SourcePath and TargetPath of an Copy job
- *
- * @author Longri
- */
-public class CopyRule {
+public class CopyJobDefinition {
     public AbstractFile sourcePath;
     public AbstractFile targetPath;
-    public String Name;
+    public String nameOfJob;
 
     /**
      * Constructor
@@ -32,10 +27,10 @@ public class CopyRule {
      * @param source SourcePath as String
      * @param target TargetPath as String
      */
-    public CopyRule(AbstractFile source, String target) {
+    public CopyJobDefinition(AbstractFile source, String target) {
         sourcePath = source;
-        Name = sourcePath.getName();
-        targetPath = FileFactory.createFile(target + "/" + Name);
+        nameOfJob = sourcePath.getName();
+        targetPath = FileFactory.createFile(target + "/" + nameOfJob);
     }
 
 }

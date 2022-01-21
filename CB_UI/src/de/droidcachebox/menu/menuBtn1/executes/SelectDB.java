@@ -63,17 +63,17 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class SelectDB extends ActivityBase {
-    private static final String log = "SelectDB";
+    private static final String sClass = "SelectDB";
     private final FileList dbFiles;
-    private final boolean MustSelect;
+    private final boolean mustSelect;
     private DBItemAdapter dbItemAdapter;
     private Timer updateTimer;
     private int autoStartTime;
     private int autoStartCounter;
-    private CB_Button bNew;
-    private CB_Button bSelect;
-    private CB_Button bCancel;
-    private CB_Button bAutostart;
+    private CB_Button btnNew;
+    private CB_Button btnSelect;
+    private CB_Button btnCancel;
+    private CB_Button btnAutostart;
     private V_ListView lvDBSelection;
     private Scrollbar scrollbar;
     private AbstractFile currentDBFile = null;
@@ -81,7 +81,7 @@ public class SelectDB extends ActivityBase {
 
     public SelectDB(CB_RectF rec, String Name, boolean mustSelect) {
         super(rec, Name);
-        MustSelect = mustSelect;
+        this.mustSelect = mustSelect;
 
         lvDBSelection = new V_ListView(new CB_RectF(leftBorder, getBottomHeight() + UiSizes.getInstance().getButtonHeight() * 2, innerWidth, getHeight() - (UiSizes.getInstance().getButtonHeight() * 2) - getTopHeight() - getBottomHeight()),
                 "DB File ListView");
@@ -105,18 +105,18 @@ public class SelectDB extends ActivityBase {
 
         float btWidth = innerWidth / 3;
 
-        bNew = new CB_Button(new CB_RectF(leftBorder, getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bNew");
-        bSelect = new CB_Button(new CB_RectF(bNew.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bSelect");
-        bCancel = new CB_Button(new CB_RectF(bSelect.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bCancel");
-        bAutostart = new CB_Button(new CB_RectF(leftBorder, bNew.getMaxY(), innerWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bAutostart");
+        btnNew = new CB_Button(new CB_RectF(leftBorder, getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bNew");
+        btnSelect = new CB_Button(new CB_RectF(btnNew.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bSelect");
+        btnCancel = new CB_Button(new CB_RectF(btnSelect.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bCancel");
+        btnAutostart = new CB_Button(new CB_RectF(leftBorder, btnNew.getMaxY(), innerWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bAutostart");
 
-        addChild(bSelect);
-        addChild(bNew);
-        addChild(bCancel);
-        addChild(bAutostart);
+        addChild(btnSelect);
+        addChild(btnNew);
+        addChild(btnCancel);
+        addChild(btnAutostart);
 
         // New Button
-        bNew.setClickHandler((v, x, y, pointer, button) -> {
+        btnNew.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             NewDB_InputBox newDB_inputBox = new NewDB_InputBox(Translation.get("NewDB"), Translation.get("InsNewDBName"));
             newDB_inputBox.setButtonClickHandler((which, data) -> {
@@ -124,14 +124,14 @@ public class SelectDB extends ActivityBase {
                     String NewDB_Name = NewDB_InputBox.editTextField.getText();
                     if (NewDB_Name.length() > 0) {
 
-                        FilterInstances.setLastFilter(new FilterProperties(Settings.FilterNew.getValue()));
+                        FilterInstances.setLastFilter(new FilterProperties(Settings.lastFilter.getValue()));
                         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
 
                         // initialize Database
 
                         String database = GlobalCore.workPath + "/" + NewDB_Name + ".db3";
                         Settings.DatabaseName.setValue(NewDB_Name + ".db3");
-                        Log.debug(log, "\r\nnew DB " + DatabaseName.getValue());
+                        Log.debug(sClass, "\r\nnew DB " + DatabaseName.getValue());
                         CBDB.getInstance().close();
                         CBDB.getInstance().startUp(database);
 
@@ -144,7 +144,7 @@ public class SelectDB extends ActivityBase {
                             Settings.SpoilerFolderLocal.setValue(folder + "Spoilers");
                             Settings.tileCacheFolderLocal.setValue(folder + "Cache");
                             Settings.getInstance().acceptChanges();
-                            Log.debug(log,
+                            Log.debug(sClass,
                                     NewDB_Name + " has own Repository:\n" + //
                                             Settings.DescriptionImageFolderLocal.getValue() + ", \n" + //
                                             Settings.MapPackFolderLocal.getValue() + ", \n" + //
@@ -158,7 +158,7 @@ public class SelectDB extends ActivityBase {
                             creationOK = creationOK && FileIO.createDirectory(Settings.SpoilerFolderLocal.getValue());
                             creationOK = creationOK && FileIO.createDirectory(Settings.tileCacheFolderLocal.getValue());
                             if (!creationOK)
-                                Log.debug(log,
+                                Log.debug(sClass,
                                         "Problem with creation of one of the Directories:" + //
                                                 Settings.DescriptionImageFolderLocal.getValue() + ", " + //
                                                 Settings.MapPackFolderLocal.getValue() + ", " + //
@@ -193,7 +193,7 @@ public class SelectDB extends ActivityBase {
         });
 
         // Select Button
-        bSelect.setClickHandler((v, x, y, pointer, button) -> {
+        btnSelect.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             if (currentDBFile == null) {
                 GL.that.toast("Please select Database!");
@@ -204,9 +204,9 @@ public class SelectDB extends ActivityBase {
         });
 
         // Cancel Button
-        bCancel.setClickHandler((v, x, y, pointer, button) -> {
+        btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
-            if (MustSelect) {
+            if (this.mustSelect) {
                 ShowQuit.getInstance().execute();
             } else {
                 finish();
@@ -216,20 +216,20 @@ public class SelectDB extends ActivityBase {
         });
 
         // AutoStart Button
-        bAutostart.setClickHandler((v, x, y, pointer, button) -> {
+        btnAutostart.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
             showSelectionMenu();
             return true;
         });
 
-        bNew.setText(Translation.get("NewDB"));
-        bSelect.setText(Translation.get("confirm"));
-        bCancel.setText(Translation.get("cancel"));
+        btnNew.setText(Translation.get("NewDB"));
+        btnSelect.setText(Translation.get("confirm"));
+        btnCancel.setText(Translation.get("cancel"));
         autoStartTime = Settings.MultiDBAutoStartTime.getValue();
         autoStartCounter = 0;
         if (autoStartTime > 0) {
             autoStartCounter = autoStartTime;
-            bAutostart.setText(autoStartCounter + " " + Translation.get("confirm"));
+            btnAutostart.setText(autoStartCounter + " " + Translation.get("confirm"));
             if ((autoStartTime > 0) && (currentDBFile != null)) {
                 updateTimer = new Timer();
                 updateTimer.scheduleAtFixedRate(new TimerTask() {
@@ -241,7 +241,7 @@ public class SelectDB extends ActivityBase {
                         } else {
                             try {
                                 autoStartCounter--;
-                                bAutostart.setText(autoStartCounter + "    " + Translation.get("confirm"));
+                                btnAutostart.setText(autoStartCounter + "    " + Translation.get("confirm"));
                             } catch (Exception e) {
                                 autoStartCounter = 0;
                                 stopTimer();
@@ -287,7 +287,7 @@ public class SelectDB extends ActivityBase {
                         if (!(firstAndLast.x < i && firstAndLast.y > i))
                             lvDBSelection.scrollToItem(i);
                     } catch (Exception e) {
-                        Log.err(log, "select item", e);
+                        Log.err(sClass, "select item", e);
                     }
                 }
 
@@ -339,7 +339,7 @@ public class SelectDB extends ActivityBase {
 
             GL.that.renderOnce();
         } catch (Exception e) {
-            Log.err(log, "Set selected DB Visible", e);
+            Log.err(sClass, "Set selected DB Visible", e);
         }
     }
 
@@ -358,22 +358,22 @@ public class SelectDB extends ActivityBase {
         finish();
 
         if (returnListener != null)
-            returnListener.back();
+            returnListener.dbSelected();
 
     }
 
     @Override
     public void finish() {
-        GL.that.runOnGL(() -> GL.that.closeActivity(!MustSelect));
+        GL.that.runOnGL(() -> GL.that.closeActivity(!mustSelect));
     }
 
     private void setAutoStartText() {
         if (autoStartTime < 0)
-            bAutostart.setText(Translation.get("StartWithoutSelection"));
+            btnAutostart.setText(Translation.get("StartWithoutSelection"));
         else if (autoStartTime == 0)
-            bAutostart.setText(Translation.get("AutoStartDisabled"));
+            btnAutostart.setText(Translation.get("AutoStartDisabled"));
         else
-            bAutostart.setText(Translation.get("AutoStartTime", String.valueOf(autoStartTime)));
+            btnAutostart.setText(Translation.get("AutoStartTime", String.valueOf(autoStartTime)));
     }
 
     private void stopTimer() {
@@ -417,24 +417,24 @@ public class SelectDB extends ActivityBase {
 
     @Override
     public boolean canCloseWithBackKey() {
-        return !MustSelect;
+        return !mustSelect;
     }
 
     @Override
     public void dispose() {
 
-        if (bNew != null)
-            bNew.dispose();
-        bNew = null;
-        if (bSelect != null)
-            bSelect.dispose();
-        bSelect = null;
-        if (bCancel != null)
-            bCancel.dispose();
-        bCancel = null;
-        if (bAutostart != null)
-            bAutostart.dispose();
-        bAutostart = null;
+        if (btnNew != null)
+            btnNew.dispose();
+        btnNew = null;
+        if (btnSelect != null)
+            btnSelect.dispose();
+        btnSelect = null;
+        if (btnCancel != null)
+            btnCancel.dispose();
+        btnCancel = null;
+        if (btnAutostart != null)
+            btnAutostart.dispose();
+        btnAutostart = null;
         if (lvDBSelection != null)
             lvDBSelection.dispose();
         lvDBSelection = null;
@@ -450,7 +450,7 @@ public class SelectDB extends ActivityBase {
     }
 
     public interface IReturnListener {
-        void back();
+        void dbSelected();
     }
 
     private class DBItemAdapter implements Adapter {
