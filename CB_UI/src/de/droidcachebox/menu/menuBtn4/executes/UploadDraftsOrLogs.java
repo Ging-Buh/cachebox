@@ -19,19 +19,17 @@ import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
 public class UploadDraftsOrLogs {
-    private final boolean threadCancel = false;
-    private String uploadMeldung = "";
-    private boolean apiKeyError = false;
-    private ProgressDialog progressDialog;
+    String uploadMessage;
+    ProgressDialog progressDialog;
 
     public UploadDraftsOrLogs() {
     }
 
     public void upload(boolean asLog) {
+        uploadMessage = "";
+        final boolean[] apiKeyError = {false};
         final AtomicBoolean isCanceled = new AtomicBoolean(false);
-
         final RunAndReady uploadDrafts = new RunAndReady() {
-
             @Override
             public void run() {
                 progressDialog.setProgress("Upload", "", 0);
@@ -43,27 +41,20 @@ public class UploadDraftsOrLogs {
                 int count = 0;
                 int anzahl = 0;
                 for (Draft draft : drafts) {
-                    if (!draft.uploaded)
+                    if (!draft.isUploaded)
                         anzahl++;
                 }
 
                 if (anzahl > 0) {
-                    uploadMeldung = "";
-                    apiKeyError = false;
+                    uploadMessage = "";
+                    apiKeyError[0] = false;
                     for (Draft draft : drafts) {
                         if (isCanceled.get())
                             break;
-
-                        if (draft.uploaded)
+                        if (draft.isUploaded)
                             continue;
-                        if (threadCancel) // wenn im ProgressDialog Cancel gedrückt
-                            // wurde.
-                            break;
-                        // Progress status Melden
                         progressDialog.setProgress("", draft.CacheName, (100 * count) / anzahl);
-
                         int result;
-
                         if (draft.isTbDraft) {
                             // there is no TB draft. we have to log direct
                             result = GroundspeakAPI.uploadTrackableLog(draft.TravelBugCode, draft.TrackingNumber, draft.gcCode, LogType.CB_LogType2GC(draft.type), draft.timestamp, draft.comment);
@@ -73,10 +64,10 @@ public class UploadDraftsOrLogs {
                                     try {
                                         try {
                                             if (!GCVote.sendVote(Settings.GcLogin.getValue(), Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
-                                                uploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
+                                                uploadMessage += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
                                             }
                                         } catch (Exception e) {
-                                            uploadMeldung += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
+                                            uploadMessage += draft.gcCode + "\n" + "GC-Vote Error" + "\n";
                                         }
 
                                     } catch (Exception ignored) {
@@ -88,10 +79,10 @@ public class UploadDraftsOrLogs {
 
                         if (result == GroundspeakAPI.ERROR) {
                             GL.that.toast(GroundspeakAPI.LastAPIError);
-                            uploadMeldung = uploadMeldung + draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
+                            uploadMessage = uploadMessage + draft.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
                         } else {
                             // set draft as uploaded only when upload was working
-                            draft.uploaded = true;
+                            draft.isUploaded = true;
                             if (asLog && !draft.isTbDraft) {
                                 draft.gcLogReference = GroundspeakAPI.logReferenceCode;
                                 Logs.getInstance().resetRenderInitDone(); // if own log is written !
@@ -107,14 +98,14 @@ public class UploadDraftsOrLogs {
             @Override
             public void ready() {
                 if (!isCanceled.get()) {
-                    if (uploadMeldung.length() == 0) {
+                    if (uploadMessage.length() == 0) {
                         new ButtonDialog(Translation.get("uploadFinished"), Translation.get("uploadDrafts"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
                     } else {
-                        if (!apiKeyError)
-                            new ButtonDialog(uploadMeldung, Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
+                        if (!apiKeyError[0])
+                            new ButtonDialog(uploadMessage, Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
                     }
                 }
-                DraftsView.getInstance().notifyDataSetChanged();
+                new DraftsView().notifyDataSetChanged();
             }
 
             @Override

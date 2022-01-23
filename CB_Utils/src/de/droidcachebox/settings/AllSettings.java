@@ -240,11 +240,11 @@ public interface AllSettings {
     SettingFolder SpoilerFolderLocal = new SettingFolder("SpoilerFolderLocal", Internal, NEVER, "", SettingStoreType.Local, true);
     SettingInt connection_timeout = new SettingInt("conection_timeout", Internal, NEVER, 10000, Global);
     SettingInt socket_timeout = new SettingInt("socket_timeout", Internal, NEVER, 60000, Global);
-    SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", Internal, NEVER, 3, Global, trackDistanceArray);
+    SettingIntArray trackDistance = new SettingIntArray("TrackDistance", Internal, NEVER, 3, Global, trackDistanceArray);
     SettingLongString lastFilter = new SettingLongString("", Internal, NEVER, "", SettingStoreType.Local);
     SettingLongString UserFilters = new SettingLongString("UserFilters", Internal, NEVER, "", Global);
     SettingInt installedRev = new SettingInt("installRev", Internal, NEVER, 0, Global);
-    SettingInt FoundOffset = new SettingInt("FoundOffset", Internal, NEVER, 0, Global);
+    SettingInt foundOffset = new SettingInt("FoundOffset", Internal, NEVER, 0, Global);
     SettingString lastSelectedCache = new SettingString("LastSelectedCache", Internal, NEVER, "", SettingStoreType.Local);
     SettingInt routeProfile = new SettingInt("routeProfile", Internal, NEVER, 0, Global); // perhaps change to enum
     SettingBool ImportGpx = new SettingBool("ImportGpx", Internal, NEVER, false, Global);

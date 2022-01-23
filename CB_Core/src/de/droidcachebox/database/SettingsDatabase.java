@@ -1,16 +1,16 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.utils.log.Log;
 
 public class SettingsDatabase extends Database_Core {
-    private static final String sKlasse = "SettingsDatabase";
+    private static final String sClass = "SettingsDatabase";
     private static SettingsDatabase settingsDatabase;
 
     private SettingsDatabase() {
         super();
         latestDatabaseChange = DatabaseVersions.SettingsLatestVersion;
-        if (!PlatformUIBase.canNotUsePlatformSettings()) sql = PlatformUIBase.createSQLInstance();
+        if (!Platform.canNotUsePlatformSettings()) sql = Platform.createSQLInstance();
         settingsDatabase = this;
     }
 
@@ -38,7 +38,7 @@ public class SettingsDatabase extends Database_Core {
             }
             setTransactionSuccessful();
         } catch (Exception exc) {
-            Log.err(sKlasse, "alterDatabase", "", exc);
+            Log.err(sClass, "alterDatabase", "", exc);
         } finally {
             endTransaction();
         }

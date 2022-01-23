@@ -43,9 +43,11 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
     private float notesHeight;
     private Cache currentCache;
     private String notesText;
+    private final CacheDAO cacheDAO;
 
     private Notes() {
         super(ViewManager.leftTab.getContentRec(), "NotesView");
+        cacheDAO = new CacheDAO();
 
         initRow(BOTTOMUp);
         CB_Button getSolverButton = new CB_Button(Translation.get("getSolver"));
@@ -79,7 +81,7 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
         getSolverButton.setClickHandler((v, x, y, pointer, button) -> {
             String solver;
             if (currentCache != null) {
-                solver = CacheDAO.getInstance().getSolver(currentCache);
+                solver = cacheDAO.getSolver(currentCache);
             } else solver = null;
             solver = solver != null ? "<Solver>\r\n" + solver + "\r\n</Solver>" : "";
             String text = note.getText();
@@ -144,7 +146,7 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
     private void loadNotes(Cache newCache) {
         if (currentCache != newCache) {
             currentCache = newCache;
-            notesText = currentCache != null ? CacheDAO.getInstance().getNote(currentCache.generatedId) : "";
+            notesText = currentCache != null ? cacheDAO.getNote(currentCache.generatedId) : "";
             if (notesText == null)
                 notesText = "";
             note.setText(notesText);
@@ -161,7 +163,7 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
             if (text != null) {
                 try {
                     if (currentCache != null)
-                        CacheDAO.getInstance().setNote(currentCache, text);
+                        cacheDAO.setNote(currentCache, text);
                 } catch (Exception e) {
                     Log.err("NotesView", "Write note to database", e);
                 }

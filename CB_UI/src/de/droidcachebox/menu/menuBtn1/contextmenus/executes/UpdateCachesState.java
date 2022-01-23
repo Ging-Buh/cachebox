@@ -65,7 +65,7 @@ public class UpdateCachesState {
                     result = 0;
                     ArrayList<Cache> caches = new ArrayList<>();
                     float progress = 0;
-                    CacheDAO dao = CacheDAO.getInstance();
+                    CacheDAO cacheDAO = new CacheDAO();
 
                     do {
                         caches.clear();
@@ -76,7 +76,7 @@ public class UpdateCachesState {
                         skip = skip + blockSize;
                         CBDB.getInstance().beginTransaction();
                         for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
-                            if (dao.updateDatabaseCacheState(ci.cache))
+                            if (cacheDAO.updateDatabaseCacheState(ci.cache))
                                 changedCount++;
                         }
                         CBDB.getInstance().setTransactionSuccessful();

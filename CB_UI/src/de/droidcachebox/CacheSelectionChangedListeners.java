@@ -26,7 +26,7 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
             return false;
     }
 
-    public void fireEvent(final Cache selectedCache, final Waypoint waypoint) {
+    public void fire(final Cache selectedCache, final Waypoint waypoint) {
         if (selectedCache != null) {
             GlobalLocationReceiver.resetApproach();
         }

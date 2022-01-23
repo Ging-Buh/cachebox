@@ -19,7 +19,7 @@ import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
 public class CB_Skin {
-    private static final String sKlasse = "CB_Skin";
+    private static final String sClass = "CB_Skin";
 
     private static CB_Skin mINSTANCE;
 
@@ -87,7 +87,7 @@ public class CB_Skin {
                 day_skin = new Skin(Gdx.files.internal(day_skinPath));
             }
         } catch (Exception ex) {
-            Log.err(sKlasse, "Load Custom Skin", ex);
+            Log.err(sClass, "Load Custom Skin", ex);
         }
         try {
             String night_skinPath = SkinFolder + "/night/skin.json";
@@ -97,7 +97,7 @@ public class CB_Skin {
                 night_skin = new Skin(Gdx.files.internal(night_skinPath));
             }
         } catch (Exception ex) {
-            Log.err(sKlasse, "Load Custom Night Skin", ex);
+            Log.err(sClass, "Load Custom Night Skin", ex);
         }
 
     }

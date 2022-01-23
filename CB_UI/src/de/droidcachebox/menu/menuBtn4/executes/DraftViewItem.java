@@ -82,8 +82,8 @@ public class DraftViewItem extends ListViewItemBackground {
             // private void iniDateLabel() {
             SimpleDateFormat postFormatter = new SimpleDateFormat("dd.MMM (HH:mm)", Locale.US);
             String foundNumber = "";
-            if (draft.foundNumber > 0) {
-                foundNumber = "#" + draft.foundNumber + " @ ";
+            if (draft.getFoundNumber() > 0) {
+                foundNumber = "#" + draft.getFoundNumber() + " @ ";
             }
             String dateString = foundNumber + postFormatter.format(draft.timestamp);
             float DateLength = 100;
@@ -186,7 +186,7 @@ public class DraftViewItem extends ListViewItemBackground {
         float oldBlue = color.b;
 
         boolean uploaded = false;
-        if (draft.uploaded)
+        if (draft.isUploaded)
             uploaded = true;
 
         if (uploaded) {

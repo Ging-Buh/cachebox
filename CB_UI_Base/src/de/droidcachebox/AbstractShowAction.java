@@ -11,9 +11,9 @@ import de.droidcachebox.gdx.main.Menu;
  * An icon in menu is not necessary (== null)
  * the execute() in an AbstractAction has to perform the wanted action,
  * in this case normally a showView of the instance of a subclass of CB_View_Base (which extends CB_View_Base)
- *
- * by default (if not overwitten) the view has no context menu
- *
+ * <p>
+ * by default (if not overwritten) the view has no context menu
+ * <p>
  * today we have 15+2 defined ShowActions spread over the 5 main buttons by addAction in the ViewManager.java
  */
 public abstract class AbstractShowAction extends AbstractAction {
@@ -29,6 +29,7 @@ public abstract class AbstractShowAction extends AbstractAction {
 
     /**
      * returns the instance of the view<br>
+     * if not null it will be rendered (may be null)
      *
      * @return CB_View_Base
      */
@@ -42,7 +43,7 @@ public abstract class AbstractShowAction extends AbstractAction {
     }
 
     /**
-     * gibt das ContextMenu dieser View zurück
+     * returns the ContextMenu of this View
      *
      * @return the Menu
      */

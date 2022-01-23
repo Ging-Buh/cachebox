@@ -51,11 +51,10 @@ import java.util.Set;
 
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.ex_import.UnZip;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.SearchCoordinates;
@@ -81,7 +80,6 @@ import de.droidcachebox.menu.menuBtn3.executes.MapView;
 import de.droidcachebox.menu.menuBtn3.executes.MapView.MapMode;
 import de.droidcachebox.menu.menuBtn3.executes.TrackCreation;
 import de.droidcachebox.menu.menuBtn3.executes.TrackList;
-import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
 import de.droidcachebox.menu.menuBtn3.executes.TrackRecorder;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.Settings;
@@ -89,7 +87,6 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
-import de.droidcachebox.utils.StringReturner;
 import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
@@ -128,8 +125,8 @@ public class ShowMap extends AbstractShowAction {
 
     @Override
     public void execute() {
-        if (PlatformUIBase.isGPSon()) {
-            PlatformUIBase.request_getLocationIfInBackground();
+        if (Platform.isGPSon()) {
+            Platform.request_getLocationIfInBackground();
         }
         ViewManager.leftTab.showView(normalMapView);
     }
@@ -224,22 +221,16 @@ public class ShowMap extends AbstractShowAction {
                 }
             }
         }
-        icm.addMenuItem("Other", "", null, new GL_View_Base.OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                icm.close();
-                PlatformUIBase.getDocumentAccess(Settings.MapPackFolder.getValue(), new StringReturner() {
-                    @Override
-                    public void returnString(String returnUri) {
-                        MapsForgeLayer l = new MapsForgeLayer(returnUri);
-                        if (l.getName().length() > 0) {
-                            LayerManager.getInstance().activateNewList();
-                            selectLayer(l);
-                        }
-                    }
-                });
-                return true;
-            }
+        icm.addMenuItem("Other", "", null, (view, x, y, pointer, button) -> {
+            icm.close();
+            Platform.getDocumentAccess(Settings.MapPackFolder.getValue(), returnUri -> {
+                MapsForgeLayer l = new MapsForgeLayer(returnUri);
+                if (l.getName().length() > 0) {
+                    LayerManager.getInstance().activateNewList();
+                    selectLayer(l);
+                }
+            });
+            return true;
         });
 
         icm.show();
@@ -382,7 +373,7 @@ public class ShowMap extends AbstractShowAction {
                         } else {
                             TrackList.getInstance().removeRoutingTrack();
                         }
-                        TrackListView.getInstance().notifyDataSetChanged();
+                        ShowTracks.getInstance().notifyDataSetChanged();
                     }
                     return true;
                 });
@@ -390,16 +381,16 @@ public class ShowMap extends AbstractShowAction {
                 mi.setChecked(true);
             } else {
                 cm2.addMenuItem("InstallRoutingApp", Sprites.getSprite("openrouteservice_logo"),
-                        () -> PlatformUIBase.callUrl("https://play.google.com/store/apps/details?id=btools.routingapp&hl=de"));
+                        () -> Platform.callUrl("https://play.google.com/store/apps/details?id=btools.routingapp&hl=de"));
             }
         }
 
         cm2.addDivider();
-        cm2.addMenuItem("TrackDistance", null, () -> {
+        cm2.addMenuItem("",Translation.get("TrackDistance","" + Settings.trackDistance.getValue()), null, () -> {
             OptionMenu tdMenu = new OptionMenu("TrackDistance");
             tdMenu.buttonClickHandler = (btnNumber, data) -> {
                 int newValue = (Integer) data;
-                Settings.TrackDistance.setValue(newValue);
+                Settings.trackDistance.setValue(newValue);
                 Settings.getInstance().acceptChanges();
                 showMenuTrackFunctions();
                 return true;
@@ -409,21 +400,21 @@ public class ShowMap extends AbstractShowAction {
                 final int selected = i;
                 MenuItem mi = tdMenu.addMenuItem("", "" + i, null, () -> tdMenu.setData(selected));
                 mi.setCheckable(true);
-                mi.setChecked(i == Settings.TrackDistance.getValue());
+                mi.setChecked(i == Settings.trackDistance.getValue());
             }
             tdMenu.show();
         });
-        cm2.addMenuItem("start", null, TrackRecorder::startRecording).setEnabled(!TrackRecorder.recording);
-        if (TrackRecorder.pauseRecording)
-            cm2.addMenuItem("continue", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
+        cm2.addMenuItem("start", null, TrackRecorder.getInstance()::startRecording).setEnabled(!TrackRecorder.getInstance().recording);
+        if (TrackRecorder.getInstance().pauseRecording)
+            cm2.addMenuItem("continue", null, TrackRecorder.getInstance()::pauseRecording).setEnabled(TrackRecorder.getInstance().recording);
         else
-            cm2.addMenuItem("pause", null, TrackRecorder::pauseRecording).setEnabled(TrackRecorder.recording);
-        cm2.addMenuItem("stop", null, TrackRecorder::stopRecording).setEnabled(TrackRecorder.recording || TrackRecorder.pauseRecording);
+            cm2.addMenuItem("pause", null, TrackRecorder.getInstance()::pauseRecording).setEnabled(TrackRecorder.getInstance().recording);
+        cm2.addMenuItem("stop", null, TrackRecorder.getInstance()::stopRecording).setEnabled(TrackRecorder.getInstance().recording || TrackRecorder.getInstance().pauseRecording);
         cm2.addDivider();
-        cm2.addMenuItem("load", null, TrackListView.getInstance()::selectTrackFileReadAndAddToTracks);
+        cm2.addMenuItem("load", null, TrackList.getInstance()::selectTrackFileReadAndAddToTracks);
         cm2.addMenuItem("generate", null, () -> TrackCreation.getInstance().execute());
         cm2.addDivider();
-        cm2.addMenuItem("Tracks", Sprites.getSprite(IconName.trackListIcon.name()), () -> ViewManager.leftTab.showView(TrackListView.getInstance()));
+        cm2.addMenuItem("Tracks", Sprites.getSprite(IconName.trackListIcon.name()), () -> ShowTracks.getInstance().execute());
         cm2.show();
     }
 
@@ -726,7 +717,7 @@ public class ShowMap extends AbstractShowAction {
                     String ConfigStyle = getStyleFromConfig(mapStyleId);
                     showOverlaySelection(selectedThemePaN, mapStyleId, StyleOverlays, ConfigStyle);
                     return true;
-                }); // ohne Translation
+                }); // without translation
                 mi.setData(mapStyles.get(mapStyle));
             }
             menuMapStyle.show();

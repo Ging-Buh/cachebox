@@ -154,7 +154,7 @@ public class ShowLogs extends AbstractShowAction {
                                     // update LogListView
                                     Logs.getInstance().resetRenderInitDone();
                                     // for update slider, ?, ?, ? with latest logs
-                                    CacheSelectionChangedListeners.getInstance().fireEvent(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
+                                    CacheSelectionChangedListeners.getInstance().fire(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
                                 }
                             }
 

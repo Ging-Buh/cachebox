@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionPrimeIndex extends FunctionPrimeBase {
     private static final long serialVersionUID = -3417894947271978934L;
 
-    public FunctionPrimeIndex(Solver solver) {
-        super(solver);
+    public FunctionPrimeIndex(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("PrimeIndex", "en"));
         Names.add(new LocalNames("PrimIndex", "de"));
     }

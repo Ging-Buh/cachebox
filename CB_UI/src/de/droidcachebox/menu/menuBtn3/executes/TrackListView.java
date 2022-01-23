@@ -1,52 +1,57 @@
 package de.droidcachebox.menu.menuBtn3.executes;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 
-import de.droidcachebox.GlobalCore;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
+import de.droidcachebox.gdx.WrapType;
+import de.droidcachebox.gdx.activities.ColorPicker;
+import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.FileOrFolderPicker;
+import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
+import de.droidcachebox.gdx.controls.dialogs.StringInputBox;
 import de.droidcachebox.gdx.controls.list.Adapter;
+import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.graphics.HSV_Color;
+import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.gdx.views.TrackListViewItem;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.menu.menuBtn3.ShowTracks;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
-import de.droidcachebox.utils.MathUtils;
+import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
 public class TrackListView extends V_ListView {
     private final static String log = "TrackListView";
     private static CB_RectF itemRec;
-    private static TrackListView trackListView;
     private TrackListViewItem currentRouteItem;
 
-    private TrackListView() {
+    public TrackListView() {
         super(ViewManager.leftTab.getContentRec(), "TrackListView");
         itemRec = new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f);
         setBackground(Sprites.ListBack);
         // specific initialize
         setEmptyMsgItem(Translation.get("EmptyTrackList"));
         setAdapter(new TrackListViewAdapter());
-    }
-
-    public static TrackListView getInstance() {
-        if (trackListView == null) trackListView = new TrackListView();
-        return trackListView;
     }
 
     @Override
@@ -57,324 +62,16 @@ public class TrackListView extends V_ListView {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        Log.info(log, "Dataset changed");
-
     }
 
-    public TrackListViewItem getAktRouteItem() {
-        return currentRouteItem;
+    public void notifyCurrentRouteChanged() {
+        currentRouteItem.notifyTrackChanged();
+        GL.that.renderOnce();
     }
 
-    public void selectTrackFileReadAndAddToTracks() {
-        new FileOrFolderPicker(Settings.TrackFolder.getValue(), "*.gpx", Translation.get("LoadTrack"), Translation.get("load"), abstractFile -> {
-            if (abstractFile != null) {
-                readFromGpxFile(abstractFile);
-            }
-        }).show();
-    }
-
-    /**
-     * Going to assume date is always in the form:<br>
-     * 2006-05-25T08:55:01Z<br>
-     * 2006-05-25T08:56:35Z<br>
-     * <br>
-     * i.e.: yyyy-mm-ddThh-mm-ssZ <br>
-     * code from Tommi Laukkanen http://www.substanceofcode.com
-     *
-     * @param dateString ?
-     * @return ?
-     */
-    private Date parseDate(String dateString) {
-        try {
-            final int year = Integer.parseInt(dateString.substring(0, 4));
-            final int month = Integer.parseInt(dateString.substring(5, 7));
-            final int day = Integer.parseInt(dateString.substring(8, 10));
-
-            final int hour = Integer.parseInt(dateString.substring(11, 13));
-            final int minute = Integer.parseInt(dateString.substring(14, 16));
-            final int second = Integer.parseInt(dateString.substring(17, 19));
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month - 1); // Beware MONTH was counted for 0 to 11, so we have to subtract 1
-            calendar.set(Calendar.DAY_OF_MONTH, day);
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            calendar.set(Calendar.SECOND, second);
-
-            return calendar.getTime();
-        } catch (Exception ex) {
-            Log.err(log, "Exception caught trying to parse date : ", ex);
-        }
-        return null;
-    }
-
-    public void readFromGpxFile(AbstractFile abstractFile) {
-        // !!! it is possible that a gpx file contains more than 1 <trk> segments
-        // they are all added to the tracks (Tracklist)
-        ArrayList<Track> tracks = new ArrayList<>();
-        float[] dist = new float[4];
-        double distance = 0;
-        double altitudeDifference = 0;
-        double deltaAltitude;
-        CoordinateGPS fromPosition = new CoordinateGPS(0, 0);
-        BufferedReader reader;
-        HSV_Color trackColor = null;
-
-        try {
-            InputStreamReader isr = new InputStreamReader(abstractFile.getFileInputStream(), StandardCharsets.UTF_8);
-            reader = new BufferedReader(isr);
-            Track track = new Track("");
-
-            String line;
-            String tmpLine;
-            String gpxName = null;
-            boolean isSeg = false;
-            boolean isTrk = false;
-            boolean isRte = false;
-            boolean isTrkptOrRtept = false;
-            boolean readName = false;
-            int anzSegments = 0;
-
-            CoordinateGPS lastAcceptedCoordinate = null;
-            double lastAcceptedDirection = -1;
-            Date lastAcceptedTime = null;
-
-            StringBuilder sb = new StringBuilder();
-            String rline;
-            while ((rline = reader.readLine()) != null) {
-                for (int i = 0; i < rline.length(); i++) {
-                    char nextChar = rline.charAt(i);
-                    sb.append(nextChar);
-
-                    if (nextChar == '>') {
-                        line = sb.toString().trim().toLowerCase();
-                        tmpLine = sb.toString();
-                        sb = new StringBuilder();
-
-                        if (!isTrk) // Begin of the Track detected?
-                        {
-                            if (line.contains("<trk>")) {
-                                isTrk = true;
-                                continue;
-                            }
-                        }
-
-                        if (!isSeg) // Begin of the Track Segment detected?
-                        {
-                            if (line.contains("<trkseg>")) {
-                                isSeg = true;
-                                track = new Track("");
-                                track.setFileName(abstractFile.getAbsolutePath());
-                                distance = 0;
-                                altitudeDifference = 0;
-                                anzSegments++;
-                                if (gpxName == null)
-                                    track.setName(abstractFile.getName()); // FileIO.getFileName(file)
-                                else {
-                                    if (anzSegments <= 1)
-                                        track.setName(gpxName);
-                                    else
-                                        track.setName(gpxName + anzSegments);
-                                }
-                                continue;
-                            }
-                        }
-
-                        if (!isRte) // Begin of the Route detected?
-                        {
-                            if (line.contains("<rte>")) {
-                                isRte = true;
-                                track = new Track("");
-                                track.setFileName(abstractFile.getAbsolutePath());
-                                distance = 0;
-                                altitudeDifference = 0;
-                                anzSegments++;
-                                if (gpxName == null)
-                                    track.setName(abstractFile.getName()); // FileIO.getFileName(file)
-                                else {
-                                    if (anzSegments <= 1)
-                                        track.setName(gpxName);
-                                    else
-                                        track.setName(gpxName + anzSegments);
-                                }
-                                continue;
-                            }
-                        }
-
-                        if ((line.contains("<name>")) & !isTrkptOrRtept) // found <name>?
-                        {
-                            readName = true;
-                            continue;
-                        }
-
-                        if (readName & !isTrkptOrRtept) {
-                            int cdata_start;
-                            int name_start = 0;
-                            int name_end;
-
-                            name_end = line.indexOf("</name>");
-
-                            // Name contains cdata?
-                            cdata_start = line.indexOf("[cdata[");
-                            if (cdata_start > -1) {
-                                name_start = cdata_start + 7;
-                                name_end = line.indexOf("]");
-                            }
-
-                            if (name_end > name_start) {
-                                // tmpLine, damit Groß-/Kleinschreibung beachtet wird
-                                if (isSeg || isRte)
-                                    track.setName(tmpLine.substring(name_start, name_end));
-                                else
-                                    gpxName = tmpLine.substring(name_start, name_end);
-                            }
-
-                            readName = false;
-                            continue;
-                        }
-
-                        if (line.contains("</trkseg>")) // End of the Track Segment detected?
-                        {
-                            if (track.getTrackPoints().size() < 2)
-                                track.setName("no Route segment found");
-                            track.setVisible(true);
-                            track.setTrackLength(distance);
-                            track.setAltitudeDifference(altitudeDifference);
-                            tracks.add(track);
-                            isSeg = false;
-                            break;
-                        }
-
-                        if (line.contains("</rte>")) // End of the Route detected?
-                        {
-                            if (track.getTrackPoints().size() < 2)
-                                track.setName("no Route segment found");
-                            track.setVisible(true);
-                            track.setTrackLength(distance);
-                            track.setAltitudeDifference(altitudeDifference);
-                            tracks.add(track);
-                            isRte = false;
-                            break;
-                        }
-
-                        if ((line.contains("<trkpt")) || (line.contains("<rtept"))) {
-                            isTrkptOrRtept = true;
-                            // Trackpoint lesen
-                            int lonIdx = line.indexOf("lon=\"") + 5;
-                            int latIdx = line.indexOf("lat=\"") + 5;
-
-                            int lonEndIdx = line.indexOf("\"", lonIdx);
-                            int latEndIdx = line.indexOf("\"", latIdx);
-
-                            String latStr = line.substring(latIdx, latEndIdx);
-                            String lonStr = line.substring(lonIdx, lonEndIdx);
-
-                            double lat = Double.parseDouble(latStr);
-                            double lon = Double.parseDouble(lonStr);
-
-                            lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
-                        }
-
-                        if (line.contains("</time>")) {
-                            // Time lesen
-                            int timIdx = line.indexOf("<time>") + 6;
-                            if (timIdx == 5)
-                                timIdx = 0;
-                            int timEndIdx = line.indexOf("</time>", timIdx);
-
-                            String timStr = line.substring(timIdx, timEndIdx);
-
-                            lastAcceptedTime = parseDate(timStr);
-                        }
-
-                        if (line.contains("</course>")) {
-                            // Course lesen
-                            int couIdx = line.indexOf("<course>") + 8;
-                            if (couIdx == 7)
-                                couIdx = 0;
-                            int couEndIdx = line.indexOf("</course>", couIdx);
-
-                            String couStr = line.substring(couIdx, couEndIdx);
-
-                            lastAcceptedDirection = Double.parseDouble(couStr);
-
-                        }
-
-                        if ((line.contains("</ele>")) & isTrkptOrRtept) {
-                            // Elevation lesen
-                            int couIdx = line.indexOf("<ele>") + 5;
-                            if (couIdx == 4)
-                                couIdx = 0;
-                            int couEndIdx = line.indexOf("</ele>", couIdx);
-
-                            String couStr = line.substring(couIdx, couEndIdx);
-
-                            lastAcceptedCoordinate.setElevation(Double.parseDouble(couStr));
-
-                        }
-
-                        if (line.contains("</gpxx:colorrgb>")) {
-                            // Color lesen
-                            int couIdx = line.indexOf("<gpxx:colorrgb>") + 15;
-                            if (couIdx == 14)
-                                couIdx = 0;
-                            int couEndIdx = line.indexOf("</gpxx:colorrgb>", couIdx);
-
-                            String couStr = line.substring(couIdx, couEndIdx);
-                            trackColor = new HSV_Color(couStr);
-                            track.setColor(trackColor);
-                        }
-
-                        if ((line.contains("</trkpt>")) || (line.contains("</rtept>")) || ((line.contains("/>")) & isTrkptOrRtept)) {
-                            // trkpt abgeschlossen, jetzt kann der Trackpunkt erzeugt werden
-                            isTrkptOrRtept = false;
-                            if (lastAcceptedCoordinate != null) {
-                                track.getTrackPoints().add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getElevation(), lastAcceptedDirection, lastAcceptedTime));
-
-                                // Calculate the length of a Track
-                                if (!fromPosition.isValid()) {
-                                    fromPosition = new CoordinateGPS(lastAcceptedCoordinate);
-                                    fromPosition.setElevation(lastAcceptedCoordinate.getElevation());
-                                    fromPosition.setValid(true);
-                                } else {
-                                    MathUtils.computeDistanceAndBearing(MathUtils.CalculationType.ACCURATE, fromPosition.getLatitude(), fromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
-                                    distance = distance + dist[0];
-                                    deltaAltitude = Math.abs(fromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
-                                    fromPosition = new CoordinateGPS(lastAcceptedCoordinate);
-
-                                    if (deltaAltitude >= 25.0) // nur aufaddieren wenn Höhenunterschied größer 10 Meter
-                                    {
-                                        fromPosition.setElevation(lastAcceptedCoordinate.getElevation());
-                                        altitudeDifference = altitudeDifference + deltaAltitude;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            reader.close();
-        } catch (IOException ex) {
-            Log.err(log, "readFromGpxFile", ex);
-        }
-        for (Track track : tracks) {
-            if (trackColor != null) track.setColor(trackColor);
-            TrackList.getInstance().addTrack(track);
-        }
-        notifyDataSetChanged();
-
-    }
-
-    public void loadTrack(String trackPath, String file) {
-        // used by autoload
-        String absolutPath;
-        if (file.equals("")) {
-            absolutPath = trackPath;
-        } else {
-            absolutPath = trackPath + "/" + file;
-        }
-        readFromGpxFile(FileFactory.createFile(absolutPath));
+    @Override
+    public void onHide() {
+        ShowTracks.getInstance().onHide();
     }
 
     public class TrackListViewAdapter implements Adapter {
@@ -385,18 +82,18 @@ public class TrackListView extends V_ListView {
         @Override
         public int getCount() {
             int size = TrackList.getInstance().getNumberOfTracks();
-            if (GlobalCore.currentRoute != null)
+            if (TrackList.getInstance().currentRoute != null)
                 size++;
             return size;
         }
 
         @Override
         public ListViewItemBase getView(int viewPosition) {
-            Log.info(log, "get track item number " + viewPosition + " (" + (GlobalCore.currentRoute != null ? "with " : "without ") + "tracking." + ")");
+            Log.info(log, "get track item number " + viewPosition + " (" + (TrackList.getInstance().currentRoute != null ? "with " : "without ") + "tracking." + ")");
             int tracksIndex = viewPosition;
-            if (GlobalCore.currentRoute != null) {
+            if (TrackList.getInstance().currentRoute != null) {
                 if (viewPosition == 0) {
-                    currentRouteItem = new TrackListViewItem(itemRec, viewPosition, GlobalCore.currentRoute);
+                    currentRouteItem = new TrackListViewItem(itemRec, viewPosition, TrackList.getInstance().currentRoute);
                     return currentRouteItem;
                 }
                 tracksIndex--; // viewPosition - 1, if tracking is activated
@@ -406,13 +103,312 @@ public class TrackListView extends V_ListView {
 
         @Override
         public float getItemSize(int position) {
-            if (GlobalCore.currentRoute != null && position == 1) {
+            if (TrackList.getInstance().currentRoute != null && position == 1) {
                 // so there is a distance between aktuelleRoute and the others
                 return itemRec.getHeight() + itemRec.getHalfHeight();
             }
             return itemRec.getHeight();
         }
 
+    }
+
+    private class TrackListViewItem extends ListViewItemBackground {
+        private final static String log = "TrackListViewItem";
+        private final Track track;
+        private Sprite chkOff;
+        private Sprite chkOn;
+        private CB_RectF colorIcon;
+        private CB_RectF checkBoxIcon;
+        private CB_RectF scaledCheckBoxIcon;
+        private float left;
+        private CB_Label trackName;
+        private CB_Label trackLength;
+        private Sprite colorReck;
+
+        public TrackListViewItem(CB_RectF rec, int index, Track track) {
+            super(rec, index, track.getName());
+            this.track = track;
+            setClickHandler((v, x, y, pointer, button) -> {
+                TrackListViewItem clickedItem = (TrackListViewItem) v;
+                setSelection(clickedItem.getIndex());
+                Vector2 clickedPosition = new Vector2(x, y);
+                if (colorIcon.contains(clickedPosition)) {
+                    colorIconClicked();
+                } else if (checkBoxIcon.contains(clickedPosition)) {
+                    checkBoxIconClicked();
+                } else {
+                    Menu cm = new Menu("TrackRecordMenuTitle");
+                    cm.addMenuItem("ShowOnMap", Sprites.getSprite(Sprites.IconName.targetDay.name()), this::positionLatLon);
+                    cm.addMenuItem("rename", null, this::setTrackName);
+                    cm.addMenuItem("save", Sprites.getSprite(Sprites.IconName.save.name()), this::saveAsFile);
+                    cm.addMenuItem("unload", null, this::unloadTrack);
+
+                    // (rename, save,) delete darf nicht mit dem aktuellen Track gemacht werden....
+                    if (!this.track.isActualTrack()) {
+                        if (this.track.getFileName().length() > 0) {
+                            if (!this.track.isActualTrack()) {
+                                AbstractFile trackAbstractFile = FileFactory.createFile(this.track.getFileName());
+                                if (trackAbstractFile.exists()) {
+                                    cm.addMenuItem("delete", Sprites.getSprite(Sprites.IconName.DELETE.name()), () -> {
+                                        ButtonDialog bd = new ButtonDialog(Translation.get("DeleteTrack"),
+                                                Translation.get("DeleteTrack"),
+                                                MsgBoxButton.YesNo,
+                                                MsgBoxIcon.Question);
+                                        bd.setButtonClickHandler((which, data) -> {
+                                            if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
+                                                try {
+                                                    trackAbstractFile.delete();
+                                                    TrackList.getInstance().removeTrack(TrackListViewItem.this.track);
+                                                    notifyDataSetChanged();
+                                                } catch (Exception ex) {
+                                                    new ButtonDialog(ex.toString(), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
+                                                }
+                                            }
+                                            return true;
+                                        });
+                                        bd.show();
+                                    });
+                                }
+                            }
+                        }
+                    }
+
+                    cm.show();
+                }
+                return true;
+            });
+        }
+
+        private void positionLatLon() {
+            if (track.getTrackPoints().size() > 0) {
+                TrackPoint trackpoint = track.getTrackPoints().get(0);
+                double latitude = trackpoint.y;
+                double longitude = trackpoint.x;
+                ShowMap.getInstance().execute();
+                ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
+                // ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
+                ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(latitude, longitude));
+            }
+        }
+
+        @Override
+        protected void render(Batch batch) {
+            super.render(batch);
+            left = getLeftWidth();
+            drawColorRec(batch);
+            if (trackName == null || trackLength == null) {
+                createLabel();
+            }
+            drawRightChkBox(batch);
+        }
+
+        private void createLabel() {
+            if (trackName == null) {
+                CB_RectF rec = new CB_RectF(left, getHeight() / 2, getWidth() - left - getHeight() - 10, getHeight() / 2);
+                trackName = new CB_Label(rec);
+                trackName.setText(track.getName());
+                addChild(trackName);
+            }
+
+            // draw Length
+            if (trackLength == null) {
+                CB_RectF rec = new CB_RectF(left, 0, getWidth() - left - getHeight() - 10, getHeight() / 2);
+                trackLength = new CB_Label(name + " EntryLength", rec, "");
+                trackLength.setText(Translation.get("length") + ": " + UnitFormatter.distanceString((float) track.getTrackLength()) + " / " + UnitFormatter.distanceString((float) track.getAltitudeDifference()));
+                addChild(trackLength);
+            }
+
+            GL.that.renderOnce();
+        }
+
+        private void drawColorRec(Batch batch) {
+            if (track == null)
+                return;
+            if (colorIcon == null) {
+                colorIcon = new CB_RectF(0, 0, getHeight(), getHeight());
+                colorIcon = colorIcon.scaleCenter(0.95f);
+            }
+
+            if (colorReck == null) {
+                colorReck = Sprites.getSprite("text-field-back");
+                colorReck.setBounds(colorIcon.getX(), colorIcon.getY(), colorIcon.getWidth(), colorIcon.getHeight());
+                colorReck.setColor(track.getColor());
+            }
+
+            colorReck.draw(batch);
+
+            left += colorIcon.getWidth() + UiSizes.getInstance().getMargin();
+
+        }
+
+        private void drawRightChkBox(Batch batch) {
+            if (checkBoxIcon == null || scaledCheckBoxIcon == null) {
+                checkBoxIcon = new CB_RectF(getWidth() - getHeight() - 10, 5, getHeight() - 10, getHeight() - 10);
+                scaledCheckBoxIcon = checkBoxIcon.scaleCenter(0.8f);
+            }
+
+            if (chkOff == null) {
+                chkOff = Sprites.getSprite("check-off");
+                chkOff.setBounds(scaledCheckBoxIcon.getX(), scaledCheckBoxIcon.getY(), scaledCheckBoxIcon.getWidth(), scaledCheckBoxIcon.getHeight());
+            }
+
+            if (chkOn == null) {
+                chkOn = Sprites.getSprite("check-on");
+                chkOn.setBounds(scaledCheckBoxIcon.getX(), scaledCheckBoxIcon.getY(), scaledCheckBoxIcon.getWidth(), scaledCheckBoxIcon.getHeight());
+            }
+
+            if (track.isVisible()) {
+                chkOn.draw(batch);
+            } else {
+                chkOff.draw(batch);
+            }
+
+        }
+
+        private void checkBoxIconClicked() {
+            GL.that.runOnGL(() -> {
+                track.setVisible(!track.isVisible());
+                TrackList.getInstance().trackListChanged();
+            });
+            GL.that.renderOnce();
+        }
+
+        private void colorIconClicked() {
+            GL.that.runOnGL(() -> {
+                ColorPicker clrPick = new ColorPicker(track.getColor(), color -> {
+                    if (color == null) return;
+                    track.setColor(color);
+                    colorReck = null;
+                });
+                clrPick.show();
+            });
+            GL.that.renderOnce();
+        }
+
+        public void notifyTrackChanged() {
+            if (trackLength != null)
+                trackLength.setText(Translation.get("length") + ": " + UnitFormatter.distanceString((float) track.getTrackLength()) + " / " + UnitFormatter.distanceString((float) track.getAltitudeDifference()));
+        }
+
+        public Track getTrack() {
+            return track;
+        }
+
+        private void setTrackName() {
+            StringInputBox stringInputBox = new StringInputBox("", Translation.get("RenameTrack"), track.getName(), WrapType.SINGLELINE);
+            stringInputBox.setButtonClickHandler((which, data) -> {
+                String text = StringInputBox.editTextField.getText();
+                if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
+                    track.setName(text);
+                    notifyDataSetChanged();
+                }
+                return true;
+            });
+            stringInputBox.showAtTop();
+        }
+
+        private void saveAsFile() {
+            if (track.getName().length() > 0) {
+                new FileOrFolderPicker(Settings.TrackFolder.getValue(),
+                        Translation.get("SaveTrack"),
+                        Translation.get("save"),
+                        abstractFile -> {
+                            if (abstractFile != null) {
+                                String trackName = track.getName().replaceAll("[^a-zA-Z0-9_\\.\\-]", "_");
+                                String extension = track.getName().toLowerCase().endsWith(".gpx") ? "" : ".gpx";
+                                AbstractFile f = FileFactory.createFile(abstractFile, trackName + extension);
+                                saveRoute(f, track);
+                                if (f.exists()) {
+                                    track.setFileName(f.getAbsolutePath());
+                                    Log.info(log, f.getAbsolutePath() + " saved.");
+                                } else {
+                                    Log.err(log, "Error saving " + abstractFile + "/" + track.getName() + extension);
+                                }
+                            }
+                        }).show();
+            } else {
+                // existing gpx-file
+                new FileOrFolderPicker(Settings.TrackFolder.getValue(),
+                        "*.gpx",
+                        Translation.get("SaveTrack"),
+                        Translation.get("save"),
+                        abstractFile -> {
+                            if (abstractFile != null) {
+                                saveRoute(abstractFile, track);
+                                Log.debug("TrackListViewItem", "Load Track :" + abstractFile);
+                            }
+                        }).show();
+            }
+        }
+
+        private void saveRoute(AbstractFile gpxAbstractFile, Track track) {
+            FileWriter writer = null;
+            try {
+                writer = gpxAbstractFile.getFileWriter();
+                try {
+                    writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+                    writer.append(
+                            "<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
+
+                    Date now = new Date();
+                    SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    String sDate = datFormat.format(now);
+                    datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                    sDate += "T" + datFormat.format(now) + "Z";
+                    writer.append("<time>").append(sDate).append("</time>\n");
+
+                    writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
+
+                    writer.append("<trk>\n");
+                    writer.append("<name>").append(track.getName()).append("</name>\n");
+                    writer.append("<extensions>\n<gpxx:TrackExtension>\n");
+                    writer.append("<gpxx:ColorRGB>").append(track.getColor().toString()).append("</gpxx:ColorRGB>\n");
+                    writer.append("</gpxx:TrackExtension>\n</extensions>\n");
+                    writer.append("<trkseg>\n");
+                    writer.flush();
+                } catch (IOException e) {
+                    Log.err(log, "SaveTrack", e);
+                }
+            } catch (IOException e1) {
+                Log.err(log, "SaveTrack", e1);
+            }
+
+            if (writer != null) {
+                try {
+                    for (int i = 0; i < track.getTrackPoints().size(); i++) {
+                        writer.append("<trkpt lat=\"").append(String.valueOf(track.getTrackPoints().get(i).y)).append("\" lon=\"").append(String.valueOf(track.getTrackPoints().get(i).x)).append("\">\n");
+
+                        writer.append("   <ele>").append(String.valueOf(track.getTrackPoints().get(i).elevation)).append("</ele>\n");
+                        Date dtmp = track.getTrackPoints().get(i).date;
+                        if (dtmp != null) {
+                            SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                            String sDate = datFormat.format(dtmp);
+                            datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                            sDate += "T" + datFormat.format(track.getTrackPoints().get(i).date) + "Z";
+                            writer.append("   <time>").append(sDate).append("</time>\n");
+                        }
+                        writer.append("</trkpt>\n");
+                    }
+                    writer.append("</trkseg>\n");
+                    writer.append("</trk>\n");
+                    writer.append("</gpx>\n");
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e) {
+                    Log.err(log, "SaveTrack", e);
+                }
+            }
+        }
+
+        private void unloadTrack() {
+            if (track.isActualTrack()) {
+                new ButtonDialog(Translation.get("IsActualTrack"), null, MsgBoxButton.OK, MsgBoxIcon.Warning).show();
+            } else {
+                TrackList.getInstance().removeTrack(track); // index passt nicht mehr
+                notifyDataSetChanged();
+                dispose();
+            }
+        }
     }
 
 }

@@ -8,8 +8,8 @@ public class FunctionIntersection extends Function {
 
     private static final long serialVersionUID = 8472007835430135995L;
 
-    public FunctionIntersection(Solver solver) {
-        super(solver);
+    public FunctionIntersection(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Intersection", "en"));
         Names.add(new LocalNames("Schnittpunkt", "de"));
     }

@@ -1,19 +1,19 @@
 package de.droidcachebox.solver;
 
-import de.droidcachebox.translation.Translation;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import de.droidcachebox.translation.Translation;
 
 public abstract class Function implements Serializable {
 
     private static final long serialVersionUID = 3322289615650829139L;
     public ArrayList<LocalNames> Names = new ArrayList<>();
-    protected Solver solver;
+    protected SolverLines solverLines;
 
-    public Function(Solver solver) {
-        this.solver = solver;
+    public Function(SolverLines solverLines) {
+        this.solverLines = solverLines;
     }
 
     public Function() {
@@ -103,9 +103,9 @@ public abstract class Function implements Serializable {
                 return false;
             if (pos == 0) {
                 // Insert new Entity
-                TempEntity rechts = new TempEntity(solver, -1, tEntity.Text.substring(pos1, pos2 + 1));
+                TempEntity rechts = new TempEntity(solverLines, -1, tEntity.Text.substring(pos1, pos2 + 1));
                 entities.Insert(rechts);
-                FunctionEntity fEntity = new FunctionEntity(solver, -1, this, rechts);
+                FunctionEntity fEntity = new FunctionEntity(solverLines, -1, this, rechts);
                 String var = entities.Insert(fEntity);
                 tEntity.Text = var;
                 return true;

@@ -80,8 +80,7 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.FZKDownload;
-import de.droidcachebox.menu.menuBtn5.SettingsAction;
-import de.droidcachebox.menu.menuBtn5.executes.SettingsActivity;
+import de.droidcachebox.menu.menuBtn5.ShowSettings;
 import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.SettingInt;
@@ -95,7 +94,7 @@ import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.StringReturner;
 import de.droidcachebox.utils.log.Log;
 
-public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, LocationListener {
+public class AndroidPlatformMethods implements Platform.PlatformMethods, LocationListener {
     private static final String sClass = "PlatformListener";
     private static final int REQUEST_GET_APIKEY = 987654321;
     private static final int ACTION_OPEN_DOCUMENT_TREE = 6518;
@@ -120,7 +119,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
     private boolean lostCheck = false;
     private boolean askForLocationPermission;
 
-    AndroidUIBaseMethods(Main main) {
+    AndroidPlatformMethods(Main main) {
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
@@ -358,9 +357,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
                 handlingGetApiAuth = (requestCode, resultCode, data) -> {
                     androidApplication.removeAndroidEventListener(handlingGetApiAuth);
                     if (requestCode == REQUEST_GET_APIKEY) {
-                        if (SettingsAction.getInstance().isExecuting) {
-                            SettingsActivity.getInstance().resortList(); // to view the new setting
-                        }
+                        ShowSettings.getInstance().returnFromFetchingApiKey(); // to view the new setting
                     }
                 };
             androidApplication.addAndroidEventListener(handlingGetApiAuth);
@@ -432,7 +429,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
         // viewmanager must have been initialized
         final Bundle extras = mainActivity.getIntent().getExtras();
         if (extras != null) {
-            // Log.trace(sKlasse, "prepared Request from splash");
+            // Log.trace(sClass, "prepared Request from splash");
             if (ViewManager.that.isInitialized()) {
                 String externalRequestGCCode = extras.getString("GcCode");
                 if (externalRequestGCCode != null) {
@@ -674,7 +671,7 @@ public class AndroidUIBaseMethods implements PlatformUIBase.UIBaseMethods, Locat
             public void run() {
                 if (externalRequestGCCode != null) {
                     mainActivity.runOnUiThread(() -> {
-                        Log.info("importCacheByGCCode","mustShowCacheList: " + mustShowCacheList);
+                        Log.info("importCacheByGCCode", "mustShowCacheList: " + mustShowCacheList);
                         if (mustShowCacheList) {
                             // show cachelist first then search dialog
                             mustShowCacheList = false;

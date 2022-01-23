@@ -26,15 +26,14 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.gdx.GL;
+import de.droidcachebox.Platform;
 import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.CBLocation.ProviderType;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.Locator.CompassType;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.menu.menuBtn3.ShowTracks;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -48,34 +47,45 @@ public class TrackRecorder {
     private static final String log = "TrackRecorder";
     private final static ProviderType GPS = ProviderType.GPS;
     private final static CompassType _GPS = CompassType.GPS;
-    public static boolean pauseRecording = false;
-    public static boolean recording = false;
-    public static int distanceForNextTrackpoint;
-    private static double savedAltitude = 0;
-    private static CBLocation lastRecordedPosition = CBLocation.NULL_LOCATION;
-    private static String mFriendlyName = "";
-    private static String mMediaPath = "";
-    private static CBLocation mMediaCoord = null;
-    private static String mTimestamp = "";
-    private static AbstractFile gpxfile = null;
-    private static boolean writeAnnotateMedia = false;
-    private static int insertPos = 24;
-    private static boolean mustWriteMedia = false;
-    private static boolean mustRecPos = false;
-    private static boolean writePos = false;
+    private static TrackRecorder instance;
+    public boolean pauseRecording = false;
+    public boolean recording = false;
+    public int distanceForNextTrackpoint;
+    private double savedAltitude = 0;
+    private CBLocation lastRecordedPosition = CBLocation.NULL_LOCATION;
+    private String mFriendlyName = "";
+    private String mMediaPath = "";
+    private CBLocation mMediaCoord = null;
+    private String mTimestamp = "";
+    private AbstractFile gpxfile = null;
+    private boolean writeAnnotateMedia = false;
+    private int insertPos = 24;
+    private boolean mustWriteMedia = false;
+    private boolean mustRecPos = false;
+    private boolean writePos = false;
+    private int currentRouteCount = 0;
 
-    public static void startRecording() {
-        if (PlatformUIBase.request_getLocationIfInBackground()) {
+    private TrackRecorder() {
 
-            distanceForNextTrackpoint = Settings.TrackDistance.getValue();
+    }
 
-            GlobalCore.currentRoute = new Track(Translation.get("actualTrack"));
-            GlobalCore.currentRoute.setColor(Color.BLUE);
-            GlobalCore.currentRoute.setVisible(true);
-            GlobalCore.currentRoute.setActualTrack(true);
-            GlobalCore.currentRouteCount = 0;
-            GlobalCore.currentRoute.setTrackLength(0);
-            GlobalCore.currentRoute.setAltitudeDifference(0);
+    public static TrackRecorder getInstance() {
+        if (instance == null) instance = new TrackRecorder();
+        return instance;
+    }
+
+    public void startRecording() {
+        if (Platform.request_getLocationIfInBackground()) {
+
+            distanceForNextTrackpoint = Settings.trackDistance.getValue();
+            Track currentRoute = new Track(Translation.get("actualTrack"));
+            currentRoute.setColor(Color.BLUE);
+            currentRoute.setVisible(true);
+            currentRoute.setActualTrack(true);
+            currentRouteCount = 0;
+            currentRoute.setTrackLength(0);
+            currentRoute.setAltitudeDifference(0);
+            TrackList.getInstance().currentRoute = currentRoute;
 
             String directory = Settings.TrackFolder.getValue();
             if (!FileIO.createDirectory(directory))
@@ -101,11 +111,11 @@ public class TrackRecorder {
             pauseRecording = false;
             recording = true;
 
-            TrackListView.getInstance().notifyDataSetChanged();
+            ShowTracks.getInstance().notifyDataSetChanged();
         }
     }
 
-    private static String getDateTimeString() {
+    private String getDateTimeString() {
         Date timestamp = new Date();
         SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -116,7 +126,7 @@ public class TrackRecorder {
         return sDate;
     }
 
-    public static void annotateMedia(final String friendlyName, final String mediaPath, final CBLocation location, final String timestamp) {
+    public void annotateMedia(final String friendlyName, final String mediaPath, final CBLocation location, final String timestamp) {
         if (location == null)
             return;
         writeAnnotateMedia = true;
@@ -177,7 +187,7 @@ public class TrackRecorder {
         recordPosition();
     }
 
-    public static void recordPosition() {
+    public void recordPosition() {
 
         if (gpxfile == null || pauseRecording || !Locator.getInstance().isGPSprovided())
             return;
@@ -241,21 +251,18 @@ public class TrackRecorder {
 
                 NewPoint = new TrackPoint(Locator.getInstance().getLongitude(GPS), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getAlt(), Locator.getInstance().getHeading(_GPS), new Date());
 
-                GlobalCore.currentRoute.getTrackPoints().add(NewPoint);
+                TrackList.getInstance().currentRoute.getTrackPoints().add(NewPoint);
 
                 // notify TrackListView (if already created)
-                if (TrackListView.getInstance().getAktRouteItem() != null) {
-                    TrackListView.getInstance().getAktRouteItem().notifyTrackChanged();
-                    GL.that.renderOnce();
-                }
+                ShowTracks.getInstance().notifyCurrentRouteChanged();
 
                 TrackList.getInstance().trackListChanged();
                 lastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();
-                GlobalCore.currentRoute.setTrackLength(GlobalCore.currentRoute.getTrackLength() + cachedDistance);
+                TrackList.getInstance().currentRoute.setTrackLength(TrackList.getInstance().currentRoute.getTrackLength() + cachedDistance);
 
                 AltDiff = Math.abs(savedAltitude - Locator.getInstance().getAlt());
                 if (AltDiff >= 25) {
-                    GlobalCore.currentRoute.setAltitudeDifference(GlobalCore.currentRoute.getAltitudeDifference() + AltDiff);
+                    TrackList.getInstance().currentRoute.setAltitudeDifference(TrackList.getInstance().currentRoute.getAltitudeDifference() + AltDiff);
                     savedAltitude = Locator.getInstance().getAlt();
                 }
                 writePos = false;
@@ -268,21 +275,21 @@ public class TrackRecorder {
         }
     }
 
-    public static void pauseRecording() {
+    public void pauseRecording() {
         pauseRecording = !pauseRecording;
     }
 
-    public static void stopRecording() {
-        if (GlobalCore.currentRoute != null) {
-            GlobalCore.currentRoute.setActualTrack(false);
-            GlobalCore.currentRoute.setName(Translation.get("recordetTrack"));
+    public void stopRecording() {
+        if (TrackList.getInstance().currentRoute != null) {
+            TrackList.getInstance().currentRoute.setActualTrack(false);
+            TrackList.getInstance().currentRoute.setName(Translation.get("recordetTrack"));
         }
         pauseRecording = false;
         recording = false;
         gpxfile = null;
     }
 
-    private static String generateTrackFileName() {
+    private String generateTrackFileName() {
         SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.US);
         String sDate = datFormat.format(new Date());
         return "Track_" + sDate + ".gpx";

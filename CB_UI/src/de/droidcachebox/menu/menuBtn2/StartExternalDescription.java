@@ -25,7 +25,7 @@ import java.util.LinkedList;
 
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.database.CacheDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
@@ -60,12 +60,13 @@ public class StartExternalDescription extends AbstractAction {
     @Override
     public void execute() {
         if (getEnabled()) {
+            CacheDAO cacheDAO = new CacheDAO();
 
             //save desc Html local and show ext
             Cache cache = GlobalCore.getSelectedCache();
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String cachehtml = CacheDAO.getInstance().getShortDescription(cache) + CacheDAO.getInstance().getDescription(cache);
+            String cachehtml = cacheDAO.getShortDescription(cache) + cacheDAO.getDescription(cache);
             String html = DescriptionImageGrabber.resolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
             String header = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" /></head><body>";
             html = header + html;
@@ -82,7 +83,7 @@ public class StartExternalDescription extends AbstractAction {
                 out.write(html);
                 out.close();
 
-                PlatformUIBase.callUrl("file://" + filePath);
+                Platform.callUrl("file://" + filePath);
 
             } catch (IOException ex) {
                 Log.err(log, "Write Temp HTML", ex);

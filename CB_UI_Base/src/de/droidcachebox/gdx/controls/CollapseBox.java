@@ -8,7 +8,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 
 public class CollapseBox extends Box {
     private final CollapseBox that;
-    private final long ANIMATION_TICK = 50;
     private float maxHeight = -1;
     private boolean collapse = false;
     private float mAnimationTarget = 0;
@@ -55,6 +54,7 @@ public class CollapseBox extends Box {
         stopTimer();
 
         mAnimationTimer = new Timer();
+        long ANIMATION_TICK = 50;
         mAnimationTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -66,7 +66,7 @@ public class CollapseBox extends Box {
                 if ((collapseAnimation && mAnimationTarget + 1.5 > that.getHeight()) || (!collapseAnimation && mAnimationTarget - 1.5 < that.getHeight())) {
                     setAnimationHeight(mAnimationTarget);
                     stopTimer();
-                    collapse = (mAnimationTarget == 0) ? true : false;
+                    collapse = mAnimationTarget == 0;
                     return;
                 }
 

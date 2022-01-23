@@ -4,45 +4,44 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.utils.FileFactory;
 
-public class Category extends ArrayList<de.droidcachebox.dataclasses.GpxFilename> implements Comparable<Category> {
+public class Category extends ArrayList<GpxFilename> implements Comparable<Category> {
     /**
      *
      */
     private static final long serialVersionUID = -7257078663021910097L;
-    public long Id;
-    public String GpxFilename;
+    public long categoryId;
+    public String gpxFileName;
     public boolean pinned;
-    public boolean Checked;
+    public boolean checked;
 
     public Category() {
-
     }
 
     /**
      * Does not check if filename not already exists in this category
      *
-     * @param filename
-     * @return
+     * @param fileName .
+     * @return .
      */
-    public GpxFilename addGpxFilename(String filename) {
-        filename = FileFactory.createFile(filename).getName();
+    public GpxFilename addGpxFilename(String fileName) {
+        fileName = FileFactory.createFile(fileName).getName();
 
         Parameters args = new Parameters();
-        args.put("GPXFilename", filename);
-        args.put("CategoryId", this.Id);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String stimestamp = iso8601Format.format(new Date());
-        args.put("Imported", stimestamp);
+        args.put("GPXFilename", fileName);
+        args.put("CategoryId", categoryId);
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        String sTimeStamp = iso8601Format.format(new Date());
+        args.put("Imported", sTimeStamp);
         try {
             CBDB.getInstance().insert("GpxFilenames", args);
-        } catch (Exception exc) {
-            //Log.err(log, "CreateNewGpxFilename", filename, exc);
+        } catch (Exception ignored) {
         }
 
         long GPXFilename_ID = 0;
@@ -53,23 +52,22 @@ public class Category extends ArrayList<de.droidcachebox.dataclasses.GpxFilename
             GPXFilename_ID = reader.getLong(0);
         }
         reader.close();
-        GpxFilename result = new GpxFilename(GPXFilename_ID, filename, this.Id);
+        GpxFilename result = new GpxFilename(GPXFilename_ID, fileName, categoryId);
         this.add(result);
         return result;
     }
 
-    public GpxFilename addGpxFilename(String filename, Date importedDate) {
+    public GpxFilename addGpxFilename(String fileName, Date importedDate) {
 
         Parameters args = new Parameters();
-        args.put("GPXFilename", filename);
-        args.put("CategoryId", this.Id);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String stimestamp = iso8601Format.format(importedDate);
-        args.put("Imported", stimestamp);
+        args.put("GPXFilename", fileName);
+        args.put("CategoryId", categoryId);
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        String sTimeStamp = iso8601Format.format(importedDate);
+        args.put("Imported", sTimeStamp);
         try {
             CBDB.getInstance().insert("GpxFilenames", args);
-        } catch (Exception exc) {
-            //Log.err(log, "CreateNewGpxFilename", filename, exc);
+        } catch (Exception ignored) {
         }
 
         long GPXFilename_ID = 0;
@@ -80,7 +78,7 @@ public class Category extends ArrayList<de.droidcachebox.dataclasses.GpxFilename
             GPXFilename_ID = reader.getLong(0);
         }
         reader.close();
-        GpxFilename result = new GpxFilename(GPXFilename_ID, filename, this.Id);
+        GpxFilename result = new GpxFilename(GPXFilename_ID, fileName, this.categoryId);
         this.add(result);
         return result;
     }
@@ -88,19 +86,19 @@ public class Category extends ArrayList<de.droidcachebox.dataclasses.GpxFilename
     public int CacheCount() {
         int result = 0;
         for (GpxFilename gpx : this)
-            result += gpx.CacheCount;
+            result += gpx.numberOfGeocaches;
         return result;
     }
 
     public Date LastImported() {
         if (size() == 0)
             return new Date();
-        return this.get(this.size() - 1).Imported;
+        return this.get(this.size() - 1).importedDate;
     }
 
     public String GpxFilenameWoNumber() {
-        // Nummer der PQ weglassen, wenn dahinter noch eine Bezeichnung kommt.
-        String name = GpxFilename;
+        // ignore number of PQ, if has description.
+        String name = gpxFileName;
         int pos = name.indexOf('_');
         if (pos < 0)
             return name;
@@ -108,7 +106,7 @@ public class Category extends ArrayList<de.droidcachebox.dataclasses.GpxFilename
         if (part.length() < 7)
             return name;
         try {
-            // Vorderen Teil nur dann weglassen, wenn dies eine Zahl ist.
+            // ignore beginning only if this is a number
             Integer.valueOf(part);
         } catch (Exception exc) {
             return name;
@@ -121,30 +119,20 @@ public class Category extends ArrayList<de.droidcachebox.dataclasses.GpxFilename
         return name;
     }
 
-    @Override
-    public int compareTo(Category o) {
-        if (o.Id > this.Id)
-            return 1;
-        else if (o.Id < this.Id)
-            return -1;
-        else
-            return 0;
-    }
-
     /**
-     * gibt den chk status der enthaltenen GpxFiles zurück </br> 0 = keins
-     * ausgewählt </br> 1 = alle ausgewählt </br> -1 = nicht alle, aber
-     * mindestens eins ausgewählt
+     * @return state concerning the check marker of the included entries</br>
+     * 0 = none checked</br>
+     * 1 = all checked</br>
+     * -1 = at least one checked</br>
      *
-     * @return
      */
-    public int getCheck() {
-        int result = 0;
+    public int getCheckState() {
+        int result;
 
         int chkCounter = 0;
         int counter = 0;
         for (GpxFilename gpx : this) {
-            if (gpx.Checked)
+            if (gpx.checked)
                 chkCounter++;
 
             counter++;
@@ -162,15 +150,15 @@ public class Category extends ArrayList<de.droidcachebox.dataclasses.GpxFilename
 
     public String getGpxFilename(long gpxFilenameId) {
         for (GpxFilename gpx : this) {
-            if (gpx.Id == gpxFilenameId)
-                return gpx.GpxFileName;
+            if (gpx.id == gpxFilenameId)
+                return gpx.gpxFileName;
         }
         return "";
     }
 
     public boolean containsGpxFilenameId(long gpxFilenameId) {
         for (GpxFilename gpx : this) {
-            if (gpx.Id == gpxFilenameId)
+            if (gpx.id == gpxFilenameId)
                 return true;
         }
         return false;
@@ -178,10 +166,19 @@ public class Category extends ArrayList<de.droidcachebox.dataclasses.GpxFilename
 
     public boolean containsGpxFilename(String gpxFilename) {
         for (GpxFilename gpx : this) {
-            if (gpx.GpxFileName.equals(gpxFilename))
+            if (gpx.gpxFileName.equals(gpxFilename))
                 return true;
         }
         return false;
     }
 
+    @Override
+    public int compareTo(Category o) {
+        if (o.categoryId > this.categoryId)
+            return 1;
+        else if (o.categoryId < this.categoryId)
+            return -1;
+        else
+            return 0;
+    }
 }

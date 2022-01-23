@@ -15,8 +15,8 @@
  */
 package de.droidcachebox.menu.menuBtn5.executes;
 
-import static de.droidcachebox.PlatformUIBase.callUrl;
-import static de.droidcachebox.PlatformUIBase.hideForDialog;
+import static de.droidcachebox.Platform.callUrl;
+import static de.droidcachebox.Platform.hideForDialog;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_RIGHT_NEGATIVE;
 import static de.droidcachebox.settings.Config_Core.br;
@@ -66,17 +66,20 @@ import de.droidcachebox.utils.log.Log;
 
 public class AboutView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent, PositionChangedEvent {
     private static final String sClass = "AboutView";
-    private static AboutView aboutView;
-    ButtonDialog msgBox;
+    private CB_Label descTextView;
+    private CB_Label cachesFoundLabel;
+    private CB_Label waypointLabel;
+    private CB_Label coordinateLabel;
+    private CB_Label gpsLabel;
+    private CB_Label accuracyLabel;
+    private CB_Label currentLabel;
+    private Image logoCBImage;
+    private SatBarChart satBarChart;
     private int result = -1;
-    private CB_Label descTextView, CachesFoundLabel, WaypointLabel, CoordinateLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoordinate, lblCurrent, Current;
-    private Image CB_Logo;
     private float margin;
-    private CancelWaitDialog wd;
-    private SatBarChart chart;
     private boolean mustShowNewInstallInfo;
 
-    private AboutView() {
+    public AboutView() {
         super(ViewManager.leftTab.getContentRec(), sClass);
         registerSkinChangedEvent();
         createControls();
@@ -84,17 +87,12 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         Log.debug(sClass, " created.");
     }
 
-    public static AboutView getInstance() {
-        if (aboutView == null) aboutView = new AboutView();
-        return aboutView;
-    }
-
     @Override
     public void onShow() {
 
         // add Event Handler
         CacheSelectionChangedListeners.getInstance().addListener(this);
-        GpsStateChangeEventList.Add(this);
+        GpsStateChangeEventList.add(this);
         PositionChangedListeners.addListener(this);
 
         positionChanged();
@@ -102,8 +100,8 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         if (!isRenderInitDone)
             renderInit();
 
-        if (chart != null)
-            chart.onShow();
+        if (satBarChart != null)
+            satBarChart.onShow();
         refreshText();
 
 
@@ -126,8 +124,8 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         GpsStateChangeEventList.remove(this);
         PositionChangedListeners.removeListener(this);
 
-        if (chart != null)
-            chart.onHide();
+        if (satBarChart != null)
+            satBarChart.onHide();
     }
 
     @Override
@@ -149,39 +147,39 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         margin = UiSizes.getInstance().getMargin();
         CB_RectF CB_LogoRec = new CB_RectF(getHalfWidth() - (ref * 2.5f), getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);
         //Log.debug(log, "CB_Logo" + CB_LogoRec.toString());
-        CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
-        CB_Logo.setDrawable(new SpriteDrawable(Sprites.getSpriteDrawable("cachebox-logo")));
-        addChild(CB_Logo);
+        logoCBImage = new Image(CB_LogoRec, "CB_Logo", false);
+        logoCBImage.setDrawable(new SpriteDrawable(Sprites.getSpriteDrawable("cachebox-logo")));
+        addChild(logoCBImage);
 
         String VersionString = GlobalCore.getInstance().getVersionString() + br + br + GlobalCore.aboutMsg;
 
         GlyphLayout layout = new GlyphLayout();
         layout.setText(Fonts.getSmall(), VersionString);
 
-        descTextView = new CB_Label(name + " descTextView", 0, CB_Logo.getY() - margin - margin - margin - layout.height, getWidth(), layout.height + margin);
+        descTextView = new CB_Label(name + " descTextView", 0, logoCBImage.getY() - margin - margin - margin - layout.height, getWidth(), layout.height + margin);
         descTextView.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
         descTextView.setWrappedText(VersionString);
         addChild(descTextView);
 
-        CachesFoundLabel = new CB_Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
-        CachesFoundLabel.setWidth(getWidth());
+        cachesFoundLabel = new CB_Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
+        cachesFoundLabel.setWidth(getWidth());
 
-        CachesFoundLabel.setClickHandler((view, x, y, pointer, button) -> {
-            msgBox = new ButtonDialog(Translation.get("LoadFinds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live);
+        cachesFoundLabel.setClickHandler((view, x, y, pointer, button) -> {
+            ButtonDialog msgBox = new ButtonDialog(Translation.get("LoadFinds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live);
             msgBox.setButtonClickHandler(
                     (which, data) -> {
                         switch (which) {
                             case BTN_LEFT_POSITIVE:
                                 msgBox.close();
                                 AtomicBoolean isCanceled = new AtomicBoolean(false);
-                                wd = new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
+                                new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
                                     @Override
                                     public void ready() {
                                         if (result > -1) {
                                             String Text = Translation.get("FoundsSetTo", String.valueOf(result));
                                             new ButtonDialog(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
-                                            Settings.FoundOffset.setValue(result);
+                                            Settings.foundOffset.setValue(result);
                                             Settings.getInstance().acceptChanges();
                                             AboutView.this.refreshText();
                                         }
@@ -197,18 +195,17 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                                         isCanceled.set(true);
                                     }
 
-                                });
-                                wd.show();
+                                }).show();
                                 break;
                             case BTN_RIGHT_NEGATIVE:
                                 msgBox.close();
                                 GL.that.runOnGL(() -> {
                                     NumericInputBox numericInputBox = new NumericInputBox(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"));
-                                    numericInputBox.initIntInput(Settings.FoundOffset.getValue(),
+                                    numericInputBox.initIntInput(Settings.foundOffset.getValue(),
                                             new NumericInputBox.IReturnValueListener() {
                                                 @Override
                                                 public void returnValue(int value) {
-                                                    Settings.FoundOffset.setValue(value);
+                                                    Settings.foundOffset.setValue(value);
                                                     Settings.getInstance().acceptChanges();
                                                     AboutView.this.refreshText();
                                                 }
@@ -228,7 +225,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
             return true;
         });
 
-        addChild(CachesFoundLabel);
+        addChild(cachesFoundLabel);
         createTable();
         refreshText();
     }
@@ -237,19 +234,19 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         float leftMaxWidth = 0;
         CB_RectF lblRec = new CB_RectF(0, 0, 0, UiSizes.getInstance().getButtonHeight() / 2.5f);
 
-        lblGPS = new CB_Label(lblRec);
+        CB_Label lblGPS = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(Translation.get("gps")).getTextWidth());
 
-        lblAccuracy = new CB_Label(lblRec);
+        CB_Label lblAccuracy = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.setText(Translation.get("accuracy")).getTextWidth());
 
-        lblWP = new CB_Label(lblRec);
+        CB_Label lblWP = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblWP.setText(Translation.get("waypoint")).getTextWidth());
 
-        lblCoordinate = new CB_Label(lblRec);
+        CB_Label lblCoordinate = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblCoordinate.setText(Translation.get("coordinate")).getTextWidth());
 
-        lblCurrent = new CB_Label(lblRec);
+        CB_Label lblCurrent = new CB_Label(lblRec);
         leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.setText(Translation.get("current")).getTextWidth());
 
         // set all lbl to the same max width + margin
@@ -279,23 +276,23 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         lblRec.setX(lblGPS.getMaxX() + margin);
         lblRec.setWidth(getWidth() - margin - lblGPS.getMaxX());
 
-        Gps = new CB_Label(lblRec);
-        Accuracy = new CB_Label(lblRec);
-        WaypointLabel = new CB_Label("-", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE);
-        WaypointLabel.setRec(lblRec);
-        CoordinateLabel = new CB_Label(lblRec);
-        Current = new CB_Label(lblRec);
+        gpsLabel = new CB_Label(lblRec);
+        accuracyLabel = new CB_Label(lblRec);
+        waypointLabel = new CB_Label("-", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE);
+        waypointLabel.setRec(lblRec);
+        coordinateLabel = new CB_Label(lblRec);
+        currentLabel = new CB_Label(lblRec);
 
         // set Y Pos
-        Gps.setY(lblGPS.getY());
-        Accuracy.setY(lblAccuracy.getY());
-        WaypointLabel.setY(lblWP.getY());
-        CoordinateLabel.setY(lblCoordinate.getY());
-        Current.setY(lblCurrent.getY());
+        gpsLabel.setY(lblGPS.getY());
+        accuracyLabel.setY(lblAccuracy.getY());
+        waypointLabel.setY(lblWP.getY());
+        coordinateLabel.setY(lblCoordinate.getY());
+        currentLabel.setY(lblCurrent.getY());
 
         // set LinkColor
 
-        WaypointLabel.setClickHandler((v, x, y, pointer, button) -> {
+        waypointLabel.setClickHandler((v, x, y, pointer, button) -> {
             if (GlobalCore.getSelectedCache() == null)
                 return true;
             callUrl(GlobalCore.getSelectedCache().getUrl());
@@ -303,17 +300,17 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         });
 
         // add to Screen
-        addChild(Gps);
-        addChild(Accuracy);
-        addChild(WaypointLabel);
-        addChild(CoordinateLabel);
-        addChild(Current);
+        addChild(gpsLabel);
+        addChild(accuracyLabel);
+        addChild(waypointLabel);
+        addChild(coordinateLabel);
+        addChild(currentLabel);
 
         // create Sat Chart
         float l = margin * 2;
-        chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, getWidth() - l - l, CachesFoundLabel.getY() - Gps.getMaxY()), "Sat Chart");
-        chart.setDrawWithAlpha(true);
-        addChild(chart);
+        satBarChart = new SatBarChart(new CB_RectF(l, gpsLabel.getMaxY() + l, getWidth() - l - l, cachesFoundLabel.getY() - gpsLabel.getMaxY()), "Sat Chart");
+        satBarChart.setDrawWithAlpha(true);
+        addChild(satBarChart);
         setYPositions();
     }
 
@@ -330,24 +327,24 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     }
 
     private void setYPositions() {
-        if (CB_Logo != null) {
-            CB_Logo.setY(getHeight() - (margin * 2) - CB_Logo.getHeight());
+        if (logoCBImage != null) {
+            logoCBImage.setY(getHeight() - (margin * 2) - logoCBImage.getHeight());
             if (descTextView != null) {
-                descTextView.setY(CB_Logo.getY() - margin - margin - margin - descTextView.getHeight());
-                if (CachesFoundLabel != null) {
-                    CachesFoundLabel.setY(descTextView.getY() - CachesFoundLabel.getHeight() + margin);
-                    if (chart != null)
-                        chart.setHeight(CachesFoundLabel.getY() - Gps.getMaxY());
+                descTextView.setY(logoCBImage.getY() - margin - margin - margin - descTextView.getHeight());
+                if (cachesFoundLabel != null) {
+                    cachesFoundLabel.setY(descTextView.getY() - cachesFoundLabel.getHeight() + margin);
+                    if (satBarChart != null)
+                        satBarChart.setHeight(cachesFoundLabel.getY() - gpsLabel.getMaxY());
                 }
             }
         }
     }
 
     private void refreshText() {
-        if (WaypointLabel == null || CachesFoundLabel == null || CoordinateLabel == null)
+        if (waypointLabel == null || cachesFoundLabel == null || coordinateLabel == null)
             return;
         try {
-            CachesFoundLabel.setText(Translation.get("caches_found") + " " + Settings.FoundOffset.getValue());
+            cachesFoundLabel.setText(Translation.get("caches_found") + " " + Settings.foundOffset.getValue());
 
             Cache selectedCache = GlobalCore.getSelectedCache();
             Waypoint selectedWaypoint = GlobalCore.getSelectedWayPoint();
@@ -355,14 +352,14 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
             if (selectedCache != null) {
                 try {
                     if (selectedWaypoint != null) {
-                        WaypointLabel.setText(selectedWaypoint.getWaypointCode());
-                        CoordinateLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedWaypoint.getLongitude()));
+                        waypointLabel.setText(selectedWaypoint.getWaypointCode());
+                        coordinateLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedWaypoint.getLongitude()));
                     } else {
-                        WaypointLabel.setText(selectedCache.getGeoCacheCode());
-                        CoordinateLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.getCoordinate().getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedCache.getCoordinate().getLongitude()));
+                        waypointLabel.setText(selectedCache.getGeoCacheCode());
+                        coordinateLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.getCoordinate().getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedCache.getCoordinate().getLongitude()));
                     }
                 } catch (Exception e) {
-                    CoordinateLabel.setText(" - - - ");
+                    coordinateLabel.setText(" - - - ");
                 }
             }
             GL.that.renderOnce();
@@ -371,24 +368,24 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     }
 
     @Override
-    public void GpsStateChanged() {
+    public void gpsStateChanged() {
         if (Locator.getInstance().getMyPosition().hasAccuracy()) {
             int radius = Locator.getInstance().getMyPosition().getAccuracy();
 
-            if (Accuracy != null)
-                Accuracy.setText("+/- " + UnitFormatter.distanceString(radius) + " (" + Locator.getInstance().getProvider().toString() + ")");
+            if (accuracyLabel != null)
+                accuracyLabel.setText("+/- " + UnitFormatter.distanceString(radius) + " (" + Locator.getInstance().getProvider().toString() + ")");
         } else {
-            if (Accuracy != null)
-                Accuracy.setText("?");
+            if (accuracyLabel != null)
+                accuracyLabel.setText("?");
         }
         if (Locator.getInstance().getProvider() == ProviderType.GPS || Locator.getInstance().getProvider() == ProviderType.Network) {
-            if (Current != null)
-                Current.setText(UnitFormatter.FormatLatitudeDM(Locator.getInstance().getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(Locator.getInstance().getLongitude()));
-            if (Gps != null)
-                Gps.setText(GPS.getSatAndFix() + "   " + Translation.get("alt") + " " + Locator.getInstance().getAltStringWithCorection());
+            if (currentLabel != null)
+                currentLabel.setText(UnitFormatter.FormatLatitudeDM(Locator.getInstance().getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(Locator.getInstance().getLongitude()));
+            if (gpsLabel != null)
+                gpsLabel.setText(GPS.getSatAndFix() + "   " + Translation.get("alt") + " " + Locator.getInstance().getAltStringWithCorection());
         } else {
-            if (Gps != null)
-                Gps.setText(Translation.get("not_detected"));
+            if (gpsLabel != null)
+                gpsLabel.setText(Translation.get("not_detected"));
         }
     }
 
@@ -399,7 +396,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
     @Override
     public void positionChanged() {
-        GpsStateChanged();
+        gpsStateChanged();
     }
 
     @Override
@@ -418,62 +415,5 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
     @Override
     public void speedChanged() {
-    }
-
-    @Override
-    public void dispose() {
-        aboutView = null;
-
-        if (descTextView != null)
-            descTextView.dispose();
-        descTextView = null;
-        if (CachesFoundLabel != null)
-            CachesFoundLabel.dispose();
-        CachesFoundLabel = null;
-        if (WaypointLabel != null)
-            WaypointLabel.dispose();
-        WaypointLabel = null;
-        if (CoordinateLabel != null)
-            CoordinateLabel.dispose();
-        CoordinateLabel = null;
-        if (lblGPS != null)
-            lblGPS.dispose();
-        lblGPS = null;
-        if (Gps != null)
-            Gps.dispose();
-        Gps = null;
-        if (lblAccuracy != null)
-            lblAccuracy.dispose();
-        lblAccuracy = null;
-        if (Accuracy != null)
-            Accuracy.dispose();
-        Accuracy = null;
-        if (lblWP != null)
-            lblWP.dispose();
-        lblWP = null;
-        if (lblCoordinate != null)
-            lblCoordinate.dispose();
-        lblCoordinate = null;
-        if (lblCurrent != null)
-            lblCurrent.dispose();
-        lblCurrent = null;
-        if (Current != null)
-            Current.dispose();
-        Current = null;
-        if (CB_Logo != null)
-            CB_Logo.dispose();
-        CB_Logo = null;
-        if (chart != null)
-            chart.dispose();
-        chart = null;
-        if (wd != null)
-            wd.dispose();
-        wd = null;
-
-        CacheSelectionChangedListeners.getInstance().remove(this);
-        GpsStateChangeEventList.remove(this);
-        PositionChangedListeners.removeListener(this);
-
-        super.dispose();
     }
 }

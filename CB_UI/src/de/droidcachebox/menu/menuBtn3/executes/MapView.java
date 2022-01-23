@@ -363,14 +363,15 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
                     @Override
                     public void run() {
+                        CacheDAO cacheDAO = new CacheDAO();
                         Cache bubblesCache = infoBubble.getCache();
                         if (bubblesCache.getGeoCacheDetail() == null)
-                            CacheDAO.getInstance().loadDetail(bubblesCache);
+                            cacheDAO.loadDetail(bubblesCache);
                         String GCCode = bubblesCache.getGeoCacheCode();
                         ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = GroundspeakAPI.updateGeoCache(bubblesCache);
                         if (geoCacheRelateds.size() > 0) {
                             try {
-                                CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
+                                cacheDAO.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                             } catch (InterruptedException ex) {
                                 Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
                             }
@@ -870,7 +871,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void onHide() {
-        // Log.debug(sKlasse, "Map gets invisible");
+        // Log.debug(sClass, "Map gets invisible");
         CacheSelectionChangedListeners.getInstance().remove(this);
         super.onHide();
     }
@@ -890,7 +891,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     }
 
     protected void directLoadTiles(Descriptor lowerTile, Descriptor upperTile, int aktZoom) {
-        // Log.debug(sKlasse, "directLoadTiles");
+        // Log.debug(sClass, "directLoadTiles");
         if (Energy.isDisplayOff()) return;
         if (isCreated) {
 
@@ -950,7 +951,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void initializeMap() {
-        // Log.debug(sKlasse, "initializeMap");
+        // Log.debug(sClass, "initializeMap");
         zoomCross = Settings.ZoomCross.getValue();
         super.initializeMap();
     }
@@ -973,7 +974,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void requestLayout() {
-        // Log.debug(sKlasse, "requestLayout");
+        // Log.debug(sClass, "requestLayout");
 
         if (isDisposed) return;
 
@@ -1009,7 +1010,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     public void setMapState(MapState state) {
         if (mapState == state)
             return;
-        // Log.debug(sKlasse, "setMapState :" + state);
+        // Log.debug(sClass, "setMapState :" + state);
 
         Settings.lastMapToggleBtnState.setValue(state.ordinal());
         Settings.getInstance().acceptChanges();
@@ -1043,7 +1044,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void positionChanged() {
-        // Log.debug(sKlasse, "positionChanged");
+        // Log.debug(sClass, "positionChanged");
         if (isCarMode) {
             // im CarMode keine Netzwerk Koordinaten zulassen
             if (!Locator.getInstance().isGPSprovided())
@@ -1108,7 +1109,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     protected void skinIsChanged() {
-        // Log.debug(sKlasse, "skinIsChanged");
+        // Log.debug(sClass, "skinIsChanged");
         super.skinIsChanged();
         MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(getMapIntWidth(), getMapIntHeight())), currentZoom, true);
         data.hideMyFinds = hideMyFinds;
@@ -1130,7 +1131,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     public void onShow() {
-        // Log.debug(sKlasse, "onShow");
+        // Log.debug(sClass, "onShow");
         super.onShow();
         CacheSelectionChangedListeners.getInstance().addListener(this);
         isNorthOriented = mapMode == MapMode.Normal ? Settings.isMapNorthOriented.getValue() : false;
@@ -1234,7 +1235,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
     @Override
     protected void setInitialLocation() {
-        // Log.debug(sKlasse, "setInitialLocation");
+        // Log.debug(sClass, "setInitialLocation");
         try {
             if (CBDB.getInstance().cacheList != null) {
                 synchronized (CBDB.getInstance().cacheList) {

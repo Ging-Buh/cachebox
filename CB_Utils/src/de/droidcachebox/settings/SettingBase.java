@@ -39,7 +39,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
      * saves whether this setting is changed and needs to be saved
      */
     protected boolean dirty;
-    private final int index;
+    protected final int index;
 
     public SettingBase(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType) {
         this.name = name;

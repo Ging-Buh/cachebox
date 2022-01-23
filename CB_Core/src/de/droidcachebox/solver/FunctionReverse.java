@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionReverse extends Function {
     private static final long serialVersionUID = 9169402073615894654L;
 
-    public FunctionReverse(Solver solver) {
-        super(solver);
+    public FunctionReverse(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Reverse", "en"));
     }
 

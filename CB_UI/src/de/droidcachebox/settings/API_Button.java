@@ -17,7 +17,7 @@ package de.droidcachebox.settings;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.controls.CB_Button;
@@ -29,7 +29,7 @@ public class API_Button extends CB_Button {
 
     Image image;
     OnClickListener click = (view, x, y, pointer, button) -> {
-        PlatformUIBase.getApiKey();
+        Platform.getApiKey();
         return true;
     };
 

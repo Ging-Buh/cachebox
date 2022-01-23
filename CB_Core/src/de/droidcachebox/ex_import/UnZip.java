@@ -9,7 +9,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
@@ -36,7 +36,7 @@ public class UnZip {
         Log.debug(log, "unzip from " + zipFile.getName());
         int BUFFER = 2048;
         ZipFile zip;
-        if (PlatformUIBase.AndroidVersion >= 24) {
+        if (Platform.AndroidVersion >= 24) {
             zip = new ZipFile(zipPathAndName, StandardCharsets.ISO_8859_1);
         } else {
             zip = new ZipFile(zipPathAndName);

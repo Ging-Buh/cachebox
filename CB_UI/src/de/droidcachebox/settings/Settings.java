@@ -1,7 +1,7 @@
 package de.droidcachebox.settings;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Database_Core;
 import de.droidcachebox.database.SettingsDatabase;
@@ -41,7 +41,7 @@ public class Settings extends SettingsList implements AllSettings {
     @Override
     protected Database_Core getDataDB() {
         // if used from Splash, DataDB is not possible
-        if (PlatformUIBase.canNotUsePlatformSettings())
+        if (Platform.canNotUsePlatformSettings())
             return null;
         else
             return CBDB.getInstance();
@@ -55,7 +55,7 @@ public class Settings extends SettingsList implements AllSettings {
 
     @Override
     protected boolean canNotUsePlatformSettings() {
-        return PlatformUIBase.canNotUsePlatformSettings();
+        return Platform.canNotUsePlatformSettings();
     }
 
 }

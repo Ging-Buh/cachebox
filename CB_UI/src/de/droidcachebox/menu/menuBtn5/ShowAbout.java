@@ -12,21 +12,22 @@ import de.droidcachebox.menu.menuBtn5.executes.AboutView;
 
 public class ShowAbout extends AbstractShowAction {
 
-    private static ShowAbout that;
+    private static ShowAbout instance;
+    private AboutView aboutView;
 
     private ShowAbout() {
         super("about");
     }
 
     public static ShowAbout getInstance() {
-        if (that == null) that = new ShowAbout();
-        return that;
+        if (instance == null) instance = new ShowAbout();
+        return instance;
     }
-
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(AboutView.getInstance());
+        aboutView = new AboutView();
+        ViewManager.leftTab.showView(aboutView);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class ShowAbout extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return AboutView.getInstance();
+        return aboutView;
     }
 
     @Override

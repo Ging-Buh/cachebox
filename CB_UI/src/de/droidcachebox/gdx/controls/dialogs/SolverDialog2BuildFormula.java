@@ -5,23 +5,23 @@ import java.util.ArrayList;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.ScrollBox;
-import de.droidcachebox.solver.Solver;
+import de.droidcachebox.solver.SolverLines;
 
 public class SolverDialog2BuildFormula {
     private final String sForm;
-    private final Solver solver;
+    private final SolverLines solverLines;
     private final ArrayList<CB_Label> labels;
 
     public SolverDialog2BuildFormula(String sForm) {
         this.sForm = sForm;
-        solver = new Solver(sForm, GlobalCore.getInstance());
-        solver.Solve();
+        solverLines = new SolverLines(sForm, GlobalCore.getInstance());
+        solverLines.Solve();
         labels = new ArrayList<CB_Label>();
     }
 
     public void addControls(ScrollBox scrollBox) {
-        if (solver.MissingVariables != null) {
-            for (String mv : solver.MissingVariables.keySet()) {
+        if (solverLines.MissingVariables != null) {
+            for (String mv : solverLines.MissingVariables.keySet()) {
                 CB_Label l = new CB_Label(mv);
                 scrollBox.addChild(l);
                 labels.add(l);

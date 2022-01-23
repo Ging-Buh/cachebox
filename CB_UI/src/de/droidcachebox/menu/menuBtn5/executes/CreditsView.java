@@ -37,7 +37,6 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.translation.Translation;
 
 public class CreditsView extends CB_View_Base {
-    private static CreditsView that;
     private final float ref;
     private final Image logo;
     private final ScrollBox scrollBox;
@@ -45,7 +44,7 @@ public class CreditsView extends CB_View_Base {
     private float lineHeight;
     private float margin;
 
-    private CreditsView() {
+    public CreditsView() {
         super(ViewManager.leftTab.getContentRec(), "CreditsView");
         CB_RectF rec = this;
         this.setBackground(Sprites.aboutback);
@@ -68,11 +67,6 @@ public class CreditsView extends CB_View_Base {
 
         scrollBox.addChild(layout);
 
-    }
-
-    public static CreditsView getInstance() {
-        if (that == null) that = new CreditsView();
-        return that;
     }
 
     private ArrayList<Person> getPersons() {

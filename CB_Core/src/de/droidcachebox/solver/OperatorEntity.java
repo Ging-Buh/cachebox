@@ -7,8 +7,8 @@ class OperatorEntity extends Entity {
     private Entity rechts;
     private String op;
 
-    OperatorEntity(Solver solver, int id, Entity links, String op, Entity rechts) {
-        super(solver, id);
+    OperatorEntity(SolverLines solverLines, int id, Entity links, String op, Entity rechts) {
+        super(solverLines, id);
         this.links = links;
         this.op = op;
         this.rechts = rechts;

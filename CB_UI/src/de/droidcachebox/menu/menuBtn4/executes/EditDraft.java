@@ -62,7 +62,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
 public class EditDraft extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
-    private static final String sKlasse = "EditDraft";
+    private static final String sClass = "EditDraft";
     private final CB_Button btnLog;
     private final CB_Button btnDraft;
     private final CB_Label title;
@@ -80,14 +80,14 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     private Draft originalDraft;
     private Draft currentDraft;
     private boolean isNewDraft;
-    private IDraftsView draftsView;
+    private AfterEditHandler afterEditHandler;
     private final OnClickListener saveLog = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-            if (draftsView != null) {
-                SaveMode clickedBy = SaveMode.OnlyLocal;
-                if (view == btnLog) clickedBy = SaveMode.Log;
-                else if (view == btnDraft) clickedBy = SaveMode.Draft;
+            if (afterEditHandler != null) {
+                SaveMode saveMode = SaveMode.OnlyLocal;
+                if (view == btnLog) saveMode = SaveMode.Log;
+                else if (view == btnDraft) saveMode = SaveMode.Draft;
                 try {
                     currentDraft.isDirectLog = false;
 
@@ -97,7 +97,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
                         currentDraft.gc_Vote = (int) (gcVoteItem.getValue() * 100);
                     } else currentDraft.gc_Vote = 0;
                 } catch (Exception ex) {
-                    Log.err(sKlasse, ex);
+                    Log.err(sClass, ex);
                 }
                 try {
 
@@ -134,13 +134,10 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
                 // check of changes
                 if (!originalDraft.equals(currentDraft)) {
-                    currentDraft.uploaded = false;
+                    currentDraft.isUploaded = false;
                     currentDraft.updateDatabase();
-                    Log.info(sKlasse, "Draft written to database.");
-                    DraftsView.createGeoCacheVisits();
-                    Log.info(sKlasse, "GeoCacheVisits written.");
                 }
-                draftsView.addOrChangeDraft(currentDraft, isNewDraft, clickedBy);
+                afterEditHandler.afterEdit(currentDraft, isNewDraft, saveMode);
             }
             finish();
             return true;
@@ -148,7 +145,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
     };
     private CB_Button btnHow;
 
-    public EditDraft(Draft _draft, IDraftsView _draftsView, boolean _isNewDraft) {
+    public EditDraft(Draft _draft, AfterEditHandler _afterEditHandler, boolean _isNewDraft) {
         super("EditDraft");
         btnOK = new CB_Button(Translation.get("ok"));
         btnLog = new CB_Button(Translation.get("GCLog"));
@@ -167,7 +164,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         } else gcVoteItem = null;
         // == setDraft
         isNewDraft = _isNewDraft;
-        draftsView = _draftsView;
+        afterEditHandler = _afterEditHandler;
         currentDraft = _draft;
         originalDraft = new Draft(currentDraft);
         setValues();
@@ -233,7 +230,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         }
         // enable Favpoint
         if (!GroundspeakAPI.hasBeenOnline()) {
-            Log.err(sKlasse, "add enable button GiveFavoritePoint");
+            Log.err(sClass, "add enable button GiveFavoritePoint");
             scrollBoxContent.addLast(enableGiveFavoritePoint);
         }
         initLogText();
@@ -241,7 +238,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         if (currentDraft.isTbDraft)
             tvFinds.setText("");
         else
-            tvFinds.setText("#" + currentDraft.foundNumber);
+            tvFinds.setText("#" + currentDraft.getFoundNumber());
         tvFinds.setFont(Fonts.getBig());
         tvFinds.setWidth(tvFinds.getTextWidth());
         scrollBoxContent.addNext(tvFinds, FIXED);
@@ -278,8 +275,8 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         btnDraft.setClickHandler(saveLog);
 
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
-            if (draftsView != null)
-                draftsView.addOrChangeDraft(null, false, SaveMode.Cancel);
+            if (afterEditHandler != null)
+                afterEditHandler.afterEdit(null, false, SaveMode.Cancel);
             finish();
             return true;
         });
@@ -293,6 +290,9 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         etComment.showLastLines();
     }
 
+    /*
+    fill controls from currentDraft
+     */
     private void setValues() {
         // initLogText
         etComment.setText(currentDraft.comment);
@@ -305,7 +305,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         String sTime = iso8601Format.format(currentDraft.timestamp);
         tvTime.setText(sTime);
         // iniOptions();
-        tvFinds.setText("#" + currentDraft.foundNumber);
+        tvFinds.setText("#" + currentDraft.getFoundNumber());
         if (currentDraft.isTbDraft)
             tvFinds.setText("");
         //
@@ -334,7 +334,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
         CB_Button btnFromNotes = new CB_Button(Translation.get("fromNotes"));
         btnFromNotes.setClickHandler((v, x, y, pointer, button) -> {
-            String text = CacheDAO.getInstance().getNote(currentDraft.CacheId);
+            String text = new CacheDAO().getNote(currentDraft.CacheId);
             if (text.length() > 0) {
                 String sBegin = "<Import from Geocaching.com>";
                 String sEnd = "</Import from Geocaching.com>";
@@ -454,9 +454,12 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         }
     }
 
-    public void setDraft(Draft _draft, IDraftsView _draftsView, boolean _isNewDraft) {
+    /*
+    for not to (re)create this class
+     */
+    public void setDraft(Draft _draft, AfterEditHandler _afterEditHandler, boolean _isNewDraft) {
         isNewDraft = _isNewDraft;
-        draftsView = _draftsView;
+        afterEditHandler = _afterEditHandler;
         currentDraft = _draft;
         originalDraft = new Draft(currentDraft);
         setValues();
@@ -464,7 +467,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
     public enum SaveMode {Cancel, OnlyLocal, Draft, Log, LocalUpdate}
 
-    public interface IDraftsView {
-        void addOrChangeDraft(Draft fn, boolean isNewDraft, SaveMode saveMode);
+    public interface AfterEditHandler {
+        void afterEdit(Draft fn, boolean isNewDraft, SaveMode saveMode);
     }
 }

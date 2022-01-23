@@ -8,8 +8,8 @@ public class TempEntity extends Entity {
     public String Text;
     SortedMap<Integer, Entity> entities = new TreeMap<Integer, Entity>();
 
-    public TempEntity(Solver solver, int id, String text) {
-        super(solver, id);
+    public TempEntity(SolverLines solverLines, int id, String text) {
+        super(solverLines, id);
         this.Text = text.trim();
     }
 
@@ -42,8 +42,8 @@ public class TempEntity extends Entity {
         String[] ss = Text.split(" ");
         String result = "";
         for (String s : ss) {
-            if (solver.Variablen.containsKey(s.trim().toLowerCase())) {
-                result += solver.Variablen.get(s.trim().toLowerCase());
+            if (solverLines.Variablen.containsKey(s.trim().toLowerCase())) {
+                result += solverLines.Variablen.get(s.trim().toLowerCase());
             } else
                 result += s;
         }

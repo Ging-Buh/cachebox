@@ -31,7 +31,7 @@ import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.Function;
-import de.droidcachebox.solver.Solver;
+import de.droidcachebox.solver.SolverLines;
 import de.droidcachebox.translation.Translation;
 
 public class SolverDialog2 extends ActivityBase implements OnStateChangeListener {
@@ -43,7 +43,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private final ScrollBox scrollBox;
     // Page Zahl
     private final String[] lZahl = new String[]{"0", ",", "<-", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-    private final Solver solver; // Solver Object dieses Caches für die Functions, Variablen...
+    private final SolverLines solverLines; // Solver Object dieses Caches für die Functions, Variablen...
     boolean doNotChangeCBVariable = false;
     private float visibleButtonsHeight = 0;
     private ISolverBackStringListener mBackStringListener;
@@ -55,7 +55,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             if (tb != null) {
                 param = tb.getText();
             }
-            SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, param, false, DataType.Float);
+            SolverDialog2 sd2 = new SolverDialog2(aktCache, solverLines, param, false, DataType.Float);
             sd2.show(new ISolverBackStringListener() {
                 @Override
                 public void BackString(String backString) {
@@ -100,9 +100,9 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     // Page Coordinate
     private CoordinateButton bCoord = null;
 
-    public SolverDialog2(Cache aktCache, Solver solver, String solverString, boolean showVariableField, DataType dataType) {
+    public SolverDialog2(Cache aktCache, SolverLines solverLines, String solverString, boolean showVariableField, DataType dataType) {
         super("SolverDialog2");
-        this.solver = solver;
+        this.solverLines = solverLines;
         //this.buildFormula = null;
         this.solverString = solverString;
         this.aktCache = aktCache;
@@ -162,7 +162,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private boolean isVariable(String solverString2) {
-        for (String var : solver.Variablen.keySet()) {
+        for (String var : solverLines.Variablen.keySet()) {
             if (solverString2.equalsIgnoreCase(var)) {
                 return true;
             }
@@ -239,7 +239,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             public boolean onClick(final GL_View_Base view, int x, int y, int pointer, int button) {
                 //String param = "";
                 DataType type = DataType.Waypoint;
-                SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, mVariableField.getText(), false, type);
+                SolverDialog2 sd2 = new SolverDialog2(aktCache, solverLines, mVariableField.getText(), false, type);
                 sd2.show(new ISolverBackStringListener() {
                     @Override
                     public void BackString(String backString) {
@@ -734,7 +734,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         // cbFormulaAsText.setText("Als Text in \"\" eintragen");
         cbFormulaAsText.setChecked(asText);
         lFormulaAsText = new CB_Label("Als Text in \"\" eintragen");
-        Solver solv = new Solver(sForm, GlobalCore.getInstance());
+        SolverLines solv = new SolverLines(sForm, GlobalCore.getInstance());
         if (solv.Solve()) {
             if (solv.MissingVariables != null) {
                 for (String mv : solv.MissingVariables.keySet()) {
@@ -868,7 +868,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 // Funktionsauswahl zeigen
-                SelectSolverFunction ssf = new SelectSolverFunction(solver, dataType, new IFunctionResult() {
+                SelectSolverFunction ssf = new SelectSolverFunction(solverLines, dataType, new IFunctionResult() {
                     @Override
                     public void selectedFunction(Function function) {
                         if (function == null)
@@ -920,7 +920,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
                         type = function.getParamType(i);
                     }
                 }
-                SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, param, false, type);
+                SolverDialog2 sd2 = new SolverDialog2(aktCache, solverLines, param, false, type);
                 sd2.show(new ISolverBackStringListener() {
                     @Override
                     public void BackString(String backString) {
@@ -936,7 +936,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private void addFunctionParamLine(String functionString, int i, String string) {
-        Function function = solver.functions.getFunction(functionString);
+        Function function = solverLines.functions.getFunction(functionString);
         addFunctionParamLine(function, i, string);
     }
 
@@ -1001,11 +1001,11 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private void showPageVariable() {
-        cbVariables = new CB_CheckBox[solver.Variablen.size()];
-        lVariables = new CB_Label[solver.Variablen.size()];
+        cbVariables = new CB_CheckBox[solverLines.Variablen.size()];
+        lVariables = new CB_Label[solverLines.Variablen.size()];
         int i = 0;
-        for (String variable : solver.Variablen.keySet()) {
-            String value = solver.Variablen.get(variable);
+        for (String variable : solverLines.Variablen.keySet()) {
+            String value = solverLines.Variablen.get(variable);
             cbVariables[i] = new CB_CheckBox();
             cbVariables[i].setData(variable);
             scrollBox.addChild(cbVariables[i]);

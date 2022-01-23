@@ -82,7 +82,7 @@ public class AppRater {
 
                     sb.append(APP_PACKAGE_NAME);
 
-                    PlatformUIBase.callUrl(sb.toString());
+                    Platform.callUrl(sb.toString());
                     break;
                 case 2:
                     // later

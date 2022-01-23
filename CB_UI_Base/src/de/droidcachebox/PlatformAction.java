@@ -1,6 +1,7 @@
 package de.droidcachebox;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.gdx.ViewID;
 
 public class PlatformAction extends AbstractAction {
@@ -15,7 +16,7 @@ public class PlatformAction extends AbstractAction {
 
     @Override
     public void execute() {
-        PlatformUIBase.showView(viewID, 0, 0, 0, 0, 0, 0);
+        Platform.showView(viewID, 0, 0, 0, 0, 0, 0);
     }
 
     @Override

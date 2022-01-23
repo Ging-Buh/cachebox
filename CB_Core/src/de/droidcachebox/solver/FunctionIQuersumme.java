@@ -8,8 +8,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionIQuersumme extends Function {
     private static final long serialVersionUID = -1727934349667230259L;
 
-    public FunctionIQuersumme(Solver solver) {
-        super(solver);
+    public FunctionIQuersumme(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("ICrosstotal", "en"));
         Names.add(new LocalNames("IQuersumme", "de"));
         Names.add(new LocalNames("ICT", "en"));

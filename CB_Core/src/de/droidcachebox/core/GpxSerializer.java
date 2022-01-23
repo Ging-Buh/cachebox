@@ -49,19 +49,19 @@ import de.droidcachebox.utils.log.Log;
  *
  * @author Longri
  */
-public final class GpxSerializer {
+public class GpxSerializer {
     private static final String sClass = "GpxSerializer";
     private static final SimpleDateFormat dateFormatZ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
     private static final String PREFIX_XSI = "http://www.w3.org/2001/XMLSchema-instance";
     private static final String PREFIX_GPX = "http://www.topografix.com/GPX/1/0";
     private static final String PREFIX_GROUNDSPEAK = "http://www.groundspeak.com/cache/1/0/1";
     private static final String PREFIX_CACHEBOX = "cachebox-extension";
-
     /**
      * During the export, only this number of Caches is fully loaded into memory.
      */
     private static final int CACHES_PER_BATCH = 500;
     private final XmlSerializer gpx = new KXmlSerializer();
+    private final CacheDAO cacheDAO;
     /**
      * counter for exported caches, used for progress reporting
      */
@@ -69,11 +69,15 @@ public final class GpxSerializer {
     private ProgressListener progressListener;
     private boolean cancel = false;
 
-    private static String getState(final Cache cache) {
+    public GpxSerializer() {
+        cacheDAO = new CacheDAO();
+    }
+
+    private String getState(final Cache cache) {
         return getLocationPart(cache, 0);
     }
 
-    private static String getLocationPart(final Cache cache, int partIndex) {
+    private String getLocationPart(final Cache cache, int partIndex) {
         final String location = cache.getCountry();
         if (location.contains(", ")) {
             final String[] parts = location.split(",");
@@ -84,7 +88,7 @@ public final class GpxSerializer {
         return "";
     }
 
-    private static String getCountry(final Cache cache) {
+    private String getCountry(final Cache cache) {
         String country = getLocationPart(cache, 1);
         if (country.length() > 0)
             return country;
@@ -99,7 +103,7 @@ public final class GpxSerializer {
      * @param tag        an XML tag
      * @param text       some text to insert, or <tt>null</tt> to omit completely this tag
      */
-    private static void simpleText(final XmlSerializer serializer, final String prefix, final String tag, final String text) throws IOException {
+    private void simpleText(final XmlSerializer serializer, final String prefix, final String tag, final String text) throws IOException {
         if (text != null) {
             serializer.startTag(prefix, tag);
             serializer.text(validateChar(text));
@@ -112,7 +116,7 @@ public final class GpxSerializer {
      *
      * @return valid text as String
      */
-    private static String validateChar(String text) {
+    private String validateChar(String text) {
         char[] validChars = new char[text.length()];
         int validCount = 0;
         for (int i = 0; i < text.length(); i++) {
@@ -138,7 +142,7 @@ public final class GpxSerializer {
      * @param tagAndText an XML tag, the corresponding text, another XML tag, the corresponding text. <tt>null</tt> texts will be omitted along
      *                   with their respective tag.
      */
-    private static void multipleTexts(final XmlSerializer serializer, final String prefix, final String... tagAndText) throws IOException {
+    private void multipleTexts(final XmlSerializer serializer, final String prefix, final String... tagAndText) throws IOException {
         for (int i = 0; i < tagAndText.length; i += 2) {
             simpleText(serializer, prefix, tagAndText[i], tagAndText[i + 1]);
         }
@@ -151,7 +155,7 @@ public final class GpxSerializer {
      * @return <tt>true</tt> if <tt>str</tt> contains HTML code that needs to go through a HTML renderer before being displayed,
      * <tt>false</tt> if it can be displayed as-is without any loss
      */
-    private static boolean containsHtml(final String str) {
+    private boolean containsHtml(final String str) {
         if (str == null)
             return false;
         return str.indexOf('<') != -1 || str.indexOf('&') != -1;
@@ -219,8 +223,7 @@ public final class GpxSerializer {
                 batch.clear();
                 if (cancel)
                     break;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.err(sClass, ex);
                 break;
             }
@@ -230,7 +233,7 @@ public final class GpxSerializer {
         gpx.endDocument();
     }
 
-    private void exportBatch(final XmlSerializer gpx, ArrayList<String> geocodesOfBatch) throws IOException {
+    private void exportBatch(final XmlSerializer gpx, ArrayList<String> geocodesOfBatch) {
 
         progressListener.publishProgress(countExported, Translation.get("readCacheDetails", String.valueOf(geocodesOfBatch.size())));
 
@@ -259,10 +262,10 @@ public final class GpxSerializer {
                 }
 
                 String additinalIfFound = cache.isFound() ? "|Found" : "";
-                String note = CacheDAO.getInstance().getNote(cache);
+                String note = cacheDAO.getNote(cache);
                 if (note == null)
                     note = "";
-                String solver = CacheDAO.getInstance().getSolver(cache);
+                String solver = cacheDAO.getSolver(cache);
                 if (solver == null)
                     solver = "";
 
@@ -349,8 +352,7 @@ public final class GpxSerializer {
 
                 try {
                     writeWaypoints(cache);
-                }
-                catch (Exception sex) {
+                } catch (Exception sex) {
                     Log.err(sClass, "write waypoints for " + cache.getGeoCacheCode(), sex);
                 }
 
@@ -358,8 +360,7 @@ public final class GpxSerializer {
                 if (progressListener != null) {
                     progressListener.publishProgress(countExported, Translation.get("writeCache", cache.getGeoCacheCode()));
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.err(sClass, "write waypoints for " + cache.getGeoCacheCode(), ex);
             }
         }

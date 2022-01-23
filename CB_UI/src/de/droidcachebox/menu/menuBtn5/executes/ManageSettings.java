@@ -44,7 +44,7 @@ import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.MapView;
-import de.droidcachebox.menu.menuBtn5.SettingsAction;
+import de.droidcachebox.menu.menuBtn5.ShowSettings;
 import de.droidcachebox.settings.API_Button;
 import de.droidcachebox.settings.Audio;
 import de.droidcachebox.settings.SettingBase;
@@ -82,42 +82,40 @@ import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 
-public class SettingsActivity extends ActivityBase implements LanguageChanged.event {
+public class ManageSettings extends ActivityBase implements LanguageChanged.event {
 
-    private static int EditKey = -1;
-    private static SettingsActivity that;
-    private final OnClickListener showDescription = (v, x, y, pointer, button) -> {
-        ButtonDialog bd = new ButtonDialog(Translation.get("Desc_" + v.getData()), "", MsgBoxButton.OK, MsgBoxIcon.None);
-        bd.setButtonClickHandler((which, data) -> {
-            show();
-            return true;
-        });
-        bd.show();
-        return true;
-    };
+    private final OnClickListener showDescription;
+    public LinearCollapseBox loginHead; // hack for show after getting Api-key
+    private int editKey;
     private ArrayList<SettingsItem_Audio> audioSettingsList;
     private ArrayList<Lang> languages;
-    private CB_List<SettingCategory> settingCategories = new CB_List<>();
+    private CB_List<SettingCategory> settingCategories;
     private CB_Button btnOk, btnCancel, btnMenu;
     private ScrollBox scrollBox;
-    private CB_RectF ButtonRec, itemRec;
+    private CB_RectF buttonRec, itemRec;
     private API_Button apiBtn;
     private Linearlayout linearLayout;
     private SettingsItem_QuickButton settingsItem_QuickButton;
 
-    public SettingsActivity() {
-        super("Settings");
+    public ManageSettings() {
+        super("ManageSettings");
         initialize();
         LanguageChanged.add(this);
-        that = this;
-    }
-
-    public static SettingsActivity getInstance() {
-        return that;
+        showDescription = (v, x, y, pointer, button) -> {
+            ButtonDialog bd = new ButtonDialog(Translation.get("Desc_" + v.getData()), "", MsgBoxButton.OK, MsgBoxIcon.None);
+            bd.setButtonClickHandler((which, data) -> {
+                show();
+                return true;
+            });
+            bd.show();
+            return true;
+        };
+        editKey = -1;
+        settingCategories = new CB_List<>();
     }
 
     public void onHide() {
-        SettingsAction.getInstance().isExecuting = false;
+        ShowSettings.getInstance().onHide();
     }
 
     public void resortList() {
@@ -132,8 +130,8 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
     private void initialize() {
         setLongClickable(true);
         Settings.getInstance().saveToLastValues();
-        ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight());
-        itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UiSizes.getInstance().getButtonHeight());
+        buttonRec = new CB_RectF(leftBorder, 0, innerWidth, UiSizes.getInstance().getButtonHeight());
+        itemRec = new CB_RectF(leftBorder, 0, buttonRec.getWidth() - leftBorder - rightBorder, UiSizes.getInstance().getButtonHeight());
         createButtons();
         resortList();
     }
@@ -231,14 +229,13 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
             settingCategories.add(item);
         }
 
-        // SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<>("Lang", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
         CB_View_Base langView = getLangSpinnerView();
 
-        addControlToLinearLayout(langView, margin); // recreates scrollbox
+        addControlToLinearLayout(langView, margin); // recreates scrollBox
 
         ArrayList<SettingBase<?>> AllSettingList = new ArrayList<>();// Config.settings.values().toArray();
         for (SettingBase<?> settingItem : Settings.getInstance()) {
-            // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
+            // add item to list depending on SettingMode
             if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Settings.isExpert.getValue()) || Settings.isDeveloper.getValue())
                     && (settingItem.getModus() != SettingModus.NEVER)) {
                 AllSettingList.add(settingItem);
@@ -276,6 +273,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
                     SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<>(settingCategory.name());
                     linearCollapseBox.addChild(getView(lgIn, 1));
                     entryCount++;
+                    loginHead = linearCollapseBox;
                     break;
                 case QuickList:
                     linearCollapseBox.addChild(settingsItem_QuickButton = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor"));
@@ -331,7 +329,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
                     linearCollapseBox.addChild(view);
                     entryCount++;
                     Settings.getInstance().indexOf(settingItem);
-                    if (Settings.getInstance().indexOf(settingItem) == EditKey) {
+                    if (Settings.getInstance().indexOf(settingItem) == editKey) {
                         expandLayout = true;
                     }
                 }
@@ -368,7 +366,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
             scrollBox = new ScrollBox(rec);
             scrollBox.setClickable(true);
             scrollBox.setLongClickable(true);
-            linearLayout = new Linearlayout(ButtonRec.getWidth(), "SettingsActivity-LinearLayout");
+            linearLayout = new Linearlayout(buttonRec.getWidth(), "SettingsActivity-LinearLayout");
             linearLayout.setClickable(true);
             linearLayout.setLongClickable(true);
             linearLayout.setZeroPos();
@@ -433,18 +431,18 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
         item.setName(Translation.get(sb.getName()));
         item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(sb);
+            editKey = Settings.getInstance().indexOf(sb);
 
             GL.that.runOnGLWithThreadCheck(() -> {
                 ColorPicker clrPick = new ColorPicker(sb.getValue(), color -> {
                     if (color == null)
                         return; // nothing changed
 
-                    SettingColor SetValue = (SettingColor) Settings.getInstance().get(EditKey);
+                    SettingColor SetValue = (SettingColor) Settings.getInstance().get(editKey);
                     if (SetValue != null)
                         SetValue.setValue(color);
                     resortList();
-                    // Activity wieder anzeigen
+                    // reshow Activity
                     show();
                 });
                 clrPick.show();
@@ -468,7 +466,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
         }
         item.setDefault(toShow + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(sb);
+            editKey = Settings.getInstance().indexOf(sb);
             WrapType wrapType;
 
             wrapType = (sb instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
@@ -478,8 +476,8 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
                     (which, data) -> {
                         String text = StringInputBox.editTextField.getText();
                         if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
-                            SettingString value = (SettingString) Settings.getInstance().get(EditKey);
-                            // api ohne lineBreak
+                            SettingString value = (SettingString) Settings.getInstance().get(editKey);
+                            // api without lineBreak
                             if (value.getName().equalsIgnoreCase("AccessToken")) {
                                 text = text.replace("\r", "");
                                 text = text.replace("\n", "");
@@ -487,7 +485,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
                             value.setValue(text);
                             resortList();
                         }
-                        // Activity wieder anzeigen
+                        // reshow Activity
                         activityBase.show();
                         return true;
                     });
@@ -607,23 +605,23 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
         item.setName(trans);
         item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(sb);
+            editKey = Settings.getInstance().indexOf(sb);
             // Show NumPad Int Edit
             NumericInputBox numericInputBox = new NumericInputBox("default: " + br + sb.getDefaultValue(), trans);
             numericInputBox.initIntInput(sb.getValue(), new IReturnValueListener() {
                 @Override
                 public void returnValue(int value) {
-                    SettingInt SetValue = (SettingInt) Settings.getInstance().get(EditKey);
+                    SettingInt SetValue = (SettingInt) Settings.getInstance().get(editKey);
                     if (SetValue != null)
                         SetValue.setValue(value);
                     resortList();
-                    // Activity wieder anzeigen
+                    // reshow Activity
                     show();
                 }
 
                 @Override
                 public void cancelClicked() {
-                    // Activity wieder anzeigen
+                    // reshow Activity
                     show();
                 }
 
@@ -643,22 +641,22 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
         item.setName(trans);
         item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(sb);
+            editKey = Settings.getInstance().indexOf(sb);
             NumericInputBox numericInputBox = new NumericInputBox("default: " + br + sb.getDefaultValue(), trans);
             numericInputBox.initDoubleInput(String.valueOf(sb.getValue()), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
-                    SettingDouble SetValue = (SettingDouble) Settings.getInstance().get(EditKey);
+                    SettingDouble SetValue = (SettingDouble) Settings.getInstance().get(editKey);
                     if (SetValue != null)
                         SetValue.setValue(value);
                     resortList();
-                    // Activity wieder anzeigen
+                    // reshow Activity
                     activityBase.show();
                 }
 
                 @Override
                 public void cancelClicked() {
-                    // Activity wieder anzeigen
+                    // reshow Activity
                     activityBase.show();
                 }
             });
@@ -677,22 +675,22 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
         item.setName(trans);
         item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(sb);
+            editKey = Settings.getInstance().indexOf(sb);
             NumericInputBox numericInputBox = new NumericInputBox("default: " + br + sb.getDefaultValue(), trans);
             numericInputBox.initDoubleInput(String.valueOf(sb.getValue()), new IReturnValueListenerDouble() {
                 @Override
                 public void returnValue(double value) {
-                    SettingFloat SetValue = (SettingFloat) Settings.getInstance().get(EditKey);
+                    SettingFloat SetValue = (SettingFloat) Settings.getInstance().get(editKey);
                     if (SetValue != null)
                         SetValue.setValue((float) value);
                     resortList();
-                    // Activity wieder anzeigen
+                    // reshow Activity
                     activityBase.show();
                 }
 
                 @Override
                 public void cancelClicked() {
-                    // Activity wieder anzeigen
+                    // reshow Activity
                     activityBase.show();
                 }
             });
@@ -715,7 +713,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
             item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         }
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(sb);
+            editKey = Settings.getInstance().indexOf(sb);
             AbstractFile abstractFile = FileFactory.createFile(sb.getValue());
             final String absolutePath = (abstractFile != null) ? abstractFile.getAbsolutePath() : "";
             Menu icm = new Menu("SelectPathTitle");
@@ -747,7 +745,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
         item.setName(Translation.get(sb.getName()));
         item.setDefault(sb.getValue() + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(sb);
+            editKey = Settings.getInstance().indexOf(sb);
             AbstractFile abstractFile = FileFactory.createFile(sb.getValue());
             final String Path = (abstractFile.getParent() != null) ? abstractFile.getParent() : "";
             Menu icm = new Menu("SelectFileTitle");
@@ -769,7 +767,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
     }
 
     private CB_View_Base getButtonView(final SettingsListCategoryButton<?> sb) {
-        CB_Button item = new CB_Button(ButtonRec, "Button");
+        CB_Button item = new CB_Button(buttonRec, "Button");
         item.setDraggable();
         item.setText(Translation.get(sb.getName()));
         if (sb.getName().equals("DebugDisplayInfo")) {
@@ -867,7 +865,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
         item.setName(trans);
         item.setDefault(intToTime(sb.getValue()) + "\n\n" + Translation.get("Desc_" + sb.getName()));
         item.setClickHandler((v, x, y, pointer, button) -> {
-            EditKey = Settings.getInstance().indexOf(sb);
+            editKey = Settings.getInstance().indexOf(sb);
             String Value = intToTime(sb.getValue());
             String[] s = Value.split(":");
             int intValueMin = Integer.parseInt(s[0]);
@@ -876,18 +874,18 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
             numericInputBox.initTimeInput(intValueMin, intValueSec, new IReturnValueListenerTime() {
                 @Override
                 public void returnValue(int min, int sec) {
-                    SettingTime SetValue = (SettingTime) Settings.getInstance().get(EditKey);
+                    SettingTime SetValue = (SettingTime) Settings.getInstance().get(editKey);
                     int value = (min * 60 * 1000) + (sec * 1000);
                     if (SetValue != null)
                         SetValue.setValue(value);
                     resortList();
-                    // Activity wieder anzeigen
+                    // reshow Activity
                     activityBase.show();
                 }
 
                 @Override
                 public void cancelClicked() {
-                    // Activity wieder anzeigen
+                    // reshow Activity
                     activityBase.show();
                 }
             });
@@ -921,7 +919,7 @@ public class SettingsActivity extends ActivityBase implements LanguageChanged.ev
             }
             items[index++] = tmp.Name;
         }
-        Spinner spinner = new Spinner(ButtonRec,
+        Spinner spinner = new Spinner(buttonRec,
                 "SelectLanguage",
                 new SpinnerAdapter() {
                     @Override

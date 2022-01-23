@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionQuersumme extends Function {
     private static final long serialVersionUID = 3128106685827884337L;
 
-    public FunctionQuersumme(Solver solver) {
-        super(solver);
+    public FunctionQuersumme(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Crosstotal", "en"));
         Names.add(new LocalNames("Quersumme", "de"));
         Names.add(new LocalNames("CT", "en"));

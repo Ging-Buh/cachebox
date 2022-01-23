@@ -29,7 +29,7 @@ import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.StringReturner;
 import de.droidcachebox.utils.log.Log;
 
-public class DesktopUIBaseMethods implements PlatformUIBase.UIBaseMethods {
+public class DesktopPlatformMethods implements Platform.PlatformMethods {
     private static final String sClass = "DesktopUIBaseMethods";
     static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
 

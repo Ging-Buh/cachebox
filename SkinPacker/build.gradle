@@ -10,11 +10,5 @@ dependencies {
 
     //libgdx
     implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-    api project(path: ':CB_Desktop')
-    api project(path: ':CB_Desktop')
 
 }
-
-
-sourceCompatibility = "8"
-targetCompatibility = "8"

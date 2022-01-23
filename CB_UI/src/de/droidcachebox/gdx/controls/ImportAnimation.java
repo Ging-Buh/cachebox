@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.AnimationBase;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
@@ -37,28 +38,30 @@ public class ImportAnimation extends Box {
     }
 
     public void setAnimationType(final AnimationType Type) {
-        try {
-            float size = getHalfWidth() / 2;
-            float halfSize = getHalfWidth() / 4;
-            CB_RectF imageRec = new CB_RectF(getHalfWidth() - halfSize, getHalfHeight() - halfSize, size, size);
+        GL.that.runOnGLWithThreadCheck(() -> {
+            try {
+                float size = getHalfWidth() / 2;
+                float halfSize = getHalfWidth() / 4;
+                CB_RectF imageRec = new CB_RectF(getHalfWidth() - halfSize, getHalfHeight() - halfSize, size, size);
 
-            removeChildren();
+                removeChildren();
 
-            switch (Type) {
-                case Work:
-                    mAnimation = new WorkAnimation(imageRec);
-                    break;
+                switch (Type) {
+                    case Work:
+                        mAnimation = new WorkAnimation(imageRec);
+                        break;
 
-                case Download:
-                    mAnimation = new DownloadAnimation(imageRec);
-                    break;
+                    case Download:
+                        mAnimation = new DownloadAnimation(imageRec);
+                        break;
+                }
+
+                addChild(mAnimation);
             }
-
-            addChild(mAnimation);
-        }
-        catch (Exception ex) {
-            Log.err(sClass, ex);
-        }
+            catch (Exception ex) {
+                Log.err(sClass, ex);
+            }
+        });
     }
 
     public void render(Batch batch) {
@@ -66,21 +69,16 @@ public class ImportAnimation extends Box {
             back = drawableBackground;
             drawableBackground = null;
         }
-
         if (back != null) {
             Color c = batch.getColor();
-
             float a = c.a;
             float r = c.r;
             float g = c.g;
             float b = c.b;
-
             Color trans = new Color(0, 0.3f, 0, 0.40f);
             batch.setColor(trans);
             back.draw(batch, 0, 0, this.getWidth(), this.getHeight());
-
             batch.setColor(new Color(r, g, b, a));
-
         }
     }
 

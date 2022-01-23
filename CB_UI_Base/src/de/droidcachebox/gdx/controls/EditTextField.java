@@ -35,7 +35,7 @@ import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.COLOR;
 import de.droidcachebox.gdx.Fonts;
@@ -112,7 +112,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
 
     private void initEditTextField() {
         registerPopUpLongClick();
-        clipboard = PlatformUIBase.getClipboard();
+        clipboard = Platform.getClipboard();
         setDoubleClickable();
         inputType = 0;
         topLine = 0;

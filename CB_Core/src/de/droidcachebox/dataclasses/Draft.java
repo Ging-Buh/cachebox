@@ -14,7 +14,7 @@ import de.droidcachebox.utils.log.Log;
 
 public class Draft implements Serializable {
 
-    private static final String sKlasse = "Draft";
+    private static final String sClass = "Draft";
     private static final long serialVersionUID = 4110771837489396946L;
 
     public long Id;
@@ -25,10 +25,9 @@ public class Draft implements Serializable {
     public LogType type;
     public int cacheType;
     public String comment = "";
-    public int foundNumber;
     public String CacheName = "";
     public String CacheUrl = "";
-    public boolean uploaded;
+    public boolean isUploaded;
     public int gc_Vote;
     public boolean isTbDraft = false;
     public String TbName = "";
@@ -37,6 +36,7 @@ public class Draft implements Serializable {
     public String TrackingNumber = "";
     public boolean isDirectLog = false; // obsolete
     public boolean usedFavoritePoint;
+    private int foundNumber;
 
     public Draft(Draft fne) {
         Id = fne.Id;
@@ -50,7 +50,7 @@ public class Draft implements Serializable {
         foundNumber = fne.foundNumber;
         CacheName = fne.CacheName;
         CacheUrl = fne.CacheUrl;
-        uploaded = fne.uploaded;
+        isUploaded = fne.isUploaded;
         gc_Vote = fne.gc_Vote;
         isTbDraft = fne.isTbDraft;
         TbName = fne.TbName;
@@ -83,7 +83,7 @@ public class Draft implements Serializable {
         comment = reader.getString(7);
         Id = reader.getLong(8);
         CacheUrl = reader.getString(9);
-        uploaded = reader.getInt(10) != 0;
+        isUploaded = reader.getInt(10) != 0;
         gc_Vote = reader.getInt(11);
         isTbDraft = reader.getInt(12) != 0;
         TbName = reader.getString(13);
@@ -120,7 +120,7 @@ public class Draft implements Serializable {
         args.put("GcId", gcLogReference);
         args.put("Name", CacheName);
         args.put("CacheType", cacheType);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         String stimestamp = iso8601Format.format(timestamp);
         args.put("Timestamp", stimestamp);
         args.put("Type", type.getGcLogTypeId());
@@ -129,7 +129,7 @@ public class Draft implements Serializable {
         if (Id >= 0)
             args.put("Id", Id); // bei Update!!!
         args.put("Url", CacheUrl);
-        args.put("Uploaded", uploaded);
+        args.put("Uploaded", isUploaded);
         args.put("gc_Vote", gc_Vote);
         args.put("TbFieldNote", isTbDraft);
         args.put("TbName", TbName);
@@ -140,7 +140,7 @@ public class Draft implements Serializable {
         try {
             DraftsDatabase.getInstance().insertWithConflictReplace("Fieldnotes", args);
         } catch (Exception exc) {
-            Log.err(sKlasse, exc.toString());
+            Log.err(sClass, exc.toString());
             return;
         }
         // search FieldNote Id : should be the last entry
@@ -156,9 +156,9 @@ public class Draft implements Serializable {
         reader.close();
         if (Id == -1) {
             if (isTbDraft)
-                Log.err(sKlasse, "TB-Log not saved: " + TravelBugCode + " in " + gcCode + ".");
+                Log.err(sClass, "TB-Log not saved: " + TravelBugCode + " in " + gcCode + ".");
             else
-                Log.err(sKlasse, "Cache-Log not saved: " + gcCode + "");
+                Log.err(sClass, "Cache-Log not saved: " + gcCode + "");
         }
     }
 
@@ -179,7 +179,7 @@ public class Draft implements Serializable {
         args.put("comment", comment);
         args.put("cachetype", cacheType);
         args.put("url", CacheUrl);
-        args.put("Uploaded", uploaded);
+        args.put("Uploaded", isUploaded);
         args.put("gc_Vote", gc_Vote);
         args.put("TbFieldNote", isTbDraft);
         args.put("TbName", TbName);
@@ -226,7 +226,7 @@ public class Draft implements Serializable {
             ret = false;
         if (!CacheUrl.equals(fne.CacheUrl))
             ret = false;
-        if (uploaded != fne.uploaded)
+        if (isUploaded != fne.isUploaded)
             ret = false;
         if (gc_Vote != fne.gc_Vote)
             ret = false;
@@ -240,4 +240,11 @@ public class Draft implements Serializable {
         return ret;
     }
 
+    public int getFoundNumber() {
+        return foundNumber;
+    }
+
+    public void setFoundNumber(int foundNumber) {
+        this.foundNumber = foundNumber;
+    }
 }

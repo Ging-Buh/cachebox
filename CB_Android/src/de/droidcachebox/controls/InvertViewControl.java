@@ -29,7 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.droidcachebox.Global;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.R;
 import de.droidcachebox.gdx.ViewConst;
 import de.droidcachebox.menu.menuBtn2.executes.Description;
@@ -96,7 +96,7 @@ public final class InvertViewControl extends View {
                                 if (firstDraw) {
                                     firstDraw = false;
                                     Description dv = Description.getInstance();
-                                    PlatformUIBase.showView(ViewConst.DESCRIPTION_VIEW, dv.getX(), dv.getY(), 0, 0, 0, 0);
+                                    Platform.showView(ViewConst.DESCRIPTION_VIEW, dv.getX(), dv.getY(), 0, 0, 0, 0);
                                 }
                             });
                         }

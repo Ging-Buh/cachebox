@@ -18,31 +18,31 @@ package de.droidcachebox.menu.menuBtn5;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 
 public class SwitchTorch extends AbstractAction {
 
-    private static SwitchTorch that;
+    private static SwitchTorch instance;
 
     private SwitchTorch() {
         super("torch");
     }
 
     public static SwitchTorch getInstance() {
-        if (that == null) that = new SwitchTorch();
-        return that;
+        if (instance == null) instance = new SwitchTorch();
+        return instance;
     }
 
     @Override
     public boolean getEnabled() {
-        return PlatformUIBase.isTorchAvailable();
+        return Platform.isTorchAvailable();
     }
 
     @Override
     public Sprite getIcon() {
-        if (PlatformUIBase.isTorchOn()) {
+        if (Platform.isTorchOn()) {
             return Sprites.getSprite(IconName.TORCHON.name());
         } else {
             return Sprites.getSprite(IconName.TORCHOFF.name());
@@ -51,6 +51,6 @@ public class SwitchTorch extends AbstractAction {
 
     @Override
     public void execute() {
-        PlatformUIBase.switchTorch();
+        Platform.switchTorch();
     }
 }

@@ -1,16 +1,16 @@
 package de.droidcachebox.solver;
 
-import de.droidcachebox.translation.Translation;
-
 import java.util.ArrayList;
+
+import de.droidcachebox.translation.Translation;
 
 public class ZuweisungEntity extends Entity {
 
     private Entity links;
     private Entity rechts;
 
-    public ZuweisungEntity(Solver solver, int id, Entity links, Entity rechts) {
-        super(solver, id);
+    public ZuweisungEntity(SolverLines solverLines, int id, Entity links, Entity rechts) {
+        super(solverLines, id);
         this.links = links;
         this.rechts = rechts;
     }
@@ -55,13 +55,13 @@ public class ZuweisungEntity extends Entity {
             if (ungueltig)
                 return Translation.get("InvalidVariableName", lLinks);
             // lLinks ist gueltiger Variablenname
-            if (!solver.Variablen.containsKey(lLinks)) {
+            if (!solverLines.Variablen.containsKey(lLinks)) {
                 // neue Variable hinzfuegen
-                solver.Variablen.put(lLinks, lRechts);
+                solverLines.Variablen.put(lLinks, lRechts);
             } else {
                 // Variable aendern
-                solver.Variablen.remove(lLinks);
-                solver.Variablen.put(lLinks, lRechts);
+                solverLines.Variablen.remove(lLinks);
+                solverLines.Variablen.put(lLinks, lRechts);
             }
             return lRechts;
         } else if (links instanceof CoordinateEntity) {

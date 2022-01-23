@@ -51,8 +51,8 @@ import ch.fhnw.imvs.gpssimulator.nmea.GSA;
 import ch.fhnw.imvs.gpssimulator.nmea.NMEASentence;
 import ch.fhnw.imvs.gpssimulator.nmea.RMC;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
-import de.droidcachebox.PlatformUIBase.UIBaseMethods;
+import de.droidcachebox.Platform;
+import de.droidcachebox.Platform.PlatformMethods;
 import de.droidcachebox.database.SQLiteInterface;
 import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.utils.StringReturner;
@@ -128,7 +128,7 @@ public class SimulatorMain {
         GlobalCore.firstSDCard = "C:/";
         GlobalCore.secondSDCard = "D:/";
 
-        PlatformUIBase.init(new UIBaseMethods() {
+        Platform.init(new PlatformMethods() {
 
             @Override
             public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {

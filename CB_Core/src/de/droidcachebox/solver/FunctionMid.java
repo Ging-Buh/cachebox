@@ -9,8 +9,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionMid extends Function {
     private static final long serialVersionUID = 3727854231542597267L;
 
-    FunctionMid(Solver solver) {
-        super(solver);
+    FunctionMid(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Mid", "en"));
     }
 

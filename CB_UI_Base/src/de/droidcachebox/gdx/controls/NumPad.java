@@ -2,7 +2,7 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.Input.Keys;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -223,7 +223,7 @@ public class NumPad extends CB_View_Base {
 
         btn_OK.setClickHandler((view, x, y, pointer, button) -> {
             if (mKeyPressedListener != null) {
-                PlatformUIBase.vibrate();
+                Platform.vibrate();
                 mKeyPressedListener.KeyPressed("O");
                 return true;
             }
@@ -234,7 +234,7 @@ public class NumPad extends CB_View_Base {
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 if (mKeyPressedListener != null) {
-                    PlatformUIBase.vibrate();
+                    Platform.vibrate();
                     mKeyPressedListener.KeyPressed("C");
                     return true;
                 }
@@ -247,7 +247,7 @@ public class NumPad extends CB_View_Base {
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
                 if (mKeyPressedListener != null) {
-                    PlatformUIBase.vibrate();
+                    Platform.vibrate();
                     mKeyPressedListener.KeyPressed("D");
                     return true;
                 }
@@ -257,7 +257,7 @@ public class NumPad extends CB_View_Base {
 
         btn_Bck.setClickHandler((v, x, y, pointer, button) -> {
             if (mKeyPressedListener != null) {
-                PlatformUIBase.vibrate();
+                Platform.vibrate();
                 mKeyPressedListener.KeyPressed("B");
                 return true;
             }

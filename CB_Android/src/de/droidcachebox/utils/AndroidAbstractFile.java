@@ -13,7 +13,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.utils.log.Log;
 
 
@@ -21,7 +21,7 @@ import de.droidcachebox.utils.log.Log;
  * Created by Longri on 17.02.2016.
  */
 public class AndroidAbstractFile extends AbstractFile {
-    private static final String sKlasse = "AndroidFile";
+    private static final String sClass = "AndroidFile";
     private static final String content = "content";
 
     private java.io.File mFile;
@@ -62,7 +62,7 @@ public class AndroidAbstractFile extends AbstractFile {
     public boolean exists() {
         if (isContentFile) {
             try {
-                PlatformUIBase.getInputStream(contentFile);
+                Platform.getInputStream(contentFile);
                 return true;
             } catch (Exception e) {
                 return false;
@@ -228,7 +228,7 @@ public class AndroidAbstractFile extends AbstractFile {
                     mFile.delete();
                 }
             } catch (Exception e) {
-                Log.err(sKlasse,e.getLocalizedMessage());
+                Log.err(sClass,e.getLocalizedMessage());
                 ret = false;
             }
 
@@ -244,7 +244,7 @@ public class AndroidAbstractFile extends AbstractFile {
         }
 
         if (!prntAbstractFile.canWrite()) {
-            Log.err(sKlasse, "can't write to destination" + prntAbstractFile.getAbsolutePath());
+            Log.err(sClass, "can't write to destination" + prntAbstractFile.getAbsolutePath());
             return false;
         }
         FileInputStream inStream = new FileInputStream(mFile);
@@ -282,7 +282,7 @@ public class AndroidAbstractFile extends AbstractFile {
     @Override
     public FileOutputStream getFileOutputStream() throws FileNotFoundException {
         if (isContentFile) {
-            return (FileOutputStream) PlatformUIBase.getOutputStream(contentFile);
+            return (FileOutputStream) Platform.getOutputStream(contentFile);
         }
         else {
             return new FileOutputStream(mFile);
@@ -292,7 +292,7 @@ public class AndroidAbstractFile extends AbstractFile {
     @Override
     public FileInputStream getFileInputStream() throws FileNotFoundException {
         if (isContentFile) {
-            return (FileInputStream) PlatformUIBase.getInputStream(contentFile);
+            return (FileInputStream) Platform.getInputStream(contentFile);
         }
         else {
             return new FileInputStream(mFile);

@@ -35,7 +35,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.ViewOptionsMenu;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CacheDAO;
@@ -63,15 +63,15 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     private final static LinkedList<String> NonLocalImages = new LinkedList<>();
     private final static LinkedList<String> NonLocalImagesUrl = new LinkedList<>();
     private static ProgressDialog pd;
-    private static DescriptionViewControl that;
     private static Cache aktCache;
     private static String message = "";
-    private static Activity staticMainActivity;
     private static Activity mainActivity;
+    private final CacheDAO cacheDAO;
     // private static int downloadTryCounter = 0;
-    private static final DialogInterface.OnClickListener downloadCacheDialogResult = new DialogInterface.OnClickListener() {
+    private final DialogInterface.OnClickListener downloadCacheDialogResult = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int button) {
+            CacheDAO cacheDAO = new CacheDAO();
             if (button == -1) {
                 Cache newCache;
 
@@ -86,7 +86,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         CBDB.getInstance().cacheList.remove(aktCache);
                         CBDB.getInstance().cacheList.add(newCache);
 
-                        CacheDAO.getInstance().updateDatabase(newCache);
+                        cacheDAO.updateDatabase(newCache);
                         newCache.setLongDescription("");
 
                         for (LogEntry apiLog : geoCacheRelated.logs)
@@ -119,7 +119,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         CBDB.getInstance().setTransactionSuccessful();
                         CBDB.getInstance().endTransaction();
 
-                        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+                        cacheDAO.updateCacheCountForGPXFilenames();
                     }
                     aktCache = newCache;
                     setCache(newCache);
@@ -129,7 +129,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
                         s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-                        MessageBox.show(staticMainActivity, s, Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live, null);
+                        MessageBox.show(mainActivity, s, Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live, null);
                     }
                 }
             }
@@ -146,12 +146,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 }
                 case 2: {
                     pd.dismiss();
-                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live, null);
+                    MessageBox.show(mainActivity, message, Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live, null);
                     break;
                 }
                 case 3: {
                     pd.dismiss();
-                    MessageBox.show(staticMainActivity, message, Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
+                    MessageBox.show(mainActivity, message, Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live, downloadCacheDialogResult);
                     break;
                 }
                 case 4: {
@@ -162,8 +162,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             }
         }
     };
-
-    private final WebViewClient webViewClient = new WebViewClient() {
+    private WebViewClient webViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // handles submitting a form
@@ -172,7 +171,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 int pos = url.indexOf("+"); // the Blank is converted to + in url
                 // 25 is the length of "fake://fake.de?GetAttInfo"
                 if (pos > 0)
-                    MessageBox.show(staticMainActivity, Translation.get(url.substring(25, pos)));
+                    MessageBox.show(mainActivity, Translation.get(url.substring(25, pos)));
                 return true;
             } else if (url.contains("fake://fake.de?download")) {
 
@@ -224,7 +223,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 return true;
             } else if (url.startsWith("http")) {
                 // Load Url in ext Browser
-                PlatformUIBase.callUrl(url);
+                Platform.callUrl(url);
                 return true;
             }
             // never reached?
@@ -239,18 +238,17 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    if (staticMainActivity == null) return;
-                    staticMainActivity.runOnUiThread(() -> scrollTo(0, 0));
+                    if (mainActivity == null) return;
+                    mainActivity.runOnUiThread(() -> scrollTo(0, 0));
                 }
             };
             timer.schedule(task, 100);
         }
     };
-
     public DescriptionViewControl(Context context) {
         super(context);
         mainActivity = (Activity) context;
-        staticMainActivity = mainActivity;
+        cacheDAO = new CacheDAO();
         setDrawingCacheEnabled(false);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             setAlwaysDrawnWithCacheEnabled(false);
@@ -269,14 +267,13 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
          }
         */
         setWebViewClient(webViewClient);
-        that = this;
         setFocusable(false);
     }
 
     public DescriptionViewControl(Context context, AttributeSet attrs) {
         super(context, attrs);
         mainActivity = (Activity) context;
-        staticMainActivity = mainActivity;
+        cacheDAO = new CacheDAO();
 
         setDrawingCacheEnabled(false);
         setAlwaysDrawnWithCacheEnabled(false);
@@ -290,10 +287,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
         setWebViewClient(webViewClient);
-        that = this;
     }
 
-    public static void setCache(final Cache cache) {
+    public void setCache(final Cache cache) {
         if (cache != null) {
             Log.debug(sClass, "set " + cache.getGeoCacheCode() + " for description");
             if (aktCache == cache) {
@@ -304,7 +300,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             aktCache = cache;
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String html = CacheDAO.getInstance().getShortDescription(cache) + CacheDAO.getInstance().getDescription(cache);
+            String html = cacheDAO.getShortDescription(cache) + cacheDAO.getDescription(cache);
             // cache.getApiStatus() == Cache.IS_FULL
             if (html.length() > 0) {
                 html = DescriptionImageGrabber.resolveImages(cache, html, false, NonLocalImages, NonLocalImagesUrl);
@@ -321,18 +317,18 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             }
 
             final String finalHtml = html;
-            staticMainActivity.runOnUiThread(() -> {
+            mainActivity.runOnUiThread(() -> {
                 try {
-                    DescriptionViewControl.that.loadDataWithBaseURL("fake://fake.de", finalHtml, "text/html", "utf-8", null);
+                    loadDataWithBaseURL("fake://fake.de", finalHtml, "text/html", "utf-8", null);
                 } catch (Exception ignored) {
                 }
             });
         }
 
         try {
-            staticMainActivity.runOnUiThread(() -> {
-                if (DescriptionViewControl.that.getSettings() != null)
-                    DescriptionViewControl.that.getSettings().setLightTouchEnabled(true);
+            mainActivity.runOnUiThread(() -> {
+                if (getSettings() != null)
+                    getSettings().setLightTouchEnabled(true);
             });
         } catch (Exception e1) {
             // dann kann eben nicht gezoomt werden!
@@ -382,7 +378,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             Log.debug(sClass, "set " + cache.getGeoCacheCode() + " finished for description (despite fetching images etc...)");
     }
 
-    private static String getAttributesHtml(Cache cache) {
+    private String getAttributesHtml(Cache cache) {
         StringBuilder sb = new StringBuilder();
         try {
             Iterator<Attribute> attrs = cache.getAttributes().iterator();
@@ -452,8 +448,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     InvertViewControl.Me.setVisibility(GONE);
                 }
 
-                that.setWillNotDraw(false);
-                that.invalidate();
+                setWillNotDraw(false);
+                invalidate();
             }
         });
     }

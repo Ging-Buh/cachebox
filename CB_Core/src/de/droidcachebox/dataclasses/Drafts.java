@@ -24,7 +24,7 @@ import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
 
 public class Drafts extends Array<Draft> {
-    private static final String sKlasse = "Drafts";
+    private static final String sClass = "Drafts";
     // private static final long serialVersionUID = 1L;
     private boolean isCropped;
     private int currentCroppedLength;
@@ -122,7 +122,7 @@ public class Drafts extends Array<Draft> {
                     reader.close();
                 }
             } catch (Exception exc) {
-                Log.err(sKlasse, "Drafts", "loadDrafts", exc);
+                Log.err(sClass, "Drafts", "loadDrafts", exc);
             }
 
             // check Cropped
@@ -150,7 +150,7 @@ public class Drafts extends Array<Draft> {
             }
             if (fne != null) {
                 if (fne.type == LogType.found)
-                    foundNumber = fne.foundNumber;
+                    foundNumber = fne.getFoundNumber();
                 removeValue(fne, true); // fne is an object of this (list)
                 fne.deleteFromDatabase();
             }
@@ -169,7 +169,7 @@ public class Drafts extends Array<Draft> {
             }
             if (fne != null) {
                 if (fne.type == LogType.found)
-                    foundNumber = fne.foundNumber;
+                    foundNumber = fne.getFoundNumber();
                 removeValue(fne, true); // fne is an object of this (list)
                 fne.deleteFromDatabase();
             }
@@ -182,10 +182,10 @@ public class Drafts extends Array<Draft> {
         if (deletedFoundNumber > 0) {
             // alle FoundNumbers anpassen, die größer sind
             for (Draft fn : this) {
-                if ((fn.type == LogType.found) && (fn.foundNumber > deletedFoundNumber)) {
-                    int oldFoundNumber = fn.foundNumber;
-                    fn.foundNumber--;
-                    fn.comment = fn.comment.replaceAll("#" + oldFoundNumber, "#" + fn.foundNumber);
+                if ((fn.type == LogType.found) && (fn.getFoundNumber() > deletedFoundNumber)) {
+                    int oldFoundNumber = fn.getFoundNumber();
+                    fn.setFoundNumber(fn.getFoundNumber() - 1);
+                    fn.comment = fn.comment.replaceAll("#" + oldFoundNumber, "#" + fn.getFoundNumber());
                     fn.updateDatabase();
                 }
             }

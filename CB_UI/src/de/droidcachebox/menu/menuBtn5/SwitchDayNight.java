@@ -1,6 +1,7 @@
 package de.droidcachebox.menu.menuBtn5;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -8,15 +9,15 @@ import de.droidcachebox.menu.ViewManager;
 
 public class SwitchDayNight extends AbstractAction {
 
-    private static SwitchDayNight that;
+    private static SwitchDayNight instance;
 
     private SwitchDayNight() {
         super("DayNight");
     }
 
     public static SwitchDayNight getInstance() {
-        if (that == null) that = new SwitchDayNight();
-        return that;
+        if (instance == null) instance = new SwitchDayNight();
+        return instance;
     }
 
     @Override

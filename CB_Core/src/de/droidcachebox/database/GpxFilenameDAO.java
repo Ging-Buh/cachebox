@@ -20,21 +20,21 @@ public class GpxFilenameDAO {
         GpxFilename result = new GpxFilename(id, gpxFileName, categoryId);
 
         if (reader.isNull(2))
-            result.Imported = new Date();
+            result.importedDate = new Date();
         else {
             String sDate = reader.getString(2);
             DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
-                result.Imported = iso8601Format.parse(sDate);
+                result.importedDate = iso8601Format.parse(sDate);
             } catch (ParseException e) {
-                result.Imported = new Date();
+                result.importedDate = new Date();
             }
         }
 
         if (reader.isNull(3))
-            result.CacheCount = 0;
+            result.numberOfGeocaches = 0;
         else
-            result.CacheCount = reader.getInt(3);
+            result.numberOfGeocaches = reader.getInt(3);
 
         return result;
     }

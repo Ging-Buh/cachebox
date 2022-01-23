@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionHandySum extends Function {
     private static final long serialVersionUID = -9107479222557989258L;
 
-    public FunctionHandySum(Solver solver) {
-        super(solver);
+    public FunctionHandySum(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("PhoneSum", "en"));
         Names.add(new LocalNames("HandySum", "de"));
         Names.add(new LocalNames("PS", "en"));

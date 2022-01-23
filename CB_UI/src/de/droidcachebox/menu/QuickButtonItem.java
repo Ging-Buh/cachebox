@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.CB_Button;
@@ -113,10 +113,10 @@ public class QuickButtonItem extends ListViewItemBase {
                 state = 0;
             }
         } else if (quickAction == QuickAction.torch) {
-            if (PlatformUIBase.isTorchOn() && state != 1) {
+            if (Platform.isTorchOn() && state != 1) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHON.name())));
                 state = 1;
-            } else if (!PlatformUIBase.isTorchOn() && state != 0) {
+            } else if (!Platform.isTorchOn() && state != 0) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHOFF.name())));
                 state = 0;
             }

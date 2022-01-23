@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionPrimenumber extends FunctionPrimeBase {
     private static final long serialVersionUID = 9017206001889511182L;
 
-    public FunctionPrimenumber(Solver solver) {
-        super(solver);
+    public FunctionPrimenumber(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Primenumber", "en"));
         Names.add(new LocalNames("Primzahl", "de"));
     }

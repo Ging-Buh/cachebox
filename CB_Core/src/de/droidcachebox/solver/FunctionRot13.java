@@ -6,8 +6,8 @@ import de.droidcachebox.utils.UnitFormatter;
 public class FunctionRot13 extends Function {
     private static final long serialVersionUID = 172122667088261676L;
 
-    public FunctionRot13(Solver solver) {
-        super(solver);
+    public FunctionRot13(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Rot13", "en"));
     }
 

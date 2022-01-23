@@ -28,8 +28,8 @@ import de.droidcachebox.AppRater;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.GlobalLocationReceiver;
 import de.droidcachebox.InvalidateTextureListeners;
+import de.droidcachebox.Platform;
 import de.droidcachebox.PlatformAction;
-import de.droidcachebox.PlatformUIBase;
 import de.droidcachebox.core.API_ErrorEventHandler;
 import de.droidcachebox.core.API_ErrorEventHandlerList;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -72,16 +72,16 @@ import de.droidcachebox.menu.menuBtn3.ShowCompass;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.ShowTracks;
 import de.droidcachebox.menu.menuBtn3.executes.CompassView;
-import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
+import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.menu.menuBtn3.executes.TrackRecorder;
 import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
-import de.droidcachebox.menu.menuBtn5.HelpOnline;
-import de.droidcachebox.menu.menuBtn5.SettingsAction;
 import de.droidcachebox.menu.menuBtn5.ShowAbout;
 import de.droidcachebox.menu.menuBtn5.ShowCredits;
+import de.droidcachebox.menu.menuBtn5.ShowHelp;
 import de.droidcachebox.menu.menuBtn5.ShowQuit;
+import de.droidcachebox.menu.menuBtn5.ShowSettings;
 import de.droidcachebox.menu.menuBtn5.SwitchDayNight;
 import de.droidcachebox.menu.menuBtn5.SwitchTorch;
 import de.droidcachebox.settings.Settings;
@@ -157,7 +157,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         ButtonDialog bd = new ButtonDialog(msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live);
                         bd.setButtonClickHandler((which, data) -> {
                             if (which == ButtonDialog.BTN_LEFT_POSITIVE)
-                                PlatformUIBase.getApiKey();
+                                Platform.getApiKey();
                             return true;
                         });
                         bd.show();
@@ -179,7 +179,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         ButtonDialog bd = new ButtonDialog(msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live);
                         bd.setButtonClickHandler((which, data) -> {
                             if (which == ButtonDialog.BTN_LEFT_POSITIVE)
-                                PlatformUIBase.getApiKey();
+                                Platform.getApiKey();
                             return true;
                         });
                         bd.show();
@@ -201,7 +201,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                         new ButtonDialog(msg, Translation.get("errorAPI"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live,
                                 (which, data) -> {
                                     if (which == ButtonDialog.BTN_LEFT_POSITIVE)
-                                        PlatformUIBase.getApiKey();
+                                        Platform.getApiKey();
                                     return true;
                                 }, Settings.RememberAsk_Get_API_Key).show();
                     }
@@ -221,11 +221,11 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         autoLoadTrack();
 
         if (Settings.TrackRecorderStartup.getValue()) {
-            if (PlatformUIBase.isGPSon()) {
-                TrackRecorder.startRecording();
+            if (Platform.isGPSon()) {
+                TrackRecorder.getInstance().startRecording();
             }
         }
-        Settings.TrackDistance.addSettingChangedListener(() -> TrackRecorder.distanceForNextTrackpoint = Settings.TrackDistance.getValue());
+        Settings.trackDistance.addSettingChangedListener(() -> TrackRecorder.getInstance().distanceForNextTrackpoint = Settings.trackDistance.getValue());
 
         // set last selected Cache
         String sGc = Settings.lastSelectedCache.getValue();
@@ -250,7 +250,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         isInitial = true;
 
-        PlatformUIBase.handleExternalRequest();
+        Platform.handleExternalRequest();
 
     }
 
@@ -314,10 +314,10 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn4.addAction(actionRecordVoice, false);
 
         mainBtn5.addAction(ShowCredits.getInstance(), false, GestureDirection.Up);
-        mainBtn5.addAction(SettingsAction.getInstance(), false, GestureDirection.Left);
+        mainBtn5.addAction(ShowSettings.getInstance(), false, GestureDirection.Left);
         mainBtn5.addAction(ShowParkingMenu.getInstance(), false, GestureDirection.Right);
         mainBtn5.addAction(SwitchDayNight.getInstance(), false);
-        mainBtn5.addAction(HelpOnline.getInstance(), false);
+        mainBtn5.addAction(ShowHelp.getInstance(), false);
         mainBtn5.addAction(SwitchTorch.getInstance(), false);
         mainBtn5.addAction(ShowAbout.getInstance(), true);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
@@ -333,7 +333,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             String[] files = dir.list();
             if (files != null) {
                 for (String file : files) {
-                    TrackListView.getInstance().loadTrack(trackPath, file);
+                    TrackList.getInstance().loadTrack(trackPath, file);
                 }
             }
         } else {
@@ -392,7 +392,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
             GL.that.toast("Switch to " + state);
 
-            PlatformUIBase.dayNightSwitched();
+            Platform.dayNightSwitched();
 
             synchronized (childs) {
                 for (int i = 0, n = childs.size(); i < n; i++) {
@@ -458,7 +458,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     @Override
     public void positionChanged() {
         try {
-            TrackRecorder.recordPosition();
+            TrackRecorder.getInstance().recordPosition();
         } catch (Exception ex) {
             Log.err(sClass, "PositionChanged()", "TrackRecorder.recordPosition()", ex);
         }

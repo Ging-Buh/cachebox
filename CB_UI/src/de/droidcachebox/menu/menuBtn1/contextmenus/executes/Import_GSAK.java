@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
@@ -55,7 +55,7 @@ import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
 public class Import_GSAK extends ActivityBase {
-    private static final String sKlasse = "Import_GSAK";
+    private static final String sClass = "Import_GSAK";
     private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote,UserFlag";
     private static final String memofields = "LongDescription,ShortDescription,Hints,UserNote";
     private final CB_Button bOK;
@@ -246,6 +246,7 @@ public class Import_GSAK extends ActivityBase {
 
 
     private void doImport() {
+        CacheDAO cacheDAO = new CacheDAO();
         GpxFilename gpxFilename = null;
         Category category = CoreData.categories.getCategory(edtCategory.getText());
         if (category != null) // should not happen!!!
@@ -255,7 +256,7 @@ public class Import_GSAK extends ActivityBase {
                 isCanceled = true;
             }
         }
-        sql = PlatformUIBase.createSQLInstance();
+        sql = Platform.createSQLInstance();
         String ResultFields = fields + "," + memofields;
         ResultFieldsArray = ResultFields.split(",");
         // sql.beginTransaction();
@@ -279,17 +280,17 @@ public class Import_GSAK extends ActivityBase {
                     String GcCode = "";
                     try {
                         GcCode = reader.getString("Code");
-                        // Log.trace(sKlasse, GcCode);
+                        // Log.trace(sClass, GcCode);
                         Cache cache = createGeoCache(reader);
                         if (cache != null && GcCode.length() > 0) {
                             addAttributes(cache);
                             addWayPoints(cache);
                             // GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
                             GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, new ArrayList<>(), new ArrayList<>());
-                            CacheDAO.getInstance().writeCacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
+                            cacheDAO.writeCacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
                         }
                     } catch (Exception ex) {
-                        Log.err(sKlasse, "Import " + GcCode, ex);
+                        Log.err(sClass, "Import " + GcCode, ex);
                     }
                     reader.moveToNext();
                 }
@@ -302,7 +303,7 @@ public class Import_GSAK extends ActivityBase {
             sql.close();
             sql = null;
             CBDB.getInstance().endTransaction();
-            CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+            cacheDAO.updateCacheCountForGPXFilenames();
 
             if (mImageDatabaseName.length() > 0) {
                 doImportImages("CacheImages");
@@ -319,7 +320,7 @@ public class Import_GSAK extends ActivityBase {
         AbstractFile abstractFile = FileFactory.createFile(mImageDatabasePath + "/" + mImageDatabaseName);
         if (abstractFile.exists()) {
             // sql.execSQL("ATTACH DATABASE " + file.getAbsolutePath() + " AS imagesLink");
-            SQLiteInterface sqlImageLink = PlatformUIBase.createSQLInstance();
+            SQLiteInterface sqlImageLink = Platform.createSQLInstance();
             if (sqlImageLink == null) return;
             if (sqlImageLink.openReadOnly(abstractFile.getAbsolutePath())) {
                 Settings.GSAKLastUsedImageDatabasePath.setValue(mImageDatabasePath);
@@ -480,7 +481,7 @@ public class Import_GSAK extends ActivityBase {
                 case "Caches.Code":
                     cache.setGeoCacheCode(reader.getString("Code"));
                     if (cache.getGeoCacheCode().length() == 0) {
-                        Log.err(sKlasse, "get no GCCode");
+                        Log.err(sClass, "get no GCCode");
                         return null;
                     }
                     cache.setUrl("https://coord.info/" + cache.getGeoCacheCode());
@@ -596,7 +597,7 @@ public class Import_GSAK extends ActivityBase {
                     break;
                 default:
                     // Remind the programmer
-                    Log.err(sKlasse, "createGeoCache: " + ResultFieldsArray[ii] + " not handled");
+                    Log.err(sClass, "createGeoCache: " + ResultFieldsArray[ii] + " not handled");
             }
         }
         return cache;
@@ -690,7 +691,7 @@ public class Import_GSAK extends ActivityBase {
             case "Z":
                 return GeoCacheType.MegaEvent;
         }
-        Log.err(sKlasse, "Undefined abbreviation:" + abbreviation);
+        Log.err(sClass, "Undefined abbreviation:" + abbreviation);
         return GeoCacheType.Undefined;
     }
 
@@ -699,7 +700,7 @@ public class Import_GSAK extends ActivityBase {
         try {
             return new SimpleDateFormat(ps, Locale.US).parse(d);
         } catch (Exception e) {
-            Log.err(sKlasse, "DateFromString", e);
+            Log.err(sClass, "DateFromString", e);
             return new Date();
         }
     }

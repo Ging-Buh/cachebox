@@ -1,6 +1,6 @@
 package de.droidcachebox.database;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.utils.log.Log;
 
 public class DraftsDatabase extends Database_Core {
@@ -10,7 +10,7 @@ public class DraftsDatabase extends Database_Core {
         private DraftsDatabase() {
                 super();
                 latestDatabaseChange = DatabaseVersions.DraftsLatestVersion;
-                sql = PlatformUIBase.createSQLInstance();
+                sql = Platform.createSQLInstance();
                 draftsDatabase = this;
         }
 

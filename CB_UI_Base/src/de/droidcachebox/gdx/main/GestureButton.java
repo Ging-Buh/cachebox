@@ -55,8 +55,8 @@ public class GestureButton extends CB_Button {
     private AbstractShowAction aktActionView = null;
     private GestureHelp help;
     private Point downPos = null;
-    private boolean useDescriptiveCB_Buttons;
-    private boolean rememberLastAction;
+    private final boolean useDescriptiveCB_Buttons;
+    private final boolean rememberLastAction;
     private Image mButtonImage;
     private final OnClickListener onClickListener = new OnClickListener() {
         @Override

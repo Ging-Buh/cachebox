@@ -3,7 +3,7 @@ package de.droidcachebox.utils;
 import de.droidcachebox.utils.log.Log;
 
 public abstract class LoopThread {
-    private static final String sKlasse = "LoopThread";
+    private static final String sClass = "LoopThread";
 
     private final long sleepTime;
     private boolean loopShouldRun;
@@ -39,7 +39,7 @@ public abstract class LoopThread {
                 } while (loopShouldRun);
                 if (monitoringThread != null) monitoringThread.interrupt();
                 monitoringThread = null;
-                Log.debug(sKlasse, "Stop loopThread");
+                Log.debug(sClass, "Stop loopThread");
             });
 
             try {
@@ -54,12 +54,12 @@ public abstract class LoopThread {
                     monitoringThread = new Thread(() -> {
                         do {
                             if (loopShouldRun) {
-                                Log.debug(sKlasse, "MonitoringThread is checking!");
+                                Log.debug(sClass, "MonitoringThread is checking!");
                                 if (loopThread.isAlive()) {
                                     try {
                                         Thread.sleep(10000); // must not run that often
                                     } catch (InterruptedException ignored) {
-                                        Log.debug(sKlasse, "Waking up monitoringThread");
+                                        Log.debug(sClass, "Waking up monitoringThread");
                                     }
                                 } else {
                                     // both threads will finish
@@ -70,14 +70,14 @@ public abstract class LoopThread {
                                 }
                             }
                         } while (loopShouldRun);
-                        Log.debug(sKlasse, "Stop monitoringThread");
+                        Log.debug(sClass, "Stop monitoringThread");
                     });
 
                     monitoringThread.setPriority(Thread.MIN_PRIORITY);
                     monitoringThread.start();
                 }
             } catch (Exception ex) {
-                Log.err(sKlasse, "monitoringThread: " + ex);
+                Log.err(sClass, "monitoringThread: " + ex);
             }
 
         }

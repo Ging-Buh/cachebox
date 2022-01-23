@@ -2,7 +2,7 @@ package de.droidcachebox;
 
 import de.droidcachebox.gdx.ViewID;
 
-public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
+public class ShowViewMethods implements Platform.ShowViewMethods {
 
     @Override
     public void showView(ViewID viewID, int left, int top, int right, int bottom) {

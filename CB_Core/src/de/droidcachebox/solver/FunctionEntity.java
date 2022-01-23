@@ -7,8 +7,8 @@ public class FunctionEntity extends Entity {
     private Function function;
     private Entity entity;
 
-    public FunctionEntity(Solver solver, int id, Function function, Entity entity) {
-        super(solver, id);
+    public FunctionEntity(SolverLines solverLines, int id, Function function, Entity entity) {
+        super(solverLines, id);
         this.function = function;
         this.entity = entity;
     }
@@ -35,7 +35,7 @@ public class FunctionEntity extends Entity {
             str[0] = argument;
         }
         for (String s : str) {
-            if (Solver.isError(s)) {
+            if (SolverLines.isError(s)) {
                 return s; // einer der aufrufenden Parameter ist eine Fehlermeldung -> Fehlermeldung direkt ausgeben!
             }
         }

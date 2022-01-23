@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionLength extends Function {
     private static final long serialVersionUID = -7915834072364391848L;
 
-    public FunctionLength(Solver solver) {
-        super(solver);
+    public FunctionLength(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Length", "en"));
         Names.add(new LocalNames("Länge", "de"));
         Names.add(new LocalNames("Len", "en"));

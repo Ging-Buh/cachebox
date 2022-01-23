@@ -5,36 +5,36 @@ import java.util.TreeMap;
 public class FunctionCategories extends TreeMap<String, Functions> {
     private static final long serialVersionUID = -4054421409675901933L;
 
-    public FunctionCategories(Solver solver) {
+    public FunctionCategories(SolverLines solverLines) {
         Functions functions = new Functions("solverGroupText");
-        functions.add(new FunctionAlphaSum(solver));
-        functions.add(new FunctionBQuersumme(solver));
-        functions.add(new FunctionAlphaPos(solver));
-        functions.add(new FunctionHandyCode(solver));
-        functions.add(new FunctionHandySum(solver));
-        functions.add(new FunctionLength(solver));
-        functions.add(new FunctionReverse(solver));
-        functions.add(new FunctionRot13(solver));
-        functions.add(new FunctionMid(solver));
+        functions.add(new FunctionAlphaSum(solverLines));
+        functions.add(new FunctionBQuersumme(solverLines));
+        functions.add(new FunctionAlphaPos(solverLines));
+        functions.add(new FunctionHandyCode(solverLines));
+        functions.add(new FunctionHandySum(solverLines));
+        functions.add(new FunctionLength(solverLines));
+        functions.add(new FunctionReverse(solverLines));
+        functions.add(new FunctionRot13(solverLines));
+        functions.add(new FunctionMid(solverLines));
         this.put(functions.Name, functions);
         functions = new Functions("solverGroupNumbers");
-        functions.add(new FunctionQuersumme(solver));
-        functions.add(new FunctionIQuersumme(solver));
-        functions.add(new FunctionQuerprodukt(solver));
-        functions.add(new FunctionIQuerprodukt(solver));
-        functions.add(new FunctionRom2Dec(solver));
-        functions.add(new FunctionPrimenumber(solver));
-        functions.add(new FunctionInt(solver));
-        functions.add(new FunctionRound(solver));
-        functions.add(new FunctionPrimeIndex(solver));
-        functions.add(new FunctionPi(solver));
+        functions.add(new FunctionQuersumme(solverLines));
+        functions.add(new FunctionIQuersumme(solverLines));
+        functions.add(new FunctionQuerprodukt(solverLines));
+        functions.add(new FunctionIQuerprodukt(solverLines));
+        functions.add(new FunctionRom2Dec(solverLines));
+        functions.add(new FunctionPrimenumber(solverLines));
+        functions.add(new FunctionInt(solverLines));
+        functions.add(new FunctionRound(solverLines));
+        functions.add(new FunctionPrimeIndex(solverLines));
+        functions.add(new FunctionPi(solverLines));
         this.put(functions.Name, functions);
         functions = new Functions("solverGroupCoordinates");
-        functions.add(new FunctionProjection(solver));
-        functions.add(new FunctionIntersection(solver));
-        functions.add(new FunctionCrossbearing(solver));
-        functions.add(new FunctionBearing(solver));
-        functions.add(new FunctionDistance(solver));
+        functions.add(new FunctionProjection(solverLines));
+        functions.add(new FunctionIntersection(solverLines));
+        functions.add(new FunctionCrossbearing(solverLines));
+        functions.add(new FunctionBearing(solverLines));
+        functions.add(new FunctionDistance(solverLines));
         this.put(functions.Name, functions);
 
     }

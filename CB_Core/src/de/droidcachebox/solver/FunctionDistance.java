@@ -10,8 +10,8 @@ public class FunctionDistance extends Function {
 
     private static final long serialVersionUID = -7861925988066369903L;
 
-    public FunctionDistance(Solver solver) {
-        super(solver);
+    public FunctionDistance(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Distance", "en"));
     }
 

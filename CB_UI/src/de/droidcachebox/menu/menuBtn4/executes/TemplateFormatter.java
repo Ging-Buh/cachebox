@@ -11,7 +11,7 @@ import de.droidcachebox.settings.Settings;
 
 public class TemplateFormatter {
     public static String replaceTemplate(String template, Draft draft) {
-        template = template.replace("##finds##", String.valueOf(draft.foundNumber));
+        template = template.replace("##finds##", String.valueOf(draft.getFoundNumber()));
         DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
         String stime = iso8601Format.format(draft.timestamp);
         iso8601Format = new SimpleDateFormat("dd-MM-yyyy");

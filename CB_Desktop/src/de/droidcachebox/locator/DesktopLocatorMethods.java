@@ -30,7 +30,7 @@ import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
 public class DesktopLocatorMethods implements LocatorMethods.PlatformLocatorMethods {
-    private static final String sKlasse = "DesktopLocatorBaseMethods";
+    private static final String sClass = "DesktopLocatorBaseMethods";
 
     public DesktopLocatorMethods() {
 
@@ -219,7 +219,7 @@ public class DesktopLocatorMethods implements LocatorMethods.PlatformLocatorMeth
             baos.close();
             if (bitmap instanceof GDXBitmap) ((GDXBitmap) bitmap).recycle();
         } catch (Exception ex) {
-            Log.err(sKlasse, "convert bitmap to byteArray", ex);
+            Log.err(sClass, "convert bitmap to byteArray", ex);
             return null;
         }
 
@@ -229,7 +229,7 @@ public class DesktopLocatorMethods implements LocatorMethods.PlatformLocatorMeth
             pixmap.dispose();
             return texture;
         } catch (Exception ex) {
-            Log.err(sKlasse, "[TileGL] can't create Pixmap or Texture: ", ex);
+            Log.err(sClass, "[TileGL] can't create Pixmap or Texture: ", ex);
         }
         return null;
     }

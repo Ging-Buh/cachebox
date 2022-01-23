@@ -5,8 +5,8 @@ import java.util.ArrayList;
 class ParameterEntity extends Entity {
     ArrayList<Entity> Liste = new ArrayList<Entity>();
 
-    ParameterEntity(Solver solver, int id) {
-        super(solver, id);
+    ParameterEntity(SolverLines solverLines, int id) {
+        super(solverLines, id);
     }
 
     @Override

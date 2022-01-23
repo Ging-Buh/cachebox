@@ -39,7 +39,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBackEvent {
-    private static final String sKlasse = "GlobalLocationReceiver";
+    private static final String sClass = "GlobalLocationReceiver";
     private static boolean approachSoundCompleted = false;
     private static boolean PlaySounds = false;
     Thread newLocationThread;
@@ -53,7 +53,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
         try {
             SoundCache.loadSounds();
         } catch (Exception ex) {
-            Log.err(sKlasse, "GlobalLocationReceiver", "Load sound", ex);
+            Log.err(sClass, "GlobalLocationReceiver", "Load sound", ex);
         }
     }
 
@@ -100,7 +100,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                     }
                 }
             } catch (Exception ex) {
-                Log.err(sKlasse, "GlobalLocationReceiver", "Global.PlaySound(Approach.ogg)", ex);
+                Log.err(sClass, "GlobalLocationReceiver", "Global.PlaySound(Approach.ogg)", ex);
             }
 
             try {
@@ -117,7 +117,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                     }
                 }
             } catch (Exception ex) {
-                Log.err(sKlasse, "GlobalLocationReceiver", "sorting", ex);
+                Log.err(sClass, "GlobalLocationReceiver", "sorting", ex);
             }
 
             try {
@@ -176,7 +176,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                     }
                 }
             } catch (Exception ex) {
-                Log.err(sKlasse, "GlobalLocationReceiver", "Resort", ex);
+                Log.err(sClass, "GlobalLocationReceiver", "Resort", ex);
             }
 
         });
@@ -214,7 +214,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
             if (!initialFixSoundCompleted && Locator.getInstance().isGPSprovided() && GPS.getFixedSats() > 3) {
 
-                Log.debug(sKlasse, "Play Fix");
+                Log.debug(sClass, "Play Fix");
                 if (PlaySounds)
                     SoundCache.play(Sounds.GPS_fix);
                 initialFixSoundCompleted = true;
@@ -222,7 +222,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
             }
         } catch (Exception ex) {
-            Log.err(sKlasse, "GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", ex);
+            Log.err(sClass, "GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", ex);
         }
 
     }

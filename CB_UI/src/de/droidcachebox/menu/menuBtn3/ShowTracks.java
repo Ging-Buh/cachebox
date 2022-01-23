@@ -24,23 +24,29 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.executes.TrackCreation;
+import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
 
 public class ShowTracks extends AbstractShowAction {
-    private static ShowTracks showTracks;
+    private static ShowTracks instance;
+    private TrackListView trackListView;
+    boolean isExecuting;
 
     private ShowTracks() {
         super("Tracks");
+        isExecuting = false;
     }
 
     public static ShowTracks getInstance() {
-        if (showTracks == null) showTracks = new ShowTracks();
-        return showTracks;
+        if (instance == null) instance = new ShowTracks();
+        return instance;
     }
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(TrackListView.getInstance());
+        isExecuting = true;
+        trackListView = new TrackListView();
+        ViewManager.leftTab.showView(trackListView);
     }
 
     @Override
@@ -55,7 +61,7 @@ public class ShowTracks extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return TrackListView.getInstance();
+        return trackListView;
     }
 
     @Override
@@ -66,8 +72,25 @@ public class ShowTracks extends AbstractShowAction {
     @Override
     public Menu getContextMenu() {
         Menu cm = new Menu("TrackListViewContextMenuTitle");
-        cm.addMenuItem("load", null, TrackListView.getInstance()::selectTrackFileReadAndAddToTracks);
+        cm.addMenuItem("load", null, TrackList.getInstance()::selectTrackFileReadAndAddToTracks);
         cm.addMenuItem("generate", null, () -> TrackCreation.getInstance().execute());
         return cm;
+    }
+
+    public void onHide() {
+        isExecuting = false;
+        trackListView = null;
+    }
+
+    public void notifyDataSetChanged() {
+        if (isExecuting) {
+            trackListView.notifyDataSetChanged();
+        }
+    }
+
+    public void notifyCurrentRouteChanged() {
+        if (isExecuting) {
+            trackListView.notifyCurrentRouteChanged();
+        }
     }
 }

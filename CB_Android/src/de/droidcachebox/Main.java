@@ -100,7 +100,7 @@ import de.droidcachebox.views.forms.MessageBox;
 import de.droidcachebox.views.forms.PleaseWaitMessageBox;
 
 public class Main extends AndroidApplication implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStatus.NmeaListener {
-    private static final String sKlasse = "Main";
+    private static final String sClass = "Main";
     public static boolean isCreated = false;
     public static int Request_ForLocationManager = 11052016;
     public static int Request_ServiceOption = 11052017;
@@ -124,7 +124,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     private Dialog pWaitD;
     private LastState lastState;
     private ShowViewMethods showViewListener;
-    private AndroidUIBaseMethods androidUIBaseMethods;
+    private AndroidPlatformMethods androidUIBaseMethods;
 
     public Main() {
 
@@ -163,7 +163,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                                 float minChange = 0.5f;
                                 if (Math.abs(lastOrientation - orientation) > minChange) {
                                     Locator.getInstance().setHeading(orientation, CompassType.Magnetic);
-                                    // sKlasse.debug("orientation: {}", orientation);
+                                    // sClass.debug("orientation: {}", orientation);
                                     lastOrientation = orientation;
                                 }
                             }
@@ -187,11 +187,11 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     public static Activity getInstance() {
         if (isCreated) {
             if (Gdx.app == null) {
-                Log.err(sKlasse, "Gdx.app is null");
+                Log.err(sClass, "Gdx.app is null");
             } else {
                 if (Gdx.app instanceof Activity)
                     return (Activity) Gdx.app;
-                Log.err(sKlasse, "Gdx.app is not an Activity");
+                Log.err(sClass, "Gdx.app is not an Activity");
             }
         }
         return null;
@@ -202,15 +202,15 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         super.onCreate(savedInstanceState);
 
         Plattform.used = Plattform.Android;
-        PlatformUIBase.AndroidVersion = Build.VERSION.SDK_INT;
+        Platform.AndroidVersion = Build.VERSION.SDK_INT;
 
         if (GlobalCore.RunFromSplash) {
             if (savedInstanceState != null) {
                 GlobalCore.restartAfterKill = true;
                 if (savedInstanceState.isEmpty()) {
-                    Log.info(sKlasse, "=> onCreate; savedInstanceState is empty");
+                    Log.info(sClass, "=> onCreate; savedInstanceState is empty");
                 } else {
-                    Log.info(sKlasse, "=> onCreate; initializations from savedInstanceState");
+                    Log.info(sClass, "=> onCreate; initializations from savedInstanceState");
                     // ? everything, that is initialized in Splash
                     if (savedInstanceState.getBoolean("useSmallSkin"))
                         GlobalCore.displayType = DisplayType.Small;
@@ -232,12 +232,12 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     GlobalCore.restartWayPoint = savedInstanceState.getString("selectedWayPoint");
                 }
             } else {
-                Log.info(sKlasse, "=> onCreate first start");
+                Log.info(sClass, "=> onCreate first start");
                 GlobalCore.restartAfterKill = false;
             }
 
-            androidUIBaseMethods = new AndroidUIBaseMethods(this);
-            PlatformUIBase.init(androidUIBaseMethods);
+            androidUIBaseMethods = new AndroidPlatformMethods(this);
+            Platform.init(androidUIBaseMethods);
 
             LocatorMethods.init(new AndroidLocatorMethods(this));
 
@@ -246,13 +246,13 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             Object clipboardService = getSystemService(CLIPBOARD_SERVICE);
             if (clipboardService != null) {
                 if (clipboardService instanceof android.content.ClipboardManager) {
-                    PlatformUIBase.setClipboard(new AndroidContentClipboard((android.content.ClipboardManager) clipboardService));
-                    Log.info(sKlasse, "got AndroidContentClipboard");
+                    Platform.setClipboard(new AndroidContentClipboard((android.content.ClipboardManager) clipboardService));
+                    Log.info(sClass, "got AndroidContentClipboard");
                 } /*
                 else {
                     if (clipboardService instanceof android.text.ClipboardManager) {
                         PlatformUIBase.setClipboard(new AndroidTextClipboard((android.text.ClipboardManager) clipboardService));
-                        Log.info(sKlasse, "got AndroidTextClipboard");
+                        Log.info(sClass, "got AndroidTextClipboard");
                     }
                 }
                 */
@@ -272,7 +272,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             GL.that.setTextInput(new Android_TextInput(this));
 
             showViewListener = new ShowViewMethods(this);
-            PlatformUIBase.initShowViewMethods(showViewListener);
+            Platform.initShowViewMethods(showViewListener);
 
             // registerReceiver receiver for screen switched on/off
             IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
@@ -284,7 +284,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             Settings.SuppressPowerSaving.addSettingChangedListener(handleSuppressPowerSavingConfigChanged);
             Settings.ImperialUnits.addSettingChangedListener(handleImperialUnitsConfigChanged);
 
-            Log.debug(sKlasse, "initLocatorBase");
+            Log.debug(sClass, "initLocatorBase");
             initLocatorBase();
 
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -308,10 +308,10 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             androidUIBaseMethods.startService();
 
             isCreated = true;
-            Log.info(sKlasse, "onCreate <=");
+            Log.info(sClass, "onCreate <=");
 
         } else {
-            Log.info(sKlasse, "restartFromSplash: cannot start Main without previous Splash");
+            Log.info(sClass, "restartFromSplash: cannot start Main without previous Splash");
             restartFromSplash();
         }
         // do no dialogs in create
@@ -319,7 +319,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.info(sKlasse, "=> onSaveInstanceState");
+        Log.info(sClass, "=> onSaveInstanceState");
         savedInstanceState.putBoolean("useSmallSkin", GlobalCore.displayType == DisplayType.Small);
         savedInstanceState.putString("WorkPath", GlobalCore.workPath);
 
@@ -332,20 +332,20 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWayPoint().getWaypointCode());
 
         super.onSaveInstanceState(savedInstanceState);
-        Log.info(sKlasse, "onSaveInstanceState <=");
+        Log.info(sClass, "onSaveInstanceState <=");
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         // setIntent(intent) here to make future calls (from external) to getIntent() get the most recent Intent data
         // is not necessary for us, I think
-        Log.info(sKlasse, "=> onNewIntent");
+        Log.info(sClass, "=> onNewIntent");
         super.onNewIntent(intent);
     }
 
     @Override
     protected void onStop() {
-        Log.info(sKlasse, "=> onStop");
+        Log.info(sClass, "=> onStop");
 
         if (mSensorManager != null)
             mSensorManager.unregisterListener(mSensorEventListener);
@@ -354,7 +354,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
         super.onStop();
 
-        Log.info(sKlasse, "onStop <=");
+        Log.info(sClass, "onStop <=");
         lastState = LastState.onStop;
     }
 
@@ -368,18 +368,18 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 Log.err("onResume", "mGL_Listener_Interface == null");
                 restartFromSplash();
             } else {
-                Log.debug(sKlasse, "onResume");
+                Log.debug(sClass, "onResume");
             }
         }
 
         GL.that.restartRendering(); // does ViewGL.renderContinous();
 
         if (lastState == LastState.onStop) {
-            Log.info(sKlasse, "=> Resume from Stop");
+            Log.info(sClass, "=> Resume from Stop");
             showWaitToRenderStarted();
             InvalidateTextureListeners.getInstance().fireInvalidateTexture();
         } else {
-            Log.info(sKlasse, "=> onResume");
+            Log.info(sClass, "=> onResume");
         }
 
         OnResumeListeners.getInstance().onResume();
@@ -396,7 +396,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
         setWakeLock(Settings.SuppressPowerSaving.getValue());
 
-        Log.info(sKlasse, "onResume <=");
+        Log.info(sClass, "onResume <=");
         lastState = LastState.onResume;
         // having a protokoll of the program start: but now reset to SettingsClass.AktLogLevel but >= LogLevel.ERROR
         if (Settings.AktLogLevel.getEnumValue() == LogLevel.OFF)
@@ -453,30 +453,30 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     @Override
     protected void onPause() {
-        Log.info(sKlasse, "=> onPause");
+        Log.info(sClass, "=> onPause");
 
         if (isFinishing()) {
-            Log.info(sKlasse, "is completely Finishing()");
+            Log.info(sClass, "is completely Finishing()");
         }
 
         super.onPause();
-        Log.info(sKlasse, "onPause <=");
+        Log.info(sClass, "onPause <=");
     }
 
     @Override
     public void onDestroy() {
-        Log.info(sKlasse, "=> onDestroy AndroidApplication");
+        Log.info(sClass, "=> onDestroy AndroidApplication");
         try {
-            PlatformUIBase.addToMediaScannerList(Settings.DraftsGarminPath.getValue());
-            PlatformUIBase.addToMediaScannerList(CB_SLF4J.logfile);
+            Platform.addToMediaScannerList(Settings.DraftsGarminPath.getValue());
+            Platform.addToMediaScannerList(CB_SLF4J.logfile);
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            for (String fn : PlatformUIBase.getMediaScannerList()) {
+            for (String fn : Platform.getMediaScannerList()) {
                 intent.setData(Uri.fromFile(new java.io.File(fn)));
                 sendBroadcast(intent);
-                Log.info(sKlasse, "Send " + fn + " to MediaScanner.");
+                Log.info(sClass, "Send " + fn + " to MediaScanner.");
             }
         } catch (Exception e) {
-            Log.err(sKlasse, "Send files to MediaScanner: " + e.getMessage());
+            Log.err(sClass, "Send files to MediaScanner: " + e.getMessage());
         }
 
         try {
@@ -487,19 +487,19 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         screenBroadcastReceiver = null;
 
         if (isRestart) {
-            Log.info(sKlasse, "isRestart");
+            Log.info(sClass, "isRestart");
             super.onDestroy();
             isRestart = false;
         } else {
             if (isFinishing()) {
-                Log.info(sKlasse, "isFinishing");
+                Log.info(sClass, "isFinishing");
                 if (GlobalCore.RunFromSplash) {
 
                     if (wakeLock != null) {
                         wakeLock.release();
                     }
 
-                    TrackRecorder.stopRecording();
+                    TrackRecorder.getInstance().stopRecording();
                     // GPS Verbindung beenden
                     if (androidUIBaseMethods != null) androidUIBaseMethods.removeFromGPS();
                     CacheSelectionChangedListeners.getInstance().clear();
@@ -520,7 +520,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 if (GlobalCore.RunFromSplash)
                     System.exit(0);
             } else {
-                Log.info(sKlasse, "isFinishing==false");
+                Log.info(sClass, "isFinishing==false");
                 showViewListener.onDestroyWithoutFinishing();
 
                 SettingsDatabase.getInstance().close();
@@ -530,7 +530,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 super.onDestroy();
             }
         }
-        Log.info(sKlasse, "onDestroy AndroidApplication <=");
+        Log.info(sClass, "onDestroy AndroidApplication <=");
         lastState = LastState.onDestroy;
     }
 
@@ -543,23 +543,23 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 }
             } else if (requestCode == Request_takePhoto) {
                 if (permissions[0].equals(Manifest.permission.CAMERA) && grantResults[0] == PERMISSION_GRANTED) {
-                    PlatformUIBase.showView(ViewConst.TAKE_PHOTO, 0, 0, 0, 0, 0, 0);
+                    Platform.showView(ViewConst.TAKE_PHOTO, 0, 0, 0, 0, 0, 0);
                 }
             } else if (requestCode == Request_recordVideo) {
                 if (permissions[0].equals(Manifest.permission.CAMERA) && grantResults[0] == PERMISSION_GRANTED) {
-                    PlatformUIBase.showView(ViewConst.VIDEO_REC, 0, 0, 0, 0, 0, 0);
+                    Platform.showView(ViewConst.VIDEO_REC, 0, 0, 0, 0, 0, 0);
                 }
                 if (permissions[0].equals(Manifest.permission.RECORD_AUDIO) && grantResults[0] == PERMISSION_GRANTED) {
-                    PlatformUIBase.showView(ViewConst.VIDEO_REC, 0, 0, 0, 0, 0, 0);
+                    Platform.showView(ViewConst.VIDEO_REC, 0, 0, 0, 0, 0, 0);
                 }
             } else if (requestCode == Request_recordVoice) {
                 if (permissions[0].equals(Manifest.permission.RECORD_AUDIO) && grantResults[0] == PERMISSION_GRANTED) {
-                    PlatformUIBase.showView(ViewConst.VOICE_REC, 0, 0, 0, 0, 0, 0);
+                    Platform.showView(ViewConst.VOICE_REC, 0, 0, 0, 0, 0, 0);
                 }
             } else if (requestCode == Request_getLocationIfInBackground) {
                 // result is only when requested (API level 29)
                 if (permissions[0].equals(Manifest.permission.ACCESS_BACKGROUND_LOCATION) && grantResults[0] == PERMISSION_GRANTED) {
-                    Log.debug(sKlasse, "onRequestPermissionsResult granted " + Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+                    Log.debug(sClass, "onRequestPermissionsResult granted " + Manifest.permission.ACCESS_BACKGROUND_LOCATION);
                     // TrackRecorder and others are started anyhow
                 }
             } else if (requestCode == Request_ServiceOption) {
@@ -572,7 +572,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        Log.info(sKlasse, "=> onPrepareOptionsMenu");
+        Log.info(sClass, "=> onPrepareOptionsMenu");
         int menuId = showViewListener.getAktViewId();
         if (menuId != 0) {
             menu.clear();
@@ -608,7 +608,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     double altCorrection = Double.parseDouble(s[11]);
                     if (altCorrection == 0)
                         return;
-                    // Log.info(sKlasse, "AltCorrection: " + String.valueOf(altCorrection));
+                    // Log.info(sClass, "AltCorrection: " + String.valueOf(altCorrection));
                     Locator.getInstance().setAltCorrection(altCorrection);
                     // Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
                     androidUIBaseMethods.getLocationManager().removeNmeaListener(this);
@@ -617,12 +617,12 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 }
             }
         } catch (Exception e) {
-            Log.err(sKlasse, "main.onNmeaReceived()", "", e);
+            Log.err(sClass, "main.onNmeaReceived()", "", e);
         }
     }
 
     void restartFromSplash() {
-        Log.info(sKlasse, "=> Must restart from splash!");
+        Log.info(sClass, "=> Must restart from splash!");
         Intent splashIntent = new Intent().setClass(this, Splash.class);
         startActivity(splashIntent);
         finish();
@@ -639,7 +639,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CacheBox:PartialWakeLock");
             }
             if (wakeLock != null) {
-                Log.info(sKlasse, "wakeLock.acquire()");
+                Log.info(sClass, "wakeLock.acquire()");
                 // even if not held, you must acquire to change behavior of powerservice
                 wakeLock.acquire();
             }
@@ -679,12 +679,12 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         if (Database.Data != null) {
             if (Database.Data.cacheList != null) {
                 int no = Database.Data.cacheList.size();
-                Log.info(sKlasse, "Number of geocaches: " + no + " in " + Database.Data.getDatabasePath());
+                Log.info(sClass, "Number of geocaches: " + no + " in " + Database.Data.getDatabasePath());
             } else {
-                Log.info(sKlasse, "Number of geocaches: 0 (null)" + " in " + Database.Data.getDatabasePath());
+                Log.info(sClass, "Number of geocaches: 0 (null)" + " in " + Database.Data.getDatabasePath());
             }
         } else {
-            Log.info(sKlasse, "Database not initialized.");
+            Log.info(sClass, "Database not initialized.");
         }
     }
      */
@@ -731,7 +731,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         try {
             Locator.getInstance().setUseImperialUnits(Settings.ImperialUnits.getValue());
         } catch (Exception e) {
-            Log.err(sKlasse, "Error Initial Locator.UseImperialUnits");
+            Log.err(sClass, "Error Initial Locator.UseImperialUnits");
         }
 
         // GPS update time?
@@ -739,7 +739,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             Locator.getInstance().setMinUpdateTime((long) Settings.gpsUpdateTime.getValue());
             Settings.gpsUpdateTime.addSettingChangedListener(() -> Locator.getInstance().setMinUpdateTime((long) Settings.gpsUpdateTime.getValue()));
         } catch (Exception e) {
-            Log.err(sKlasse, "Error Initial Locator.MinUpdateTime");
+            Log.err(sClass, "Error Initial Locator.MinUpdateTime");
         }
 
         // Use magnetic Compass?
@@ -747,7 +747,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             Locator.getInstance().setUseHardwareCompass(Settings.HardwareCompass.getValue());
             Settings.HardwareCompass.addSettingChangedListener(() -> Locator.getInstance().setUseHardwareCompass(Settings.HardwareCompass.getValue()));
         } catch (Exception e) {
-            Log.err(sKlasse, "Error Initial Locator.UseHardwareCompass");
+            Log.err(sClass, "Error Initial Locator.UseHardwareCompass");
         }
 
         // Magnetic compass level
@@ -755,7 +755,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             Locator.getInstance().setHardwareCompassLevel(Settings.HardwareCompassLevel.getValue());
             Settings.HardwareCompassLevel.addSettingChangedListener(() -> Locator.getInstance().setHardwareCompassLevel(Settings.HardwareCompassLevel.getValue()));
         } catch (Exception e) {
-            Log.err(sKlasse, "Error Initial Locator.HardwareCompassLevel");
+            Log.err(sClass, "Error Initial Locator.HardwareCompassLevel");
         }
     }
 

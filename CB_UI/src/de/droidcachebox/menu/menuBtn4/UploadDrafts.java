@@ -8,15 +8,15 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.menu.menuBtn4.executes.UploadDraftsOrLogs;
 
 public class UploadDrafts extends AbstractAction {
-    private static UploadDrafts that;
+    private static UploadDrafts instance;
 
     private UploadDrafts() {
         super("uploadDrafts");
     }
 
     public static UploadDrafts getInstance() {
-        if (that == null) that = new UploadDrafts();
-        return that;
+        if (instance == null) instance = new UploadDrafts();
+        return instance;
     }
 
     @Override

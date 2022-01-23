@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.dataclasses.CacheList;
 import de.droidcachebox.dataclasses.Categories;
 import de.droidcachebox.dataclasses.Category;
@@ -34,7 +34,7 @@ public class CBDB extends Database_Core {
         super();
         latestDatabaseChange = DatabaseVersions.CachesDBLatestVersion;
         cacheList = new CacheList();
-        sql = PlatformUIBase.createSQLInstance();
+        sql = Platform.createSQLInstance();
         cbdb = this;
     }
 
@@ -148,7 +148,7 @@ public class CBDB extends Database_Core {
                         Categories cs = new Categories();
                         Category category = cs.createNewCategory(entry.getValue());
                         // and store
-                        categories.put(entry.getValue(), category.Id);
+                        categories.put(entry.getValue(), category.categoryId);
                     }
                     if (categories.containsKey(entry.getValue())) {
                         // and store CategoryId in GPXFilenames

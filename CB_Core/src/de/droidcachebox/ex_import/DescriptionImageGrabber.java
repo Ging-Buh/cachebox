@@ -27,7 +27,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.dataclasses.Cache;
@@ -201,7 +201,7 @@ public class DescriptionImageGrabber {
                                 String head = html.substring(0, img.start + delta);
                                 String tail = html.substring(img.ende + delta);
                                 // String uri = "file://" + localFile;
-                                String uri = PlatformUIBase.getFileProviderContentUrl(localFile);
+                                String uri = Platform.getFileProviderContentUrl(localFile);
                                 String body = img.text.replace(src, uri);
 
                                 delta += (uri.length() - src.length());

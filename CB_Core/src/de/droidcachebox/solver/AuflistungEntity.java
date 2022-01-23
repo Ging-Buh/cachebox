@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class AuflistungEntity extends Entity {
     ArrayList<Entity> Liste = new ArrayList<Entity>();
 
-    public AuflistungEntity(Solver solver, int id) {
-        super(solver, id);
+    public AuflistungEntity(SolverLines solverLines, int id) {
+        super(solverLines, id);
     }
 
     @Override

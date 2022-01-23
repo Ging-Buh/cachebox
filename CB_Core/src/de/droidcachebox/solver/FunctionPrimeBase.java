@@ -3,8 +3,8 @@ package de.droidcachebox.solver;
 public abstract class FunctionPrimeBase extends Function {
     private static final long serialVersionUID = 4014109046993845632L;
 
-    public FunctionPrimeBase(Solver solver) {
-        super(solver);
+    public FunctionPrimeBase(SolverLines solverLines) {
+        super(solverLines);
     }
 
     protected boolean IsPrimeNumber(long testNumber) {

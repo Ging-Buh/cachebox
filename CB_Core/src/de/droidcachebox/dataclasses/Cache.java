@@ -734,20 +734,6 @@ public class Cache implements Comparable<Cache>, Serializable {
         }
     }
 
-    public String getTmpSolver() {
-        if (geoCacheDetail != null) {
-            return geoCacheDetail.tmpSolver;
-        } else {
-            return EMPTY_STRING;
-        }
-    }
-
-    public void setTmpSolver(String value) {
-        if (geoCacheDetail != null) {
-            geoCacheDetail.tmpSolver = value;
-        }
-    }
-
     public String getUrl() {
         if (geoCacheDetail != null) {
             return geoCacheDetail.Url;
@@ -841,7 +827,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getLongDescription() {
         if (geoCacheDetail != null) {
             if (geoCacheDetail.getLongDescription() == null || geoCacheDetail.getLongDescription().length() == 0) {
-                return CacheDAO.getInstance().getDescription(this);
+                return new CacheDAO().getDescription(this);
             }
             return geoCacheDetail.getLongDescription();
         } else {
@@ -859,7 +845,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getShortDescription() {
         if (geoCacheDetail != null) {
             if (geoCacheDetail.getShortDescription() == null || geoCacheDetail.getShortDescription().length() == 0) {
-                return CacheDAO.getInstance().getShortDescription(this);
+                return new CacheDAO().getShortDescription(this);
             }
             return geoCacheDetail.getShortDescription();
         } else {

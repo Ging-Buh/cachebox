@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionPi extends Function {
     private static final long serialVersionUID = -5961548229978339692L;
 
-    public FunctionPi(Solver solver) {
-        super(solver);
+    public FunctionPi(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Pi", "en"));
     }
 

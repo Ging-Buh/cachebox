@@ -6,8 +6,8 @@ public class ConstantEntity extends Entity {
 
     double wert;
 
-    public ConstantEntity(Solver solver, int id, double wert) {
-        super(solver, id);
+    public ConstantEntity(SolverLines solverLines, int id, double wert) {
+        super(solverLines, id);
         this.wert = wert;
     }
 

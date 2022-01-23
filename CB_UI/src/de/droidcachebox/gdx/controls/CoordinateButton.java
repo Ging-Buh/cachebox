@@ -5,7 +5,7 @@ import static de.droidcachebox.settings.Config_Core.br;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.activities.EditCoord;
@@ -50,7 +50,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         setText();
         this.setClickHandler(click);
         this.setLongClickHandler(longCLick);
-        clipboard = PlatformUIBase.getClipboard();
+        clipboard = Platform.getClipboard();
     }
 
     public CoordinateButton(String name) {
@@ -58,7 +58,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         mActCoord = new CoordinateGPS(0, 0);
         this.setClickHandler(click);
         this.setLongClickHandler(longCLick);
-        clipboard = PlatformUIBase.getClipboard();
+        clipboard = Platform.getClipboard();
     }
 
     public void setCoordinateChangedListener(ICoordinateChangedListener listener) {

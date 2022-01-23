@@ -17,7 +17,7 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
 public class CopyPastePopUp extends PopUp_Base {
-    private final static String sKlasse = "CopyPastePopUp";
+    private final static String sClass = "CopyPastePopUp";
     private ImageButton btnCopy;
     private ImageButton btnCut;
     private ImageButton btnPaste;
@@ -40,7 +40,7 @@ public class CopyPastePopUp extends PopUp_Base {
         if (!copyPasteControl.isEditable())
             btnPaste.disable();
         btnPaste.setClickHandler((view, x, y, pointer, button) -> {
-            Log.err(sKlasse, "Paste Button Clicked");
+            Log.err(sClass, "Paste Button Clicked");
             close();
             String Msg = copyPasteControl.pasteFromClipboard();
             if (Msg != null)
@@ -58,7 +58,7 @@ public class CopyPastePopUp extends PopUp_Base {
 
             @Override
             public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
-                Log.err(sKlasse, "Copy Button Clicked");
+                Log.err(sClass, "Copy Button Clicked");
                 close();
                 String Msg = copyPasteControl.copyToClipboard();
                 if (Msg != null)

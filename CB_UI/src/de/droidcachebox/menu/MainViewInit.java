@@ -340,7 +340,7 @@ public class MainViewInit extends MainViewBase {
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
 
         CoreData.categories = new Categories();
-        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+        new CacheDAO().updateCacheCountForGPXFilenames();
 
         synchronized (CBDB.getInstance().cacheList) {
             CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());

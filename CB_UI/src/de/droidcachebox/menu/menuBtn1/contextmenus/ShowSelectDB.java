@@ -88,13 +88,14 @@ public class ShowSelectDB extends AbstractAction {
 
             @Override
             public void run() {
+                CacheDAO cacheDAO = new CacheDAO();
                 CBDB.getInstance().close();
                 CBDB.getInstance().startUp(GlobalCore.workPath + "/" + Settings.DatabaseName.getValue());
                 Settings.getInstance().readFromDB();
                 CoreData.categories = new Categories();
                 FilterInstances.setLastFilter(new FilterProperties(Settings.lastFilter.getValue()));
                 String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
-                CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+                cacheDAO.updateCacheCountForGPXFilenames();
                 synchronized (CBDB.getInstance().cacheList) {
                     CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                 }
@@ -106,7 +107,7 @@ public class ShowSelectDB extends AbstractAction {
                         synchronized (CBDB.getInstance().cacheList) {
                             CacheWithWP ret = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(null));
                             if (ret != null && ret.getCache() != null) {
-                                CacheDAO.getInstance().loadDetail(ret.getCache());
+                                cacheDAO.loadDetail(ret.getCache());
                                 GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                 GlobalCore.setNearestCache(ret.getCache());
                             }
@@ -121,7 +122,7 @@ public class ShowSelectDB extends AbstractAction {
                                 Cache c = CBDB.getInstance().cacheList.get(i);
                                 if (c.getGeoCacheCode().equalsIgnoreCase(lastSelectedCache)) {
                                     try {
-                                        CacheDAO.getInstance().loadDetail(c);
+                                        cacheDAO.loadDetail(c);
                                         GlobalCore.setSelectedCache(c);
                                     } catch (Exception ex) {
                                         Log.err(sClass, "set last selected Cache", ex);
@@ -135,7 +136,7 @@ public class ShowSelectDB extends AbstractAction {
                     // get first of list, if none selected till now
                     if (GlobalCore.getSelectedCache() == null) {
                         Cache c = CBDB.getInstance().cacheList.get(0);
-                        CacheDAO.getInstance().loadDetail(c);
+                        cacheDAO.loadDetail(c);
                         GlobalCore.setSelectedCache(c);
                     }
                 }

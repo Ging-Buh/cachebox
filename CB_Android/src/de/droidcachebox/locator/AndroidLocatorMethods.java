@@ -27,7 +27,7 @@ import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.utils.log.Log;
 
 public class AndroidLocatorMethods implements LocatorMethods.PlatformLocatorMethods {
-    private static final String sKlasse = "AndroidLocatorBaseMethods";
+    private static final String sClass = "AndroidLocatorBaseMethods";
     private AndroidApplication androidApplication;
     private Activity mainActivity;
     private Main mainMain;
@@ -64,7 +64,7 @@ public class AndroidLocatorMethods implements LocatorMethods.PlatformLocatorMeth
             baos.close();
             return bitj;
         } catch (Exception ex) {
-            Log.err(sKlasse, "LoadFromBoundingBox");
+            Log.err(sClass, "LoadFromBoundingBox");
         }
         return null;
     }
@@ -130,7 +130,7 @@ public class AndroidLocatorMethods implements LocatorMethods.PlatformLocatorMeth
             }
             return buffer;
         } catch (Exception ex) {
-            Log.err(sKlasse, "LoadFromBoundingBoxByteArray", ex);
+            Log.err(sClass, "LoadFromBoundingBoxByteArray", ex);
         }
 
         return null;

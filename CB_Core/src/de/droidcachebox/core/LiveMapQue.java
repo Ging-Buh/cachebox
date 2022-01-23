@@ -49,7 +49,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class LiveMapQue {
-    private static final String sKlasse = "LiveMapQue";
+    private static final String sClass = "LiveMapQue";
     private static final String LIVE_CACHE_NAME = "Live_Request";
     private static final String LIVE_CACHE_EXTENSION = ".txt";
     private static final byte DEFAULT_ZOOM_14 = 14;
@@ -75,14 +75,14 @@ public class LiveMapQue {
                 new Thread(() -> {
                     CacheListChangedListeners.getInstance().cacheListChanged();
                 }).start();
-                Log.debug(sKlasse, "cancel loop thread");
+                Log.debug(sClass, "cancel loop thread");
             }
             return cancel;
         }
 
         protected void loop() {
             if (downloadIsActive.get()) return; // only one download at a time
-            // Log.debug(sKlasse, "download for one descriptor per loop");
+            // Log.debug(sClass, "download for one descriptor per loop");
             GL.that.postAsync(() -> {
 
                 Descriptor descriptor;
@@ -94,7 +94,7 @@ public class LiveMapQue {
                 } while (descriptor != null && cacheListLive.contains(descriptor));
 
                 if (descriptor != null) {
-                    Log.debug(sKlasse, "Download caches from " + descriptor);
+                    Log.debug(sClass, "Download caches from " + descriptor);
 
                     downloadIsActive.set(true);
                     int request_radius = usedZoom == DEFAULT_ZOOM_14 ? 1300 : 2600;
@@ -131,7 +131,7 @@ public class LiveMapQue {
                         tmp.add(c.cache); // todo remove (is only to copy from Arraylist to Array)
                     final Array<Cache> geoCachesToRemove = cacheListLive.addAndReduce(descriptor, tmp);
                     if (geoCachesToRemove == null) {
-                        Log.err(sKlasse, "descriptor already in cachelistLive: should not happen here!");
+                        Log.err(sClass, "descriptor already in cachelistLive: should not happen here!");
                     } else {
                         if (geoCachesToRemove.size > 0) {
                             new Thread(() -> {
@@ -151,7 +151,7 @@ public class LiveMapQue {
                     }
                     downloadIsActive.set(false);
                 } else {
-                    Log.debug(sKlasse, "no descriptor for download");
+                    Log.debug(sClass, "no descriptor for download");
                 }
             });
         }
@@ -181,7 +181,7 @@ public class LiveMapQue {
         cacheListLive = new CacheListLive(AllSettings.liveMaxCount.getValue(), usedZoom);
         AllSettings.liveMaxCount.addSettingChangedListener(() -> cacheListLive = new CacheListLive(AllSettings.liveMaxCount.getValue(), usedZoom));
 
-        Log.debug(sKlasse, "A new LiveMapQue");
+        Log.debug(sClass, "A new LiveMapQue");
 
     }
 
@@ -233,12 +233,12 @@ public class LiveMapQue {
             if (coord != null && coord.isValid()) {
                 final Descriptor descriptor = new Descriptor(coord, usedZoom);
                 if (cacheListLive.contains(descriptor)) {
-                    Log.trace(sKlasse, "Live caches for " + descriptor + " already there.");
+                    Log.trace(sClass, "Live caches for " + descriptor + " already there.");
                 } else {
                     if (!GroundspeakAPI.isDownloadLimitExceeded()) {
                         if (!descriptorStack.contains(descriptor, false)) {
                             descriptorStack.add(descriptor);
-                            Log.debug(sKlasse, "Add " + descriptor + " to download stack. (" + descriptorStack.size + ")");
+                            Log.debug(sClass, "Add " + descriptor + " to download stack. (" + descriptorStack.size + ")");
                         }
                         loopThread.start();
                     }
@@ -287,7 +287,7 @@ public class LiveMapQue {
         for (Descriptor descriptor : descList) {
             if (alreadyThere.contains(descriptor.getHashCode())) {
                 descList.removeValue(descriptor, false);
-                Log.debug(sKlasse, "removed " + descriptor);
+                Log.debug(sClass, "removed " + descriptor);
             }
         }
 

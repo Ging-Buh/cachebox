@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionBQuersumme extends Function {
     private static final long serialVersionUID = -6962880870313633796L;
 
-    public FunctionBQuersumme(Solver solver) {
-        super(solver);
+    public FunctionBQuersumme(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new Function.LocalNames("AlphaCT", "en"));
         Names.add(new Function.LocalNames("ACT", "en"));
         Names.add(new Function.LocalNames("AlphaQS", "de"));

@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.QuickButtonList;
 import de.droidcachebox.gdx.Sprites;
@@ -61,7 +61,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         for (QuickAction item : tmp) {
             // don't show QuickButton Torch if Torch not available
             if (item == QuickAction.torch) {
-                if (!PlatformUIBase.isTorchAvailable())
+                if (!Platform.isTorchAvailable())
                     continue;
             }
 

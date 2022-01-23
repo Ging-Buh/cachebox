@@ -31,7 +31,7 @@ import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
 
 public class GCVote {
-    private static final String sKlasse = "GCVote";
+    private static final String sClass = "GCVote";
 
     public static ArrayList<RatingData> getRating(String user, String password, ArrayList<String> wayPoints) {
         ArrayList<RatingData> result = new ArrayList<>();
@@ -68,7 +68,7 @@ public class GCVote {
             }
 
         } catch (Exception e) {
-            Log.err(sKlasse, "getRating", e);
+            Log.err(sClass, "getRating", e);
             return null;
         }
         return result;
@@ -97,7 +97,7 @@ public class GCVote {
                     guid = page.substring(start, stop);
                 }
             } catch (Exception e) {
-                Log.err(sKlasse, "Send GCVotes: Can't get GUID for " + waypoint, e);
+                Log.err(sClass, "Send GCVotes: Can't get GUID for " + waypoint, e);
             }
         }
         if (guid.length() == 0) return false;

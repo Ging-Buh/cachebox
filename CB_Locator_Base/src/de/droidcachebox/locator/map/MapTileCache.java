@@ -18,7 +18,7 @@ package de.droidcachebox.locator.map;
 import de.droidcachebox.utils.log.Log;
 
 public class MapTileCache {
-    private final static String sKlasse = "MapTileCache";
+    private final static String sClass = "MapTileCache";
 
     private final long[] EMPTY_HashList;
     private final TileGL[] EMPTY_TileList;
@@ -157,7 +157,7 @@ public class MapTileCache {
                 }
             } while (inSort);
         } catch (Exception ex) {
-            Log.err(sKlasse, "sort", ex);
+            Log.err(sClass, "sort", ex);
         }
 
     }

@@ -66,7 +66,7 @@ import de.droidcachebox.utils.log.Log;
 
 public abstract class MapViewBase extends CB_View_Base implements PositionChangedEvent, InvalidateTextureListeners.InvalidateTextureListener {
     public static final int MAX_MAP_ZOOM = 22;
-    private static final String sKlasse = "MapViewBase";
+    private static final String sClass = "MapViewBase";
     public static int INITIAL_SETTINGS = 1;
     public static int INITIAL_THEME = 2;
     public static int INITIAL_WP_LIST = 4;
@@ -144,7 +144,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
         if (camera == null) {
             // onResized(this);
-            Log.err(sKlasse, "why is the camera zero");
+            Log.err(sClass, "why is the camera zero");
         } else {
             setVisible();
             setActZoom();
@@ -310,7 +310,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             renderSynchronousOverlay(batch);
             renderNonSynchronousOverlay(batch);
         } catch (Exception ex) {
-            Log.err(sKlasse, "render", ex);
+            Log.err(sClass, "render", ex);
         }
     }
 
@@ -340,7 +340,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             float halfWidth = distanceToCenter.width / 2;
             Fonts.getSmall().draw(batch, distanceToCenter, x - halfWidth, y + 3 * distanceToCenter.height);
         } catch (Exception ex) {
-            Log.err(sKlasse, "drawText", ex);
+            Log.err(sClass, "drawText", ex);
         }
     }
 
@@ -444,7 +444,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             }
             MapTileLoader.getInstance().sortByAge();
 
-            Log.trace(sKlasse, numberOfTilesToShow + " maptiles to draw. Missing " + numberOfMissingTiles + " Zoom " + currentZoom + " ttd " + MapTileLoader.getInstance().getTilesToDrawCounter());
+            Log.trace(sClass, numberOfTilesToShow + " maptiles to draw. Missing " + numberOfMissingTiles + " Zoom " + currentZoom + " ttd " + MapTileLoader.getInstance().getTilesToDrawCounter());
 
             CB_List<TileGL_RotateDrawables> rotateList = new CB_List<>();
             synchronized (screenCenterWorld) {
@@ -720,7 +720,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                     return new Vector2(x, y);
                 }
             } catch (Exception ex) {
-                Log.err(sKlasse, "screenToWorld", ex);
+                Log.err(sClass, "screenToWorld", ex);
             }
         }
         return new Vector2(0, 0);
@@ -736,7 +736,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
                 result.rotate(mapHeading);
                 result.add((float) mapIntWidth / 2, (float) mapIntHeight / 2);
             } catch (Exception ex) {
-                Log.err(sKlasse, "worldToScreen", ex);
+                Log.err(sClass, "worldToScreen", ex);
             }
         }
         return result;
@@ -1015,7 +1015,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             // debugString = "State: " + inputState;
             return true;
         } catch (Exception ex) {
-            Log.err(sKlasse, "MapView", "-onTouchDragged Error", ex);
+            Log.err(sClass, "MapView", "-onTouchDragged Error", ex);
         }
         return false;
     }
@@ -1211,7 +1211,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
             updateCacheList(debugInfo.contains("oom")); // for zooms (didn't check, if still necessary. was a test)
             GL.that.renderOnce();
         } catch (Exception ex) {
-            Log.err(sKlasse, debugInfo, ex);
+            Log.err(sClass, debugInfo, ex);
         }
     }
 

@@ -30,9 +30,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 
-import de.droidcachebox.DesktopUIBaseMethods;
+import de.droidcachebox.DesktopPlatformMethods;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.database.DraftsDatabase;
 import de.droidcachebox.database.SettingsDatabase;
 import de.droidcachebox.gdx.math.DevicesSizes;
@@ -63,7 +63,7 @@ class DCB {
         GlobalCore.firstSDCard = "C:/";
         GlobalCore.secondSDCard = "D:/";
         GlobalCore.workPath = workPath;
-        PlatformUIBase.init(new DesktopUIBaseMethods());
+        Platform.init(new DesktopPlatformMethods());
         SettingsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/Config.db3");
         DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
 

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.ex_import.ImportProgress;
@@ -118,7 +118,7 @@ public class ShowSpoiler extends AbstractShowAction {
 
         contextMenu.addMenuItem("startPictureApp", Sprites.getSprite("image-export"), () -> {
             String file = Spoiler.getInstance().getSelectedFilePath();
-            if (file != null) PlatformUIBase.startPictureApp(file);
+            if (file != null) Platform.startPictureApp(file);
         });
     }
 

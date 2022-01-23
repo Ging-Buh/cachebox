@@ -1,6 +1,6 @@
 package de.droidcachebox.menu.menuBtn1.contextmenus;
 
-import static de.droidcachebox.PlatformUIBase.callUrl;
+import static de.droidcachebox.Platform.callUrl;
 import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
@@ -150,7 +150,7 @@ public class CacheContextMenu {
                     ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
                     if (geoCacheRelateds.size() > 0) {
                         try {
-                            CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
+                            new CacheDAO().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                         } catch (InterruptedException ex) {
                             Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
                         }
@@ -233,7 +233,7 @@ public class CacheContextMenu {
 
     private void toggleAsFavorite() {
         GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
-        CacheDAO dao = CacheDAO.getInstance();
+        CacheDAO dao = new CacheDAO();
         dao.updateDatabase(GlobalCore.getSelectedCache());
         // Update cacheList
         CBDB.getInstance().cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());

@@ -3,12 +3,12 @@ package de.droidcachebox.solver;
 import java.util.ArrayList;
 
 public class Entity {
-    protected Solver solver;
+    protected SolverLines solverLines;
     protected int Id;
     protected boolean IsLinks; // wird auf true, wenn dies links vom = ist.
 
-    public Entity(Solver solver, int id) {
-        this.solver = solver;
+    public Entity(SolverLines solverLines, int id) {
+        this.solverLines = solverLines;
         this.Id = id;
         IsLinks = false;
     }

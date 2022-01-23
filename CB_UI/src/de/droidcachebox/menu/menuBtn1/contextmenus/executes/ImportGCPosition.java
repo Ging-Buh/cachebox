@@ -78,7 +78,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     private Coordinate actSearchPos;
     private ImportAnimation dis;
     private boolean importStarted = false;
-    private int searchState = 0; // 0=GPS, 1= Map, 2= Manuell
+    private int searchState = 0; // 0=GPS, 1=Map, 2=manuel
     private final AtomicBoolean canceled;
     private CB_Button btnBeforeAfterEqual;
     private EditTextField edtDate;
@@ -342,7 +342,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             long id = GlobalCore.getSelectedCache().getGPXFilename_ID();
             Category c = CoreData.categories.getCategoryByGpxFilenameId(id);
             if (c != null)
-                edtCategory.setText(c.GpxFilename);
+                edtCategory.setText(c.gpxFileName);
         }
         edtCategory.setCursorPosition(0);
 
@@ -393,7 +393,8 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         }
     }
 
-    private void setToggleBtnState(int value) {// 0=GPS, 1= Map, 2= Web, 3= Manuell
+    private void setToggleBtnState(int value) {
+        // 0=GPS, 1=Map, 2=Web, 3=manuel
         searchState = value;
         switch (searchState) {
             case 0:
@@ -452,7 +453,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             try {
                 if (actSearchPos != null) {
                     Category category = CoreData.categories.getCategory(edtCategory.getText());
-                    GpxFilename gpxFilename = category.addGpxFilename(category.GpxFilename); // category.GpxFilename == edtCategory.getText()
+                    GpxFilename gpxFilename = category.addGpxFilename(category.gpxFileName); // category.GpxFilename == edtCategory.getText()
                     if (gpxFilename != null) {
                         Query q = new Query()
                                 .resultWithFullFields()
@@ -501,7 +502,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
 
                         if (geoCacheRelateds.size() > 0) {
                             try {
-                                CacheDAO.getInstance().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
+                                new CacheDAO().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
                             } catch (InterruptedException e) {
                                 Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
                             }

@@ -2,24 +2,19 @@ package de.droidcachebox.dataclasses;
 
 import java.util.Date;
 
-public class GpxFilename implements Comparable<GpxFilename> {
-    public long Id;
-    public String GpxFileName;
-    public Date Imported;
-    public int CacheCount;
-    public long CategoryId;
-    public boolean Checked;
+public class GpxFilename {
+    public long id;
+    public String gpxFileName;
+    public Date importedDate;
+    public int numberOfGeocaches;
+    public long categoryId;
+    public boolean checked;
 
-    public GpxFilename(long Id, String GpxFileName, long categoryId) {
-        this.Id = Id;
-        this.GpxFileName = GpxFileName;
-        this.Imported = new Date();
-        this.CategoryId = categoryId;
-    }
-
-    @Override
-    public int compareTo(GpxFilename arg0) {
-        return 0;
+    public GpxFilename(long id, String gpxFileName, long categoryId) {
+        this.id = id;
+        this.gpxFileName = gpxFileName;
+        this.importedDate = new Date();
+        this.categoryId = categoryId;
     }
 
 }

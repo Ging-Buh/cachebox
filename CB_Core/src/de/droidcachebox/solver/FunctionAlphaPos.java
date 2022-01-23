@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionAlphaPos extends Function {
     private static final long serialVersionUID = -2993835599804293184L;
 
-    public FunctionAlphaPos(Solver solver) {
-        super(solver);
+    public FunctionAlphaPos(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("AlphaPos", "en"));
         Names.add(new LocalNames("AP", "en"));
     }

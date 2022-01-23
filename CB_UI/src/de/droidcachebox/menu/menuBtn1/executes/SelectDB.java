@@ -24,7 +24,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
@@ -170,7 +170,7 @@ public class SelectDB extends ActivityBase {
                         Settings.getInstance().acceptChanges();
 
                         CoreData.categories = new Categories();
-                        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+                        new CacheDAO().updateCacheCountForGPXFilenames();
 
                         synchronized (CBDB.getInstance().cacheList) {
                             CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
@@ -502,7 +502,7 @@ public class SelectDB extends ActivityBase {
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
 
-            lblInfo.setText(PlatformUIBase.getCacheCountInDB(theFileToShow.getAbsolutePath())
+            lblInfo.setText(Platform.getCacheCountInDB(theFileToShow.getAbsolutePath())
                     + " Caches  "
                     + theFileToShow.length() / (1024 * 1024) + "MB"
                     + "    last use "

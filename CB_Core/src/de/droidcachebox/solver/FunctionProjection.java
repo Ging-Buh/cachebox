@@ -8,8 +8,8 @@ public class FunctionProjection extends Function {
 
     private static final long serialVersionUID = -6013883020785631158L;
 
-    public FunctionProjection(Solver solver) {
-        super(solver);
+    public FunctionProjection(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Projection", "en"));
         Names.add(new LocalNames("Projektion", "de"));
     }

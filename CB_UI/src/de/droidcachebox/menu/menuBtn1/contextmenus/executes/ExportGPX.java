@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.core.GpxSerializer;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.gdx.GL;
@@ -86,7 +86,7 @@ public class ExportGPX {
                         new ButtonDialog(Translation.get("exportedCanceld", String.valueOf(actExportedCount), String.valueOf(numberOfGeoCachesToExport)),
                                 Translation.get("export"), MsgBoxButton.OK, MsgBoxIcon.Stop).show();
                     } else {
-                        PlatformUIBase.addToMediaScannerList(exportFile.getAbsolutePath());
+                        Platform.addToMediaScannerList(exportFile.getAbsolutePath());
                         new ButtonDialog(Translation.get("exported", String.valueOf(actExportedCount)),
                                 Translation.get("export"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
                     }

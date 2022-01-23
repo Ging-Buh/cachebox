@@ -3,7 +3,7 @@ package de.droidcachebox.menu.menuBtn3;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractAction;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.menuBtn3.executes.FZKDownload;
@@ -45,7 +45,7 @@ public class MapDownloadMenu extends AbstractAction {
 
     private void callMapUrl(String url) {
         try {
-            PlatformUIBase.callUrl(url);
+            Platform.callUrl(url);
         } catch (Exception ignored) {
         }
     }

@@ -46,44 +46,44 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.solver.DataType;
-import de.droidcachebox.solver.Solver;
-import de.droidcachebox.solver.SolverZeile;
+import de.droidcachebox.solver.SolverLine;
+import de.droidcachebox.solver.SolverLines;
 import de.droidcachebox.utils.log.Log;
 
-public class SolverView2 extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
-    private static final String log = "SolverView2";
-    private static SolverView2 that;
+public class Solver2 extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
+    private static final String sClass = "Solver2";
     private final ISolverBackStringListener backListener;
     private boolean neu;
     private CustomAdapter lvAdapter;
-    private Solver solver;
+    private SolverLines solverLines;
     private Cache currentCache;
+    private final CacheDAO cacheDAO;
 
-    private SolverView2() {
+    public Solver2() {
         super(ViewManager.leftTab.getContentRec(), "SolverView2");
-        // Log.debug(log, "Create SolverView2 => " + toString());
+        cacheDAO = new CacheDAO();
         currentCache = null;
         neu = false;
         backListener = backString -> {
-            SolverZeile zeile;
+            SolverLine line;
             if (neu) {
-                zeile = new SolverZeile(solver, backString);
-                solver.add(selectedIndex, zeile);
+                line = new SolverLine(solverLines, backString);
+                solverLines.add(selectedIndex, line);
             } else {
-                zeile = solver.get(selectedIndex);
-                zeile.setText(backString);
+                line = solverLines.get(selectedIndex);
+                line.setText(backString);
             }
 
-            for (SolverZeile zeile2 : solver) {
-                zeile2.setText(zeile2.getOrgText());
-                zeile2.Parse();
+            for (SolverLine line2 : solverLines) {
+                line2.setText(line2.getOrgText());
+                line2.Parse();
             }
 
             if (!neu) {
-                // wenn der letzte Eintrag geändert wurde dann soll hinter dem letzten Eintrag eine weitere neue Zeile eingefügt werden
-                if (selectedIndex == solver.size() - 1) {
-                    solver.add(solver.size(), new SolverZeile(solver, ""));
-                    neu = true; // damit die Liste neu geladen wird
+                // if the last entry was changed then another new line should be inserted after the last entry
+                if (selectedIndex == solverLines.size() - 1) {
+                    solverLines.add(solverLines.size(), new SolverLine(solverLines, ""));
+                    neu = true; // so that the list is reloaded
                 }
             }
 
@@ -91,18 +91,13 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
             // Store Solver Content into Database after editing one line
             if (GlobalCore.isSetSelectedCache())
-                CacheDAO.getInstance().setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+                cacheDAO.setSolver(GlobalCore.getSelectedCache(), solverLines.getSolverString());
         };
-    }
-
-    public static SolverView2 getInstance() {
-        if (that == null) that = new SolverView2();
-        return that;
     }
 
     @Override
     public void onShow() {
-        Log.debug(log, "onShow()");
+        Log.debug(sClass, "onShow()");
         CacheSelectionChangedListeners.getInstance().addListener(this);
 
         setBackground(Sprites.ListBack);
@@ -118,24 +113,24 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
     private void intiList() {
         if (currentCache == null) {
-            solver = new Solver("", GlobalCore.getInstance());
+            solverLines = new SolverLines("", GlobalCore.getInstance());
         } else {
             currentCache = GlobalCore.getSelectedCache();
-            String s = CacheDAO.getInstance().getSolver(currentCache);
+            String s = cacheDAO.getSolver(currentCache);
             if (s == null)
                 s = "";
-            solver = new Solver(s, GlobalCore.getInstance());
-            solver.Solve();
-            // wenn der Solver noch leer ist oder die letzte Zeile nicht leer ist dann am Ende eine leere Zeile einfügen
-            if ((solver.size() == 0) || (solver.get(solver.size() - 1).getOrgText().length() > 0)) {
-                solver.add(solver.size(), new SolverZeile(solver, ""));
+            solverLines = new SolverLines(s, GlobalCore.getInstance());
+            solverLines.Solve();
+            // if the solver is still empty or the last row is not empty then insert an empty row at the end
+            if ((solverLines.size() == 0) || (solverLines.get(solverLines.size() - 1).getOrgText().length() > 0)) {
+                solverLines.add(solverLines.size(), new SolverLine(solverLines, ""));
             }
         }
 
-        lvAdapter = new CustomAdapter(solver);
+        lvAdapter = new CustomAdapter(solverLines);
         setAdapter(lvAdapter);
 
-        int itemCount = solver.size();
+        int itemCount = solverLines.size();
         int itemSpace = getMaxNumberOfVisibleItems();
 
         if (itemSpace >= itemCount) {
@@ -152,9 +147,9 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
     }
 
     private void reloadList() {
-        lvAdapter = new CustomAdapter(solver);
+        lvAdapter = new CustomAdapter(solverLines);
         setAdapter(lvAdapter);
-        int itemCount = solver.size();
+        int itemCount = solverLines.size();
         int itemSpace = getMaxNumberOfVisibleItems();
 
         if (itemSpace >= itemCount) {
@@ -169,16 +164,16 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
     @Override
     public void onHide() {
-        Log.debug(log, "onHide()");
+        Log.debug(sClass, "onHide()");
         CacheSelectionChangedListeners.getInstance().remove(this);
         if (GlobalCore.isSetSelectedCache())
-            CacheDAO.getInstance().setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+            cacheDAO.setSolver(GlobalCore.getSelectedCache(), solverLines.getSolverString());
     }
 
     @Override
     public void renderInit() {
         super.renderInit();
-        Log.debug(log, "SolverView2 => Initial()");
+        Log.debug(sClass, "SolverView2 => Initial()");
         setListPos(0, false);
         chkSlideBack();
         GL.that.renderOnce();
@@ -186,19 +181,19 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
     public Menu getContextMenu() {
         Menu cm = new Menu("SolverView2ContextMenuTitle");
-        cm.addMenuItem("editLine", null, this::ChangeLine);
-        cm.addMenuItem("addLine", null, this::InsertLine);
-        cm.addMenuItem("delLine", null, this::DeleteLine);
+        cm.addMenuItem("editLine", null, this::changeLine);
+        cm.addMenuItem("addLine", null, this::insertLine);
+        cm.addMenuItem("delLine", null, this::deleteLine);
         cm.addMenuItem("AddWaypoint", null, this::SetAsWaypoint);
         cm.addMenuItem("setMapCenter", null, this::SetAsMapCenter);
         cm.addMenuItem("addMissingVariables", null, () -> {
             int ii = 0;
-            for (String s : solver.MissingVariables.keySet()) {
-                solver.add(ii++, new SolverZeile(solver, s + "="));
+            for (String s : solverLines.MissingVariables.keySet()) {
+                solverLines.add(ii++, new SolverLine(solverLines, s + "="));
             }
-            for (SolverZeile zeile2 : solver) {
-                zeile2.setText(zeile2.getOrgText());
-                zeile2.Parse();
+            for (SolverLine line2 : solverLines) {
+                line2.setText(line2.getOrgText());
+                line2.Parse();
             }
             reloadList();
         });
@@ -208,40 +203,40 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
     @Override
     public void handleCacheChanged(Cache selectedCache, Waypoint waypoint) {
         if (selectedCache == currentCache)
-            return; // Cache hat sich nicht geändert!
-        // Solver speichern
+            return; // geoCache did not change
+        // Solver save
         if (currentCache != null)
-            CacheDAO.getInstance().setSolver(currentCache, solver.getSolverString());
-        // nächsten Cache laden
+            cacheDAO.setSolver(currentCache, solverLines.getSolverString());
+        // load next geoCache
         currentCache = selectedCache;
         intiList();
     }
 
-    private void ChangeLine() {
-        if (solver == null || selectedIndex < 0) return;
-        SolverDialog2 solverDialog = new SolverDialog2(currentCache, solver, solver.get(selectedIndex).getOrgText(), true, DataType.None);
+    private void changeLine() {
+        if (solverLines == null || selectedIndex < 0) return;
+        SolverDialog2 solverDialog = new SolverDialog2(currentCache, solverLines, solverLines.get(selectedIndex).getOrgText(), true, DataType.None);
         neu = false;
         solverDialog.show(backListener);
     }
 
-    private void InsertLine() {
-        SolverDialog2 solverDialog = new SolverDialog2(currentCache, solver, "", true, DataType.None);
+    private void insertLine() {
+        SolverDialog2 solverDialog = new SolverDialog2(currentCache, solverLines, "", true, DataType.None);
         neu = true;
         solverDialog.show(backListener);
     }
 
-    private void DeleteLine() {
+    private void deleteLine() {
         ButtonDialog bd = new ButtonDialog("Zeile löschen?", "Solver", MsgBoxButton.YesNo, MsgBoxIcon.Question);
         bd.setButtonClickHandler((which, data) -> {
             if (which == 1) {
-                solver.remove(selectedIndex);
-                solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());
-                solver.Solve();
-                solver.add(solver.size(), new SolverZeile(solver, ""));
+                solverLines.remove(selectedIndex);
+                solverLines = new SolverLines(solverLines.getSolverString(), GlobalCore.getInstance());
+                solverLines.Solve();
+                solverLines.add(solverLines.size(), new SolverLine(solverLines, ""));
 
                 // Store Solver Content into Database after editing one line
                 if (GlobalCore.isSetSelectedCache())
-                    CacheDAO.getInstance().setSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+                    cacheDAO.setSolver(GlobalCore.getSelectedCache(), solverLines.getSolverString());
 
                 reloadList();
                 return true;
@@ -253,20 +248,20 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
     private CoordinateGPS getSelectedCoordinateResult() {
         // Get the coordinate of the actual selected solver line
-        // if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
+        // if one Coordinate is split into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
         // if the result(s) does not include any coordinate -> return null
         try {
-            SolverZeile zeile = solver.get(selectedIndex);
-            String text = zeile.Solution;
-            // Wenn in dieser Zeile eine Zuweisung enthalten ist -> diese einfach entfernen!
+            SolverLine line = solverLines.get(selectedIndex);
+            String text = line.Solution;
+            // If this line contains an assignment -> just remove it!
             if (text.contains("=")) {
                 text = text.substring(text.indexOf("=") + 1);
             }
             CoordinateGPS result = new CoordinateGPS(text);
             if (!result.isValid()) {
-                // Zweizeilig versuchen
-                SolverZeile zeile2 = solver.get(selectedIndex + 1);
-                String text2 = zeile2.Solution;
+                // try two lines
+                SolverLine line2 = solverLines.get(selectedIndex + 1);
+                String text2 = line2.Solution;
                 if (text2.contains("="))
                     text2 = text2.substring(text2.indexOf("=") + 1);
                 result = new CoordinateGPS(text + " " + text2);
@@ -282,7 +277,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
     private void SetAsWaypoint() {
         // Add new Waypoint with the selected Coordinates in the solver list
-        // if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
+        // if one Coordinate is split into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
         CoordinateGPS result = getSelectedCoordinateResult();
         if (result != null) {
             // Create New Waypoint
@@ -299,7 +294,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
             }
             EditWaypoint EdWp = new EditWaypoint(wp, waypoint -> {
                 if (waypoint != null) {
-                    // Waypoint in der DB speichern
+                    // save waypoint into db
                     GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
                     WaypointDAO.getInstance().WriteToDatabase(waypoint);
                     WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
@@ -312,7 +307,7 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
     private void SetAsMapCenter() {
         // Center Map to the actual selected Coordinates in the solver list
-        // if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
+        // if one Coordinate is split into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
         CoordinateGPS result = getSelectedCoordinateResult();
         if (result != null) {
             // Set Map Center
@@ -326,42 +321,42 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
         setAdapter(null);
         lvAdapter = null;
-        solver = null;
+        solverLines = null;
         currentCache = null;
         super.dispose();
-        Log.debug(log, "SolverView2 disposed");
+        Log.debug(sClass, "SolverView2 disposed");
     }
 
     public class CustomAdapter implements Adapter {
-        private final Solver solver;
+        private final SolverLines solverLines;
 
-        CustomAdapter(Solver solver) {
-            this.solver = solver;
+        CustomAdapter(SolverLines solverLines) {
+            this.solverLines = solverLines;
         }
 
         @Override
         public int getCount() {
-            if (solver == null)
+            if (solverLines == null)
                 return 0;
-            return solver.size();
+            return solverLines.size();
         }
 
         @Override
         public ListViewItemBase getView(int position) {
-            if (solver == null)
+            if (solverLines == null)
                 return null;
 
             // cache SolverViewItem, don't create new. Bad dispose this cache
 
-            SolverZeile solverZeile = solver.get(position);
-            SolverViewItem solverViewItem = new SolverViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, solverZeile);
+            SolverLine solverLine = solverLines.get(position);
+            SolverViewItem solverViewItem = new SolverViewItem(UiSizes.getInstance().getCacheListItemRec().asFloat(), position, solverLine);
             solverViewItem.setClickable(true);
             solverViewItem.setClickHandler((v, x, y, pointer, button) -> {
                 int selectionIndex = ((ListViewItemBase) v).getIndex();
                 // GlobalCore.SelectedCache(Database.Data.cacheList.get(selectionIndex));
                 setSelection(selectionIndex);
-                // edit als default Aktion bei Click
-                ChangeLine();
+                // edit as default action on click
+                changeLine();
                 return true;
             });
             solverViewItem.setLongClickHandler((v, x, y, pointer, button) -> {
@@ -379,37 +374,33 @@ public class SolverView2 extends V_ListView implements CacheSelectionChangedList
 
         @Override
         public float getItemSize(int position) {
-            if (solver == null)
+            if (solverLines == null)
                 return 0;
-
-            // SolverZeile solverZeile = solver.get(position);
-            // if (solverZeile.Solution.length() == 0) return UiSizes.getCacheListItemRec().getHeight();
-            // else
             return UiSizes.getInstance().getCacheListItemRec().getHeight();
         }
 
         private class SolverViewItem extends ListViewItemBackground {
             protected boolean isPressed = false;
-            protected SolverZeile solverZeile;
-            CB_Label lblSolverZeile;
+            protected SolverLine solverLine;
+            CB_Label lblSolverLine;
 
-            public SolverViewItem(CB_RectF rec, int Index, SolverZeile solverZeile) {
+            public SolverViewItem(CB_RectF rec, int Index, SolverLine solverLine) {
                 super(rec, Index, "");
-                this.solverZeile = solverZeile;
+                this.solverLine = solverLine;
             }
 
             @Override
             protected void renderInit() {
                 super.renderInit();
-                lblSolverZeile = new CB_Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), COLOR.getFontColor(), WrapType.MULTILINE);
-                lblSolverZeile.setHeight(getHeight()); // todo ob das immer passt?
+                lblSolverLine = new CB_Label(solverLine.getOrgText() + "\n" + solverLine.Solution, Fonts.getNormal(), COLOR.getFontColor(), WrapType.MULTILINE);
+                lblSolverLine.setHeight(getHeight());
                 setBorders(UiSizes.getInstance().getMargin(), UiSizes.getInstance().getMargin());
-                addLast(lblSolverZeile);
+                addLast(lblSolverLine);
             }
 
             @Override
             public void dispose() {
-                lblSolverZeile = null;
+                lblSolverLine = null;
             }
 
             @Override

@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -346,7 +346,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         if (chart != null) {
             chart.onShow();
             chart.setDrawWithAlpha(false);
-            PlatformUIBase.switchToGpsMeasure();
+            Platform.switchToGpsMeasure();
         }
     }
 
@@ -355,7 +355,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         PositionChangedListeners.removeListener(this);
         if (chart != null)
             chart.onHide();
-        PlatformUIBase.switchToGpsDefault();
+        Platform.switchToGpsDefault();
     }
 
     @Override

@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class SolverZeile {
+public class SolverLine {
     public String Solution = "";
     private String text;
     private String orgText;
-    private EntityList entities;
-    private Solver solver;
+    private final EntityList entities;
+    private final SolverLines solverLines;
     // sucht die erste Klammer mit der maximalen Verschachtelungstiefe
     private int firstAuf;
     private int nextZu;
 
-    public SolverZeile(Solver solver, String text) {
-        this.solver = solver;
+    public SolverLine(SolverLines solverLines, String text) {
+        this.solverLines = solverLines;
         this.text = text;
         this.orgText = text;
-        entities = new EntityList(solver);
+        entities = new EntityList(solverLines);
     }
 
     public boolean Parse() {
@@ -34,7 +34,7 @@ public class SolverZeile {
                 // ; suchen fuer Trennung zwischen Paramtern...
                 String anweisung = text.substring(firstAuf + 1, nextZu);
                 String var = entities.Insert(anweisung);
-                text = text.substring(0, firstAuf).trim() + var + text.substring(nextZu + 1, text.length()).trim();
+                text = text.substring(0, firstAuf).trim() + var + text.substring(nextZu + 1).trim();
             } else {
                 // Rest als tempvar einfuegen
                 entities.Insert(text);
@@ -95,10 +95,10 @@ public class SolverZeile {
                     if (tempent.Text.trim().equals(""))
                         continue;
                     // store in global list
-                    if (solver.MissingVariables == null)
-                        solver.MissingVariables = new TreeMap<String, Integer>();
-                    if (!solver.MissingVariables.containsKey(tempent.Text))
-                        solver.MissingVariables.put(tempent.Text, 0);
+                    if (solverLines.MissingVariables == null)
+                        solverLines.MissingVariables = new TreeMap<String, Integer>();
+                    if (!solverLines.MissingVariables.containsKey(tempent.Text))
+                        solverLines.MissingVariables.put(tempent.Text, 0);
                     // store in local list
                     if (missingVariables == null)
                         missingVariables = new TreeMap<String, Integer>();
@@ -167,7 +167,7 @@ public class SolverZeile {
             if (tEntity.Text.substring(0, 1).equals("\""))
                 continue; // in String mit Anfuehrungszeichen kann kein Operator stecken!
 
-            for (ArrayList<String> ops : solver.operatoren.values()) {
+            for (ArrayList<String> ops : solverLines.operatoren.values()) {
                 while (true) {
                     int pos = -1;
                     String op = "";
@@ -184,15 +184,15 @@ public class SolverZeile {
 
                     if (pos >= 1) {
                         // OperatorEntity einfuegen
-                        TempEntity links = new TempEntity(solver, -1, tEntity.Text.substring(0, pos));
+                        TempEntity links = new TempEntity(solverLines, -1, tEntity.Text.substring(0, pos));
                         entities.Insert(links);
-                        TempEntity rechts = new TempEntity(solver, -1, tEntity.Text.substring(pos + op.length(), tEntity.Text.length()));
+                        TempEntity rechts = new TempEntity(solverLines, -1, tEntity.Text.substring(pos + op.length(), tEntity.Text.length()));
                         entities.Insert(rechts);
                         Entity oEntity;
                         if (op.equals("="))
-                            oEntity = new ZuweisungEntity(solver, -1, links, rechts);
+                            oEntity = new ZuweisungEntity(solverLines, -1, links, rechts);
                         else
-                            oEntity = new OperatorEntity(solver, -1, links, op, rechts);
+                            oEntity = new OperatorEntity(solverLines, -1, links, op, rechts);
                         String var = entities.Insert(oEntity);
                         tEntity.Text = var;
                     } else
@@ -217,7 +217,7 @@ public class SolverZeile {
                 continue;
             String s = tEntity.Text.trim();
 
-            ParameterEntity pEntity = new ParameterEntity(solver, entity.Id);
+            ParameterEntity pEntity = new ParameterEntity(solverLines, entity.Id);
 
             while (s.length() > 0) {
                 s = s.trim();
@@ -226,7 +226,7 @@ public class SolverZeile {
 
                 if (pos < 0)
                     pos = s.length();
-                TempEntity te = new TempEntity(solver, -1, s.substring(0, pos));
+                TempEntity te = new TempEntity(solverLines, -1, s.substring(0, pos));
                 pEntity.Liste.add(te);
 
                 if (pos == s.length())
@@ -262,7 +262,7 @@ public class SolverZeile {
             if (tEntity.Text.substring(0, 1).equals("\""))
                 continue; // in String mit Anfuehrungszeichen kann keine Funktion stecken!
             while (true) {
-                if (!solver.functions.InsertEntities(tEntity, entities))
+                if (!solverLines.functions.InsertEntities(tEntity, entities))
                     break;
             }
         }
@@ -283,7 +283,7 @@ public class SolverZeile {
                 continue;
             String s = tEntity.Text.trim();
 
-            AuflistungEntity aEntity = new AuflistungEntity(solver, entity.Id);
+            AuflistungEntity aEntity = new AuflistungEntity(solverLines, entity.Id);
             while (s.length() > 0) {
                 s = s.trim();
                 int pos = s.indexOf('"');
@@ -295,21 +295,21 @@ public class SolverZeile {
                 // String von pos bis pos2
                 if (pos > 0) {
                     // alles vor dem ersten "" abtrennen
-                    TempEntity te = new TempEntity(solver, -1, s.substring(0, pos));
+                    TempEntity te = new TempEntity(solverLines, -1, s.substring(0, pos));
                     aEntity.Liste.add(te);
                     s = s.substring(pos, s.length());
                     pos2 -= pos;
                     pos = 0;
                 }
                 // String abtrennen
-                TempEntity te2 = new TempEntity(solver, -1, s.substring(0, pos2 + 1));
+                TempEntity te2 = new TempEntity(solverLines, -1, s.substring(0, pos2 + 1));
                 aEntity.Liste.add(te2);
                 s = s.substring(pos2 + 1, s.length());
             }
             if ((aEntity.Liste.size() > 1) || ((aEntity.Liste.size() == 1) && (s.length() > 0))) {
                 if (s.length() > 0) {
                     // Rest auch noch in die Auflistung aufnehmen
-                    TempEntity te = new TempEntity(solver, -1, s);
+                    TempEntity te = new TempEntity(solverLines, -1, s);
                     aEntity.Liste.add(te);
                 }
                 // Auflistung nur erstellen, wenn mehr als 1 Eintrag!!!
@@ -325,7 +325,7 @@ public class SolverZeile {
     }
 
     boolean IsOperator(String s) {
-        for (ArrayList<String> olist : solver.operatoren.values()) {
+        for (ArrayList<String> olist : solverLines.operatoren.values()) {
             for (String op : olist) {
                 if (op.equals(s))
                     return true;
@@ -350,7 +350,7 @@ public class SolverZeile {
                 continue;
             if (s.substring(0, 1).equals("\""))
                 continue; // im String nichts trennen
-            AuflistungEntity aEntity = new AuflistungEntity(solver, entity.Id);
+            AuflistungEntity aEntity = new AuflistungEntity(solverLines, entity.Id);
 
             ArrayList<tmpListEntity> sList = new ArrayList<tmpListEntity>();
             String tmp = "";
@@ -387,7 +387,7 @@ public class SolverZeile {
                 tmpListEntity tmp1 = sList.get(li);
                 tmp += tmp1.text;
                 if (li == sList.size() - 1) {
-                    TempEntity temp = new TempEntity(solver, -1, tmp);
+                    TempEntity temp = new TempEntity(solverLines, -1, tmp);
                     aEntity.Liste.add(temp);
                     break;
                 }
@@ -401,7 +401,7 @@ public class SolverZeile {
                     trennen = false;
 
                 if (trennen) {
-                    TempEntity temp = new TempEntity(solver, -1, tmp);
+                    TempEntity temp = new TempEntity(solverLines, -1, tmp);
                     aEntity.Liste.add(temp);
                     tmp = "";
                 }
@@ -436,14 +436,14 @@ public class SolverZeile {
                 continue;
             if (s.charAt(0) == '$') {
                 // GC-Koordinate suchen
-                CoordinateEntity cEntity = new CoordinateEntity(solver, -1, s.substring(1, s.length()));
+                CoordinateEntity cEntity = new CoordinateEntity(solverLines, -1, s.substring(1, s.length()));
                 String var = entities.Insert(cEntity);
                 tEntity.Text = var;
                 s = "";
             }
             if ((s.length() >= 2) && (s.charAt(0) == '"') && (s.charAt(s.length() - 1) == '"')) {
                 // dies ist ein String -> in StringEntity umwandeln
-                StringEntity sEntity = new StringEntity(solver, -1, s.substring(1, s.length() - 1));
+                StringEntity sEntity = new StringEntity(solverLines, -1, s.substring(1, s.length() - 1));
                 String var = entities.Insert(sEntity);
                 tEntity.Text = var;
                 s = "";
@@ -457,7 +457,7 @@ public class SolverZeile {
                     sz = sz.replace(',', sep);
 
                     double zahl = Double.valueOf(sz);
-                    ConstantEntity cEntity = new ConstantEntity(solver, -1, zahl);
+                    ConstantEntity cEntity = new ConstantEntity(solverLines, -1, zahl);
                     String var = entities.Insert(cEntity);
                     tEntity.Text = var;
                     s = "";
@@ -469,11 +469,11 @@ public class SolverZeile {
                 // evtl. eine Variable
                 if (tEntity.IsLinks) {
                     // Variable bei Bedarf erzeugen
-                    if (!solver.Variablen.containsKey(s.toLowerCase()))
-                        solver.Variablen.put(s.toLowerCase(), "");
+                    if (!solverLines.Variablen.containsKey(s.toLowerCase()))
+                        solverLines.Variablen.put(s.toLowerCase(), "");
                 }
-                if (solver.Variablen.containsKey(s.toLowerCase())) {
-                    VariableEntity vEntity = new VariableEntity(solver, -1, s.toLowerCase());
+                if (solverLines.Variablen.containsKey(s.toLowerCase())) {
+                    VariableEntity vEntity = new VariableEntity(solverLines, -1, s.toLowerCase());
                     String var = entities.Insert(vEntity);
                     tEntity.Text = var;
                     s = "";
@@ -506,7 +506,7 @@ public class SolverZeile {
             this.text = text;
             if (text.length() == 0)
                 return;
-            this.isFunction = solver.functions.isFunction(text);
+            this.isFunction = solverLines.functions.isFunction(text);
             this.isOperator = IsOperator(text);
             isVariable = ((text.substring(0, 1).equals("#")) && (text.substring(text.length() - 1, text.length()).equals("#")));
         }

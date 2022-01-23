@@ -23,15 +23,15 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.menu.menuBtn5.executes.Quit;
 
 public class ShowQuit extends AbstractAction {
-    private static ShowQuit showQuit;
+    private static ShowQuit instance;
 
     private ShowQuit() {
         super("quit");
     }
 
     public static ShowQuit getInstance() {
-        if (showQuit == null) showQuit = new ShowQuit();
-        return showQuit;
+        if (instance == null) instance = new ShowQuit();
+        return instance;
     }
 
     @Override

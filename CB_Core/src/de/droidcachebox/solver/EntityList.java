@@ -5,15 +5,15 @@ import java.util.TreeMap;
 public class EntityList extends TreeMap<Integer, Entity> {
 
     private static final long serialVersionUID = 1L;
-    private Solver solver;
+    private SolverLines solverLines;
 
-    public EntityList(Solver solver) {
-        this.solver = solver;
+    public EntityList(SolverLines solverLines) {
+        this.solverLines = solverLines;
     }
 
     public String Insert(String anweisung) {
         int id = this.size();
-        this.put(id, new TempEntity(solver, id, anweisung));
+        this.put(id, new TempEntity(solverLines, id, anweisung));
         return "#" + id + "#";
     }
 

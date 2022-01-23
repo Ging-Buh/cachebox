@@ -30,7 +30,7 @@ import java.util.TimerTask;
 
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Waypoint;
@@ -148,14 +148,14 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
         infoHeight += margin * 2;
         CB_RectF world = getWorldRec();
 
-        PlatformUIBase.setContentSize((int) world.getX(), (int) ((GL_UISizes.surfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.surfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+        Platform.setContentSize((int) world.getX(), (int) ((GL_UISizes.surfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.surfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
 
     }
 
     @Override
     public void onHide() {
         CacheSelectionChangedListeners.getInstance().remove(this);
-        PlatformUIBase.hideView(ViewConst.DESCRIPTION_VIEW);
+        Platform.hideView(ViewConst.DESCRIPTION_VIEW);
     }
 
     private void showWebView() {
@@ -167,7 +167,7 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
                 float infoHeight = 0;
                 if (cacheListViewItem != null)
                     infoHeight = cacheListViewItem.getHeight();
-                PlatformUIBase.showView(ViewConst.DESCRIPTION_VIEW, description.getX(), description.getY(), description.getWidth(), description.getHeight(), 0, (infoHeight + GL_UISizes.margin));
+                Platform.showView(ViewConst.DESCRIPTION_VIEW, description.getX(), description.getY(), description.getWidth(), description.getHeight(), 0, (infoHeight + GL_UISizes.margin));
             }
         };
         timer.schedule(task, 50);

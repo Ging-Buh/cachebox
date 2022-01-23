@@ -22,22 +22,22 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.Function;
 import de.droidcachebox.solver.Functions;
-import de.droidcachebox.solver.Solver;
+import de.droidcachebox.solver.SolverLines;
 import de.droidcachebox.translation.Translation;
 
 public class SelectSolverFunction extends ButtonDialog {
     private final IFunctionResult mResultListener;
     private final CB_RectF categoryBtnRec, itemBtnRec;
     private final DataType dataType;
-    private final Solver solver;
+    private final SolverLines solverLines;
     private CB_Label desc;
     private ScrollBox scrollBox;
     private Linearlayout mLinearLayout;
     private Function selectedFunction;
 
-    public SelectSolverFunction(Solver solver, DataType dataType, IFunctionResult resultListener) {
+    public SelectSolverFunction(SolverLines solverLines, DataType dataType, IFunctionResult resultListener) {
         super(ActivityRec(), "", "", MsgBoxButton.OKCancel, MsgBoxIcon.None, null);
-        this.solver = solver;
+        this.solverLines = solverLines;
         mResultListener = resultListener;
         this.dataType = dataType;
 
@@ -161,7 +161,7 @@ public class SelectSolverFunction extends ButtonDialog {
          */
         final ArrayList<CB_Button> functBtnList = new ArrayList<CB_Button>();
 
-        Iterator<Functions> iteratorCat = solver.functions.values().iterator();
+        Iterator<Functions> iteratorCat = solverLines.functions.values().iterator();
 
         if (iteratorCat != null && iteratorCat.hasNext()) {
             do {

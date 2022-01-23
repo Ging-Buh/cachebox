@@ -10,7 +10,7 @@ import java.util.Locale;
 
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CacheDAO;
@@ -102,7 +102,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
         noHtml = new CB_Button(Translation.get("remove") + " < />");
         noHtml.setClickHandler((view, x, y, pointer, button) -> {
-            cacheDescription.setText(PlatformUIBase.removeHtmlEntyties(cacheDescription.getText()));
+            cacheDescription.setText(Platform.removeHtmlEntyties(cacheDescription.getText()));
             layout();
             return true;
         });
@@ -161,7 +161,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues = new Cache(true);
         newValues.copyFrom(updateCache);
         newValues.setShortDescription("");
-        newValues.setLongDescription(CacheDAO.getInstance().getDescription(updateCache));
+        newValues.setLongDescription(new CacheDAO().getDescription(updateCache));
         updateCache.setLongDescription(newValues.getLongDescription());
         cache = updateCache;
         doShow();
@@ -230,7 +230,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private void btnOKClickHandler() {
         btnOK.setClickHandler((v, x, y, pointer, button) -> {
             boolean update = false;
-            CacheDAO cacheDAO = CacheDAO.getInstance();
+            CacheDAO cacheDAO = new CacheDAO();
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
             cache.generatedId = Cache.generateCacheId(gcc);
 

@@ -32,9 +32,9 @@ import de.droidcachebox.utils.log.Log;
 /**
  * This is the possibility of static access to functions that are specific to the platform the app is running on
  */
-public class PlatformUIBase {
+public class Platform {
     public static int AndroidVersion = 999;
-    private static UIBaseMethods m;
+    private static PlatformMethods m;
     private static ShowViewMethods sm;
     private static Thread threadVibrate;
     private static Clipboard clipBoard;
@@ -80,7 +80,7 @@ public class PlatformUIBase {
         sm.setContentSize(left, top, right, bottom);
     }
 
-    public static void init(UIBaseMethods _m) {
+    public static void init(PlatformMethods _m) {
         m = _m;
     }
 
@@ -197,7 +197,7 @@ public class PlatformUIBase {
     }
 
     public static void setClipboard(Clipboard clipBoard) {
-        PlatformUIBase.clipBoard = clipBoard;
+        Platform.clipBoard = clipBoard;
     }
 
     public static int getCacheCountInDB(String absolutePath) {
@@ -213,7 +213,7 @@ public class PlatformUIBase {
     }
 
     /**
-     these methods need platform specific implementations
+     * these methods need platform specific implementations
      */
     public interface ShowViewMethods {
         void showView(ViewID viewID, int left, int top, int right, int bottom);
@@ -234,9 +234,9 @@ public class PlatformUIBase {
     }
 
     /**
-     these methods need platform specific implementations
+     * these methods need platform specific implementations
      */
-    public interface UIBaseMethods {
+    public interface PlatformMethods {
         SettingBase<?> readPlatformSetting(SettingBase<?> setting);
 
         void writePlatformSetting(SettingBase<?> setting);

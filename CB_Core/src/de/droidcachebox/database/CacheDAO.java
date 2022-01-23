@@ -49,14 +49,8 @@ public class CacheDAO {
     private static final String SQL_GET_DETAIL_FROM_ID = "select " + SQL_DETAILS + SQL_BY_ID;
     private static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
     private static final String sClass = "CacheDAO";
-    private static CacheDAO cacheDAO;
 
-    private CacheDAO() {
-    }
-
-    public static CacheDAO getInstance() {
-        if (cacheDAO == null) cacheDAO = new CacheDAO();
-        return cacheDAO;
+    public CacheDAO() {
     }
 
     Cache readFromCursor(CoreCursor reader, boolean fullDetails, boolean withDescription) {
@@ -84,7 +78,7 @@ public class CacheDAO {
             cache.setHasCorrectedCoordinates(reader.getInt(19) > 0);
             cache.favPoints = reader.getInt(20);
             if (fullDetails) {
-                readDetailFromCursor(reader, cache.getGeoCacheDetail(), fullDetails, withDescription);
+                readDetailFromCursor(reader, cache.getGeoCacheDetail(), true, withDescription);
             }
             return cache;
         } catch (Exception exc) {
@@ -93,9 +87,9 @@ public class CacheDAO {
         }
     }
 
-    public boolean readDetail(Cache cache) {
+    public void readDetail(Cache cache) {
         if (cache.getGeoCacheDetail() != null)
-            return true;
+            return;
         cache.setGeoCacheDetail(new CacheDetail());
 
         CoreCursor reader = CBDB.getInstance().rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.generatedId)});
@@ -106,16 +100,12 @@ public class CacheDAO {
                 readDetailFromCursor(reader, cache.getGeoCacheDetail(), false, false);
 
                 reader.close();
-                return true;
             } else {
                 if (reader != null)
                     reader.close();
-                return false;
             }
         } catch (Exception e) {
-            if (reader != null)
-                reader.close();
-            return false;
+            reader.close();
         }
     }
 
@@ -147,7 +137,7 @@ public class CacheDAO {
             detail.TourName = reader.getString(readerOffset + 3).trim();
         else
             detail.TourName = "";
-        if (reader.getString(readerOffset + 4) != "")
+        if (reader.getString(readerOffset + 4).length() > 0)
             detail.GPXFilename_ID = reader.getLong(readerOffset + 4);
         else
             detail.GPXFilename_ID = -1;
@@ -170,8 +160,7 @@ public class CacheDAO {
     }
 
     public void writeToDatabase(Cache cache) {
-        // int newCheckSum = createCheckSum(WP);
-        // Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
+        // int newCheckSum = createCheckSum(WP); // Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
         Parameters args = new Parameters();
         args.put("Id", cache.generatedId);
         args.put("GcCode", cache.getGeoCacheCode());
@@ -192,7 +181,7 @@ public class CacheDAO {
         args.put("Owner", cache.getOwner());
         args.put("Country", cache.getCountry());
         args.put("State", cache.getState());
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         try {
             String firstimported = iso8601Format.format(new Date());
             args.put("FirstImported", firstimported);
@@ -245,7 +234,7 @@ public class CacheDAO {
         }
     }
 
-    public void WriteToDatabase_Found(Cache cache) {
+    public void writeToDatabaseFound(Cache cache) {
         Parameters args = new Parameters();
         args.put("found", cache.isFound());
         try {
@@ -284,7 +273,7 @@ public class CacheDAO {
         args.put("Owner", cache.getOwner());
         args.put("Country", cache.getCountry());
         args.put("State", cache.getState());
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         try {
             String stimestamp = iso8601Format.format(cache.getDateHidden());
             args.put("DateHidden", stimestamp);
@@ -347,9 +336,8 @@ public class CacheDAO {
                 return null;
             }
         } catch (Exception e) {
-            if (reader != null)
-                reader.close();
-            e.printStackTrace();
+            reader.close();
+            Log.err(sClass, e);
             return null;
         }
 
@@ -374,9 +362,8 @@ public class CacheDAO {
                 return null;
             }
         } catch (Exception e) {
-            if (reader != null)
-                reader.close();
-            e.printStackTrace();
+            reader.close();
+            Log.err(sClass, e);
             return null;
         }
 
@@ -647,14 +634,14 @@ public class CacheDAO {
         CBDB.getInstance().setTransactionSuccessful();
         CBDB.getInstance().endTransaction();
 
-        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+        updateCacheCountForGPXFilenames();
 
     }
 
     public void writeCacheAndLogsAndImagesIntoDB(GroundspeakAPI.GeoCacheRelated geoCacheRelated, GpxFilename forCategory, boolean keepOldCacheValues) throws InterruptedException {
         ImageDAO imageDAO = new ImageDAO();
 
-        // Auf eventuellen Thread Abbruch reagieren
+        // perhaps react to thread cancel
         Thread.sleep(2);
 
         Cache cache = geoCacheRelated.cache;
@@ -684,41 +671,41 @@ public class CacheDAO {
 
         if (forCategory != null) {
             if (oldCache == null) {
-                cache.setGPXFilename_ID(forCategory.Id);
+                cache.setGPXFilename_ID(forCategory.id);
             } else if (oldCache.getGPXFilename_ID() == 0) {
-                cache.setGPXFilename_ID(forCategory.Id);
+                cache.setGPXFilename_ID(forCategory.id);
             } else {
                 Category c = CoreData.categories.getCategoryByGpxFilenameId(oldCache.getGPXFilename_ID());
-                if (c.GpxFilename.equals(forCategory.GpxFileName)) {
+                if (c.gpxFileName.equals(forCategory.gpxFileName)) {
                     // update with the new Date
-                    cache.setGPXFilename_ID(forCategory.Id);
+                    cache.setGPXFilename_ID(forCategory.id);
                 } else {
                     if (c.pinned) {
                         GpxFilename forPinnedCategory = null;
                         for (GpxFilename g : c) {
-                            if (forCategory.Imported == g.Imported) {
+                            if (forCategory.importedDate == g.importedDate) {
                                 forPinnedCategory = g;
                                 break;
                             }
                         }
                         if (forPinnedCategory == null)
-                            forPinnedCategory = c.addGpxFilename(c.GpxFilename, forCategory.Imported);
-                        cache.setGPXFilename_ID(forPinnedCategory.Id);
+                            forPinnedCategory = c.addGpxFilename(c.gpxFileName, forCategory.importedDate);
+                        cache.setGPXFilename_ID(forPinnedCategory.id);
                     } else {
-                        cache.setGPXFilename_ID(forCategory.Id);
+                        cache.setGPXFilename_ID(forCategory.id);
                     }
                 }
             }
         }
 
-        // Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen
+        // if update fails (geoCache not yet in DB) try insert
         if (!updateDatabase(cache)) {
             writeToDatabase(cache);
         }
         // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
         cache.setLongDescription("");
 
-        // Notes von Groundspeak überprüfen und evtl. in die DB an die vorhandenen Notes anhängen
+        // check notes from geocaching.com and add to the existing notes
         // todo extract solver?
         if (cache.getTmpNote() != null && cache.getTmpNote().length() > 0 || cache.getUserNote().length() > 0) {
             String begin = "<Import from Geocaching.com>";
@@ -774,7 +761,7 @@ public class CacheDAO {
             Waypoint waypoint = cache.getWayPoints().get(i);
             boolean update = true;
 
-            // dont refresh wp if aktCache.wp is user changed
+            // don't refresh wp if aktCache.wp is user changed
             if (oldCache != null) {
                 if (oldCache.getWayPoints() != null) {
                     for (int j = 0, m = oldCache.getWayPoints().size(); j < m; j++) {

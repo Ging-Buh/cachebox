@@ -9,8 +9,8 @@ public class FunctionCrossbearing extends Function {
 
     private static final long serialVersionUID = 4233730654010706806L;
 
-    public FunctionCrossbearing(Solver solver) {
-        super(solver);
+    public FunctionCrossbearing(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Crossbearing", "en"));
         Names.add(new LocalNames("Kreuzpeilung", "de"));
     }

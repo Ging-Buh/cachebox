@@ -10,7 +10,7 @@ public class GpsStateChangeEventList {
     private static int count = 0;
     private static long lastChanged = 0;
 
-    public static void Add(GpsStateChangeEvent event) {
+    public static void add(GpsStateChangeEvent event) {
         synchronized (list) {
             if (!list.contains(event))
                 list.add(event);
@@ -58,7 +58,7 @@ public class GpsStateChangeEventList {
     }
 
     private static void FireEvent(GpsStateChangeEvent event) {
-        event.GpsStateChanged();
+        event.gpsStateChanged();
         // Log.d("CACHEBOX", "GPS State Change called " + event.toString());
     }
 

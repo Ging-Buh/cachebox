@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionRom2Dec extends Function {
     private static final long serialVersionUID = 3808926872593878660L;
 
-    public FunctionRom2Dec(Solver solver) {
-        super(solver);
+    public FunctionRom2Dec(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Rom2Dec", "en"));
     }
 

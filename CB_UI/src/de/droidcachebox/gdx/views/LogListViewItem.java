@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.dataclasses.LogEntry;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
@@ -62,15 +62,15 @@ public class LogListViewItem extends ListViewItemBackground implements ICopyPast
             Menu menu = new Menu("LogEntryContextMenuTitle");
             menu.addMenuItem("LogtextToClipboard", null, this::copyToClipboard);
             menu.addMenuItem("ShowLogInBrowser", null, () -> {
-                PlatformUIBase.callUrl("https://www.geocaching.com/seek/log.aspx?LID=" + logEntry.logId);
+                Platform.callUrl("https://www.geocaching.com/seek/log.aspx?LID=" + logEntry.logId);
                 // PlatformUIBase.callUrl("https://coord.info/" + getGcIdFromLogId(logEntry.logId));
             });
             menu.addMenuItem("MailToFinder", Sprites.getSprite("bigLetterbox"), () -> {
                 try {
-                    if (PlatformUIBase.getClipboard() != null) {
-                        PlatformUIBase.getClipboard().setContents("Concerning https://coord.info/" + GlobalCore.getSelectedCache().getGeoCacheCode() + " " + GlobalCore.getSelectedCache().getGeoCacheName() + "\r");
+                    if (Platform.getClipboard() != null) {
+                        Platform.getClipboard().setContents("Concerning https://coord.info/" + GlobalCore.getSelectedCache().getGeoCacheCode() + " " + GlobalCore.getSelectedCache().getGeoCacheName() + "\r");
                         String finder = URLEncoder.encode(logEntry.finder, "UTF-8");
-                        PlatformUIBase.callUrl("https://www.geocaching.com/email/?u=" + finder);
+                        Platform.callUrl("https://www.geocaching.com/email/?u=" + finder);
                     }
                 } catch (Exception ignored) {
                 }
@@ -214,8 +214,8 @@ public class LogListViewItem extends ListViewItemBackground implements ICopyPast
 
     @Override
     public String copyToClipboard() {
-        if (PlatformUIBase.getClipboard() != null) {
-            PlatformUIBase.getClipboard().setContents(logEntry.logText);
+        if (Platform.getClipboard() != null) {
+            Platform.getClipboard().setContents(logEntry.logText);
             // GL.that.toast(Translation.get("CopyToClipboard"));
             return logEntry.logText;
         }

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class StringEntity extends Entity {
     String Wert;
 
-    public StringEntity(Solver solver, int id, String wert) {
-        super(solver, id);
+    public StringEntity(SolverLines solverLines, int id, String wert) {
+        super(solverLines, id);
         this.Wert = wert;
     }
 

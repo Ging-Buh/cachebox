@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
@@ -50,8 +50,8 @@ public class ShowGeoCaches extends AbstractShowAction {
 
     @Override
     public void execute() {
-        if (PlatformUIBase.isGPSon()) {
-            PlatformUIBase.request_getLocationIfInBackground();
+        if (Platform.isGPSon()) {
+            Platform.request_getLocationIfInBackground();
         }
         ViewManager.leftTab.showView(GeoCaches.getInstance());
     }

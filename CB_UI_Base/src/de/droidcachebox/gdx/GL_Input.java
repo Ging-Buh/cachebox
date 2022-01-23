@@ -15,7 +15,7 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 import de.droidcachebox.KeyCodes;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.SelectionMarker;
@@ -117,7 +117,7 @@ public class GL_Input implements InputProcessor {
         // InputProcessor Implementation keyUp
         if (value == Input.Keys.BACK) {
             if (!GL.that.closeCurrentDialogOrActivity()) {
-                PlatformUIBase.quit();
+                Platform.quit();
             }
             return true;
         }
@@ -255,7 +255,7 @@ public class GL_Input implements InputProcessor {
                     if (first.view.isDoubleClickable() && (System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null) && (distance(akt, lastClickPoint) < first.view.getClickTolerance())) {
                         boolean handled = first.view.doubleClick(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, button);
                         if (handled)
-                            PlatformUIBase.vibrate();
+                            Platform.vibrate();
 
                         lastClickTime = 0;
                         lastClickPoint = null;
@@ -263,7 +263,7 @@ public class GL_Input implements InputProcessor {
                         // normaler Click
                         boolean handled = first.view.click(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, button);
                         if (handled)
-                            PlatformUIBase.vibrate();
+                            Platform.vibrate();
 
                         lastClickTime = System.currentTimeMillis();
                         lastClickPoint = akt;
@@ -334,7 +334,7 @@ public class GL_Input implements InputProcessor {
                         first.view.touchUp(x, (int) GL.that.getChild().getHeight() - y, pointer, 0);
                         // Log.debug(log, "GL_Listener => onTouchUpBase : " + first.view.getName());
                         if (handled)
-                            PlatformUIBase.vibrate();
+                            Platform.vibrate();
                     }
                 }
             }

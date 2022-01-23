@@ -2,7 +2,7 @@ package de.droidcachebox.menu.menuBtn5.executes;
 
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
 
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
@@ -13,7 +13,7 @@ public class Quit {
         ButtonDialog bd = new ButtonDialog(Translation.get("QuitReally"), Translation.get("Quit?"), MsgBoxButton.OKCancel, MsgBoxIcon.Stop);
         bd.setButtonClickHandler((which, data) -> {
             if (which == BTN_LEFT_POSITIVE) {
-                PlatformUIBase.quit(); // do all closes there
+                Platform.quit(); // do all closes there
             }
             return true;
         });

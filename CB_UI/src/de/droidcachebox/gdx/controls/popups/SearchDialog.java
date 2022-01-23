@@ -415,7 +415,7 @@ public class SearchDialog extends PopUp_Base {
 
                     CBDB.getInstance().beginTransaction();
 
-                    CacheDAO cacheDAO = CacheDAO.getInstance();
+                    CacheDAO cacheDAO = new CacheDAO();
                     ImageDAO imageDAO = new ImageDAO();
                     WaypointDAO waypointDAO = WaypointDAO.getInstance();
 
@@ -428,7 +428,7 @@ public class SearchDialog extends PopUp_Base {
                             if (CBDB.getInstance().cacheList.getCacheByIdFromCacheList(cache.generatedId) == null) {
                                 CBDB.getInstance().cacheList.add(cache);
                                 if (cache.getGPXFilename_ID() == 0) {
-                                    cache.setGPXFilename_ID(gpxFilename.Id);
+                                    cache.setGPXFilename_ID(gpxFilename.id);
                                 }
                                 cacheDAO.writeToDatabase(cache);
                                 for (LogEntry log : geoCacheRelated.logs) {
@@ -448,7 +448,7 @@ public class SearchDialog extends PopUp_Base {
                     CBDB.getInstance().setTransactionSuccessful();
                     CBDB.getInstance().endTransaction();
 
-                    CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+                    new CacheDAO().updateCacheCountForGPXFilenames();
 
                     CacheListChangedListeners.getInstance().cacheListChanged();
 

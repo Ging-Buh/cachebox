@@ -16,8 +16,8 @@ public class CoordinateEntity extends Entity {
 
     private String gcCode = "";
 
-    public CoordinateEntity(Solver solver, int id, String gcCode) {
-        super(solver, id);
+    public CoordinateEntity(SolverLines solverLines, int id, String gcCode) {
+        super(solverLines, id);
         this.gcCode = gcCode;
     }
 
@@ -51,8 +51,8 @@ public class CoordinateEntity extends Entity {
     public String Berechne() {
         // Cache selCache = CB_UI.GlobalCore.getSelectedCache();
         Cache selCache = null;
-        if (Solver.solverCacheInterface != null) {
-            selCache = Solver.solverCacheInterface.sciGetSelectedCache();
+        if (SolverLines.solverCacheInterface != null) {
+            selCache = SolverLines.solverCacheInterface.sciGetSelectedCache();
         }
         Coordinate coord = null;
         if (selCache != null)
@@ -83,7 +83,7 @@ public class CoordinateEntity extends Entity {
     }
 
     public String SetCoordinate(String sCoord) {
-        if (Solver.isError(sCoord))
+        if (SolverLines.isError(sCoord))
             return sCoord;
         Coordinate coord;
         try {
@@ -107,11 +107,11 @@ public class CoordinateEntity extends Entity {
         }
         try {
             // if ((CB_UI.GlobalCore.getSelectedCache() == null) || (CB_UI.GlobalCore.getSelectedCache().Id != dbWaypoint.CacheId))
-            if (Solver.solverCacheInterface != null) {
-                if ((Solver.solverCacheInterface.sciGetSelectedCache() == null) || (Solver.solverCacheInterface.sciGetSelectedCache().generatedId != dbWaypoint.geoCacheId)) {
+            if (SolverLines.solverCacheInterface != null) {
+                if ((SolverLines.solverCacheInterface.sciGetSelectedCache() == null) || (SolverLines.solverCacheInterface.sciGetSelectedCache().generatedId != dbWaypoint.geoCacheId)) {
                     // Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
                     // Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
-                    CacheDAO cacheDAO = CacheDAO.getInstance();
+                    CacheDAO cacheDAO = new CacheDAO();
                     Cache cache = cacheDAO.getFromDbByCacheId(dbWaypoint.geoCacheId);
                     // String sFmt = "Change Coordinates of a waypoint which does not belong to the actual Cache?\n";
                     // sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
@@ -129,7 +129,7 @@ public class CoordinateEntity extends Entity {
             synchronized (CBDB.getInstance().cacheList) {
                 cacheFromCacheList = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(dbWaypoint.geoCacheId);
             }
-            cacheFromCacheList = Solver.solverCacheInterface.sciGetSelectedCache();
+            cacheFromCacheList = SolverLines.solverCacheInterface.sciGetSelectedCache();
             if (cacheFromCacheList != null) {
                 for (int i = 0, n = cacheFromCacheList.getWayPoints().size(); i < n; i++) {
                     Waypoint wp = cacheFromCacheList.getWayPoints().get(i);
@@ -138,12 +138,12 @@ public class CoordinateEntity extends Entity {
                         break;
                     }
                 }
-                if (Solver.solverCacheInterface != null) {
-                    if (Solver.solverCacheInterface.sciGetSelectedCache().generatedId == cacheFromCacheList.generatedId) {
-                        if (Solver.solverCacheInterface.sciGetSelectedWaypoint() == null) {
-                            Solver.solverCacheInterface.sciSetSelectedCache(Solver.solverCacheInterface.sciGetSelectedCache());
+                if (SolverLines.solverCacheInterface != null) {
+                    if (SolverLines.solverCacheInterface.sciGetSelectedCache().generatedId == cacheFromCacheList.generatedId) {
+                        if (SolverLines.solverCacheInterface.sciGetSelectedWaypoint() == null) {
+                            SolverLines.solverCacheInterface.sciSetSelectedCache(SolverLines.solverCacheInterface.sciGetSelectedCache());
                         } else {
-                            Solver.solverCacheInterface.sciSetSelectedWaypoint(Solver.solverCacheInterface.sciGetSelectedCache(), Solver.solverCacheInterface.sciGetSelectedWaypoint());
+                            SolverLines.solverCacheInterface.sciSetSelectedWaypoint(SolverLines.solverCacheInterface.sciGetSelectedCache(), SolverLines.solverCacheInterface.sciGetSelectedWaypoint());
                         }
                     }
                 }

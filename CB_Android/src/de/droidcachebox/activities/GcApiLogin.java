@@ -33,7 +33,7 @@ import de.droidcachebox.utils.log.Log;
 
 
 public class GcApiLogin extends Activity {
-    private static final String sKlasse = "GcApiLogin";
+    private static final String sClass = "GcApiLogin";
     private static ProgressDialog progressDialog;
     private static boolean progressDialogIsShown = false;
     private LinearLayout webViewLayout;
@@ -217,7 +217,7 @@ public class GcApiLogin extends Activity {
 
                 return GC_AuthUrl;
             } catch (Exception ex) {
-                Log.err(sKlasse, "", ex);
+                Log.err(sClass, "", ex);
                 return "";
             }
         }
@@ -261,7 +261,7 @@ public class GcApiLogin extends Activity {
                     }
                     setAuthorization();
                     String userNameOfAuthorization = fetchMyUserInfos().username;
-                    Log.debug(sKlasse, "userNameOfAuthorization: " + userNameOfAuthorization);
+                    Log.debug(sClass, "userNameOfAuthorization: " + userNameOfAuthorization);
                     Settings.GcLogin.setValue(userNameOfAuthorization);
                     Settings.getInstance().acceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));

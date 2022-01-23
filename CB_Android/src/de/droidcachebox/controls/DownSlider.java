@@ -726,13 +726,13 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
     }
 
     @Override
-    public void GpsStateChanged() {
+    public void gpsStateChanged() {
         this.invalidate();
 
     }
 
     private void registerGpsStateChangedListener() {
-        GpsStateChangeEventList.Add(this);
+        GpsStateChangeEventList.add(this);
         mGpsStateChabgedListenerRegistred = true;
     }
 

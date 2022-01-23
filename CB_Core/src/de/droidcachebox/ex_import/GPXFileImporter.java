@@ -79,7 +79,7 @@ public class GPXFileImporter {
     private final Waypoint waypoint = new Waypoint(true);
     private final LogEntry log = new LogEntry();
     private final String br = System.getProperty("line.separator");
-    private final CacheDAO cacheDAO = CacheDAO.getInstance();
+    private final CacheDAO cacheDAO = new CacheDAO();
     public Categories categories;
     private Integer currentWpt = 0;
     private Integer countWpt = 0;
@@ -115,7 +115,7 @@ public class GPXFileImporter {
         if (gpxFilename == null)
             return;
 
-        Log.info(sClass, "gpx import from " + gpxFilename.GpxFileName);
+        Log.info(sClass, "gpx import from " + gpxFilename.gpxFileName);
         Map<String, String> values = new HashMap<>();
 
         System.setProperty("sjxp.namespaces", "false");
@@ -141,7 +141,7 @@ public class GPXFileImporter {
         } catch (Exception e) {
             if (testCancel != null && testCancel.checkCanceled())
                 throw new Exception(TestCancel.canceled);
-            Log.err(sClass, gpxFilename.GpxFileName + ": " + e.getLocalizedMessage());
+            Log.err(sClass, gpxFilename.gpxFileName + ": " + e.getLocalizedMessage());
         }
     }
 
@@ -1378,7 +1378,7 @@ public class GPXFileImporter {
             }
         }
 
-        cache.setGPXFilename_ID(gpxFilename.Id);
+        cache.setGPXFilename_ID(gpxFilename.id);
 
         currentWpt++;
 
@@ -1416,10 +1416,10 @@ public class GPXFileImporter {
         so the setSolver and setNote have to be executed after handleCache
          */
         if (values.containsKey("cachebox-extension_solver")) {
-            CacheDAO.getInstance().setSolver(cache, values.get("cachebox-extension_solver"));
+            cacheDAO.setSolver(cache, values.get("cachebox-extension_solver"));
         }
         if (values.containsKey("cachebox-extension_note")) {
-            CacheDAO.getInstance().setNote(cache, values.get("cachebox-extension_note"));
+            cacheDAO.setNote(cache, values.get("cachebox-extension_note"));
         }
 
     }

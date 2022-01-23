@@ -188,7 +188,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
 
                 if (currentGeoCache.mustLoadDetail()) {
                     Log.debug(log, "loading details.");
-                    CacheDAO.getInstance().loadDetail(currentGeoCache);
+                    new CacheDAO().loadDetail(currentGeoCache);
                 }
 
                 if (showAtt) {

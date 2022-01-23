@@ -33,33 +33,28 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.views.SelectSolverFunction;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.solver.DataType;
-import de.droidcachebox.solver.Solver;
-import de.droidcachebox.solver.SolverZeile;
+import de.droidcachebox.solver.SolverLine;
+import de.droidcachebox.solver.SolverLines;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Plattform;
 
 /**
  * @author Longri
  */
-public class SolverView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
-
-    private static SolverView that;
+public class Solver extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private WindowState windowState = WindowState.Both;
-    private Solver solver = new Solver("", GlobalCore.getInstance());
+    private SolverLines solverLines = new SolverLines("", GlobalCore.getInstance());
     private boolean mustLoadSolver;
     private Cache aktCache;
     private CB_Button btnSolve, btnFunct, btnSelect, btnInputWindow, btnBothWindow, btnResultWindow;
     private EditTextField edInput, edResult;
+    private final CacheDAO cacheDAO;
 
-    private SolverView() {
+    public Solver() {
         super(ViewManager.leftTab.getContentRec(), "SolverView");
+        cacheDAO = new CacheDAO();
         addControls();
         layout();
-    }
-
-    public static SolverView getInstance() {
-        if (that == null) that = new SolverView();
-        return that;
     }
 
     @Override
@@ -82,7 +77,7 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
         CacheSelectionChangedListeners.getInstance().addListener(this);
 
         if (mustLoadSolver) {
-            String sol = CacheDAO.getInstance().getSolver(aktCache);
+            String sol = cacheDAO.getSolver(aktCache);
             if (sol == null)
                 sol = "";
             edInput.setText(sol);
@@ -97,7 +92,7 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
         KeyboardFocusChangedEventList.remove(this);
         CacheSelectionChangedListeners.getInstance().remove(this);
         if (aktCache != null) {
-            CacheDAO.getInstance().setSolver(aktCache, edInput.getText());
+            cacheDAO.setSolver(aktCache, edInput.getText());
             // When Solver 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
             aktCache.setSolver1Changed(true);
         }
@@ -121,7 +116,7 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
 
         btnFunct = new CB_Button(Translation.get("Funct."));
         btnFunct.setClickHandler((v, x, y, pointer, button) -> {
-            SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, function -> {
+            SelectSolverFunction ssf = new SelectSolverFunction(solverLines, DataType.None, function -> {
                 // ausgewählte Funktion verarbeiten!
                 // wenn funktion==null wurde Cancel gedrückt
 
@@ -281,13 +276,13 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
 
         edResult.setEditable(true);
 
-        solver = new Solver(edInput.getText(), GlobalCore.getInstance());
-        if (!solver.Solve()) {
+        solverLines = new SolverLines(edInput.getText(), GlobalCore.getInstance());
+        if (!solverLines.Solve()) {
             GL.that.toast("Error");
         }
         edResult.setText("");
         StringBuilder result = new StringBuilder();
-        for (SolverZeile zeile : solver) {
+        for (SolverLine zeile : solverLines) {
             result.append(zeile.Solution).append("\n");
         }
 
@@ -295,11 +290,11 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
         edResult.showFromLineNo(edInput.getTopLineNo());
         edResult.setEditable(false);
 
-        if ((solver.MissingVariables != null) && (solver.MissingVariables.size() > 0)) {
+        if ((solverLines.MissingVariables != null) && (solverLines.MissingVariables.size() > 0)) {
             // es sind nicht alle Variablen zugewiesen
             // Abfrage, ob die Deklarationen eingefügt werden sollen
             StringBuilder message = new StringBuilder();
-            for (String s : solver.MissingVariables.keySet()) {
+            for (String s : solverLines.MissingVariables.keySet()) {
                 if (message.length() > 0)
                     message.append(", ");
                 message.append(s);
@@ -310,7 +305,7 @@ public class SolverView extends CB_View_Base implements CacheSelectionChangedLis
                 // Behandle das ergebniss
                 if (which == 1) {/* User clicked OK so do some stuff */
                     StringBuilder missing = new StringBuilder();
-                    for (String s : solver.MissingVariables.keySet()) {
+                    for (String s : solverLines.MissingVariables.keySet()) {
                         missing.append(s).append("=\n");
                         edResult.setText("\n" + edInput.getText());
                     }

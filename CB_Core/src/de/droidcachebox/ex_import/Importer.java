@@ -121,7 +121,7 @@ public class Importer {
         }
         importProgress.finishStep(stepID, "");
 
-        CacheDAO.getInstance().updateCacheCountForGPXFilenames();
+        new CacheDAO().updateCacheCountForGPXFilenames();
         CategoryDAO.getInstance().deleteEmptyCategories();
         CacheInfoList.writeListToDB();
         CacheInfoList.dispose();

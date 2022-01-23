@@ -9,8 +9,8 @@ public class FunctionBearing extends Function {
 
     private static final long serialVersionUID = -85879423478038052L;
 
-    public FunctionBearing(Solver solver) {
-        super(solver);
+    public FunctionBearing(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Bearing", "en"));
     }
 

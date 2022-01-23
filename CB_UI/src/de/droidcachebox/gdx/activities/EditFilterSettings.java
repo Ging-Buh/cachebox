@@ -86,8 +86,8 @@ import de.droidcachebox.utils.log.Log;
 /**
  * Defining a Filter for geoCaches to show is done by selection within 4 Tabs (in contentBox):
  * first  tab (presets) : combined from settings the predefined filters (in FilterInstances) and the saved filters named by the user can be selected with one click + ok
- * second tab (settings): 4 Buttons (general, dt, cacheTypes, attributes) for genaral (common) boolean properties, valued ranges (difficulty, terrain,..), geoCacheTypes and attributes.
- * third  tab (CategorieView): buttons for categories and subcategories reflecting the different imports of the actual database
+ * second tab (settings): 4 Buttons (general, dt, cacheTypes, attributes) for general (common) boolean properties, valued ranges (difficulty, terrain,..), geoCacheTypes and attributes.
+ * third  tab (Category View): buttons for categories and subcategories reflecting the different imports of the actual database
  * forth  tab (TextView): string filters by GCCodes, owner and geocache title
  */
 public class EditFilterSettings extends ActivityBase {
@@ -222,7 +222,7 @@ public class EditFilterSettings extends ActivityBase {
         addChild(btnCategoryFilters);
         addChild(btnTextFilters);
 
-        btnAddUserDefinedFilter = new CB_Button(new CB_RectF(leftBorder, margin, innerWidth, UiSizes.getInstance().getButtonHeight()), "AddPresetButon");
+        btnAddUserDefinedFilter = new CB_Button(new CB_RectF(leftBorder, margin, innerWidth, UiSizes.getInstance().getButtonHeight()), "AddPresetButton");
         btnAddUserDefinedFilter.setText(Translation.get("AddOwnFilterPreset"));
         btnAddUserDefinedFilter.setClickHandler((v, x, y, pointer, button) -> {
             addUserDefinedFilter();
@@ -246,15 +246,7 @@ public class EditFilterSettings extends ActivityBase {
 
         textFilterView = new TextFilterView(listViewRec, "TextFilterView");
         contentBox.addChild(textFilterView);
-
-        // PresetListView: select entry, if possible checked for equal in render
-        //
-        // init FilterSetListView from tmpFilterProps/FilterInstances.getLastFilter()
         filterSetView.setFilter(tmpFilterProps);
-        // init CategoryListView from tmpFilterProps/FilterInstances.getLastFilter()
-        // implicit in creator: fillCategorieList()/ CoreData.categories.readFromFilter(tmpFilterProps)
-        //
-        // init TextFilterView from tmpFilterProps/FilterInstances.getLastFilter()
         textFilterView.setFilter(tmpFilterProps);
 
         lastViewId = -1;
@@ -411,7 +403,6 @@ public class EditFilterSettings extends ActivityBase {
                 String userFilters = Settings.UserFilters.getValue();
                 String newFilterString = tmpFilterProps.toString();
 
-                // Category Filterungen aus Filter entfernen
                 int pos = newFilterString.indexOf("^");
                 if (pos > -1) {
                     int posE = newFilterString.indexOf("\"", pos);
@@ -498,7 +489,7 @@ public class EditFilterSettings extends ActivityBase {
                         String name = userFilter.substring(0, pos);
                         String filter = userFilter.substring(pos + 1);
                         if (filter.endsWith("#"))
-                            filter = filter.substring(0, filter.length() - 1); // relikt?
+                            filter = filter.substring(0, filter.length() - 1); // relict?
                         Preset entry = new Preset(name, Sprites.getSprite("userdata"), new FilterProperties(filter));
                         presets.add(entry);
                         PresetListViewItem v = new PresetListViewItem(itemRec, index, entry);
@@ -997,14 +988,14 @@ public class EditFilterSettings extends ActivityBase {
         CategoryListView(CB_RectF rec) {
             super(rec, "");
             setHasInvisibleItems();
-            fillCategorieList();
+            fillCategoryList();
             setDisposeFlag(false);
             setAdapter(null);
             setAdapter(new CategoryEntryAdapter(categoryEntries, categoryListViewItems));
         }
 
         FilterProperties updateFilterProperties(FilterProperties filter) {
-            // Set Categorie State
+            // Set Category State
             if (categoryListViewItems != null) {
                 for (CategoryListViewItem tmp : categoryListViewItems) {
                     GpxFilename file = tmp.categoryEntry.getFile();
@@ -1012,7 +1003,7 @@ public class EditFilterSettings extends ActivityBase {
                         Category cat = CoreData.categories.get(i);
                         int index = cat.indexOf(file);
                         if (index != -1) {
-                            cat.get(index).Checked = tmp.categoryEntry.getState() == 1;
+                            cat.get(index).checked = tmp.categoryEntry.getState() == 1;
                         } else {
                             if (tmp.getCategoryEntry().getCat() != null) {
                                 if (cat == tmp.getCategoryEntry().getCat()) {
@@ -1026,7 +1017,7 @@ public class EditFilterSettings extends ActivityBase {
             return CoreData.categories.updateFilterProperties(filter);
         }
 
-        private void fillCategorieList() {
+        private void fillCategoryList() {
 
             CoreData.categories.readFromFilter(tmpFilterProps);
 
@@ -1046,7 +1037,7 @@ public class EditFilterSettings extends ActivityBase {
                 for (CategoryEntry tmp : categoryEntries) {
                     GpxFilename file = tmp.getFile();
                     if (file != null) {
-                        tmp.setState(file.Checked ? 1 : 0);
+                        tmp.setState(file.checked ? 1 : 0);
                     }
 
                 }
@@ -1062,7 +1053,6 @@ public class EditFilterSettings extends ActivityBase {
             CategoryEntry tmp = new CategoryEntry(file, Icon, CHECK_ITEM);
             categoryEntries.add(tmp);
             CategoryListViewItem v = new CategoryListViewItem(EditFilterSettings.itemRec, Index, tmp);
-            // inital mit INVISIBLE
             v.setInvisible();
             v.setClickHandler(this::onCategoryListViewItemClicked);
             categoryListViewItems.add(v);
@@ -1097,7 +1087,7 @@ public class EditFilterSettings extends ActivityBase {
                             for (CategoryEntry tmp1 : categoryEntries) {
                                 GpxFilename file = tmp1.getFile();
                                 if (file != null) {
-                                    tmp1.setState(file.Checked ? 1 : 0);
+                                    tmp1.setState(file.checked ? 1 : 0);
                                 }
                             }
                         }
@@ -1123,7 +1113,7 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         private void collapseButton_Clicked(CategoryListViewItem item) {
-            item.toggleChildeViewState();
+            item.toggleChildViewState();
             notifyDataSetChanged();
             invalidate();
         }
@@ -1168,7 +1158,7 @@ public class EditFilterSettings extends ActivityBase {
                     for (CategoryEntry tmp1 : categoryEntries) {
                         GpxFilename file1 = tmp1.getFile();
                         if (file1 != null) {
-                            tmp1.setState(file1.Checked ? 1 : 0);
+                            tmp1.setState(file1.checked ? 1 : 0);
                         }
 
                     }
@@ -1228,27 +1218,23 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             void plusClick() {
-
                 if (mItemType == COLLAPSE_BUTTON_ITEM && mCat != null) {
-                    // collabs Button chk clicked
-                    int State = mCat.getCheck();
-                    if (State == 0) {// keins ausgewählt, also alle anwählen
-
+                    // collapse Button chk clicked
+                    int checked = mCat.getCheckState();
+                    if (checked == 0) {
+                        // none selected, so check all
                         for (GpxFilename tmp : mCat) {
-                            tmp.Checked = true;
+                            tmp.checked = true;
                         }
-
-                    } else {// einer oder mehr ausgewählt, also alle abwählen
-
+                    } else {
+                        // one or more selected, so check none
                         for (GpxFilename tmp : mCat) {
-                            tmp.Checked = false;
+                            tmp.checked = false;
                         }
-
                     }
                 } else {
                     stateClick();
                 }
-
             }
 
             void minusClick() {
@@ -1258,7 +1244,6 @@ public class EditFilterSettings extends ActivityBase {
             }
 
             void stateClick() {
-
                 mState += 1;
                 if (mItemType == CHECK_ITEM || mItemType == COLLAPSE_BUTTON_ITEM) {
                     if (mState > 1)
@@ -1270,13 +1255,13 @@ public class EditFilterSettings extends ActivityBase {
 
                 if (mItemType == CHECK_ITEM) {
                     if (mFile != null)
-                        mFile.Checked = mState != 0;
+                        mFile.checked = mState != 0;
                 }
             }
 
             String getCatName() {
                 if (mCat != null)
-                    return mCat.GpxFilename;
+                    return mCat.gpxFileName;
                 return "";
             }
 
@@ -1321,7 +1306,7 @@ public class EditFilterSettings extends ActivityBase {
         }
 
         private static class CategoryListViewItem extends ListViewItemBackground {
-            private final SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy hh:mm ", Locale.US);
+            private final SimpleDateFormat postFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm ", Locale.US);
             // static Member
             private final ArrayList<CategoryListViewItem> mChildList = new ArrayList<>();
             CategoryEntry categoryEntry;
@@ -1363,7 +1348,7 @@ public class EditFilterSettings extends ActivityBase {
                 return item;
             }
 
-            void toggleChildeViewState() {
+            void toggleChildViewState() {
                 if (mChildList != null && mChildList.size() > 0) {
                     boolean newState = !mChildList.get(0).isVisible();
 
@@ -1421,12 +1406,12 @@ public class EditFilterSettings extends ActivityBase {
                     String Count;
 
                     if (file != null) {
-                        Name = file.GpxFileName;
-                        Date = postFormater.format(file.Imported);
-                        Count = String.valueOf(file.CacheCount);
+                        Name = file.gpxFileName;
+                        Date = postFormat.format(file.importedDate);
+                        Count = String.valueOf(file.numberOfGeocaches);
                     } else {
                         Name = categoryEntry.getCatName();
-                        Date = postFormater.format(categoryEntry.getCat().LastImported());
+                        Date = postFormat.format(categoryEntry.getCat().LastImported());
                         Count = String.valueOf(categoryEntry.getCat().CacheCount());
                     }
 
@@ -1521,7 +1506,7 @@ public class EditFilterSettings extends ActivityBase {
 
                 int ChkState;
                 if (categoryEntry.getItemType() == COLLAPSE_BUTTON_ITEM) {
-                    ChkState = categoryEntry.getCat().getCheck();
+                    ChkState = categoryEntry.getCat().getCheckState();
                 } else {
                     ChkState = categoryEntry.getState();
                 }
@@ -1544,14 +1529,14 @@ public class EditFilterSettings extends ActivityBase {
             private void drawThreeStateItem(Batch batch) {
                 drawRightChkBox(batch);
 
-                if (categoryEntry.getCat().getCheck() == 1) {
+                if (categoryEntry.getCat().getCheckState() == 1) {
                     if (chkOn == null) {
                         chkOn = Sprites.getSprite("check-on");
                         chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
                     }
 
                     chkOn.draw(batch);
-                } else if (categoryEntry.getCat().getCheck() == 0) {
+                } else if (categoryEntry.getCat().getCheckState() == 0) {
                     if (chkNo == null) {
                         chkNo = Sprites.getSprite(Sprites.IconName.DELETE.name());
                         chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());

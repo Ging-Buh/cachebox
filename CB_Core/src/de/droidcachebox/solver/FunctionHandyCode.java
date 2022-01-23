@@ -6,8 +6,8 @@ public class FunctionHandyCode extends Function {
 
     private static final long serialVersionUID = -270660378762802943L;
 
-    public FunctionHandyCode(Solver solver) {
-        super(solver);
+    public FunctionHandyCode(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("PhoneCode", "en"));
         Names.add(new LocalNames("HandyCode", "de"));
         Names.add(new LocalNames("PC", "en"));

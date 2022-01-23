@@ -143,7 +143,7 @@ public class CacheListDAO {
         }
         reader.moveToFirst();
 
-        CacheDAO cacheDAO = CacheDAO.getInstance();
+        CacheDAO cacheDAO = new CacheDAO();
 
         while (!reader.isAfterLast()) {
             Cache cache = cacheDAO.readFromCursor(reader, fullDetails, withDescription);
@@ -179,6 +179,7 @@ public class CacheListDAO {
                        String DescriptionImageFolder,
                        String DescriptionImageFolderLocal,
                        AtomicBoolean isCanceled) {
+        CacheDAO cacheDAO = new CacheDAO();
         try {
             delCacheImages(getGcCodes(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
             CBDB.getInstance().beginTransaction();
@@ -189,7 +190,7 @@ public class CacheListDAO {
             } else {
                 CBDB.getInstance().setTransactionSuccessful();
                 CBDB.getInstance().endTransaction();
-                CacheDAO.getInstance().updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
+                cacheDAO.updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
             }
             return ret;
         } catch (Exception e) {

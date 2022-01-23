@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionInt extends Function {
     private static final long serialVersionUID = -4677935521343499858L;
 
-    public FunctionInt(Solver solver) {
-        super(solver);
+    public FunctionInt(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Int", "en"));
         Names.add(new LocalNames("Ganzzahl", "de"));
     }

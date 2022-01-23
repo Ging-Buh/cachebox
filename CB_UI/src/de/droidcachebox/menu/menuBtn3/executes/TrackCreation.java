@@ -15,6 +15,7 @@ import de.droidcachebox.locator.CoordinateGPS;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.locator.map.TrackPoint;
+import de.droidcachebox.menu.menuBtn3.ShowTracks;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 
@@ -85,7 +86,7 @@ public class TrackCreation extends AbstractShowAction {
 
             track.setVisible(true);
             TrackList.getInstance().addTrack(track);
-            TrackListView.getInstance().notifyDataSetChanged();
+            ShowTracks.getInstance().notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.point2point, Translation.get("fromPoint"));
         pC.show();
 
@@ -112,7 +113,7 @@ public class TrackCreation extends AbstractShowAction {
 
             track.setVisible(true);
             TrackList.getInstance().addTrack(track);
-            TrackListView.getInstance().notifyDataSetChanged();
+            ShowTracks.getInstance().notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.projection, Translation.get("fromPoint"));
 
         pC.show();
@@ -149,7 +150,7 @@ public class TrackCreation extends AbstractShowAction {
                 LastCoord = Projektion; // !! LastCoord = new Coordinate(Projektion);
                 LastCoord.setValid(true);
             }
-            TrackListView.getInstance().notifyDataSetChanged();
+            ShowTracks.getInstance().notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.circle, Translation.get("centerPoint"));
         pC.show();
     }

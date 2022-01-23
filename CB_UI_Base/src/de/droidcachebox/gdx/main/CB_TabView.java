@@ -18,9 +18,9 @@ import de.droidcachebox.utils.log.Log;
  * which is shown by clicking a button of the gestureButtons
  */
 public class CB_TabView extends CB_View_Base {
-    private final static String sKlasse = "CB_TabView";
+    private final static String sClass = "CB_TabView";
     private final CB_RectF mContentRec;
-    private ArrayList<GestureButton> mainButtons;
+    private final ArrayList<GestureButton> mainButtons;
     private H_ListView mainButtonListView;
     private CB_View_Base currentView;
 
@@ -63,10 +63,10 @@ public class CB_TabView extends CB_View_Base {
 
     @Override
     protected void renderInit() {
-        // Wenn die Anzahl der Buttons = der Anzahl der M�glichen Buttons ist, diese gleichm��ig verteilen
+        // if number of buttons equals number of possible buttons: spread them evenly
         if (mainButtons.size() <= mainButtonListView.getMaxNumberOfVisibleItems()) {
-            float sollDivider = (mainButtonListView.getWidth() - (mainButtonSize.getHeight() * mainButtons.size())) / (mainButtons.size() + 1);
-            mainButtonListView.setDividerSize(sollDivider);
+            float dividerSize = (mainButtonListView.getWidth() - (mainButtonSize.getHeight() * mainButtons.size())) / (mainButtons.size() + 1);
+            mainButtonListView.setDividerSize(dividerSize);
         }
 
         // the main button is 88x76!
@@ -97,14 +97,14 @@ public class CB_TabView extends CB_View_Base {
                 sendOnShow2CurrentView();
                 GL.that.renderOnce();
             } catch (Exception ex) {
-                Log.err(sKlasse, ex);
+                Log.err(sClass, ex);
             }
         }).start();
     }
 
     private void sendOnShow2CurrentView() {
         // on changing the view the children are perhaps not yet created, cause they are created in initializing method.
-        // resulting they would not be shown. therefore doing RunOnGL twice (resulting in waittime 150ms)
+        // resulting they would not be shown. therefore doing RunOnGL twice (resulting in wait for 150ms)
         GL.that.runOnGL(
                 () -> GL.that.runOnGL(
                         () -> {

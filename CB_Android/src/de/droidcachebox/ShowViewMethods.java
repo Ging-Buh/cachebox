@@ -65,8 +65,8 @@ import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.views.DescriptionView;
 import de.droidcachebox.views.ViewGL;
 
-public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
-    private final static String sKlasse = "ShowViewListener";
+public class ShowViewMethods implements Platform.ShowViewMethods {
+    private final static String sClass = "ShowViewListener";
     private static final int REQUEST_CAPTURE_IMAGE = 6516;
     private static final int REQUEST_CAPTURE_VIDEO = 6517;
     private static boolean isVoiceRecordingStarted = false;
@@ -144,7 +144,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
             gdxView.setOnTouchListener(onTouchListener);
             downSlider.invalidate();
         } catch (Exception ex) {
-            Log.err(sKlasse, "onResume", ex);
+            Log.err(sClass, "onResume", ex);
         }
     }
 
@@ -202,7 +202,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
     @Override
     public void showView(final ViewID viewID, final int left, final int top, final int right, final int bottom) {
         mainActivity.runOnUiThread(() -> {
-            Log.info(sKlasse, "Show View with ID = " + viewID.getID());
+            Log.info(sClass, "Show View with ID = " + viewID.getID());
 
             // set Content size
 
@@ -257,7 +257,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
             currentView.onHide();
 
             if (ID.getType() == ViewID.UI_Type.OpenGl) {
-                Log.info(sKlasse, "showView OpenGl onPause");
+                Log.info(sClass, "showView OpenGl onPause");
                 mainMain.pause();
             }
 
@@ -299,7 +299,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
     }
 
     private void ShowGLView() {
-        Log.info(sKlasse, "ShowViewGL " + layoutGlContent.getMeasuredWidth() + "/" + layoutGlContent.getMeasuredHeight());
+        Log.info(sClass, "ShowViewGL " + layoutGlContent.getMeasuredWidth() + "/" + layoutGlContent.getMeasuredHeight());
 
         initializeGDXAndroidApplication();
 
@@ -349,7 +349,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
     public void hideView(final ViewID viewID) {
 
         mainActivity.runOnUiThread(() -> {
-            Log.info(sKlasse, "Hide View with ID = " + viewID.getID());
+            Log.info(sClass, "Hide View with ID = " + viewID.getID());
 
             if (!(currentView == null) && viewID == aktViewId) {
                 currentView.onHide();
@@ -387,7 +387,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
             if (cacheNameView != null)
                 cacheNameView.setVisibility(View.INVISIBLE);
             handleRunOverLockScreenConfig();
-            // Log.info(sKlasse, "Show AndroidView");
+            // Log.info(sClass, "Show AndroidView");
         });
     }
 
@@ -441,7 +441,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
         lastTop = top;
         lastBottom = bottom;
         mainActivity.runOnUiThread(() -> {
-            Log.info(sKlasse, "Set Android Content Sizeleft/top/right/bottom :" + left + "/" + top + "/" + right + "/" + bottom);
+            Log.info(sClass, "Set Android Content Sizeleft/top/right/bottom :" + left + "/" + top + "/" + right + "/" + bottom);
             if (currentView != null) {
                 RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) layoutContent.getLayoutParams();
                 paramsLeft.setMargins(left, top, right, bottom);
@@ -453,7 +453,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
 
     private void initializeGDXAndroidApplication() {
         try {
-            Log.info(sKlasse, "initialize GDXAndroidApplication (gdxView = graphics.getView()");
+            Log.info(sClass, "initialize GDXAndroidApplication (gdxView = graphics.getView()");
             gdxView = androidApplication.initializeForView(GL.that, gdxConfig);
             int GlSurfaceType = -1;
             if (gdxView instanceof GLSurfaceView20)
@@ -476,7 +476,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                 if (GL.that.getGlListener() == null)
                     new ViewGL(mainActivity, inflater, gdxView);
             } else {
-                Log.err(sKlasse, "GL is null");
+                Log.err(sClass, "GL is null");
                 mainMain.restartFromSplash();
             }
 
@@ -491,7 +491,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
 
             // }
         } catch (Exception e) {
-            Log.err(sKlasse, "main.initialViewGL()", "", e);
+            Log.err(sClass, "main.initialViewGL()", "", e);
         }
 
     }
@@ -560,7 +560,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                 if (intent != null)
                     mainActivity.startActivity(intent);
             } catch (Exception e) {
-                Log.err(sKlasse, "Error Start " + selectedNavi, e);
+                Log.err(sClass, "Error Start " + selectedNavi, e);
             }
         }
     }
@@ -578,23 +578,23 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                     // check if there is an activity that can handle the desired intent (not needed: this is implicit done by startActivity(event))
                     if (intent.resolveActivity(mainActivity.getPackageManager()) == null) {
                         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                            Log.err(sKlasse, "Navigation: No App for " + action + " , " + data);
+                            Log.err(sClass, "Navigation: No App for " + action + " , " + data);
                             intent = null;
                         } else {
                             // from Build.VERSION_CODES.R onwards the Activity may exist even, if not visible
-                            Log.info(sKlasse, "Navigation: No visible App for " + action + " , " + data);
+                            Log.info(sClass, "Navigation: No visible App for " + action + " , " + data);
                         }
                     }
                 }
             } else {
                 intent = mainActivity.getPackageManager().getLaunchIntentForPackage(data);
                 if (intent == null) {
-                    Log.err(sKlasse, "Navigation: No package/App for " + data);
+                    Log.err(sClass, "Navigation: No package/App for " + data);
                 }
             }
         } catch (Exception e) {
             intent = null;
-            Log.err(sKlasse, "Exception: No intent for " + action + " , " + data, e);
+            Log.err(sClass, "Exception: No intent for " + action + " , " + data, e);
         }
         return intent;
     }
@@ -612,7 +612,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                 // define the file-name to save voice taken by activity
                 String directory = Settings.UserImageFolder.getValue();
                 if (!FileIO.createDirectory(directory)) {
-                    Log.err(sKlasse, "can't create " + directory);
+                    Log.err(sClass, "can't create " + directory);
                     return;
                 }
 
@@ -636,7 +636,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                 String TrackFolder = Settings.TrackFolder.getValue();
                 String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
                 // Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-                TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getInstance().getLocation(CBLocation.ProviderType.GPS), getTrackDateTimeString());
+                TrackRecorder.getInstance().annotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getInstance().getLocation(CBLocation.ProviderType.GPS), getTrackDateTimeString());
                 Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
                 recordVoice(true);
@@ -684,12 +684,12 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
             ActivityCompat.requestPermissions(mainActivity, takePhotoPermissions, Main.Request_takePhoto);
             return;
         }
-        Log.info(sKlasse, "takePhoto start " + GlobalCore.getSelectedCache());
+        Log.info(sClass, "takePhoto start " + GlobalCore.getSelectedCache());
         try {
             // define the file-name to save photo taken by Camera activity
             String directory = Settings.UserImageFolder.getValue();
             if (!FileIO.createDirectory(directory)) {
-                Log.err(sKlasse, "can't create " + directory);
+                Log.err(sClass, "can't create " + directory);
                 return;
             }
             String cacheName;
@@ -702,14 +702,14 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
             mediaFileNameWithoutExtension = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.US).format(new Date()) + " " + cacheName;
             tempMediaPath = Objects.requireNonNull(mainActivity.getExternalFilesDir("User/Media")).getAbsolutePath() + "/"; // oder Environment.DIRECTORY_PICTURES
             if (!FileIO.createDirectory(tempMediaPath)) {
-                Log.err(sKlasse, "can't create " + tempMediaPath);
+                Log.err(sClass, "can't create " + tempMediaPath);
                 return;
             }
             String tempMediaPathAndName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
             try {
                 FileFactory.createFile(tempMediaPathAndName).createNewFile();
             } catch (Exception e) {
-                Log.err(sKlasse, "can't create " + tempMediaPathAndName + "\r" + e.getLocalizedMessage());
+                Log.err(sClass, "can't create " + tempMediaPathAndName + "\r" + e.getLocalizedMessage());
                 return;
             }
 
@@ -721,7 +721,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
             } else {
                 uri = Uri.fromFile(new java.io.File(tempMediaPathAndName));
             }
-            Log.info(sKlasse, uri.toString());
+            Log.info(sClass, uri.toString());
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
@@ -732,7 +732,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                         if (requestCode == REQUEST_CAPTURE_IMAGE) {
                             if (resultCode == Activity.RESULT_OK) {
                                 GL.that.runIfInitial(() -> {
-                                    Log.info(sKlasse, "Photo taken");
+                                    Log.info(sClass, "Photo taken");
                                     try {
                                         // move the photo from temp to UserImageFolder
                                         String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
@@ -741,7 +741,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                                             AbstractFile source = FileFactory.createFile(sourceName);
                                             AbstractFile destination = FileFactory.createFile(destinationName);
                                             if (!source.renameTo(destination)) {
-                                                Log.err(sKlasse, "move from " + sourceName + " to " + destinationName + " failed");
+                                                Log.err(sClass, "move from " + sourceName + " to " + destinationName + " failed");
                                             }
                                         }
 
@@ -760,18 +760,18 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                                         if (lastLocation == null) {
                                             lastLocation = Locator.getInstance().getLocation(CBLocation.ProviderType.any);
                                             if (lastLocation == null) {
-                                                Log.info(sKlasse, "No (GPS)-Location for Trackrecording.");
+                                                Log.info(sClass, "No (GPS)-Location for Trackrecording.");
                                                 return;
                                             }
                                         }
                                         // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
-                                        TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, getTrackDateTimeString());
+                                        TrackRecorder.getInstance().annotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, getTrackDateTimeString());
                                     } catch (Exception e) {
-                                        Log.err(sKlasse, e.getLocalizedMessage());
+                                        Log.err(sClass, e.getLocalizedMessage());
                                     }
                                 });
                             } else {
-                                Log.err(sKlasse, "Intent Take Photo resultCode: " + resultCode);
+                                Log.err(sClass, "Intent Take Photo resultCode: " + resultCode);
                             }
                         }
                     };
@@ -779,10 +779,10 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                 androidApplication.addAndroidEventListener(handlingTakePhoto);
                 mainActivity.startActivityForResult(intent, REQUEST_CAPTURE_IMAGE);
             } else {
-                Log.err(sKlasse, MediaStore.ACTION_IMAGE_CAPTURE + " not installed.");
+                Log.err(sClass, MediaStore.ACTION_IMAGE_CAPTURE + " not installed.");
             }
         } catch (Exception e) {
-            Log.err(sKlasse, e.getLocalizedMessage());
+            Log.err(sClass, e.getLocalizedMessage());
         }
     }
 
@@ -799,11 +799,11 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
         }
 
         try {
-            Log.info(sKlasse, "recVideo start " + GlobalCore.getSelectedCache());
+            Log.info(sClass, "recVideo start " + GlobalCore.getSelectedCache());
             // define the file-name to save video taken by Camera activity
             String directory = Settings.UserImageFolder.getValue();
             if (!FileIO.createDirectory(directory)) {
-                Log.err(sKlasse, "can't create " + directory);
+                Log.err(sClass, "can't create " + directory);
                 return;
             }
             mediaFileNameWithoutExtension = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.US).format(new Date());
@@ -836,7 +836,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                         if (requestCode == REQUEST_CAPTURE_VIDEO) {
                             if (resultCode == Activity.RESULT_OK) {
                                 GL.that.runIfInitial(() -> {
-                                    Log.info(sKlasse, "Video recorded.");
+                                    Log.info(sClass, "Video recorded.");
                                     String ext;
                                     try {
                                         // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
@@ -861,31 +861,31 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                                             String destinationName = Settings.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
                                             AbstractFile destination = FileFactory.createFile(destinationName);
                                             if (!source.renameTo(destination)) {
-                                                Log.err(sKlasse, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
+                                                Log.err(sClass, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
                                             } else {
-                                                Log.info(sKlasse, "Video saved at " + destinationName);
+                                                Log.info(sClass, "Video saved at " + destinationName);
                                                 // track annotation
                                                 String TrackFolder = Settings.TrackFolder.getValue();
                                                 String relativPath = FileIO.getRelativePath(Settings.UserImageFolder.getValue(), TrackFolder, "/");
-                                                TrackRecorder.annotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
+                                                TrackRecorder.getInstance().annotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
                                             }
                                         }
                                     } catch (Exception e) {
-                                        Log.err(sKlasse, e.getLocalizedMessage());
+                                        Log.err(sClass, e.getLocalizedMessage());
                                     }
                                 });
                             } else {
-                                Log.err(sKlasse, "Intent Record Video resultCode: " + resultCode);
+                                Log.err(sClass, "Intent Record Video resultCode: " + resultCode);
                             }
                         }
                     };
                 androidApplication.addAndroidEventListener(handlingRecordedVideo);
                 mainActivity.startActivityForResult(intent, REQUEST_CAPTURE_VIDEO);
             } else {
-                Log.err(sKlasse, MediaStore.ACTION_VIDEO_CAPTURE + " not installed.");
+                Log.err(sClass, MediaStore.ACTION_VIDEO_CAPTURE + " not installed.");
             }
         } catch (Exception e) {
-            Log.err(sKlasse, e.toString());
+            Log.err(sClass, e.toString());
         }
     }
 
@@ -925,8 +925,8 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                 text = text + ("\n\n" + "Location");
                 text = text + ("\n" + Formatter.FormatCoordinate(cache.getCoordinate(), ""));
             }
-            if (PlatformUIBase.getClipboard() != null)
-                text = text + ("\n" + PlatformUIBase.getClipboard().getContents());
+            if (Platform.getClipboard() != null)
+                text = text + ("\n" + Platform.getClipboard().getContents());
             text = text + ("\n" + smiley + "AndroidCacheBox");
             shareIntent.putExtra(Intent.EXTRA_TEXT, text);
             mainActivity.startActivity(Intent.createChooser(shareIntent, Translation.get("ShareWith")));
@@ -953,18 +953,18 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                 if (keyguardManager != null) {
                     keyguardManager.requestDismissKeyguard(mainActivity, new KeyguardManager.KeyguardDismissCallback() {
                         public void onDismissError() {
-                            Log.err(sKlasse, "request Dismiss Keyguard: Error");
+                            Log.err(sClass, "request Dismiss Keyguard: Error");
                         }
                         public void onDismissSucceeded() {
-                            Log.err(sKlasse, "request Dismiss Keyguard: succeeded");
+                            Log.err(sClass, "request Dismiss Keyguard: succeeded");
                         }
                         public void onDismissCancelled() {
-                            Log.err(sKlasse, "request Dismiss Keyguard: cancelled");
+                            Log.err(sClass, "request Dismiss Keyguard: cancelled");
                         }
                     });
                 }
                 else {
-                    Log.err(sKlasse, "keyguardManager not available (null)");
+                    Log.err(sClass, "keyguardManager not available (null)");
                 }
                  */
             } else {
@@ -998,7 +998,7 @@ public class ShowViewMethods implements PlatformUIBase.ShowViewMethods {
                     break;
             }
         } catch (Exception e) {
-            Log.err(sKlasse, "sendMotionEvent", e);
+            Log.err(sClass, "sendMotionEvent", e);
             return true;
         }
         return true;

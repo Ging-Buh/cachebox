@@ -30,7 +30,7 @@ import de.droidcachebox.locator.GpsStrength;
 public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
 
     private boolean drawWithAlpha = false;
-    private Image[] balken = null;
+    private Image[] bar = null;
     private boolean redraw = true;
 
     public SatBarChart(CB_RectF rec, String Name) {
@@ -68,30 +68,30 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
             gry.a = 0.4f;
         }
 
-        if (balken == null) {
+        if (bar == null) {
 
             float iniHeight = small ? Sprites.barSmall.getTopHeight() : Sprites.bar.getTopHeight();
 
             w += 1;
-            balken = new Image[14];
-            balken[0] = new Image(new CB_RectF(0, 0, w, iniHeight), "", false);
-            balken[1] = new Image(new CB_RectF(balken[0].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[2] = new Image(new CB_RectF(balken[1].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[3] = new Image(new CB_RectF(balken[2].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[4] = new Image(new CB_RectF(balken[3].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[5] = new Image(new CB_RectF(balken[4].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[6] = new Image(new CB_RectF(balken[5].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[7] = new Image(new CB_RectF(balken[6].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[8] = new Image(new CB_RectF(balken[7].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[9] = new Image(new CB_RectF(balken[8].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[10] = new Image(new CB_RectF(balken[9].getMaxX() - 1, 0, w, iniHeight), "", false);
-            balken[11] = new Image(new CB_RectF(balken[10].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar = new Image[14];
+            bar[0] = new Image(new CB_RectF(0, 0, w, iniHeight), "", false);
+            bar[1] = new Image(new CB_RectF(bar[0].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[2] = new Image(new CB_RectF(bar[1].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[3] = new Image(new CB_RectF(bar[2].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[4] = new Image(new CB_RectF(bar[3].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[5] = new Image(new CB_RectF(bar[4].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[6] = new Image(new CB_RectF(bar[5].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[7] = new Image(new CB_RectF(bar[6].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[8] = new Image(new CB_RectF(bar[7].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[9] = new Image(new CB_RectF(bar[8].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[10] = new Image(new CB_RectF(bar[9].getMaxX() - 1, 0, w, iniHeight), "", false);
+            bar[11] = new Image(new CB_RectF(bar[10].getMaxX() - 1, 0, w, iniHeight), "", false);
             if (!small)
-                balken[12] = new Image(new CB_RectF(balken[11].getMaxX() - 1, 0, w, iniHeight), "", false);
+                bar[12] = new Image(new CB_RectF(bar[11].getMaxX() - 1, 0, w, iniHeight), "", false);
             if (!small)
-                balken[13] = new Image(new CB_RectF(balken[12].getMaxX() - 1, 0, w, iniHeight), "", false);
+                bar[13] = new Image(new CB_RectF(bar[12].getMaxX() - 1, 0, w, iniHeight), "", false);
 
-            for (Image tmp : balken) {
+            for (Image tmp : bar) {
                 if (tmp != null) {
                     tmp.setDrawable(small ? Sprites.barSmall_0 : Sprites.bar_0);
                     this.addChild(tmp);
@@ -110,24 +110,24 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
                 }
 
                 try {
-                    // balken höhe festlegen
-                    if (balken[count] != null) {
+                    // set bar height
+                    if (bar[count] != null) {
                         float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.getHeight(), this.getHeight());
 
                         if (barHeight < minH) {
                             barHeight = small ? Sprites.barSmall.getTopHeight() : Sprites.bar.getTopHeight();
-                            balken[count].setDrawable(small ? Sprites.barSmall_0 : Sprites.bar_0);
+                            bar[count].setDrawable(small ? Sprites.barSmall_0 : Sprites.bar_0);
                         } else {
-                            balken[count].setDrawable(small ? Sprites.barSmall : Sprites.bar);
+                            bar[count].setDrawable(small ? Sprites.barSmall : Sprites.bar);
                         }
 
-                        balken[count].setHeight(barHeight);
+                        bar[count].setHeight(barHeight);
 
-                        // // balken farbe festlegen
+                        // // set bar color
                         if (tmp.getFixed()) {
-                            balken[count].setColor(grn);
+                            bar[count].setColor(grn);
                         } else {
-                            balken[count].setColor(red);
+                            bar[count].setColor(red);
                         }
                     }
                 } catch (Exception e) {
@@ -140,11 +140,11 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
             }
         }
 
-        // restliche balken ausschalten!
+        // gray other bars
         if (count < 14) {
             for (int i = count; i <= 13; i++) {
-                if (balken[i] != null)
-                    balken[i].setColor(gry);
+                if (bar[i] != null)
+                    bar[i].setColor(gry);
             }
         }
 
@@ -154,7 +154,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
     }
 
     @Override
-    public void GpsStateChanged() {
+    public void gpsStateChanged() {
         redraw = true;
         GL.that.renderOnce();
     }
@@ -166,7 +166,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
 
     @Override
     public void onShow() {
-        GpsStateChangeEventList.Add(this);
+        GpsStateChangeEventList.add(this);
         redraw = true;
     }
 

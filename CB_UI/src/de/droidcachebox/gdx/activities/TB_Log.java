@@ -323,7 +323,7 @@ public class TB_Log extends ActivityBase {
         newFieldNote = new Draft(LT);
         newFieldNote.CacheName = getCache_Name();
         newFieldNote.gcCode = getCache_GcCode();
-        newFieldNote.foundNumber = Settings.FoundOffset.getValue();
+        newFieldNote.setFoundNumber(Settings.foundOffset.getValue());
         newFieldNote.timestamp = new Date();
         newFieldNote.CacheId = getCache_ID();
         newFieldNote.comment = edit.getText();

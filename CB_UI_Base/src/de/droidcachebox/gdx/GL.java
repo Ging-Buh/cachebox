@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.Energy;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.controls.SelectionMarker;
@@ -302,12 +302,12 @@ public class GL implements ApplicationListener {
 
         if (currentActivityIsShown && mActivity.getChildCount() <= 0) {
             currentActivityIsShown = false;
-            PlatformUIBase.hideForDialog();
+            Platform.hideForDialog();
             renderOnce();
         }
         if (currentDialogIsShown && mDialog.getChildCount() <= 0) {
             currentDialogIsShown = false;
-            PlatformUIBase.hideForDialog();
+            Platform.hideForDialog();
             renderOnce();
         }
 
@@ -442,7 +442,7 @@ public class GL implements ApplicationListener {
             glListener.renderDirty();
 
         if (currentActivityIsShown || currentDialogIsShown) {
-            PlatformUIBase.showForDialog();
+            Platform.showForDialog();
         } else if (child != null) {
             child.onShow();
         }
@@ -524,7 +524,7 @@ public class GL implements ApplicationListener {
                 currentDialog.setVisible();
             } catch (Exception ignored) {
             }
-            PlatformUIBase.showForDialog();
+            Platform.showForDialog();
         } catch (Exception ex) {
             Log.err("GL", "ShowDialog", ex);
         }
@@ -563,7 +563,7 @@ public class GL implements ApplicationListener {
         }
 
         if (msgToPlatformConector)
-            PlatformUIBase.hideForDialog();
+            Platform.hideForDialog();
         if (currentDialog != null) {
             //check if KeyboardFocus on this Dialog
             if (focusedEditTextField != null && focusedEditTextField.getParent() == currentDialog) {
@@ -599,7 +599,7 @@ public class GL implements ApplicationListener {
 
         clearRenderViews();
         if (currentActivityIsShown) {
-            PlatformUIBase.showForDialog();
+            Platform.showForDialog();
 
         }
         renderOnce();
@@ -623,7 +623,7 @@ public class GL implements ApplicationListener {
     public void showActivity(final ActivityBase activity) {
         setFocusedEditTextField(null);
         clearRenderViews();
-        PlatformUIBase.showForDialog();
+        Platform.showForDialog();
 
         if (aktPopUp != null) {
             closePopUp(aktPopUp);
@@ -657,7 +657,7 @@ public class GL implements ApplicationListener {
         currentActivityIsShown = true;
         currentActivity.onShow();
 
-        PlatformUIBase.showForDialog();
+        Platform.showForDialog();
     }
 
     public void closeActivity() {
@@ -684,7 +684,7 @@ public class GL implements ApplicationListener {
             currentActivityIsShown = true;
             mActivity.addChildDirect(currentActivity);
             if (MsgToPlatformConector)
-                PlatformUIBase.showForDialog();
+                Platform.showForDialog();
         } else {
             currentActivity.onHide();
 
@@ -706,7 +706,7 @@ public class GL implements ApplicationListener {
             currentActivityIsShown = false;
             darknessAlpha = 0f;
             if (MsgToPlatformConector)
-                PlatformUIBase.hideForDialog();
+                Platform.hideForDialog();
             child.onShow();
         }
 

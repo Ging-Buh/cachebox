@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionRound extends Function {
     private static final long serialVersionUID = 3669660135984610039L;
 
-    public FunctionRound(Solver solver) {
-        super(solver);
+    public FunctionRound(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("Round", "en"));
         Names.add(new LocalNames("Runden", "de"));
     }

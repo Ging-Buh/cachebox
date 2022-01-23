@@ -6,8 +6,8 @@ public class VariableEntity extends Entity {
     // Speichert einen Wert in eine Variable
     String Name;
 
-    public VariableEntity(Solver solver, int id, String name) {
-        super(solver, id);
+    public VariableEntity(SolverLines solverLines, int id, String name) {
+        super(solverLines, id);
         this.Name = name;
     }
 
@@ -21,8 +21,8 @@ public class VariableEntity extends Entity {
 
     @Override
     public String Berechne() {
-        if (solver.Variablen.containsKey(Name.toLowerCase())) {
-            return solver.Variablen.get(Name.toLowerCase());
+        if (solverLines.Variablen.containsKey(Name.toLowerCase())) {
+            return solverLines.Variablen.get(Name.toLowerCase());
         } else
             return "Fehler";
     }

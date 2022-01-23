@@ -48,10 +48,9 @@ import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.locator.Coordinate;
-import de.droidcachebox.locator.map.Track;
 import de.droidcachebox.settings.Settings;
-import de.droidcachebox.solver.Solver;
 import de.droidcachebox.solver.SolverCacheInterface;
+import de.droidcachebox.solver.SolverLines;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -71,13 +70,11 @@ public class GlobalCore implements SolverCacheInterface {
     public static String restartCache;
     public static String restartWayPoint;
     public static boolean filterLogsOfFriends = false;
-    public static Track currentRoute = null;
-    public static int currentRouteCount = 0;
     public static boolean switchToCompassCompleted = false;
     public static GlobalLocationReceiver receiver;
     public static boolean RunFromSplash = false;
     public static String firstSDCard, secondSDCard;
-    private static GlobalCore globalCore;
+    private static GlobalCore instance;
     private static Cache selectedCache = null;
     private static boolean autoResort;
     private static Cache nearestCache = null;
@@ -87,16 +84,16 @@ public class GlobalCore implements SolverCacheInterface {
 
     private GlobalCore() {
         super();
-        Solver.solverCacheInterface = this;
-        globalCore = this;
+        SolverLines.solverCacheInterface = this;
+        instance = this;
     }
 
     public static GlobalCore getInstance() {
-        if (globalCore == null) {
-            globalCore = new GlobalCore();
-            globalCore.initVersionInfos();
+        if (instance == null) {
+            instance = new GlobalCore();
+            instance.initVersionInfos();
         }
-        return globalCore;
+        return instance;
     }
 
     public static Cache getSelectedCache() {
@@ -139,7 +136,7 @@ public class GlobalCore implements SolverCacheInterface {
         if (cache == null) {
             selectedCache = null;
             selectedWayPoint = null;
-            CacheSelectionChangedListeners.getInstance().fireEvent(null, null);
+            CacheSelectionChangedListeners.getInstance().fire(null, null);
         } else {
 
             // remove Detail Info from old selectedCache
@@ -155,10 +152,10 @@ public class GlobalCore implements SolverCacheInterface {
             // load Detail Info if not available
             if (selectedCache.getGeoCacheDetail() == null) {
                 Log.debug(log, "[GlobalCore]setSelectedWaypoint: loadDetail of " + cache.getGeoCacheCode());
-                CacheDAO.getInstance().loadDetail(selectedCache);
+                new CacheDAO().loadDetail(selectedCache);
             }
 
-            CacheSelectionChangedListeners.getInstance().fireEvent(selectedCache, selectedWayPoint);
+            CacheSelectionChangedListeners.getInstance().fire(selectedCache, selectedWayPoint);
 
             if (unsetAutoResort) {
                 setAutoResort(false);

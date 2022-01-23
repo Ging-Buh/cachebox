@@ -10,7 +10,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.PlatformUIBase;
+import de.droidcachebox.Platform;
 import de.droidcachebox.ShowViewMethods;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
@@ -148,8 +148,8 @@ public class DesktopMain {
         };
         timer.schedule(task, 600);
 
-        PlatformUIBase.initShowViewMethods(new ShowViewMethods());
-        PlatformUIBase.setClipboard(new DesktopClipboard());
+        Platform.initShowViewMethods(new ShowViewMethods());
+        Platform.setClipboard(new DesktopClipboard());
         LocatorMethods.init(new DesktopLocatorMethods());
 
     }

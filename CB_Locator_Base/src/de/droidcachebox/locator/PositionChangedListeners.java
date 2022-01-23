@@ -7,7 +7,7 @@ import de.droidcachebox.locator.PositionChangedEvent.Priority;
 import de.droidcachebox.utils.log.Log;
 
 public class PositionChangedListeners {
-    private static final String sKlasse = "PositionChangedListeners";
+    private static final String sClass = "PositionChangedListeners";
     private static final ArrayList<PositionChangedEvent> list = new ArrayList<>();
     public static long minPosEventTime = Long.MAX_VALUE;
     public static long minOrientationEventTime = Long.MAX_VALUE;
@@ -54,7 +54,7 @@ public class PositionChangedListeners {
                     try {
                         event.positionChanged();
                     } catch (Exception ex) {
-                        Log.err(sKlasse, "positionChanged", ex);
+                        Log.err(sClass, "positionChanged", ex);
                     }
                 }
             } catch (Exception e) {

@@ -1,23 +1,24 @@
 package de.droidcachebox.menu.menuBtn5;
 
+import static de.droidcachebox.Platform.callUrl;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 
-import static de.droidcachebox.PlatformUIBase.callUrl;
+public class ShowHelp extends AbstractAction {
 
-public class HelpOnline extends AbstractAction {
+    private static ShowHelp instance;
 
-    private static HelpOnline that;
-
-    private HelpOnline() {
+    private ShowHelp() {
         super("Help Online");
     }
 
-    public static HelpOnline getInstance() {
-        if (that == null) that = new HelpOnline();
-        return that;
+    public static ShowHelp getInstance() {
+        if (instance == null) instance = new ShowHelp();
+        return instance;
     }
 
     @Override

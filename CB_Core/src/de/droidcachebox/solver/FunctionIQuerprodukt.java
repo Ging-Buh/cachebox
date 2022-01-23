@@ -5,8 +5,8 @@ import de.droidcachebox.translation.Translation;
 public class FunctionIQuerprodukt extends Function {
     private static final long serialVersionUID = -3859887811865649616L;
 
-    public FunctionIQuerprodukt(Solver solver) {
-        super(solver);
+    public FunctionIQuerprodukt(SolverLines solverLines) {
+        super(solverLines);
         Names.add(new LocalNames("ICrossproduct", "en"));
         Names.add(new LocalNames("IQuerprodukt", "de"));
         Names.add(new LocalNames("ICP", "en"));

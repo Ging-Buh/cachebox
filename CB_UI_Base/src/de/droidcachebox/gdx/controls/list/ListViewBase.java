@@ -40,7 +40,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     private static final String log = "ListViewBase";
     private final CB_List<IListPosChanged> eventHandlerList;
     private Scrollbar scrollbar;
-    private MoveableList<GL_View_Base> noListChilds;
+    private final MoveableList<GL_View_Base> noListChildren;
     protected Boolean bottomAnimation;
     protected int selectedIndex;
     protected float firstItemSize;
@@ -108,7 +108,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         super(rec, Name);
         setClickable(true);
         eventHandlerList = new CB_List<>();
-        noListChilds = new MoveableList<>();
+        noListChildren = new MoveableList<>();
         runOnGL_List = new CB_List<>();
         runOnGL_ListWaitpool = new CB_List<>();
         isWorkOnRunOnGL = new AtomicBoolean(false);
@@ -148,7 +148,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         super(rec, parent, name);
         setClickable(true);
         eventHandlerList = new CB_List<>();
-        noListChilds = new MoveableList<>();
+        noListChildren = new MoveableList<>();
         runOnGL_List = new CB_List<>();
         runOnGL_ListWaitpool = new CB_List<>();
         isWorkOnRunOnGL = new AtomicBoolean(false);
@@ -722,11 +722,11 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             scrollbar.dispose();
         scrollbar = null;
 
-        if (noListChilds != null) {
-            for (int i = 0; i < noListChilds.size(); i++) {
-                noListChilds.get(i).dispose();
+        if (noListChildren != null) {
+            for (int i = 0; i < noListChildren.size(); i++) {
+                noListChildren.get(i).dispose();
             }
-            noListChilds.clear();
+            noListChildren.clear();
         }
 
         if (clearList != null) {
