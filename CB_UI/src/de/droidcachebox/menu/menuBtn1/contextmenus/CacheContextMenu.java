@@ -4,6 +4,14 @@ import static de.droidcachebox.Platform.callUrl;
 import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
+import static de.droidcachebox.menu.Action.ShowDescription;
+import static de.droidcachebox.menu.Action.ShowDrafts;
+import static de.droidcachebox.menu.Action.ShowLogs;
+import static de.droidcachebox.menu.Action.ShowNotes;
+import static de.droidcachebox.menu.Action.ShowSolver1;
+import static de.droidcachebox.menu.Action.ShowSolver2;
+import static de.droidcachebox.menu.Action.ShowSpoiler;
+import static de.droidcachebox.menu.Action.ShowTrackableList;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,18 +40,11 @@ import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.main.Menu;
-import de.droidcachebox.menu.menuBtn1.ShowTrackables;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
-import de.droidcachebox.menu.menuBtn2.ShowHint;
-import de.droidcachebox.menu.menuBtn2.ShowLogs;
-import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
-import de.droidcachebox.menu.menuBtn2.ShowWaypoints;
 import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
-import de.droidcachebox.menu.menuBtn4.ShowDrafts;
-import de.droidcachebox.menu.menuBtn4.ShowSolver1;
-import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -74,7 +75,7 @@ public class CacheContextMenu {
         if (_forCacheList) {
             theMenu.addCheckableMenuItem("CacheContextMenuShortClickToggle", Settings.CacheContextMenuShortClickToggle.getValue(), this::toggleShortClick);
             if (selectedCacheIsSet)
-                theMenu.addMoreMenu(ShowDrafts.getInstance().getContextMenu(), Translation.get("DraftsContextMenuTitle"), Translation.get("DraftsContextMenuTitle"));
+                theMenu.addMoreMenu(ShowDrafts.action.getContextMenu(), Translation.get("DraftsContextMenuTitle"), Translation.get("DraftsContextMenuTitle"));
         }
         if (selectedCacheIsSet) {
             if (selectedCacheIsGC)
@@ -92,20 +93,20 @@ public class CacheContextMenu {
         }
         if (_forCacheList) {
             theMenu.addDivider();
-            theMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + GeoCacheType.Trailhead.name()), () -> ShowWaypoints.getInstance().execute());
-            theMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> ShowHint.getInstance().execute()).setEnabled(geoCache.hasHint());
-            theMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.getInstance().execute());
-            theMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.getInstance().execute());
-            theMenu.addMenuItem("Notes", Sprites.getSprite(IconName.userdata.name()), () -> ShowNotes.getInstance().execute());
-            theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackables.getInstance().execute());
-            theMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().execute());
-            theMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().execute());
+            theMenu.addMenuItem("Waypoints", Sprites.getSprite("big" + GeoCacheType.Trailhead.name()), () -> Action.ShowWayPoints.action.execute());
+            theMenu.addMenuItem("hint", Sprites.getSprite(IconName.hintIcon.name()), () -> Action.ShowHint.action.execute()).setEnabled(geoCache.hasHint());
+            theMenu.addMenuItem("spoiler", Sprites.getSprite(IconName.imagesIcon.name()), () -> ShowSpoiler.action.execute());
+            theMenu.addMenuItem("ShowLogs", Sprites.getSprite(IconName.listIcon.name()), () -> ShowLogs.action.execute());
+            theMenu.addMenuItem("Notes", Sprites.getSprite(IconName.userdata.name()), () -> ShowNotes.action.execute());
+            theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.action.execute());
+            theMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.action.execute());
+            theMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.action.execute());
             theMenu.addMenuItem("descExt", Sprites.getSprite(IconName.docIcon.name()), () -> StartExternalDescription.getInstance().execute());
         } else {
             theMenu.addDivider();
-            theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackables.getInstance().execute());
-            theMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.getInstance().execute()).setEnabled(selectedCacheIsGC);
-            theMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.getInstance().execute());
+            theMenu.addMenuItem("TBList", Sprites.getSprite(IconName.tbListIcon.name()), () -> ShowTrackableList.action.execute());
+            theMenu.addMenuItem("Solver", Sprites.getSprite(IconName.solverIcon.name()), () -> ShowSolver1.action.execute()).setEnabled(selectedCacheIsGC);
+            theMenu.addMenuItem("Solver v2", Sprites.getSprite("solver-icon-2"), () -> ShowSolver2.action.execute());
         }
         //}
         return theMenu;
@@ -118,12 +119,10 @@ public class CacheContextMenu {
                 if (btnNumber == ButtonDialog.BTN_LEFT_POSITIVE) {
                     Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
                     Settings.getInstance().acceptChanges();
-                }
-                else if (btnNumber == ButtonDialog.BTN_MIDDLE_NEUTRAL) {
+                } else if (btnNumber == ButtonDialog.BTN_MIDDLE_NEUTRAL) {
                     Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
                     if (rememberedCache != null) GlobalCore.setSelectedCache(rememberedCache);
-                }
-                else {
+                } else {
                     Settings.rememberedGeoCache.setValue("");
                     Settings.getInstance().acceptChanges();
                 }
@@ -163,7 +162,7 @@ public class CacheContextMenu {
                             CacheListChangedListeners.getInstance().fire();
                         }
 
-                        ShowSpoiler.getInstance().importSpoiler(false,
+                        ((ShowSpoiler) ShowSpoiler.action).importSpoiler(false,
                                 isCanceled -> {
                                     // do after import
                                     if (!isCanceled) {
@@ -174,7 +173,7 @@ public class CacheContextMenu {
                                 });
 
                         GL.that.runOnGL(() -> {
-                            ShowDescription.getInstance().updateDescriptionView(true);
+                            ((ShowDescription) ShowDescription.action).updateDescriptionView(true);
                             GL.that.renderOnce();
                         });
 
@@ -238,7 +237,7 @@ public class CacheContextMenu {
         // Update cacheList
         CBDB.getInstance().cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());
         // Update View
-        ShowDescription.getInstance().updateDescriptionView(true);
+        ((ShowDescription) ShowDescription.action).updateDescriptionView(true);
         CacheListChangedListeners.getInstance().fire();
     }
 

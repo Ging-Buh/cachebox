@@ -26,15 +26,8 @@ import de.droidcachebox.utils.UnitFormatter;
 
 public class ShowHint extends AbstractAction {
 
-    private static ShowHint showHint;
-
-    private ShowHint() {
+    public ShowHint() {
         super("hint");
-    }
-
-    public static ShowHint getInstance() {
-        if (showHint == null) showHint = new ShowHint();
-        return showHint;
     }
 
     @Override

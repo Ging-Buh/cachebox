@@ -14,15 +14,9 @@ import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.Settings;
 
 public class ShowCompass extends AbstractShowAction {
-    private static ShowCompass that;
 
-    private ShowCompass() {
+    public ShowCompass() {
         super("Compass");
-    }
-
-    public static ShowCompass getInstance() {
-        if (that == null) that = new ShowCompass();
-        return that;
     }
 
     @Override

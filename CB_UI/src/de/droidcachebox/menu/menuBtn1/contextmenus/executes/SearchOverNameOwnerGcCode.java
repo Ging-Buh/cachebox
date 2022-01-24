@@ -21,6 +21,7 @@ import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCache;
 import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCaches;
 import static de.droidcachebox.core.GroundspeakAPI.searchGeoCaches;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+import static de.droidcachebox.menu.Action.ShowMap;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -285,8 +286,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             String searchPattern = editTextField.getText().trim();
 
                             Coordinate searchCoord;
-                            if (ShowMap.getInstance().normalMapView.isVisible()) {
-                                searchCoord = ShowMap.getInstance().normalMapView.center;
+                            if (((ShowMap) ShowMap.action).normalMapView.isVisible()) {
+                                searchCoord = ((ShowMap) ShowMap.action).normalMapView.center;
                             } else {
                                 searchCoord = Locator.getInstance().getMyPosition();
                             }
@@ -359,7 +360,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
             } else {
 
                 // Notify Map
-                ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+                ((ShowMap) ShowMap.action).normalMapView.setNewSettings(INITIAL_WP_LIST);
 
                 btnImport.enable();
             }

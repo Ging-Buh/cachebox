@@ -1,4 +1,4 @@
-package de.droidcachebox.menu.menuBtn2;
+package de.droidcachebox.menu.menuBtn1;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -8,24 +8,17 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.Waypoints;
+import de.droidcachebox.menu.menuBtn1.executes.Trackables;
 
-public class ShowWaypoints extends AbstractShowAction {
+public class ShowTrackableList extends AbstractShowAction {
 
-    private static ShowWaypoints that;
-
-    private ShowWaypoints() {
-        super("Waypoints");
-    }
-
-    public static ShowWaypoints getInstance() {
-        if (that == null) that = new ShowWaypoints();
-        return that;
+    public ShowTrackableList() {
+        super("TBList");
     }
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(Waypoints.getInstance());
+        ViewManager.leftTab.showView(Trackables.getInstance());
     }
 
     @Override
@@ -35,12 +28,12 @@ public class ShowWaypoints extends AbstractShowAction {
 
     @Override
     public Sprite getIcon() {
-        return Sprites.getSprite(IconName.waypointListIcon.name());
+        return Sprites.getSprite(IconName.tbListIcon.name());
     }
 
     @Override
     public CB_View_Base getView() {
-        return Waypoints.getInstance();
+        return Trackables.getInstance();
     }
 
     @Override
@@ -50,6 +43,6 @@ public class ShowWaypoints extends AbstractShowAction {
 
     @Override
     public Menu getContextMenu() {
-        return Waypoints.getInstance().getContextMenu();
+        return Trackables.getInstance().getContextMenu();
     }
 }

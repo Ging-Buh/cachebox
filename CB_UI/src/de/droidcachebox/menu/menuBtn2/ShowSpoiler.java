@@ -28,25 +28,14 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ReadyListener;
 
 public class ShowSpoiler extends AbstractShowAction {
-    private static ShowSpoiler showSpoiler;
-    private static CancelWaitDialog wd;
     private final Sprite SpoilerExistsIcon;
     private final Sprite NoSpoilerIcon;
-    private Menu contextMenu;
 
-    private ShowSpoiler() {
+    public ShowSpoiler() {
         super("spoiler");
-        // contextMenu = createContextMenu();
         SpoilerExistsIcon = Sprites.getSprite(IconName.imagesIcon.name());
         NoSpoilerIcon = new Sprite(Sprites.getSprite(IconName.imagesIcon.name()));
-        Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-        NoSpoilerIcon.setColor(DISABLE_COLOR);
-
-    }
-
-    public static ShowSpoiler getInstance() {
-        if (showSpoiler == null) showSpoiler = new ShowSpoiler();
-        return showSpoiler;
+        NoSpoilerIcon.setColor(new Color(0.2f, 0.2f, 0.2f, 0.2f));
     }
 
     @Override
@@ -84,12 +73,11 @@ public class ShowSpoiler extends AbstractShowAction {
         // if depends on something: call createContextMenu() again
         // todo why are the click_handlers of the items gone on following calls? temp solution createContextMenu() again
         // has to do with the disposing of the compoundMenu in CB_Button after the Show
-        createContextMenu();
-        return contextMenu;
+        return createContextMenu();
     }
 
-    private void createContextMenu() {
-        contextMenu = new Menu("SpoilerViewContextMenuTitle");
+    private Menu createContextMenu() {
+        Menu contextMenu = new Menu("SpoilerViewContextMenuTitle");
 
         contextMenu.addMenuItem("reloadSpoiler", null,
                 () -> importSpoiler(false, isCanceled -> {
@@ -120,11 +108,13 @@ public class ShowSpoiler extends AbstractShowAction {
             String file = Spoiler.getInstance().getSelectedFilePath();
             if (file != null) Platform.startPictureApp(file);
         });
+
+        return contextMenu;
     }
 
     public void importSpoiler(boolean withLogImages, ReadyListener readyListener) {
         AtomicBoolean isCanceled = new AtomicBoolean(false);
-        wd = new CancelWaitDialog(Translation.get("downloadSpoiler"), new DownloadAnimation(),
+        new CancelWaitDialog(Translation.get("downloadSpoiler"), new DownloadAnimation(),
                 new RunAndReady() {
                     @Override
                     public void ready() {
@@ -139,7 +129,6 @@ public class ShowSpoiler extends AbstractShowAction {
                         int result = GroundspeakAPI.ERROR;
                         if (GlobalCore.getSelectedCache() != null)
                             result = DescriptionImageGrabber.grabImagesSelectedByCache(importProgress, true, false, GlobalCore.getSelectedCache().generatedId, GlobalCore.getSelectedCache().getGeoCacheCode(), "", "", withLogImages);
-                        wd.close();
                         if (result != OK) {
                             GL.that.toast(LastAPIError);
                         }
@@ -150,8 +139,7 @@ public class ShowSpoiler extends AbstractShowAction {
                         isCanceled.set(true);
                     }
 
-                });
-        wd.show();
+                }).show();
     }
 
 

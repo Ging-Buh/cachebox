@@ -17,6 +17,26 @@ package de.droidcachebox.menu;
 
 import static de.droidcachebox.gdx.math.GL_UISizes.mainButtonSize;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+import static de.droidcachebox.menu.Action.RecordVideo;
+import static de.droidcachebox.menu.Action.RecordVoice;
+import static de.droidcachebox.menu.Action.ShowCompass;
+import static de.droidcachebox.menu.Action.ShowDescription;
+import static de.droidcachebox.menu.Action.ShowDrafts;
+import static de.droidcachebox.menu.Action.ShowGeoCaches;
+import static de.droidcachebox.menu.Action.ShowHint;
+import static de.droidcachebox.menu.Action.ShowLogs;
+import static de.droidcachebox.menu.Action.ShowMap;
+import static de.droidcachebox.menu.Action.ShowNotes;
+import static de.droidcachebox.menu.Action.ShowParkingMenu;
+import static de.droidcachebox.menu.Action.ShowSolver1;
+import static de.droidcachebox.menu.Action.ShowSolver2;
+import static de.droidcachebox.menu.Action.ShowSpoiler;
+import static de.droidcachebox.menu.Action.ShowTrackableList;
+import static de.droidcachebox.menu.Action.ShowTracks;
+import static de.droidcachebox.menu.Action.ShowWayPoints;
+import static de.droidcachebox.menu.Action.SwitchDayNight;
+import static de.droidcachebox.menu.Action.SwitchTorch;
+import static de.droidcachebox.menu.Action.TakePicture;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -58,32 +78,17 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
-import de.droidcachebox.menu.menuBtn1.ShowParkingMenu;
-import de.droidcachebox.menu.menuBtn1.ShowTrackables;
-import de.droidcachebox.menu.menuBtn2.ShowDescription;
-import de.droidcachebox.menu.menuBtn2.ShowHint;
-import de.droidcachebox.menu.menuBtn2.ShowLogs;
-import de.droidcachebox.menu.menuBtn2.ShowNotes;
-import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
-import de.droidcachebox.menu.menuBtn2.ShowWaypoints;
 import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
 import de.droidcachebox.menu.menuBtn3.MapDownloadMenu;
-import de.droidcachebox.menu.menuBtn3.ShowCompass;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
-import de.droidcachebox.menu.menuBtn3.ShowTracks;
 import de.droidcachebox.menu.menuBtn3.executes.CompassView;
 import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.menu.menuBtn3.executes.TrackRecorder;
-import de.droidcachebox.menu.menuBtn4.ShowDrafts;
-import de.droidcachebox.menu.menuBtn4.ShowSolver1;
-import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.menu.menuBtn5.ShowAbout;
 import de.droidcachebox.menu.menuBtn5.ShowCredits;
 import de.droidcachebox.menu.menuBtn5.ShowHelp;
 import de.droidcachebox.menu.menuBtn5.ShowQuit;
 import de.droidcachebox.menu.menuBtn5.ShowSettings;
-import de.droidcachebox.menu.menuBtn5.SwitchDayNight;
-import de.droidcachebox.menu.menuBtn5.SwitchTorch;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -106,7 +111,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     public static ViewManager that;
     public static CB_TabView leftTab; // the only one (has been left and right for Tablet)
 
-    static PlatformAction actionTakePicture, actionRecordVideo, actionRecordVoice, actionShare;
+    static PlatformAction actionShare;
 
     private GestureButton mainBtn1; // default: show CacheList
     private GestureButton mainBtn2; // default: show CacheDescription on Phone ( and Waypoints on Tablet )
@@ -141,7 +146,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         Settings.showAllWaypoints.addSettingChangedListener(() -> {
             reloadCacheList();
             // must reload MapViewCacheList: do this over MapView.INITIAL_WP_LIST
-            ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+            ((ShowMap) ShowMap.action).normalMapView.setNewSettings(INITIAL_WP_LIST);
         });
 
         API_ErrorEventHandlerList.addHandler(new API_ErrorEventHandler() {
@@ -282,43 +287,40 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         leftTab.setButtonList();
         addChild(leftTab);
 
-        mainBtn1.addAction(ShowGeoCaches.getInstance(), true, GestureDirection.Up);
-        mainBtn1.addAction(ShowParkingMenu.getInstance(), false, GestureDirection.Down);
-        mainBtn1.addAction(ShowTrackables.getInstance(), false, GestureDirection.Right);
+        mainBtn1.addAction(ShowGeoCaches.action, true, GestureDirection.Up);
+        mainBtn1.addAction(ShowParkingMenu.action, false, GestureDirection.Down);
+        mainBtn1.addAction(ShowTrackableList.action, false, GestureDirection.Right);
         actionShare = new PlatformAction("Share", ViewConst.Share, Sprites.getSprite(IconName.share.name()));
         mainBtn1.addAction(actionShare, false, GestureDirection.Left);
 
-        mainBtn2.addAction(ShowDescription.getInstance(), true, GestureDirection.Up);
-        mainBtn2.addAction(ShowWaypoints.getInstance(), false, GestureDirection.Right);
-        mainBtn2.addAction(ShowHint.getInstance(), false);
-        mainBtn2.addAction(ShowSpoiler.getInstance(), false);
-        mainBtn2.addAction(ShowLogs.getInstance(), false, GestureDirection.Down);
-        mainBtn2.addAction(ShowNotes.getInstance(), false, GestureDirection.Left);
+        mainBtn2.addAction(ShowDescription.action, true, GestureDirection.Up);
+        mainBtn2.addAction(ShowWayPoints.action, false, GestureDirection.Right);
+        mainBtn2.addAction(ShowHint.action, false);
+        mainBtn2.addAction(ShowSpoiler.action, false);
+        mainBtn2.addAction(ShowLogs.action, false, GestureDirection.Down);
+        mainBtn2.addAction(ShowNotes.action, false, GestureDirection.Left);
         mainBtn2.addAction(StartExternalDescription.getInstance(), false);
 
-        mainBtn3.addAction(ShowMap.getInstance(), true, GestureDirection.Up);
-        mainBtn3.addAction(ShowCompass.getInstance(), false, GestureDirection.Right);
+        mainBtn3.addAction(ShowMap.action, true, GestureDirection.Up);
+        mainBtn3.addAction(ShowCompass.action, false, GestureDirection.Right);
         PlatformAction actionNavigateTo = new PlatformAction("NavigateTo", ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
         mainBtn3.addAction(actionNavigateTo, false, GestureDirection.Down);
-        mainBtn3.addAction(ShowTracks.getInstance(), false, GestureDirection.Left);
+        mainBtn3.addAction(ShowTracks.action, false, GestureDirection.Left);
         mainBtn3.addAction(MapDownloadMenu.getInstance(), false);
 
-        mainBtn4.addAction(ShowDrafts.getInstance(), Settings.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
-        mainBtn4.addAction(ShowSolver1.getInstance(), false, GestureDirection.Left);
-        mainBtn4.addAction(ShowSolver2.getInstance(), false, GestureDirection.Right);
-        actionTakePicture = new PlatformAction("TakePhoto", ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
-        mainBtn4.addAction(actionTakePicture, false, GestureDirection.Down);
-        actionRecordVideo = new PlatformAction("RecVideo", ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
-        mainBtn4.addAction(actionRecordVideo, false);
-        actionRecordVoice = new PlatformAction("VoiceRec", ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
-        mainBtn4.addAction(actionRecordVoice, false);
+        mainBtn4.addAction(ShowDrafts.action, Settings.ShowDraftsAsDefaultView.getValue(), GestureDirection.Up);
+        mainBtn4.addAction(ShowSolver1.action, false, GestureDirection.Left);
+        mainBtn4.addAction(ShowSolver2.action, false, GestureDirection.Right);
+        mainBtn4.addAction(TakePicture.action, false, GestureDirection.Down);
+        mainBtn4.addAction(RecordVideo.action, false);
+        mainBtn4.addAction(RecordVoice.action, false);
 
         mainBtn5.addAction(ShowCredits.getInstance(), false, GestureDirection.Up);
         mainBtn5.addAction(ShowSettings.getInstance(), false, GestureDirection.Left);
-        mainBtn5.addAction(ShowParkingMenu.getInstance(), false, GestureDirection.Right);
-        mainBtn5.addAction(SwitchDayNight.getInstance(), false);
+        mainBtn5.addAction(ShowParkingMenu.action, false, GestureDirection.Right);
+        mainBtn5.addAction(SwitchDayNight.action, false);
         mainBtn5.addAction(ShowHelp.getInstance(), false);
-        mainBtn5.addAction(SwitchTorch.getInstance(), false);
+        mainBtn5.addAction(SwitchTorch.action, false);
         mainBtn5.addAction(ShowAbout.getInstance(), true);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
 
@@ -372,7 +374,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             GL.that.onStop();
             Sprites.loadSprites(true);
 
-            ShowMap.getInstance().normalMapView.handleInvalidateTexture();
+            ((ShowMap) ShowMap.action).normalMapView.handleInvalidateTexture();
 
             GL.that.onStart();
 
@@ -447,7 +449,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
             Name = "  (" + strFilterCount + DBCount + ")";
         }
-        ShowGeoCaches.getInstance().setNameExtension(Name);
+        ((ShowGeoCaches) ShowGeoCaches.action).setNameExtension(Name);
     }
 
     @Override
@@ -472,9 +474,9 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             if (Settings.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Settings.SoundApproachDistance.getValue())) {
                 if (CompassView.getInstance().isVisible())
                     return;// don't show if showing compass
-                if (ShowMap.getInstance().normalMapView.isVisible() && ShowMap.getInstance().normalMapView.isCarMode())
+                if (((ShowMap) ShowMap.action).normalMapView.isVisible() && ((ShowMap) ShowMap.action).normalMapView.isCarMode())
                     return; // don't show on visible map at carMode
-                ShowCompass.getInstance().execute();
+                ShowCompass.action.execute();
                 GlobalCore.switchToCompassCompleted = true;
             }
         }

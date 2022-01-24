@@ -8,7 +8,7 @@ import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.menu.QuickAction;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.QuickButtonItem;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.MoveableList;
@@ -145,9 +145,9 @@ public class QuickButtonList extends H_ListView {
                         s = s.replace(",", "");
                         int ordinal = Integer.parseInt(s);
                         if (ordinal > -1) {
-                            QuickAction quickAction = QuickAction.values()[ordinal];
-                            if (quickAction.getAction() != null) {
-                                quickButtonList.add(new QuickButtonItem(new CB_RectF(0, 0, btnHeight), index++, quickAction));
+                            Action action = Action.values()[ordinal];
+                            if (action.action != null) {
+                                quickButtonList.add(new QuickButtonItem(new CB_RectF(0, 0, btnHeight), index++, action));
                             } else
                                 invalidEnumId = true;
                         }

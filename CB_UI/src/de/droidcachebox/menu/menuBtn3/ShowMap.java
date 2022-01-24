@@ -24,6 +24,8 @@ import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
 import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_CAR;
 import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_DEFAULT;
 import static de.droidcachebox.locator.map.MapsForgeLayer.INTERNAL_THEME_OSMARENDER;
+import static de.droidcachebox.menu.Action.ShowMap;
+import static de.droidcachebox.menu.Action.ShowTracks;
 import static de.droidcachebox.settings.AllSettings.RenderThemesFolder;
 
 import com.badlogic.gdx.Gdx;
@@ -96,7 +98,6 @@ import de.droidcachebox.utils.log.Log;
  */
 public class ShowMap extends AbstractShowAction {
     private static final String log = "ShowMap";
-    private static ShowMap showMap;
     private static Router router;
     private final Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
     public MapView normalMapView;
@@ -108,19 +109,14 @@ public class ShowMap extends AbstractShowAction {
     private SearchCoordinates searchCoordinates;
     private SpriteDrawable[] routeProfileIcons;
 
-    private ShowMap() {
+    public ShowMap() {
         super("Map");
         normalMapView = new MapView(ViewManager.leftTab.getContentRec(), MapMode.Normal);
         normalMapView.setZoom(Settings.lastZoomLevel.getValue());
     }
 
-    public static ShowMap getInstance() {
-        if (showMap == null) showMap = new ShowMap();
-        return showMap;
-    }
-
-    public static void setRouter(Router router) {
-        ShowMap.router = router;
+    public static void setRouter(Router _router) {
+        router = _router;
     }
 
     @Override
@@ -373,7 +369,7 @@ public class ShowMap extends AbstractShowAction {
                         } else {
                             TrackList.getInstance().removeRoutingTrack();
                         }
-                        ShowTracks.getInstance().notifyDataSetChanged();
+                        ((ShowTracks) ShowTracks.action).notifyDataSetChanged();
                     }
                     return true;
                 });
@@ -414,19 +410,8 @@ public class ShowMap extends AbstractShowAction {
         cm2.addMenuItem("load", null, TrackList.getInstance()::selectTrackFileReadAndAddToTracks);
         cm2.addMenuItem("generate", null, () -> TrackCreation.getInstance().execute());
         cm2.addDivider();
-        cm2.addMenuItem("Tracks", Sprites.getSprite(IconName.trackListIcon.name()), () -> ShowTracks.getInstance().execute());
+        cm2.addMenuItem("Tracks", Sprites.getSprite(IconName.trackListIcon.name()), () -> ShowTracks.action.execute());
         cm2.show();
-    }
-
-    public Sprite getRouterIcon() {
-        switch (Settings.routeProfile.getValue()) {
-            case 0:
-                return Sprites.getSprite("pedestrian");
-            case 1:
-                return Sprites.getSprite("bicycle");
-            default:
-                return Sprites.getSprite("car");
-        }
     }
 
     public boolean openRouter() {
@@ -439,7 +424,7 @@ public class ShowMap extends AbstractShowAction {
         Coordinate start = Locator.getInstance().getMyPosition(CBLocation.ProviderType.GPS);
         if (start == null || !start.isValid()) {
             // from center map
-            Coordinate mapCenter = ShowMap.getInstance().normalMapView.center;
+            Coordinate mapCenter = ((ShowMap) ShowMap.action).normalMapView.center;
             if (mapCenter != null) start = mapCenter;
         }
         Coordinate destination = GlobalCore.getSelectedCoordinate();

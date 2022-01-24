@@ -9,15 +9,8 @@ import de.droidcachebox.gdx.activities.EditFilterSettings;
 
 public class ShowEditFilterSettings extends AbstractAction {
 
-    private static ShowEditFilterSettings that;
-
-    private ShowEditFilterSettings() {
+    public ShowEditFilterSettings() {
         super("Filter");
-    }
-
-    public static ShowEditFilterSettings getInstance() {
-        if (that == null) that = new ShowEditFilterSettings();
-        return that;
     }
 
     @Override

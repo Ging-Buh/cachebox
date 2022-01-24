@@ -23,6 +23,8 @@ import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
 import static de.droidcachebox.gdx.controls.FilterSetListViewItem.SELECT_ALL_ITEM;
 import static de.droidcachebox.gdx.controls.FilterSetListViewItem.THREE_STATE_ITEM;
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+import static de.droidcachebox.menu.Action.ShowEditFilterSettings;
+import static de.droidcachebox.menu.Action.ShowMap;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -78,7 +80,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
-import de.droidcachebox.menu.quickBtns.ShowEditFilterSettings;
 import de.droidcachebox.settings.SettingStringList;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -261,7 +262,7 @@ public class EditFilterSettings extends ActivityBase {
             @Override
             public void ready() {
                 ViewManager.that.filterSetChanged();
-                ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+                ((ShowMap) ShowMap.action).normalMapView.setNewSettings(INITIAL_WP_LIST);
 
                 // Save selected filter (new JSON Format)
                 // wont save History
@@ -390,7 +391,7 @@ public class EditFilterSettings extends ActivityBase {
         if (exist) {
             ButtonDialog bd = new ButtonDialog(Translation.get("PresetExist") + br + br + "\"" + existName + "\"", null, MsgBoxButton.OK, MsgBoxIcon.Warning);
             bd.setButtonClickHandler((which, data) -> {
-                ShowEditFilterSettings.getInstance().execute();
+                ShowEditFilterSettings.action.execute();
                 return true;
             });
             bd.show();
@@ -417,7 +418,7 @@ public class EditFilterSettings extends ActivityBase {
                 presetView.fillPresetList();
                 presetView.notifyDataSetChanged();
             }
-            ShowEditFilterSettings.getInstance().execute();
+            ShowEditFilterSettings.action.execute();
             return true;
         });
         stringInputBox.showAtTop();
@@ -525,7 +526,7 @@ public class EditFilterSettings extends ActivityBase {
                                         Log.err(log, "DelUserPreset", ex);
                                     }
                                 }
-                                ShowEditFilterSettings.getInstance().execute();
+                                ShowEditFilterSettings.action.execute();
                                 return true;
                             });
                             bd.show();

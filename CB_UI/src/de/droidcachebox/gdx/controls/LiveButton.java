@@ -1,5 +1,7 @@
 package de.droidcachebox.gdx.controls;
 
+import static de.droidcachebox.menu.Action.ShowMap;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 import de.droidcachebox.GlobalCore;
@@ -71,7 +73,7 @@ public class LiveButton extends ImageButton {
     public boolean click(int x, int y, int pointer, int button) {
         setActivated(!isActivated);
         if (isActivated) {
-            LiveMapQue.getInstance().quePosition(ShowMap.getInstance().normalMapView.center);
+            LiveMapQue.getInstance().quePosition(((ShowMap) ShowMap.action).normalMapView.center);
         } else {
             LiveMapQue.getInstance().clearDescriptorStack();
         }

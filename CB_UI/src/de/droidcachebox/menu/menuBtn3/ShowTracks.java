@@ -28,18 +28,12 @@ import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.menu.menuBtn3.executes.TrackListView;
 
 public class ShowTracks extends AbstractShowAction {
-    private static ShowTracks instance;
     private TrackListView trackListView;
     boolean isExecuting;
 
-    private ShowTracks() {
+    public ShowTracks() {
         super("Tracks");
         isExecuting = false;
-    }
-
-    public static ShowTracks getInstance() {
-        if (instance == null) instance = new ShowTracks();
-        return instance;
     }
 
     @Override

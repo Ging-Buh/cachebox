@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.Platform;
 import de.droidcachebox.gdx.Sprites;
@@ -30,7 +29,6 @@ import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.Image;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.menu.quickBtns.RememberGeoCache;
 import de.droidcachebox.settings.Settings;
 
 /**
@@ -41,19 +39,17 @@ import de.droidcachebox.settings.Settings;
 public class QuickButtonItem extends ListViewItemBase {
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
-    private final AbstractAction mAction;
     private final Image mButtonIcon;
     private final CB_Button mButton;
-    private final QuickAction quickAction;
+    private final Action action;
     private int state;
 
-    public QuickButtonItem(CB_RectF rec, int Index, QuickAction type) {
-        super(rec, Index, "");
-        name = type.getAction() == null ? "" : type.getAction().getTitleTranslationId();
-        quickAction = type;
-        mAction = type.getAction();
+    public QuickButtonItem(CB_RectF rec, int index, Action type) {
+        super(rec, index, "");
+        name = type.action.getTitleTranslationId();
+        action = type;
         mButtonIcon = new Image(rec.scaleCenter(0.7f), "QuickListItemImage", false);
-        mButtonIcon.setDrawable(new SpriteDrawable(mAction.getIcon()));
+        mButtonIcon.setDrawable(new SpriteDrawable(type.action.getIcon()));
         mButtonIcon.setClickable(false);
 
         mButton = new CB_Button(rec, "QuickListItemButton");
@@ -65,9 +61,17 @@ public class QuickButtonItem extends ListViewItemBase {
         state = -1;
 
         mButton.setClickHandler((v, x, y, pointer, button) -> {
-            mAction.execute();
+            type.action.execute();
             return true;
         });
+        if (type == Action.RememberGeoCache) {
+            setLongClickHandler((view, x, y, pointer, button) -> {
+                // forget remembered
+                Settings.rememberedGeoCache.setValue("");
+                Settings.getInstance().acceptChanges();
+                return true;
+            });
+        }
     }
 
     @Override
@@ -89,7 +93,7 @@ public class QuickButtonItem extends ListViewItemBase {
 
         super.render(batch);
 
-        if (quickAction == QuickAction.AutoResort) {
+        if (action == Action.SwitchAutoResort) {
             if (GlobalCore.getAutoResort() && state != 1) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.autoSortOnIcon.name())));
                 state = 1;
@@ -97,7 +101,7 @@ public class QuickButtonItem extends ListViewItemBase {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.autoSortOffIcon.name())));
                 state = 0;
             }
-        } else if (quickAction == QuickAction.Spoiler) {
+        } else if (action == Action.ShowSpoiler) {
             boolean hasSpoiler = false;
             if (GlobalCore.isSetSelectedCache()) {
                 hasSpoiler = GlobalCore.selectedCacheHasSpoiler();
@@ -112,7 +116,7 @@ public class QuickButtonItem extends ListViewItemBase {
                 mButtonIcon.setDrawable(new SpriteDrawable(sprite));
                 state = 0;
             }
-        } else if (quickAction == QuickAction.torch) {
+        } else if (action == Action.SwitchTorch) {
             if (Platform.isTorchOn() && state != 1) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHON.name())));
                 state = 1;
@@ -120,33 +124,29 @@ public class QuickButtonItem extends ListViewItemBase {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHOFF.name())));
                 state = 0;
             }
-        } else if (quickAction == QuickAction.Hint) {
-            if (mAction.getEnabled() && state != 1) {
+        } else if (action == Action.ShowHint) {
+            if (action.action.getEnabled() && state != 1) {
                 mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.hintIcon.name())));
                 state = 1;
-            } else if (!mAction.getEnabled() && state != 0) {
+            } else if (!action.action.getEnabled() && state != 0) {
                 Sprite sprite = new Sprite(Sprites.getSprite(IconName.hintIcon.name()));
                 sprite.setColor(DISABLE_COLOR);
                 mButtonIcon.setDrawable(new SpriteDrawable(sprite));
                 state = 0;
             }
-        } else if (quickAction == QuickAction.rememberGeoCache) {
-            if (getOnLongClickListener() == null) {
-                setLongClickHandler(RememberGeoCache.getInstance().getLongClickListener());
-                setLongClickable(true);
-            }
+        } else if (action == Action.RememberGeoCache) {
             if (Settings.rememberedGeoCache.getValue().length() > 0) {
-                mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(Sprites.IconName.lockIcon.name())));
+                mButtonIcon.setDrawable(new SpriteDrawable(action.action.getIcon()));
             } else {
-                Sprite sprite = new Sprite(Sprites.getSprite(IconName.lockIcon.name()));
+                Sprite sprite = new Sprite(action.action.getIcon());
                 sprite.setColor(DISABLE_COLOR);
                 mButtonIcon.setDrawable(new SpriteDrawable(sprite));
             }
         }
     }
 
-    public QuickAction getQuickAction() {
-        return quickAction;
+    public Action getQuickAction() {
+        return action;
     }
 
     @Override

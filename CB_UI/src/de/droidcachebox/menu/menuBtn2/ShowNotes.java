@@ -11,15 +11,8 @@ import de.droidcachebox.menu.menuBtn2.executes.Notes;
 
 public class ShowNotes extends AbstractShowAction {
 
-    private static ShowNotes showNotes;
-
-    private ShowNotes() {
+    public ShowNotes() {
         super("Notes");
-    }
-
-    public static ShowNotes getInstance() {
-        if (showNotes == null) showNotes = new ShowNotes();
-        return showNotes;
     }
 
     @Override

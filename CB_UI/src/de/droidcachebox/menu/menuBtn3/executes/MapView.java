@@ -23,6 +23,7 @@ import static de.droidcachebox.gdx.Sprites.ListBack;
 import static de.droidcachebox.gdx.Sprites.MapStars;
 import static de.droidcachebox.gdx.Sprites.getMapOverlay;
 import static de.droidcachebox.gdx.Sprites.getSprite;
+import static de.droidcachebox.menu.Action.ShowSpoiler;
 import static de.droidcachebox.settings.Config_Core.displayDensity;
 
 import com.badlogic.gdx.graphics.Color;
@@ -351,7 +352,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                 new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), new RunAndReady() {
                     @Override
                     public void ready() {
-                        ShowSpoiler.getInstance().importSpoiler(false, isCanceled1 -> {
+                        ((ShowSpoiler) ShowSpoiler.action).importSpoiler(false, isCanceled1 -> {
                             // do after import
                             if (!isCanceled1) {
                                 if (GlobalCore.isSetSelectedCache()) {

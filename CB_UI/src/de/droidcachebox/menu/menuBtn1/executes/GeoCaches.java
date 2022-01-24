@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.menu.menuBtn1.executes;
 
+import static de.droidcachebox.menu.Action.ShowSearchDialog;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -116,7 +118,7 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
 
         if (searchPlaceholder > 0) {
             // show Search Dialog again
-            ShowSearchDialog.getInstance().showAgain();
+            ((ShowSearchDialog) ShowSearchDialog.action).showAgain();
         }
 
         isShown = true;
@@ -214,7 +216,7 @@ public class GeoCaches extends CB_View_Base implements CacheListChangedListeners
         CacheListChangedListeners.getInstance().removeListener(this);
         CacheSelectionChangedListeners.getInstance().remove(this);
         if (searchPlaceholder < 0) {
-            ShowSearchDialog.getInstance().closeSearchDialog();
+            ((ShowSearchDialog) ShowSearchDialog.action).closeSearchDialog();
         }
         geoCacheListViewAdapter = null;
         geoCacheListView.setAdapter(null);

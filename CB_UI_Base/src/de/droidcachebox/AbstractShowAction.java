@@ -1,7 +1,6 @@
 package de.droidcachebox;
 
 import de.droidcachebox.gdx.CB_View_Base;
-import de.droidcachebox.gdx.main.Menu;
 
 /**
  * extends the AbstractAction with getView, an extended CB_View_Base and an optional ContextMenu (hasContextMenu() and getContextMenu())
@@ -34,20 +33,4 @@ public abstract class AbstractShowAction extends AbstractAction {
      * @return CB_View_Base
      */
     public abstract CB_View_Base getView();
-
-    /**
-     * @return if has
-     */
-    public boolean hasContextMenu() {
-        return false;
-    }
-
-    /**
-     * returns the ContextMenu of this View
-     *
-     * @return the Menu
-     */
-    public Menu getContextMenu() {
-        return null;
-    }
 }

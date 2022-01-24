@@ -17,6 +17,8 @@ package de.droidcachebox;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import de.droidcachebox.gdx.main.Menu;
+
 public abstract class AbstractAction {
 
     protected String titleTranslationId;
@@ -30,6 +32,22 @@ public abstract class AbstractAction {
     public abstract void execute();
 
     public abstract Sprite getIcon();
+
+    /**
+     * @return if has
+     */
+    public boolean hasContextMenu() {
+        return false;
+    }
+
+    /**
+     * returns the ContextMenu of this View
+     *
+     * @return the Menu
+     */
+    public Menu getContextMenu() {
+        return null;
+    }
 
     public String getTitleTranslationId() {
         return titleTranslationId;

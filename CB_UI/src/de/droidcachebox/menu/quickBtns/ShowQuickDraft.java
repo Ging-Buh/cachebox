@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.menu.quickBtns;
 
+import static de.droidcachebox.menu.Action.ShowDrafts;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractAction;
@@ -26,17 +28,10 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 
-public class QuickDraft extends AbstractAction {
+public class ShowQuickDraft extends AbstractAction {
 
-    private static QuickDraft instance;
-
-    private QuickDraft() {
+    public ShowQuickDraft() {
         super("QuickDraft");
-    }
-
-    public static QuickDraft getInstance() {
-        if (instance == null) instance = new QuickDraft();
-        return instance;
     }
 
     @Override
@@ -59,20 +54,20 @@ public class QuickDraft extends AbstractAction {
             case Giga:
             case CITO:
                 cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> {
-                    ShowDrafts.getInstance().addNewDraft(LogType.attended, false);
+                    ((ShowDrafts) ShowDrafts.action).addNewDraft(LogType.attended, false);
                 });
                 break;
             case Camera:
                 cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> {
-                    ShowDrafts.getInstance().addNewDraft(LogType.webcam_photo_taken, false);
+                    ((ShowDrafts) ShowDrafts.action).addNewDraft(LogType.webcam_photo_taken, false);
                 });
                 break;
             default:
                 cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> {
-                    ShowDrafts.getInstance().addNewDraft(LogType.found, false);
+                    ((ShowDrafts) ShowDrafts.action).addNewDraft(LogType.found, false);
                 });
                 cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> {
-                    ShowDrafts.getInstance().addNewDraft(LogType.didnt_find, false);
+                    ((ShowDrafts) ShowDrafts.action).addNewDraft(LogType.didnt_find, false);
                 });
                 break;
         }

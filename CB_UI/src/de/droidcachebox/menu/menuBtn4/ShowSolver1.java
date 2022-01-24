@@ -10,16 +10,10 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn4.executes.Solver;
 
 public class ShowSolver1 extends AbstractShowAction {
-    private static ShowSolver1 instance;
     private Solver solver;
 
-    private ShowSolver1() {
+    public ShowSolver1() {
         super("Solver");
-    }
-
-    public static ShowSolver1 getInstance() {
-        if (instance == null) instance = new ShowSolver1();
-        return instance;
     }
 
     @Override

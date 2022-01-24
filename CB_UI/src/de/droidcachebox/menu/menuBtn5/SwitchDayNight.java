@@ -9,15 +9,8 @@ import de.droidcachebox.menu.ViewManager;
 
 public class SwitchDayNight extends AbstractAction {
 
-    private static SwitchDayNight instance;
-
-    private SwitchDayNight() {
+    public SwitchDayNight() {
         super("DayNight");
-    }
-
-    public static SwitchDayNight getInstance() {
-        if (instance == null) instance = new SwitchDayNight();
-        return instance;
     }
 
     @Override

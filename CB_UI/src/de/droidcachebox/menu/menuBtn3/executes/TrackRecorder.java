@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.menu.menuBtn3.executes;
 
+import static de.droidcachebox.menu.Action.ShowTracks;
+
 import com.badlogic.gdx.graphics.Color;
 
 import java.io.FileNotFoundException;
@@ -111,7 +113,7 @@ public class TrackRecorder {
             pauseRecording = false;
             recording = true;
 
-            ShowTracks.getInstance().notifyDataSetChanged();
+            ((ShowTracks) ShowTracks.action).notifyDataSetChanged();
         }
     }
 
@@ -254,7 +256,7 @@ public class TrackRecorder {
                 TrackList.getInstance().currentRoute.getTrackPoints().add(NewPoint);
 
                 // notify TrackListView (if already created)
-                ShowTracks.getInstance().notifyCurrentRouteChanged();
+                ((ShowTracks) ShowTracks.action).notifyCurrentRouteChanged();
 
                 TrackList.getInstance().trackListChanged();
                 lastRecordedPosition = Locator.getInstance().getLocation(GPS).cpy();

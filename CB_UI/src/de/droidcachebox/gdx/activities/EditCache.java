@@ -1,5 +1,6 @@
 package de.droidcachebox.gdx.activities;
 
+import static de.droidcachebox.menu.Action.ShowMap;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -173,7 +174,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues.geoCacheSize = GeoCacheSize.micro;
         newValues.setDifficulty(1);
         newValues.setTerrain(1);
-        newValues.setCoordinate(ShowMap.getInstance().normalMapView.center);
+        newValues.setCoordinate(((ShowMap) ShowMap.action).normalMapView.center);
         if (!newValues.getCoordinate().isValid())
             newValues.setCoordinate(GlobalCore.getSelectedCoordinate());
         // GC - Code bestimmen für freies CWxxxx = CustomWaypint

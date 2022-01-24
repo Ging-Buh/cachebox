@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.menu.menuBtn4.executes;
 
+import static de.droidcachebox.menu.Action.ShowMap;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WaypointListChangedEventList;
@@ -311,8 +313,8 @@ public class Solver2 extends V_ListView implements CacheSelectionChangedListener
         CoordinateGPS result = getSelectedCoordinateResult();
         if (result != null) {
             // Set Map Center
-            ShowMap.getInstance().normalMapView.setCenter(result);
-            ShowMap.getInstance().execute();
+            ((ShowMap) ShowMap.action).normalMapView.setCenter(result);
+            ShowMap.action.execute();
         }
     }
 

@@ -1,5 +1,7 @@
 package de.droidcachebox.menu.menuBtn4;
 
+import static de.droidcachebox.menu.Action.UploadDrafts;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractShowAction;
@@ -17,16 +19,10 @@ import de.droidcachebox.translation.Translation;
 
 public class ShowDrafts extends AbstractShowAction {
 
-    private static ShowDrafts instance;
     private DraftsView draftsView;
 
-    private ShowDrafts() {
+    public ShowDrafts() {
         super("Drafts");
-    }
-
-    public static ShowDrafts getInstance() {
-        if (instance == null) instance = new ShowDrafts();
-        return instance;
     }
 
     @Override
@@ -87,7 +83,7 @@ public class ShowDrafts extends AbstractShowAction {
         cm.addDivider();
 
         // independent from cache-selection
-        cm.addMenuItem("uploadDrafts", UploadDrafts.getInstance().getIcon(), () -> UploadDrafts.getInstance().execute());
+        cm.addMenuItem("uploadDrafts", UploadDrafts.action.getIcon(), () -> UploadDrafts.action.execute());
         cm.addMenuItem("directLog", UploadLogs.getInstance().getIcon(), () -> UploadLogs.getInstance().execute());
         cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
 

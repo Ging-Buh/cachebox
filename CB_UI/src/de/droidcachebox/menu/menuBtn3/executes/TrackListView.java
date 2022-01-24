@@ -1,5 +1,8 @@
 package de.droidcachebox.menu.menuBtn3.executes;
 
+import static de.droidcachebox.menu.Action.ShowMap;
+import static de.droidcachebox.menu.Action.ShowTracks;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -71,7 +74,7 @@ public class TrackListView extends V_ListView {
 
     @Override
     public void onHide() {
-        ShowTracks.getInstance().onHide();
+        ((ShowTracks) ShowTracks.action).onHide();
     }
 
     public class TrackListViewAdapter implements Adapter {
@@ -184,10 +187,10 @@ public class TrackListView extends V_ListView {
                 TrackPoint trackpoint = track.getTrackPoints().get(0);
                 double latitude = trackpoint.y;
                 double longitude = trackpoint.x;
-                ShowMap.getInstance().execute();
-                ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
+                ShowMap.action.execute();
+                ((ShowMap) ShowMap.action).normalMapView.setBtnMapStateToFree(); // btn
                 // ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
-                ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(latitude, longitude));
+                ((ShowMap) ShowMap.action).normalMapView.setCenter(new CoordinateGPS(latitude, longitude));
             }
         }
 

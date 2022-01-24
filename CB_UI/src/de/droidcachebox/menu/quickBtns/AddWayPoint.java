@@ -1,5 +1,7 @@
 package de.droidcachebox.menu.quickBtns;
 
+import static de.droidcachebox.menu.Action.ShowMap;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractAction;
@@ -9,15 +11,8 @@ import de.droidcachebox.menu.menuBtn3.ShowMap;
 
 public class AddWayPoint extends AbstractAction {
 
-    private static AddWayPoint addWayPoint;
-
-    private AddWayPoint() {
+    public AddWayPoint() {
         super("addWP");
-    }
-
-    public static AddWayPoint getInstance() {
-        if (addWayPoint == null) addWayPoint = new AddWayPoint();
-        return addWayPoint;
     }
 
     @Override
@@ -34,8 +29,8 @@ public class AddWayPoint extends AbstractAction {
     public void execute() {
         // wenn MapView sichtbar und im Modus Free, dann nehme Koordinaten vom Mittelpunkt der Karte
         // ansonsten mit den aktuellen Koordinaten!
-        if (ShowMap.getInstance().normalMapView.isVisible()) {
-            ShowMap.getInstance().normalMapView.createWaypointAtCenter();
+        if (((ShowMap) ShowMap.action).normalMapView.isVisible()) {
+            ((ShowMap) ShowMap.action).normalMapView.createWaypointAtCenter();
             return;
         }
         Waypoints.getInstance().addWP();

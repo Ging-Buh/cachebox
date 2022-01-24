@@ -24,15 +24,8 @@ import de.droidcachebox.gdx.Sprites.IconName;
 
 public class SwitchTorch extends AbstractAction {
 
-    private static SwitchTorch instance;
-
-    private SwitchTorch() {
+    public SwitchTorch() {
         super("torch");
-    }
-
-    public static SwitchTorch getInstance() {
-        if (instance == null) instance = new SwitchTorch();
-        return instance;
     }
 
     @Override

@@ -18,6 +18,7 @@ package de.droidcachebox.menu.menuBtn4.executes;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_RIGHT_NEGATIVE;
+import static de.droidcachebox.menu.Action.UploadDrafts;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -70,7 +71,6 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn2.executes.Logs;
-import de.droidcachebox.menu.menuBtn4.UploadDrafts;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -474,8 +474,8 @@ public class DraftsView extends V_ListView {
                     cm.addMenuItem("BrowseLog", null, () -> Platform.callUrl("https://coord.info/" + currentDraft.gcLogReference));
                 }
             }
-            cm.addMenuItem("uploadAsDraft", UploadDrafts.getInstance().getIcon(), () -> uploadDraftOrLog(currentDraft, false));
-            cm.addMenuItem("uploadAsLog", UploadDrafts.getInstance().getIcon(), () -> uploadDraftOrLog(currentDraft, true));
+            cm.addMenuItem("uploadAsDraft", UploadDrafts.action.getIcon(), () -> uploadDraftOrLog(currentDraft, false));
+            cm.addMenuItem("uploadAsLog", UploadDrafts.action.getIcon(), () -> uploadDraftOrLog(currentDraft, true));
             Sprite icon;
             if (currentDraft.isTbDraft) {
                 // Sprite from url ?  draft.TbIconUrl

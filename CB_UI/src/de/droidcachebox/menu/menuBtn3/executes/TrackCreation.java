@@ -1,5 +1,7 @@
 package de.droidcachebox.menu.menuBtn3.executes;
 
+import static de.droidcachebox.menu.Action.ShowTracks;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.Date;
@@ -87,7 +89,7 @@ public class TrackCreation extends AbstractShowAction {
 
             track.setVisible(true);
             TrackList.getInstance().addTrack(track);
-            ShowTracks.getInstance().notifyDataSetChanged();
+            ((ShowTracks) ShowTracks.action).notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.point2point, Translation.get("fromPoint"));
         pC.show();
 
@@ -114,7 +116,7 @@ public class TrackCreation extends AbstractShowAction {
 
             track.setVisible(true);
             TrackList.getInstance().addTrack(track);
-            ShowTracks.getInstance().notifyDataSetChanged();
+            ((ShowTracks) ShowTracks.action).notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.projection, Translation.get("fromPoint"));
 
         pC.show();
@@ -151,7 +153,7 @@ public class TrackCreation extends AbstractShowAction {
                 LastCoord = Projektion; // !! LastCoord = new Coordinate(Projektion);
                 LastCoord.setValid(true);
             }
-            ShowTracks.getInstance().notifyDataSetChanged();
+            ((ShowTracks) ShowTracks.action).notifyDataSetChanged();
         }, ProjectionCoordinate.ProjectionType.circle, Translation.get("centerPoint"));
         pC.show();
     }

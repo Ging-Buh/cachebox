@@ -11,17 +11,10 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.utils.log.Log;
 
-public class SwitchAutoresort extends AbstractAction {
+public class SwitchAutoResort extends AbstractAction {
 
-    private static SwitchAutoresort that;
-
-    private SwitchAutoresort() {
+    public SwitchAutoResort() {
         super("AutoResort");
-    }
-
-    public static SwitchAutoresort getInstance() {
-        if (that == null) that = new SwitchAutoresort();
-        return that;
     }
 
     @Override

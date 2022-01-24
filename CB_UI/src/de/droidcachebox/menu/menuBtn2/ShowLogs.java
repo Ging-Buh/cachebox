@@ -2,6 +2,7 @@ package de.droidcachebox.menu.menuBtn2;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCacheLogs;
+import static de.droidcachebox.menu.Action.ShowSpoiler;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -36,17 +37,11 @@ import de.droidcachebox.translation.Translation;
 
 public class ShowLogs extends AbstractShowAction {
 
-    private static ShowLogs that;
     private final int result = 0;
 
-    private ShowLogs() {
+    public ShowLogs() {
         super("ShowLogs");
         // createContextMenu();  see getContextMenu
-    }
-
-    public static ShowLogs getInstance() {
-        if (that == null) that = new ShowLogs();
-        return that;
     }
 
     @Override
@@ -95,7 +90,7 @@ public class ShowLogs extends AbstractShowAction {
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
 
         contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()),
-                () -> ShowSpoiler.getInstance().importSpoiler(true, isCanceled -> {
+                () -> ((ShowSpoiler) ShowSpoiler.action).importSpoiler(true, isCanceled -> {
                     // do after import
                     if (!isCanceled) {
                         if (GlobalCore.isSetSelectedCache()) {

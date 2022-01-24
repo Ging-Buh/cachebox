@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.menu.menuBtn3.executes;
 
+import static de.droidcachebox.menu.Action.ShowTracks;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -551,7 +553,7 @@ public class TrackList {
             if (trackColor != null) track.setColor(trackColor);
             TrackList.getInstance().addTrack(track);
         }
-        ShowTracks.getInstance().notifyDataSetChanged();
+        ((ShowTracks) ShowTracks.action).notifyDataSetChanged();
 
     }
 

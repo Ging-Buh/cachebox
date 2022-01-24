@@ -6,21 +6,13 @@ import de.droidcachebox.AbstractAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.dataclasses.Cache;
-import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.settings.Settings;
 
 public class RememberGeoCache extends AbstractAction {
 
-    private static RememberGeoCache rememberGeoCache;
-
-    RememberGeoCache() {
+    public RememberGeoCache() {
         super("rememberGeoCacheTitle");
-    }
-
-    public static RememberGeoCache getInstance() {
-        if (rememberGeoCache == null) rememberGeoCache = new RememberGeoCache();
-        return rememberGeoCache;
     }
 
     @Override
@@ -39,12 +31,4 @@ public class RememberGeoCache extends AbstractAction {
         return Sprites.getSprite(Sprites.IconName.lockIcon.name());
     }
 
-    public GL_View_Base.OnClickListener getLongClickListener() {
-        return (view, x, y, pointer, button) -> {
-            // forget remembered
-            Settings.rememberedGeoCache.setValue("");
-            Settings.getInstance().acceptChanges();
-            return true;
-        };
-    }
 }

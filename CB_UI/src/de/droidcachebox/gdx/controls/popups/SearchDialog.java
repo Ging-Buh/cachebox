@@ -20,6 +20,7 @@ import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCache;
 import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCaches;
 import static de.droidcachebox.core.GroundspeakAPI.isPremiumMember;
 import static de.droidcachebox.core.GroundspeakAPI.searchGeoCaches;
+import static de.droidcachebox.menu.Action.ShowMap;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -465,8 +466,8 @@ public class SearchDialog extends PopUp_Base {
             public void run() {
 
                 Coordinate searchCoordinate;
-                if (ShowMap.getInstance().normalMapView.isVisible()) {
-                    searchCoordinate = ShowMap.getInstance().normalMapView.center;
+                if (((ShowMap) ShowMap.action).normalMapView.isVisible()) {
+                    searchCoordinate = ((ShowMap) ShowMap.action).normalMapView.center;
                 } else {
                     searchCoordinate = Locator.getInstance().getMyPosition();
                 }

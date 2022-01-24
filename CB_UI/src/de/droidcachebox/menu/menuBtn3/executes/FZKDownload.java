@@ -1,6 +1,7 @@
 package de.droidcachebox.menu.menuBtn3.executes;
 
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
+import static de.droidcachebox.menu.Action.ShowMap;
 
 import com.badlogic.gdx.utils.Array;
 import com.thebuzzmedia.sjxp.XMLParser;
@@ -309,8 +310,8 @@ public class FZKDownload extends ActivityBase {
         XMLParser<Map<String, String>> parser = new XMLParser<>(createFZKRules().toArray(new IRule[0]));
         parser.parse(new ByteArrayInputStream(repository_freizeitkarte_android.getBytes()), new HashMap<>());
 
-        if (ShowMap.getInstance().normalMapView.center.isValid()) {
-            MapComparator mapComparator = new MapComparator(ShowMap.getInstance().normalMapView.center);
+        if (((ShowMap) ShowMap.action).normalMapView.center.isValid()) {
+            MapComparator mapComparator = new MapComparator(((ShowMap) ShowMap.action).normalMapView.center);
             mapInfos.sort(mapComparator);
         }
 

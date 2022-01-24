@@ -28,15 +28,8 @@ import de.droidcachebox.menu.menuBtn2.executes.Description;
 
 public class ShowDescription extends AbstractShowAction {
 
-    private static ShowDescription that;
-
-    private ShowDescription() {
+    public ShowDescription() {
         super("Description");
-    }
-
-    public static ShowDescription getInstance() {
-        if (that == null) that = new ShowDescription();
-        return that;
     }
 
     @Override

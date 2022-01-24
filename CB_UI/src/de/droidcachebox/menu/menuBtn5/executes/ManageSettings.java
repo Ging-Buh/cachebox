@@ -1,5 +1,6 @@
 package de.droidcachebox.menu.menuBtn5.executes;
 
+import static de.droidcachebox.menu.Action.ShowMap;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -203,7 +204,7 @@ public class ManageSettings extends ActivityBase implements LanguageChanged.even
             // Notify QuickButtonList
             QuickButtonList.that.notifyDataSetChanged();
 
-            ShowMap.getInstance().normalMapView.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
+            ((ShowMap) ShowMap.action).normalMapView.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
             finish();
             return true;

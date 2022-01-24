@@ -1,6 +1,7 @@
 package de.droidcachebox.gdx.activities;
 
 import static de.droidcachebox.locator.map.MapViewBase.INITIAL_WP_LIST;
+import static de.droidcachebox.menu.Action.ShowMap;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -27,15 +28,19 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Locator;
-import de.droidcachebox.menu.menuBtn2.ShowWaypoints;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 
 public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
 
+    private final boolean showWaypointListAfterFinish;
+    private final Waypoint waypoint;
+    // damit kann festgelegt werden, ob beim Start des WaypointDialogs gleich der Coordinaten-Dialog gezeigt werden soll oder nicht.
+    private final boolean showCoordinateDialog;
+    private final ScrollBox scrollBox;
+    private final IReturnListener mReturnListener;
     private float virtualHeight = 0;
-    private boolean showWaypointListAfterFinish;
-    private Waypoint waypoint;
     private CoordinateButton bCoord;
     private Spinner sType;
     private CB_CheckBox cbStartPoint;
@@ -51,10 +56,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     private CB_Label tvClue;
     private EditTextField etClue;
     private boolean firstShow;
-    // damit kann festgelegt werden, ob beim Start des WaypointDialogs gleich der Coordinaten-Dialog gezeigt werden soll oder nicht.
-    private boolean showCoordinateDialog;
-    private ScrollBox scrollBox;
-    private IReturnListener mReturnListener;
 
     public EditWaypoint(Waypoint waypoint, IReturnListener listener, boolean showCoordinateDialog, boolean showWaypointViewAfterFinish) {
         super("EditWayPoint");
@@ -337,13 +338,13 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
             }
 
             // Änderungen auch an die MapView melden
-            ShowMap.getInstance().normalMapView.setNewSettings(INITIAL_WP_LIST);
+            ((ShowMap) ShowMap.action).normalMapView.setNewSettings(INITIAL_WP_LIST);
 
             finish();
 
             // Show WP View?
             if (showWaypointListAfterFinish) {
-                ShowWaypoints.getInstance().execute();
+                Action.ShowWayPoints.action.execute();
             }
 
             return true;

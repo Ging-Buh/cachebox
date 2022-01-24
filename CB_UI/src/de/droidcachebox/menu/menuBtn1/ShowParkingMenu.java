@@ -9,15 +9,8 @@ import de.droidcachebox.menu.menuBtn1.executes.ParkingMenu;
 
 public class ShowParkingMenu extends AbstractAction {
 
-    private static ShowParkingMenu showParkingMenu;
-
-    private ShowParkingMenu() {
+    public ShowParkingMenu() {
         super("MyParking");
-    }
-
-    public static ShowParkingMenu getInstance() {
-        if (showParkingMenu == null) showParkingMenu = new ShowParkingMenu();
-        return showParkingMenu;
     }
 
     @Override
