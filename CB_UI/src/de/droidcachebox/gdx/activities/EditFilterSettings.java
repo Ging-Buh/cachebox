@@ -78,6 +78,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.menu.quickBtns.ShowEditFilterSettings;
 import de.droidcachebox.settings.SettingStringList;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -289,7 +290,7 @@ public class EditFilterSettings extends ActivityBase {
                         CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         GlobalCore.checkSelectedCacheValid();
                     }
-                    CacheListChangedListeners.getInstance().cacheListChanged();
+                    CacheListChangedListeners.getInstance().fire();
                 } catch (Exception ex) {
                     Log.err(log, "applyFilter", ex);
                 }
@@ -389,7 +390,7 @@ public class EditFilterSettings extends ActivityBase {
         if (exist) {
             ButtonDialog bd = new ButtonDialog(Translation.get("PresetExist") + br + br + "\"" + existName + "\"", null, MsgBoxButton.OK, MsgBoxIcon.Warning);
             bd.setButtonClickHandler((which, data) -> {
-                de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
+                ShowEditFilterSettings.getInstance().execute();
                 return true;
             });
             bd.show();
@@ -416,7 +417,7 @@ public class EditFilterSettings extends ActivityBase {
                 presetView.fillPresetList();
                 presetView.notifyDataSetChanged();
             }
-            de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
+            ShowEditFilterSettings.getInstance().execute();
             return true;
         });
         stringInputBox.showAtTop();
@@ -524,7 +525,7 @@ public class EditFilterSettings extends ActivityBase {
                                         Log.err(log, "DelUserPreset", ex);
                                     }
                                 }
-                                de.droidcachebox.menu.quickBtns.EditFilterSettings.getInstance().execute();
+                                ShowEditFilterSettings.getInstance().execute();
                                 return true;
                             });
                             bd.show();

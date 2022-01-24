@@ -701,7 +701,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                 mainActivity.runOnUiThread(() -> new CancelWaitDialog(Translation.get("ImportGPX"), new WorkAnimation(), new RunAndReady() {
                     @Override
                     public void ready() {
-                        CacheListChangedListeners.getInstance().cacheListChanged();
+                        CacheListChangedListeners.getInstance().fire();
                         FilterProperties props = FilterInstances.getLastFilter();
                         EditFilterSettings.applyFilter(props);
 

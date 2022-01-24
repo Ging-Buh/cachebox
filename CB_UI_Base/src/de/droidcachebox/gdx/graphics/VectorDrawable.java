@@ -33,7 +33,6 @@ import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.IRenderFBO;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXMatrix;
 import de.droidcachebox.utils.CB_List;
@@ -169,7 +168,7 @@ public class VectorDrawable implements GDXBitmap, Drawable, Disposable {
         if (!RunOnGlSetted && m_fboEnabled && m_fboRegion == null) {
             RunOnGlSetted = true;
 
-            GL.that.runOnGL((IRenderFBO) () -> {
+            GL.that.runOnGL((Runnable) () -> {
                 synchronized (isDisposed) {
 
                     if (isDisposed.get()) {

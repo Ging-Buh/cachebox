@@ -49,7 +49,7 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
         super.remove(listener);
     }
 
-    public void cacheListChanged() {
+    public void fire() {
         if (Energy.isDisplayOff())
             return;
 

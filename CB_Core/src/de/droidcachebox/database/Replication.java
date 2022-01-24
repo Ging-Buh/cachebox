@@ -4,7 +4,7 @@ import de.droidcachebox.database.Database_Core.Parameters;
 
 public class Replication {
 
-    public static void FoundChanged(long CacheId, boolean found) {
+    public static void updateFound(long CacheId, boolean found) {
         if (CBDB.getInstance().MasterDatabaseId > 0) {
             ChangeType changeType;
             if (found)

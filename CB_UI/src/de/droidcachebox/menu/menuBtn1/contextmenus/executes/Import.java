@@ -975,7 +975,7 @@ public class Import extends ActivityBase {
             importAnimation = null;
         }
 
-        CacheListChangedListeners.getInstance().cacheListChanged();
+        CacheListChangedListeners.getInstance().fire();
         EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
     }
 

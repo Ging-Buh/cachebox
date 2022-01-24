@@ -1,20 +1,22 @@
 package de.droidcachebox.menu.quickBtns;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
+import de.droidcachebox.gdx.activities.EditFilterSettings;
 
-public class EditFilterSettings extends AbstractAction {
+public class ShowEditFilterSettings extends AbstractAction {
 
-    private static EditFilterSettings that;
+    private static ShowEditFilterSettings that;
 
-    private EditFilterSettings() {
+    private ShowEditFilterSettings() {
         super("Filter");
     }
 
-    public static EditFilterSettings getInstance() {
-        if (that == null) that = new EditFilterSettings();
+    public static ShowEditFilterSettings getInstance() {
+        if (that == null) that = new ShowEditFilterSettings();
         return that;
     }
 
@@ -30,6 +32,6 @@ public class EditFilterSettings extends AbstractAction {
 
     @Override
     public void execute() {
-        new de.droidcachebox.gdx.activities.EditFilterSettings("Filter").show();
+        new EditFilterSettings("Filter").show();
     }
 }

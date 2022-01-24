@@ -77,10 +77,10 @@ public class GL implements ApplicationListener {
     public static final boolean isTestVersion = false;
     public static GL that;
     private final MainViewBase mMainView;
-    private final ArrayList<IRunOnGL> runIfInitial = new ArrayList<>();
+    private final ArrayList<Runnable> runIfInitial = new ArrayList<>();
     private final AtomicBoolean started = new AtomicBoolean(false);
-    private final ArrayList<IRunOnGL> runOnGL_List = new ArrayList<>();
-    private final ArrayList<IRunOnGL> runOnGL_ListWaitPool = new ArrayList<>();
+    private final ArrayList<Runnable> runOnGL_List = new ArrayList<>();
+    private final ArrayList<Runnable> runOnGL_ListWaitPool = new ArrayList<>();
     private final AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
     private final HashMap<String, Float> caller = new HashMap<>();
     private final HashMap<String, Integer> callerCount = new HashMap<>();
@@ -225,10 +225,10 @@ public class GL implements ApplicationListener {
                     System.out.print("zuviel");
                 }
 
-                for (IRunOnGL run : runOnGL_List) {
+                for (Runnable run : runOnGL_List) {
                     if (run != null) {
                         // Run only MAX_FBO_RENDER_CALLS
-                        if (run instanceof IRenderFBO) {
+                        if (run instanceof Runnable) {
                             if (canFBO()) {
                                 run.run();
                             } else {
@@ -246,10 +246,10 @@ public class GL implements ApplicationListener {
 
         synchronized (runOnGL_ListWaitPool) {
             if (runOnGL_ListWaitPool.size() > 0) {
-                for (IRunOnGL run : runOnGL_ListWaitPool) {
+                for (Runnable run : runOnGL_ListWaitPool) {
                     if (run != null) {
                         // Run only MAX_FBO_RENDER_CALLS
-                        if (run instanceof IRenderFBO) {
+                        if (run instanceof Runnable) {
 
                             if (canFBO()) {
                                 run.run();
@@ -270,7 +270,7 @@ public class GL implements ApplicationListener {
         if (allIsInitialized) {
             synchronized (runIfInitial) {
                 if (runIfInitial.size() > 0) {
-                    for (IRunOnGL run : runIfInitial) {
+                    for (Runnable run : runIfInitial) {
                         if (run != null)
                             run.run();
                     }
@@ -836,7 +836,7 @@ public class GL implements ApplicationListener {
      * Run on GL-Thread!<br>
      * If this Thread the GL_thread, run direct!
      */
-    public void runOnGLWithThreadCheck(IRunOnGL run) {
+    public void runOnGLWithThreadCheck(Runnable run) {
         if (isGlThread()) {
             run.run();
         } else {
@@ -844,7 +844,7 @@ public class GL implements ApplicationListener {
         }
     }
 
-    public void runOnGL(IRunOnGL run) {
+    public void runOnGL(Runnable run) {
         // if in progress put into pool
         if (isWorkOnRunOnGL.get()) {
             synchronized (runOnGL_ListWaitPool) {
@@ -858,7 +858,7 @@ public class GL implements ApplicationListener {
         }
     }
 
-    public void runIfInitial(IRunOnGL run) {
+    public void runIfInitial(Runnable run) {
         synchronized (runIfInitial) {
             runIfInitial.add(run);
         }

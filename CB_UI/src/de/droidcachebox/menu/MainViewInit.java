@@ -346,7 +346,7 @@ public class MainViewInit extends MainViewBase {
             CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
         }
 
-        CacheListChangedListeners.getInstance().cacheListChanged();
+        CacheListChangedListeners.getInstance().fire();
 
         DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
 

@@ -126,7 +126,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         synchronized (CBDB.getInstance().cacheList) {
             CacheListDAO.getInstance().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), false, false, Settings.showAllWaypoints.getValue());
         }
-        CacheListChangedListeners.getInstance().cacheListChanged();
+        CacheListChangedListeners.getInstance().fire();
     }
 
     @Override

@@ -120,7 +120,7 @@ public class CacheList extends MoveableList<Cache> {
             moveItemFirst(indexOf(park));
         }
 
-        CacheListChangedListeners.getInstance().cacheListChanged();
+        CacheListChangedListeners.getInstance().fire();
 
         // Cursor.Current = Cursors.Default;
         resortAtWork = false;

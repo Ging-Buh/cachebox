@@ -160,7 +160,7 @@ public class CacheContextMenu {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
                             CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                             GlobalCore.setSelectedCache(CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(GCCode));
-                            CacheListChangedListeners.getInstance().cacheListChanged();
+                            CacheListChangedListeners.getInstance().fire();
                         }
 
                         ShowSpoiler.getInstance().importSpoiler(false,
@@ -213,7 +213,7 @@ public class CacheContextMenu {
         EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
 
         GlobalCore.setSelectedCache(null);
-        CacheListChangedListeners.getInstance().cacheListChanged();
+        CacheListChangedListeners.getInstance().fire();
         GeoCaches.getInstance().setSelectedCacheVisible();
 
     }
@@ -239,7 +239,7 @@ public class CacheContextMenu {
         CBDB.getInstance().cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());
         // Update View
         ShowDescription.getInstance().updateDescriptionView(true);
-        CacheListChangedListeners.getInstance().cacheListChanged();
+        CacheListChangedListeners.getInstance().fire();
     }
 
     private void deleteGeoCache() {

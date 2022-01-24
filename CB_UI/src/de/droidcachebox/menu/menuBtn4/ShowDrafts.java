@@ -68,19 +68,19 @@ public class ShowDrafts extends AbstractShowAction {
             // depending on GeoCacheType
             if (cache.getGeoCacheType() != null) {
                 if (cache.isEvent()) {
-                    cm.addMenuItem("will-attended", Sprites.getSprite("log8icon"), () -> draftsView.addNewDraft(LogType.will_attend));
-                    cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> draftsView.addNewDraft(LogType.attended));
+                    cm.addMenuItem("will-attended", Sprites.getSprite("log8icon"), () -> addNewDraft(LogType.will_attend));
+                    cm.addMenuItem("attended", Sprites.getSprite("log9icon"), () -> addNewDraft(LogType.attended));
                 } else if (cache.getGeoCacheType() == GeoCacheType.Camera) {
-                    cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> draftsView.addNewDraft(LogType.webcam_photo_taken));
+                    cm.addMenuItem("webCamFotoTaken", Sprites.getSprite("log10icon"), () -> addNewDraft(LogType.webcam_photo_taken));
                 } else {
-                    cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> draftsView.addNewDraft(LogType.found));
+                    cm.addMenuItem("found", Sprites.getSprite("log0icon"), () -> addNewDraft(LogType.found));
                 }
-                cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> draftsView.addNewDraft(LogType.didnt_find));
+                cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> addNewDraft(LogType.didnt_find));
             }
             // Cache is from geocaching.com: more menu entries
             if (cache.getGeoCacheCode().toLowerCase().startsWith("gc")) {
-                cm.addMenuItem("maintenance", Sprites.getSprite("log5icon"), () -> draftsView.addNewDraft(LogType.needs_maintenance));
-                cm.addMenuItem("writenote", Sprites.getSprite("log2icon"), () -> draftsView.addNewDraft(LogType.note));
+                cm.addMenuItem("maintenance", Sprites.getSprite("log5icon"), () -> addNewDraft(LogType.needs_maintenance));
+                cm.addMenuItem("writenote", Sprites.getSprite("log2icon"), () -> addNewDraft(LogType.note));
             }
         }
 
@@ -89,18 +89,32 @@ public class ShowDrafts extends AbstractShowAction {
         // independent from cache-selection
         cm.addMenuItem("uploadDrafts", UploadDrafts.getInstance().getIcon(), () -> UploadDrafts.getInstance().execute());
         cm.addMenuItem("directLog", UploadLogs.getInstance().getIcon(), () -> UploadLogs.getInstance().execute());
-        cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), draftsView::deleteAllDrafts);
+        cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
 
         // extensions for owner
         if (iAmTheOwner) {
             Menu ownerLogTypesTitleMenu = new Menu("OwnerLogTypesTitle");
-            ownerLogTypesTitleMenu.addMenuItem("enabled", Sprites.getSprite("log4icon"), () -> draftsView.addNewDraft(LogType.enabled));
-            ownerLogTypesTitleMenu.addMenuItem("temporarilyDisabled", Sprites.getSprite("log6icon"), () -> draftsView.addNewDraft(LogType.temporarily_disabled));
-            ownerLogTypesTitleMenu.addMenuItem("ownerMaintenance", Sprites.getSprite("log7icon"), () -> draftsView.addNewDraft(LogType.owner_maintenance));
+            ownerLogTypesTitleMenu.addMenuItem("enabled", Sprites.getSprite("log4icon"), () -> addNewDraft(LogType.enabled));
+            ownerLogTypesTitleMenu.addMenuItem("temporarilyDisabled", Sprites.getSprite("log6icon"), () -> addNewDraft(LogType.temporarily_disabled));
+            ownerLogTypesTitleMenu.addMenuItem("ownerMaintenance", Sprites.getSprite("log7icon"), () -> addNewDraft(LogType.owner_maintenance));
             cm.addMoreMenu(ownerLogTypesTitleMenu, Translation.get("defaultLogTypes"), Translation.get("ownerLogTypes"));
         }
 
         return cm;
+    }
+
+    private void addNewDraft(LogType logType) {
+        if (draftsView == null || draftsView.isDisposed()) {
+            draftsView = new DraftsView();
+        }
+        draftsView.addNewDraft(logType, true);
+    }
+
+    private void deleteAllDrafts() {
+        if (draftsView == null || draftsView.isDisposed()) {
+            draftsView = new DraftsView();
+        }
+        draftsView.deleteAllDrafts();
     }
 
     /*

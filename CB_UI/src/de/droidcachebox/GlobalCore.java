@@ -315,13 +315,13 @@ public class GlobalCore implements SolverCacheInterface {
     @Override
     public void sciSetSelectedCache(Cache cache) {
         setSelectedCache(cache);
-        CacheListChangedListeners.getInstance().cacheListChanged();
+        CacheListChangedListeners.getInstance().fire();
     }
 
     @Override
     public void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint) {
         setSelectedWaypoint(cache, waypoint);
-        CacheListChangedListeners.getInstance().cacheListChanged();
+        CacheListChangedListeners.getInstance().fire();
     }
 
     @Override

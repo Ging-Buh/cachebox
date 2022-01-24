@@ -87,19 +87,13 @@ public class DraftsView extends V_ListView {
     private Drafts drafts;
     private DraftsViewAdapter draftsViewAdapter;
     private EditDraft editDraft;
-    private final CacheDAO cacheDAO;
 
     public Draft getCurrentDraft() {
         return currentDraft;
     }
 
-    public void setCurrentDraft(Draft currentDraft) {
-        this.currentDraft = currentDraft;
-    }
-
     public DraftsView() {
         super(ViewManager.leftTab.getContentRec(), "DraftsView");
-        cacheDAO = new CacheDAO();
         mCanDispose = false;
         setForceHandleTouchEvents();
         setBackground(Sprites.ListBack);
@@ -137,7 +131,7 @@ public class DraftsView extends V_ListView {
                     // Found it! -> mark Cache as found
                     if (!GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(true);
-                        cacheDAO.writeToDatabaseFound(GlobalCore.getSelectedCache());
+                        new CacheDAO().updateFound(GlobalCore.getSelectedCache());
                         Settings.foundOffset.setValue(draft.getFoundNumber());
                         Settings.getInstance().acceptChanges();
                     }
@@ -145,7 +139,7 @@ public class DraftsView extends V_ListView {
                 } else if (draft.type == LogType.didnt_find) {
                     if (GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(false);
-                        cacheDAO.writeToDatabaseFound(GlobalCore.getSelectedCache());
+                        new CacheDAO().updateFound(GlobalCore.getSelectedCache());
                         Settings.foundOffset.setValue(Settings.foundOffset.getValue() - 1);
                         Settings.getInstance().acceptChanges();
                     } // and remove a previous found
@@ -161,13 +155,20 @@ public class DraftsView extends V_ListView {
             createGeoCacheVisits();
 
             // Reload List
+            // the nonotifyDataSetChanged will do the loadDrafts
+            /*
             if (isNewDraft) {
                 drafts.loadDrafts(LoadingType.LoadNew);
             } else {
                 drafts.loadDrafts(LoadingType.LoadNewLastLength);
             }
 
+             */
+
             notifyDataSetChanged();
+
+            CacheListChangedListeners.getInstance().fire();
+            CacheSelectionChangedListeners.getInstance().fire(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
         }
     }
 
@@ -199,10 +200,6 @@ public class DraftsView extends V_ListView {
         setAdapter(draftsViewAdapter);
     }
 
-    public void addNewDraft(LogType logType) {
-        addNewDraft(logType, true);
-    }
-
     /**
      *
      * @param logType one of the GeoCache LogType possibilities
@@ -218,29 +215,29 @@ public class DraftsView extends V_ListView {
         if (cache.getGeoCacheCode().equalsIgnoreCase("CBPark")) {
             if (logType == LogType.found) {
                 new ButtonDialog(Translation.get("My_Parking_Area_Found"), Translation.get("thisNotWork"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
+                // perhaps ask for deletion of parking entry
             } else if (logType == LogType.didnt_find) {
+                // or simply ignore
                 new ButtonDialog(Translation.get("My_Parking_Area_DNF"), Translation.get("thisNotWork"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
             }
             return;
         }
-        CacheDAO cacheDAO = new CacheDAO();
-        // not a GroundSpeak cache
+        // not at geocaching.com
         if (!cache.getGeoCacheCode().toLowerCase().startsWith("gc")) {
+            // only update cache found column
+            // there will be no entry in the local drafts
+            // doesn't change find count (is only for geocaching.com)
             if (logType == LogType.found || logType == LogType.attended || logType == LogType.webcam_photo_taken) {
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
-                    cacheDAO.writeToDatabaseFound(GlobalCore.getSelectedCache());
-                    new QuickDraftFeedbackPopUp(true).show(PopUp_Base.SHOW_TIME_SHORT);
-                    Platform.vibrate();
-                    notifyDataSetChanged();
+                    new CacheDAO().updateFound(GlobalCore.getSelectedCache());
+                    afterAddDraft(true);
                 }
             } else if (logType == LogType.didnt_find) {
                 if (GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(false);
-                    cacheDAO.writeToDatabaseFound(GlobalCore.getSelectedCache());
-                    new QuickDraftFeedbackPopUp(false).show(PopUp_Base.SHOW_TIME_SHORT);
-                    Platform.vibrate();
-                    notifyDataSetChanged();
+                    new CacheDAO().updateFound(GlobalCore.getSelectedCache());
+                    afterAddDraft(false);
                 }
             }
             return;
@@ -261,7 +258,7 @@ public class DraftsView extends V_ListView {
                     newDraft = tmpDraft;
                     newDraft.deleteFromDatabase();
                     newDraft.timestamp = new Date();
-                    setCurrentDraft(newDraft);
+                    currentDraft = newDraft;
                 }
             }
         }
@@ -275,14 +272,14 @@ public class DraftsView extends V_ListView {
             newDraft.CacheId = cache.generatedId;
             newDraft.CacheUrl = cache.getUrl();
             newDraft.cacheType = cache.getGeoCacheType().ordinal();
-            setCurrentDraft(newDraft);
+            currentDraft = newDraft;
         } else {
             tmpDrafts.removeValue(newDraft, true);
         }
 
         switch (logType) {
             case found:
-                // wenn eine Draft Found erzeugt werden soll und der Cache noch nicht gefunden war -> foundNumber um 1 erhöhen
+                // if a draft found is to be generated and the cache has not yet been found -> increase foundNumber by 1
                 if (!cache.isFound())
                     newDraft.setFoundNumber(newDraft.getFoundNumber() + 1);
                 if (newDraft.comment.length() == 0)
@@ -293,16 +290,14 @@ public class DraftsView extends V_ListView {
                     newDraft.setFoundNumber(newDraft.getFoundNumber() + 1); //
                 if (newDraft.comment.length() == 0)
                     newDraft.comment = TemplateFormatter.replaceTemplate(Settings.AttendedTemplate.getValue(), newDraft);
-                // wenn eine Draft Found erzeugt werden soll und der Cache noch
-                // nicht gefunden war -> foundNumber um 1 erhöhen
+                // if a draft found is to be generated and the cache has not yet been found -> increase foundNumber by 1
                 break;
             case webcam_photo_taken:
                 if (!cache.isFound())
                     newDraft.setFoundNumber(newDraft.getFoundNumber() + 1); //
                 if (newDraft.comment.length() == 0)
                     newDraft.comment = TemplateFormatter.replaceTemplate(Settings.WebcamTemplate.getValue(), newDraft);
-                // wenn eine Draft Found erzeugt werden soll und der Cache noch
-                // nicht gefunden war -> foundNumber um 1 erhöhen
+                // if a draft found is to be generated and the cache has not yet been found -> increase foundNumber by 1
                 break;
             case didnt_find:
                 if (newDraft.comment.length() == 0)
@@ -323,37 +318,41 @@ public class DraftsView extends V_ListView {
         if (andEdit) {
             EditDraft editDraft = new EditDraft(newDraft, this::afterEdit, true);
             editDraft.show();
-            // todo next two lines are possibly when editDraft is ready
-            CacheListChangedListeners.getInstance().cacheListChanged();
-            CacheSelectionChangedListeners.getInstance().fire(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
         } else {
-            tmpDrafts.insert(0, newDraft);
             newDraft.writeToDatabase();
-            setCurrentDraft(newDraft);
+            currentDraft = newDraft;
             if (newDraft.type == LogType.found || newDraft.type == LogType.attended || newDraft.type == LogType.webcam_photo_taken) {
-                // Found it! -> Cache als gefunden markieren
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
-                    cacheDAO.writeToDatabaseFound(GlobalCore.getSelectedCache());
+                    new CacheDAO().updateFound(GlobalCore.getSelectedCache());
                     Settings.foundOffset.setValue(getCurrentDraft().getFoundNumber());
                     Settings.getInstance().acceptChanges();
                 }
-                // und eine evtl. vorhandene Draft DNF löschen
+                // and delete any existing Draft DNF
                 tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.didnt_find);
+                afterAddDraft(true);
             } else if (newDraft.type == LogType.didnt_find) {
-                // DidNotFound -> Cache als nicht gefunden markieren
                 if (GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(false);
-                    cacheDAO.writeToDatabaseFound(GlobalCore.getSelectedCache());
+                    new CacheDAO().updateFound(GlobalCore.getSelectedCache());
                     Settings.foundOffset.setValue(Settings.foundOffset.getValue() - 1);
                     Settings.getInstance().acceptChanges();
                 }
-                // und eine evtl. vorhandene Draft FoundIt löschen
+                // and delete any existing Draft FoundIt
                 tmpDrafts.deleteDraftByCacheId(GlobalCore.getSelectedCache().generatedId, LogType.found);
+                afterAddDraft(false);
             }
-            createGeoCacheVisits();
-            notifyDataSetChanged();
         }
+    }
+
+    private void afterAddDraft(boolean found) {
+        createGeoCacheVisits();
+        notifyDataSetChanged(); // perhaps only when visible
+        // for status change, for icons in map
+        CacheListChangedListeners.getInstance().fire();
+        CacheSelectionChangedListeners.getInstance().fire(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
+        new QuickDraftFeedbackPopUp(found).show(PopUp_Base.SHOW_TIME_SHORT);
+        Platform.vibrate();
     }
 
     public void deleteAllDrafts() {
@@ -668,7 +667,7 @@ public class DraftsView extends V_ListView {
                     if (cache != null) {
                         if (cache.isFound()) {
                             cache.setFound(false);
-                            cacheDAO.writeToDatabaseFound(cache);
+                            new CacheDAO().updateFound(cache);
                             Settings.foundOffset.setValue(Settings.foundOffset.getValue() - 1);
                             Settings.getInstance().acceptChanges();
                             // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen

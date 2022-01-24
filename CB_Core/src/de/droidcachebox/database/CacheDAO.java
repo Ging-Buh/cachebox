@@ -234,12 +234,12 @@ public class CacheDAO {
         }
     }
 
-    public void writeToDatabaseFound(Cache cache) {
+    public void updateFound(Cache cache) {
         Parameters args = new Parameters();
         args.put("found", cache.isFound());
         try {
             CBDB.getInstance().update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.generatedId)});
-            Replication.FoundChanged(cache.generatedId, cache.isFound());
+            Replication.updateFound(cache.generatedId, cache.isFound());
         } catch (Exception exc) {
             Log.err(sClass, "Write Cache Found", "", exc);
         }
@@ -416,7 +416,7 @@ public class CacheDAO {
 
         if (fromDB.isFound() != writeTmp.isFound()) {
             changed = true;
-            Replication.FoundChanged(writeTmp.generatedId, writeTmp.isFound());
+            Replication.updateFound(writeTmp.generatedId, writeTmp.isFound());
             args.put("Found", writeTmp.isFound());
         }
 

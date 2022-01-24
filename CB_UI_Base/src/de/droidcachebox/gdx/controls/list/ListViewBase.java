@@ -28,7 +28,6 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
-import de.droidcachebox.gdx.IRunOnGL;
 import de.droidcachebox.gdx.ParentInfo;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.CB_List;
@@ -38,20 +37,20 @@ import de.droidcachebox.utils.log.Log;
 
 public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent {
     private static final String log = "ListViewBase";
+    /**
+     * Enthällt die Indexes, welche schon als Child exestieren.
+     */
+    protected final CB_List<Integer> addedIndexList;
     private final CB_List<IListPosChanged> eventHandlerList;
-    private Scrollbar scrollbar;
     private final MoveableList<GL_View_Base> noListChildren;
+    private final CB_List<Runnable> runOnGL_List;
+    private final CB_List<Runnable> runOnGL_ListWaitpool;
     protected Boolean bottomAnimation;
     protected int selectedIndex;
     protected float firstItemSize;
     protected float lastItemSize;
     protected boolean hasInvisibleItems;
     protected boolean isTouch;
-    private final CB_List<IRunOnGL> runOnGL_List;
-    private final CB_List<IRunOnGL> runOnGL_ListWaitpool;
-    private AtomicBoolean isWorkOnRunOnGL;
-    CB_List<ListViewItemBase> clearList;
-    float lastPos;
     protected float itemPosOffset;
     /**
      * Wen True, können die Items verschoben werden
@@ -62,19 +61,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      */
     protected Adapter adapter;
     /**
-     * Enthällt die Indexes, welche schon als Child exestieren.
-     */
-    protected final CB_List<Integer> addedIndexList;
-    /**
      * Aktuelle Position der Liste
      */
     protected float currentPosition;
-    /**
-     * Der Start Index, ab dem gesucht wird, ob ein Item in den Sichtbaren Bereich geschoben wurde. Damit nicht eine Liste von 1000 Items
-     * abgefragt werden muss wenn nur die letzten 5 sichtbar sind.
-     */
-    int firstIndex;
-    int lastIndex;
     /**
      * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so groß sind wie das kleinste Item in der List.
      */
@@ -86,9 +75,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      */
     protected float allSize;
     protected float dividerSize;
-    boolean mMustSetPosKinetic;
     protected boolean mMustSetPos;
-    private float mMustSetPosValue;
     protected CB_List<Float> mPosDefault;
     /**
      * Wenn True, werden die Items beim verlassen des sichtbaren Bereiches disposed und auf NULL gesetzt.
@@ -97,10 +84,22 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     protected int dragged;
     protected int lastTouchInMoveDirection;
     protected float mLastPos_onTouch;
-    private String emptyMsgString;
-    private BitmapFontCache emptyMsgItem;
+    CB_List<ListViewItemBase> clearList;
+    float lastPos;
+    /**
+     * Der Start Index, ab dem gesucht wird, ob ein Item in den Sichtbaren Bereich geschoben wurde. Damit nicht eine Liste von 1000 Items
+     * abgefragt werden muss wenn nur die letzten 5 sichtbar sind.
+     */
+    int firstIndex;
+    int lastIndex;
+    boolean mMustSetPosKinetic;
     boolean mReloadItems;
     boolean selectionChanged;
+    private Scrollbar scrollbar;
+    private AtomicBoolean isWorkOnRunOnGL;
+    private float mMustSetPosValue;
+    private String emptyMsgString;
+    private BitmapFontCache emptyMsgItem;
     private float mAnimationTarget;
     private Timer mAnimationTimer;
 
@@ -186,7 +185,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
     /**
      * Return With for horizontal and Height for vertical ListView
-     *
      */
     protected abstract float getListViewLength();
 
@@ -195,7 +193,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
             eventHandlerList.add(handler);
     }
 
-    public void runIfListInitial(IRunOnGL run) {
+    public void runIfListInitial(Runnable run) {
 
         // if in progress put into pool
         if (isWorkOnRunOnGL.get()) {
@@ -272,7 +270,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
     /**
      * distance between 2 items
-     *
      */
     public void setDividerSize(float value) {
         dividerSize = value;
@@ -321,7 +318,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      * added die sichtbaren Items als Child und speichert den Index in einer Liste, damit das Item nicht ein zweites mal hinzugefügt wird.
      * Wenn Kinetic == True werden mehr Items geladen, damit beim schnellen Scrollen die Items schon erstellt sind, bevor sie in den
      * sichtbaren Bereich kommen.
-     *
      */
     protected abstract void addVisibleItems(boolean Kinetic);
 
@@ -368,7 +364,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                     synchronized (runOnGL_List) {
                         if (runOnGL_List.size() > 0) {
                             for (int i = 0, n = runOnGL_List.size(); i < n; i++) {
-                                IRunOnGL run = runOnGL_List.get(i);
+                                Runnable run = runOnGL_List.get(i);
                                 if (run != null)
                                     run.run();
                             }
@@ -381,7 +377,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                         if (runOnGL_ListWaitpool.size() > 0) {
                             if (runOnGL_ListWaitpool.size() > 0) {
                                 for (int i = 0, n = runOnGL_ListWaitpool.size(); i < n; i++) {
-                                    IRunOnGL run = runOnGL_ListWaitpool.get(i);
+                                    Runnable run = runOnGL_ListWaitpool.get(i);
                                     if (run != null)
                                         run.run();
                                 }
@@ -588,7 +584,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      * Returns a Point<br>
      * x= first full visible Index<br>
      * y= last full visible Index<br>
-     *
      */
     public Point getFirstAndLastVisibleIndex() {
         Point ret = new Point();

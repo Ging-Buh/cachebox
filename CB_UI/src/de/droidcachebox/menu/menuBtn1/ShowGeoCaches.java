@@ -28,7 +28,7 @@ import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowSelectDB;
 import de.droidcachebox.menu.menuBtn1.executes.DeleteDialog;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
-import de.droidcachebox.menu.quickBtns.EditFilterSettings;
+import de.droidcachebox.menu.quickBtns.ShowEditFilterSettings;
 import de.droidcachebox.menu.quickBtns.ShowSearchDialog;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -108,7 +108,7 @@ public class ShowGeoCaches extends AbstractShowAction {
             if (((MenuItem) v).isCheckboxClicked(x))
                 checked = !checked;
             if (checked) {
-                EditFilterSettings.getInstance().execute();
+                ShowEditFilterSettings.getInstance().execute();
             } else {
                 FilterInstances.setLastFilter(new FilterProperties());
                 applyFilter(FilterInstances.getLastFilter());

@@ -67,7 +67,7 @@ public class ParkingMenu extends ButtonDialog {
             Settings.ParkingLatitude.setValue(Locator.getInstance().getLatitude());
             Settings.ParkingLongitude.setValue(Locator.getInstance().getLongitude());
             Settings.getInstance().acceptChanges();
-            CacheListChangedListeners.getInstance().cacheListChanged();
+            CacheListChangedListeners.getInstance().fire();
             close();
             return true;
         });
@@ -86,7 +86,7 @@ public class ParkingMenu extends ButtonDialog {
             Settings.ParkingLatitude.setValue(0.0);
             Settings.ParkingLongitude.setValue(0.0);
             Settings.getInstance().acceptChanges();
-            CacheListChangedListeners.getInstance().cacheListChanged();
+            CacheListChangedListeners.getInstance().fire();
             close();
             return true;
         });

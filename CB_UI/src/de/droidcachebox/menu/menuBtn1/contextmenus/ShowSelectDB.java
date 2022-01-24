@@ -141,7 +141,7 @@ public class ShowSelectDB extends AbstractAction {
                     }
                 }
 
-                CacheListChangedListeners.getInstance().cacheListChanged();
+                CacheListChangedListeners.getInstance().fire();
                 ViewManager.that.filterSetChanged();
             }
         })::show);

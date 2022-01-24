@@ -73,7 +73,7 @@ public class ShowTracks extends AbstractShowAction {
     public Menu getContextMenu() {
         Menu cm = new Menu("TrackListViewContextMenuTitle");
         cm.addMenuItem("load", null, TrackList.getInstance()::selectTrackFileReadAndAddToTracks);
-        cm.addMenuItem("generate", null, () -> TrackCreation.getInstance().execute());
+        cm.addMenuItem("generate", null, TrackCreation.getInstance()::execute);
         return cm;
     }
 

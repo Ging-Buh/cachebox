@@ -20,24 +20,25 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 
 public class TrackCreation extends AbstractShowAction {
-    private static TrackCreation trackCreation;
-    Menu cm2;
+    private static TrackCreation instance;
+    private Menu cm2;
+
     private TrackCreation() {
         super("");
     }
 
     public static TrackCreation getInstance() {
-        if (trackCreation == null) {
-            trackCreation = new TrackCreation();
+        if (instance == null) {
+            instance = new TrackCreation();
         }
-        return trackCreation;
+        return instance;
     }
 
     @Override
     public CB_View_Base getView() {
         // don't return a view.
         // show menu direct.
-        GL.that.runOnGL(this::execute);
+        GL.that.runOnGL(getContextMenu()::show);
         return null;
     }
 

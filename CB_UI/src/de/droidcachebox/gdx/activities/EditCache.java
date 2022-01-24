@@ -258,12 +258,12 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             cache.setLongDescription(cacheDescription.getText());
             if (update) {
                 cacheDAO.updateDatabase(cache);
-                CacheListChangedListeners.getInstance().cacheListChanged();
+                CacheListChangedListeners.getInstance().fire();
             } else {
                 CBDB.getInstance().cacheList.add(cache);
                 cacheDAO.writeToDatabase(cache);
                 GlobalCore.setSelectedCache(cache);
-                CacheListChangedListeners.getInstance().cacheListChanged();
+                CacheListChangedListeners.getInstance().fire();
                 GeoCaches.getInstance().setSelectedCacheVisible();
             }
 

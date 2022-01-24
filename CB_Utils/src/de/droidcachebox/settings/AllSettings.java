@@ -141,7 +141,7 @@ public interface AllSettings {
     // Drafts
     SettingFile DraftsGarminPath = new SettingFile("DraftsGarminPath", Drafts, DEVELOPER, Config_Core.workPath + "/User/geocache_visits.txt", Global);
     SettingBool DraftsLoadAll = new SettingBool("DraftsLoadAll", Drafts, DEVELOPER, true, Global, false);
-    SettingInt DraftsLoadLength = new SettingInt("DraftsLoadLength", Drafts, DEVELOPER, 100, Global);
+    SettingInt draftsLoadLength = new SettingInt("DraftsLoadLength", Drafts, DEVELOPER, 100, Global);
 
     // Misc
     SettingStringArray Navis = new SettingStringArray("Navis", Misc, NORMAL, "Google", Global, navis);

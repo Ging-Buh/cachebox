@@ -31,7 +31,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import de.droidcachebox.gdx.GL;
-import de.droidcachebox.gdx.IRenderFBO;
 import de.droidcachebox.gdx.graphics.mapsforge.GDXBitmap;
 import de.droidcachebox.utils.CB_List;
 
@@ -45,7 +44,6 @@ public class BitmapDrawable implements GDXBitmap, Disposable {
     static PixmapPacker Packer = new PixmapPacker(2048, 2048, Format.RGBA8888, 2, true);
 
     private final float scaleFactor;
-    private final boolean isDisposed = false;
     private byte[] buffer;
     private String AtlasHashString;
     private Sprite sprite;
@@ -103,7 +101,7 @@ public class BitmapDrawable implements GDXBitmap, Disposable {
         if (GL.that.isGlThread()) {
             createData();
         } else {
-            GL.that.runOnGL((IRenderFBO) () -> createData());
+            GL.that.runOnGL((Runnable) () -> createData());
         }
     }
 
@@ -120,7 +118,7 @@ public class BitmapDrawable implements GDXBitmap, Disposable {
         if (GL.that.isGlThread()) {
             createData();
         } else {
-            GL.that.runOnGL((IRenderFBO) () -> createData());
+            GL.that.runOnGL((Runnable) () -> createData());
         }
     }
 
@@ -253,6 +251,7 @@ public class BitmapDrawable implements GDXBitmap, Disposable {
 
     @Override
     public Texture getTexture() {
+        boolean isDisposed = false;
         if (isDisposed)
             return null;
         return tex;

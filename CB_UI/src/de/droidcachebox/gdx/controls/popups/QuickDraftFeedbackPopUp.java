@@ -13,57 +13,54 @@ import de.droidcachebox.gdx.math.UiSizes;
 public class QuickDraftFeedbackPopUp extends PopUp_Base {
 
     int counter;
-    boolean toSmall;
+    boolean tooSmall;
+    TimerTask timerTask;
 
+    /**
+     * lets the corresponding image expand and shrink after a delay for a period
+     * @param found if or not
+     */
     public QuickDraftFeedbackPopUp(boolean found) {
         super(new CB_RectF(0, 0, UiSizes.getInstance().getButtonHeight() * 2.5f), "QuickDraftFeedbackPopUp");
         counter = 0;
-        toSmall = true;
+        tooSmall = true;
         if (found) {
             setBackground(new SpriteDrawable(Sprites.LogIcons.get(0)));
         } else {
             setBackground(new SpriteDrawable(Sprites.LogIcons.get(1)));
         }
-
-        try {
-            new Timer().schedule(
-                    new TimerTask() {
-                        @Override
-                        public void run() {
-
-                            if (isDisposed) {
-                                GL.that.renderOnce();
-                                return;
-                            }
-
-                            if (toSmall) {
-                                if (counter < -5) {
-                                    toSmall = false;
-                                } else {
-                                    setRec(scaleCenter(0.9f));
-                                    counter--;
-                                }
-                            } else {
-                                if (counter > 0) {
-                                    toSmall = true;
-                                } else {
-                                    setRec(scaleCenter(1.1111f));
-                                    counter++;
-                                }
-                            }
-                            GL.that.renderOnce();
-                        }
-                    },
-                    40,
-                    40);
-        } catch (Exception ignored) {
-        }
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (isDisposed) {
+                    GL.that.renderOnce();
+                    return;
+                }
+                if (tooSmall) {
+                    if (counter < -5) {
+                        tooSmall = false;
+                    } else {
+                        setRec(scaleCenter(0.9f));
+                        counter--;
+                    }
+                } else {
+                    if (counter > 0) {
+                        tooSmall = true;
+                    } else {
+                        setRec(scaleCenter(1.1111f));
+                        counter++;
+                    }
+                }
+                GL.that.renderOnce();
+            }
+        };
     }
 
     @Override
-    public void dispose() {
-        setBackground(null);
-        super.dispose();
+    public void onShow() {
+        try {
+            new Timer().schedule(timerTask, 40, 40);
+        } catch (Exception ignored) {
+        }
     }
-
 }

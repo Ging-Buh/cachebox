@@ -103,7 +103,7 @@ public class UpdateCachesState {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
                             CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         }
-                        CacheListChangedListeners.getInstance().cacheListChanged();
+                        CacheListChangedListeners.getInstance().fire();
                         synchronized (CBDB.getInstance().cacheList) {
                             new ButtonDialog(sCanceled + Translation.get("CachesUpdated") + " " + changedCount + "/" + CBDB.getInstance().cacheList.size(),
                                     Translation.get("chkState"), MsgBoxButton.OK, MsgBoxIcon.None).show();

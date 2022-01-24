@@ -450,7 +450,7 @@ public class SearchDialog extends PopUp_Base {
 
                     new CacheDAO().updateCacheCountForGPXFilenames();
 
-                    CacheListChangedListeners.getInstance().cacheListChanged();
+                    CacheListChangedListeners.getInstance().fire();
 
                     if (counter == 1) {
                         // select this Cache

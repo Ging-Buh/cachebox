@@ -230,7 +230,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         }
         // enable Favpoint
         if (!GroundspeakAPI.hasBeenOnline()) {
-            Log.err(sClass, "add enable button GiveFavoritePoint");
+            Log.err(sClass, "adding enable button GiveFavoritePoint: to fetch MyUserInfos");
             scrollBoxContent.addLast(enableGiveFavoritePoint);
         }
         initLogText();

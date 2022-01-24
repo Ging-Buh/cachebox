@@ -47,13 +47,13 @@ public class Drafts extends Array<Draft> {
             };
         }
         AllSettings.DraftsLoadAll.addSettingChangedListener(settingsChangedListener);
-        AllSettings.DraftsLoadLength.addSettingChangedListener(settingsChangedListener);
+        AllSettings.draftsLoadLength.addSettingChangedListener(settingsChangedListener);
     }
 
     public void removeSettingsChangedHandler() {
         if (settingsChangedListener != null) {
             AllSettings.DraftsLoadAll.removeSettingChangedListener(settingsChangedListener);
-            AllSettings.DraftsLoadLength.removeSettingChangedListener(settingsChangedListener);
+            AllSettings.draftsLoadLength.removeSettingChangedListener(settingsChangedListener);
         }
     }
 
@@ -88,23 +88,23 @@ public class Drafts extends Array<Draft> {
             if (maybeCropped) {
                 switch (loadingType) {
                     case LoadNew:
-                        currentCroppedLength = AllSettings.DraftsLoadLength.getValue();
+                        currentCroppedLength = AllSettings.draftsLoadLength.getValue();
                         sql += " LIMIT " + (currentCroppedLength + 1);
                         break;
                     case LoadNewLastLength:
                         if (currentCroppedLength == -1)
-                            currentCroppedLength = AllSettings.DraftsLoadLength.getValue();
+                            currentCroppedLength = AllSettings.draftsLoadLength.getValue();
                         sql += " LIMIT " + (currentCroppedLength + 1);
                         break;
                     case LoadMore:
                         int Offset = currentCroppedLength;
-                        currentCroppedLength += AllSettings.DraftsLoadLength.getValue();
-                        sql += " LIMIT " + (AllSettings.DraftsLoadLength.getValue() + 1);
+                        currentCroppedLength += AllSettings.draftsLoadLength.getValue();
+                        sql += " LIMIT " + (AllSettings.draftsLoadLength.getValue() + 1);
                         sql += " OFFSET " + Offset;
                         break;
                     default:
                         if (currentCroppedLength == -1)
-                            currentCroppedLength = AllSettings.DraftsLoadLength.getValue();
+                            currentCroppedLength = AllSettings.draftsLoadLength.getValue();
                 }
             }
 
