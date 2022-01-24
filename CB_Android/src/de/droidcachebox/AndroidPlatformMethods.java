@@ -76,6 +76,7 @@ import de.droidcachebox.locator.GpsStateChangeEventList;
 import de.droidcachebox.locator.GpsStrength;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.map.MapTileLoader;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
@@ -653,10 +654,10 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             Coordinate coordinate = new Coordinate(Double.parseDouble(s[0]), Double.parseDouble(s[1]));
             Log.info(sClass, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
             if (coordinate.isValid()) {
-                ShowMap.getInstance().execute();
-                ShowMap.getInstance().normalMapView.setBtnMapStateToFree(); // btn
+                Action.ShowMap.action.execute();
+                ((ShowMap) Action.ShowMap.action).normalMapView.setBtnMapStateToFree(); // btn
                 // ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
-                ShowMap.getInstance().normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
+                ((ShowMap) Action.ShowMap.action).normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
             }
         } catch (Exception ignored) {
         }
