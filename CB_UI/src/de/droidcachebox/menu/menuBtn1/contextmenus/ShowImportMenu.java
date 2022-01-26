@@ -18,15 +18,9 @@ import de.droidcachebox.menu.menuBtn1.contextmenus.executes.UpdateCachesState;
 public class ShowImportMenu extends AbstractShowAction {
     public static final int MI_IMPORT_CBS = 189;
     public static final int MI_IMPORT_GCV = 192;
-    private static ShowImportMenu that;
 
-    private ShowImportMenu() {
+    public ShowImportMenu() {
         super("ImportMenu");
-    }
-
-    public static ShowImportMenu getInstance() {
-        if (that == null) that = new ShowImportMenu();
-        return that;
     }
 
     @Override

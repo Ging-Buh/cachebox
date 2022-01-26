@@ -408,7 +408,7 @@ public class ShowMap extends AbstractShowAction {
         cm2.addMenuItem("stop", null, TrackRecorder.getInstance()::stopRecording).setEnabled(TrackRecorder.getInstance().recording || TrackRecorder.getInstance().pauseRecording);
         cm2.addDivider();
         cm2.addMenuItem("load", null, TrackList.getInstance()::selectTrackFileReadAndAddToTracks);
-        cm2.addMenuItem("generate", null, () -> TrackCreation.getInstance().execute());
+        cm2.addMenuItem("generate", null, () -> new TrackCreation().execute());
         cm2.addDivider();
         cm2.addMenuItem("Tracks", Sprites.getSprite(IconName.trackListIcon.name()), () -> ShowTracks.action.execute());
         cm2.show();

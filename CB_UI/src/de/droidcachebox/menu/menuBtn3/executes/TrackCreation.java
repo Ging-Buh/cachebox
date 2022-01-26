@@ -22,18 +22,10 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 
 public class TrackCreation extends AbstractShowAction {
-    private static TrackCreation instance;
     private Menu cm2;
 
-    private TrackCreation() {
+    public TrackCreation() {
         super("");
-    }
-
-    public static TrackCreation getInstance() {
-        if (instance == null) {
-            instance = new TrackCreation();
-        }
-        return instance;
     }
 
     @Override

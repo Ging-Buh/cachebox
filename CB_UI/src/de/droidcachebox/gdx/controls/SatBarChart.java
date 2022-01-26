@@ -160,11 +160,6 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
     }
 
     @Override
-    public void dispose() {
-        GpsStateChangeEventList.remove(this);
-    }
-
-    @Override
     public void onShow() {
         GpsStateChangeEventList.add(this);
         redraw = true;

@@ -465,9 +465,4 @@ public class GestureButton extends CB_Button {
         }
     }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
-
 }

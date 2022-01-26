@@ -78,7 +78,7 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.map.MapTileLoader;
 import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
+import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.FZKDownload;
 import de.droidcachebox.menu.menuBtn5.ShowSettings;
@@ -676,7 +676,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                         if (mustShowCacheList) {
                             // show cachelist first then search dialog
                             mustShowCacheList = false;
-                            ViewManager.leftTab.showView(GeoCaches.getInstance());
+                            ViewManager.leftTab.showView(((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView());
                             Log.info("importCacheByGCCode", "do it again");
                             importCacheByGCCode(externalRequestGCCode); // now the search can start (doSearchOnline)
                         } else {

@@ -263,7 +263,7 @@ public class GlobalCore implements SolverCacheInterface {
         if (selectedCache == null)
             return false;
 
-        return selectedCache.getGeoCacheCode().length() != 0;
+        return selectedCache.getGeoCacheCode().length() > 0;
     }
 
     private void initVersionInfos() {

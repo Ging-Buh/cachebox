@@ -41,7 +41,7 @@ import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.Action;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
+import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
 import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
@@ -84,8 +84,8 @@ public class CacheContextMenu {
             theMenu.addCheckableMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), geoCache.isFavorite(), this::toggleAsFavorite);
             theMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(geoCache));
             if (selectedCacheIsGC) {
-                theMenu.addMenuItem("contactOwner", ContactOwner.getInstance().getIcon(), () -> ContactOwner.getInstance().execute());
-                theMenu.addMenuItem("GroundSpeakLists", null, () -> ListsAtGroundSpeak.getInstance().execute());
+                theMenu.addMenuItem("contactOwner", Sprites.getSprite("bigLetterbox"), () -> new ContactOwner().execute());
+                theMenu.addMenuItem("GroundSpeakLists", null, () -> new ListsAtGroundSpeak().execute());
             }
             if (!Settings.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()))
                 theMenu.addCheckableMenuItem("rememberGeoCache", Settings.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()), this::rememberGeoCache);
@@ -213,7 +213,7 @@ public class CacheContextMenu {
 
         GlobalCore.setSelectedCache(null);
         CacheListChangedListeners.getInstance().fire();
-        GeoCaches.getInstance().setSelectedCacheVisible();
+        ((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().setSelectedCacheVisible();
 
     }
 

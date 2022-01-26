@@ -20,15 +20,8 @@ import de.droidcachebox.utils.http.Webb;
 
 public class ContactOwner extends AbstractAction {
 
-    private static ContactOwner contactOwner;
-
-    private ContactOwner() {
+    ContactOwner() {
         super("contactOwner");
-    }
-
-    public static ContactOwner getInstance() {
-        if (contactOwner == null) contactOwner = new ContactOwner();
-        return contactOwner;
     }
 
     @Override

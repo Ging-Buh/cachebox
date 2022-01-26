@@ -29,7 +29,7 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowSelectDB;
 import de.droidcachebox.menu.menuBtn1.executes.DeleteDialog;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
+import de.droidcachebox.menu.menuBtn1.executes.GeoCachesView;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
@@ -37,23 +37,26 @@ import de.droidcachebox.utils.log.Log;
 public class ShowGeoCaches extends AbstractShowAction {
 
     private EditCache editCache;
+    private GeoCachesView geoCachesView;
 
     public ShowGeoCaches() {
         super("cacheList", "  (" + CBDB.getInstance().cacheList.size() + ")");
         editCache = null;
+        geoCachesView = null;
     }
 
     @Override
     public void execute() {
-        if (Platform.isGPSon()) {
+        if (Platform.isGPSon())
             Platform.request_getLocationIfInBackground();
-        }
-        ViewManager.leftTab.showView(GeoCaches.getInstance());
+        if (geoCachesView == null)
+            geoCachesView = new GeoCachesView();
+        ViewManager.leftTab.showView(geoCachesView);
     }
 
     @Override
     public CB_View_Base getView() {
-        return GeoCaches.getInstance();
+        return geoCachesView;
     }
 
     @Override
@@ -93,7 +96,7 @@ public class ShowGeoCaches extends AbstractShowAction {
                         GlobalCore.setSelectedWaypoint(nearestCacheWp.getCache(), nearestCacheWp.getWaypoint());
                         GlobalCore.setNearestCache(nearestCacheWp.getCache());
                     }
-                    GeoCaches.getInstance().setSelectedCacheVisible();
+                    geoCachesView.setSelectedCacheVisible();
                 }
             }
         });
@@ -117,7 +120,7 @@ public class ShowGeoCaches extends AbstractShowAction {
         cm.addMenuItem("Search", Sprites.getSprite(IconName.lupe.name()), () -> {
             ShowSearchDialog.action.execute();
         });
-        cm.addMenuItem("importExport", Sprites.getSprite(IconName.importIcon.name()), () -> ShowImportMenu.getInstance().execute());
+        cm.addMenuItem("importExport", Sprites.getSprite(IconName.importIcon.name()), () -> new ShowImportMenu().execute());
         mi = cm.addMenuItem("setOrResetFavorites", "", Sprites.getSprite(IconName.favorit.name()), (v, x, y, pointer, button) -> {
             cm.close();
             boolean checked = ((MenuItem) v).isChecked();
@@ -149,7 +152,7 @@ public class ShowGeoCaches extends AbstractShowAction {
         });
         mi.setCheckable(true);
         mi.setChecked(true); // default is to mark as Favorite
-        cm.addMenuItem("manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()), () -> ShowSelectDB.getInstance().execute());
+        cm.addMenuItem("manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()), () -> new ShowSelectDB().execute());
         mi = cm.addMenuItem("AutoResort", null, () -> {
             GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
             if (GlobalCore.getAutoResort()) {
@@ -180,6 +183,11 @@ public class ShowGeoCaches extends AbstractShowAction {
             applyFilter(FilterInstances.ALL);
             FilterInstances.setLastFilter(FilterInstances.ALL);
         }
+    }
+
+    public GeoCachesView getGeoCachesView() {
+        if (geoCachesView == null) geoCachesView = new GeoCachesView();
+        return geoCachesView;
     }
 
     public void setNameExtension(String newExtension) {

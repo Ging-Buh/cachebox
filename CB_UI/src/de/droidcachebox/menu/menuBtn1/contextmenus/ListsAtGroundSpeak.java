@@ -17,15 +17,9 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.translation.Translation;
 
 public class ListsAtGroundSpeak extends AbstractAction {
-    private static ListsAtGroundSpeak listsAtGroundSpeak;
 
-    private ListsAtGroundSpeak() {
+    ListsAtGroundSpeak() {
         super("GroundSpeakLists");
-    }
-
-    public static ListsAtGroundSpeak getInstance() {
-        if (listsAtGroundSpeak == null) listsAtGroundSpeak = new ListsAtGroundSpeak();
-        return listsAtGroundSpeak;
     }
 
     @Override

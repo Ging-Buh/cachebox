@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 import de.droidcachebox.AbstractAction;
@@ -39,9 +39,8 @@ import de.droidcachebox.utils.log.Log;
  */
 public class StartExternalDescription extends AbstractAction {
 
-    private static final String log = "StartExternalDescription";
-    private static StartExternalDescription that;
-    private final String TEMP_CACHE_HTML_FILE = "temp.html";
+    private static final String sClass = "StartExternalDescription";
+    private static StartExternalDescription instance;
     private final LinkedList<String> NonLocalImages = new LinkedList<>();
     private final LinkedList<String> NonLocalImagesUrl = new LinkedList<>();
 
@@ -50,8 +49,8 @@ public class StartExternalDescription extends AbstractAction {
     }
 
     public static StartExternalDescription getInstance() {
-        if (that == null) that = new StartExternalDescription();
-        return that;
+        if (instance == null) instance = new StartExternalDescription();
+        return instance;
     }
 
     /**
@@ -59,7 +58,7 @@ public class StartExternalDescription extends AbstractAction {
      */
     @Override
     public void execute() {
-        if (getEnabled()) {
+        if (GlobalCore.isSetSelectedCache()) {
             CacheDAO cacheDAO = new CacheDAO();
 
             //save desc Html local and show ext
@@ -75,29 +74,26 @@ public class StartExternalDescription extends AbstractAction {
             // add trailer
             html += "</br></br>" + "</body></html>";
 
+            String TEMP_CACHE_HTML_FILE = "temp.html";
             String filePath = Settings.imageCacheFolder.getValue() + "/" + TEMP_CACHE_HTML_FILE;
 
             try {
 
-                OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(filePath), Charset.forName("utf-8"));
+                OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8);
                 out.write(html);
                 out.close();
 
                 Platform.callUrl("file://" + filePath);
 
             } catch (IOException ex) {
-                Log.err(log, "Write Temp HTML", ex);
+                Log.err(sClass, "Write Temp HTML", ex);
             }
         }
     }
 
     @Override
     public boolean getEnabled() {
-        // liefert true zurück wenn ein Cache gewählt ist und dieser einen Hint hat
-        if (GlobalCore.getSelectedCache() == null)
-            return false;
-
-        return true;
+        return GlobalCore.isSetSelectedCache();
     }
 
     @Override

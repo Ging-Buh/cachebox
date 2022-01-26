@@ -43,15 +43,9 @@ import de.droidcachebox.utils.log.Log;
 
 public class ShowSelectDB extends AbstractAction {
     private static final String sClass = "ShowSelectDB";
-    private static ShowSelectDB showSelectDB;
 
-    private ShowSelectDB() {
+    public ShowSelectDB() {
         super("manageDB");
-    }
-
-    public static ShowSelectDB getInstance() {
-        if (showSelectDB == null) showSelectDB = new ShowSelectDB();
-        return showSelectDB;
     }
 
     @Override

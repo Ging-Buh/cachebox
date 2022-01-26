@@ -8,7 +8,7 @@ import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.menu.menuBtn1.executes.GeoCaches;
+import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
 import de.droidcachebox.utils.log.Log;
 
 public class ShowSearchDialog extends AbstractAction {
@@ -23,7 +23,7 @@ public class ShowSearchDialog extends AbstractAction {
 
     @Override
     public void execute() {
-        if (!GeoCaches.getInstance().isVisible()) {
+        if (!((ShowGeoCaches) ShowGeoCaches.action).getGeoCachesView().isVisible()) {
             ShowGeoCaches.action.execute();
         }
         searchDialog = new SearchDialog();

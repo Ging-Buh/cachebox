@@ -37,8 +37,6 @@ import de.droidcachebox.translation.Translation;
 
 public class ShowLogs extends AbstractShowAction {
 
-    private final int result = 0;
-
     public ShowLogs() {
         super("ShowLogs");
         // createContextMenu();  see getContextMenu
@@ -108,6 +106,7 @@ public class ShowLogs extends AbstractShowAction {
         isCanceled.set(false);
 
         /*
+    private final int result = 0;
         do after CancelWaitDialog
         public void ready(boolean canceled) {
             String sCanceled = canceled ? Translation.get("isCanceled") + br : "";
