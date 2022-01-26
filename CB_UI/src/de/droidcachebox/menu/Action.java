@@ -51,101 +51,41 @@ import de.droidcachebox.menu.quickBtns.SwitchAutoResort;
  * @author Longri
  */
 public enum Action {
-    ShowDescription(new ShowDescription()), // 0
-    ShowWayPoints(new ShowWayPoints()), // 1
-    ShowLogs(new ShowLogs()), // 2
-    ShowMap(new ShowMap()), // 3
-    ShowCompass(new ShowCompass()), // 4
-    ShowGeoCaches(new ShowGeoCaches()), // 5
-    ShowTracks(new ShowTracks()), // 6
-    TakePicture(new PlatformAction("TakePhoto", ViewConst.TAKE_PHOTO, Sprites.getSprite(Sprites.IconName.log10icon.name()))), // 7
-    RecordVideo(new PlatformAction("RecVideo", ViewConst.VIDEO_REC, Sprites.getSprite(Sprites.IconName.videoIcon.name()))), // 8
-    RecordVoice(new PlatformAction("VoiceRec", ViewConst.VOICE_REC, Sprites.getSprite(Sprites.IconName.voiceRecIcon.name()))), // 9
-    ShowSearchDialog(new ShowSearchDialog()), // 10
-    ShowEditFilterSettings(new ShowEditFilterSettings()), // 11
-    SwitchAutoResort(new SwitchAutoResort()), // 12
-    ShowSolver1(new ShowSolver1()), // 13
-    ShowSpoiler(new ShowSpoiler()), // 14
-    ShowHint(new ShowHint()), // 15
-    ShowParkingMenu(new ShowParkingMenu()), // 16
-    SwitchDayNight(new SwitchDayNight()), // 17
-    ShowDrafts(new ShowDrafts()), // 18
-    ShowQuickDraft(new ShowQuickDraft()), // 19
-    ShowTrackableList(new ShowTrackableList()), // 20
-    AddWayPoint(new AddWayPoint()), // 21
-    ShowSolver2(new ShowSolver2()), // 22
-    ShowNotes(new ShowNotes()), // 23
-    UploadDrafts(new UploadDrafts()), // 24
-    SwitchTorch(new SwitchTorch()), // 25
-    CreateRoute(new CreateRoute()),
-    RememberGeoCache(new RememberGeoCache()),
+    ShowDescription(new ShowDescription(),"Description"), // 0
+    ShowWayPoints(new ShowWayPoints(), "Waypoints"), // 1
+    ShowLogs(new ShowLogs(),"ShowLogs"), // 2
+    ShowMap(new ShowMap(),"Map"), // 3
+    ShowCompass(new ShowCompass(), "Compass"), // 4
+    ShowGeoCaches(new ShowGeoCaches(), "cacheList"), // 5
+    ShowTracks(new ShowTracks(), "Tracks"), // 6
+    TakePicture(new PlatformAction("TakePhoto", ViewConst.TAKE_PHOTO, Sprites.getSprite(Sprites.IconName.log10icon.name())), "TakePhoto"), // 7
+    RecordVideo(new PlatformAction("RecVideo", ViewConst.VIDEO_REC, Sprites.getSprite(Sprites.IconName.videoIcon.name())), "RecVideo"), // 8
+    RecordVoice(new PlatformAction("VoiceRec", ViewConst.VOICE_REC, Sprites.getSprite(Sprites.IconName.voiceRecIcon.name())), "VoiceRec"), // 9
+    ShowSearchDialog(new ShowSearchDialog(), "Search"), // 10
+    ShowEditFilterSettings(new ShowEditFilterSettings(), "Filter"), // 11
+    SwitchAutoResort(new SwitchAutoResort(), "AutoResort"), // 12
+    ShowSolver1(new ShowSolver1(), "Solver"), // 13
+    ShowSpoiler(new ShowSpoiler(), "spoiler"), // 14
+    ShowHint(new ShowHint(), "hint"), // 15
+    ShowParkingMenu(new ShowParkingMenu(), "MyParking"), // 16
+    SwitchDayNight(new SwitchDayNight(), "DayNight"), // 17
+    ShowDrafts(new ShowDrafts(), "Drafts"), // 18
+    ShowQuickDraft(new ShowQuickDraft(), "QuickDraft"), // 19
+    ShowTrackableList(new ShowTrackableList(), "TBList"), // 20
+    AddWayPoint(new AddWayPoint(), "AddWaypoint"), // 21
+    ShowSolver2(new ShowSolver2(), "Solver v2"), // 22
+    ShowNotes(new ShowNotes(), "Notes"), // 23
+    UploadDrafts(new UploadDrafts(), "uploadDrafts"), // 24
+    SwitchTorch(new SwitchTorch(), "torch"), // 25
+    CreateRoute(new CreateRoute(), "generateRoute"),
+    RememberGeoCache(new RememberGeoCache(), "rememberGeoCacheTitle"),
     ;
 
     public AbstractAction action;
+    public String translationId;
 
-    Action(AbstractAction action) {
+    Action(AbstractAction action, String translationId) {
         this.action = action;
-    }
-
-    public String getName() {
-        switch (this) {
-            case ShowDescription:
-                return "Description";
-            case ShowWayPoints:
-                return "Waypoints";
-            case ShowLogs:
-                return "ShowLogs";
-            case ShowMap:
-                return "Map";
-            case ShowCompass:
-                return "Compass";
-            case ShowGeoCaches:
-                return "cacheList";
-            case ShowTracks:
-                return "Tracks";
-            case TakePicture:
-                return "TakePhoto";
-            case RecordVideo:
-                return "RecVideo";
-            case RecordVoice:
-                return "VoiceRec";
-            case ShowSearchDialog:
-                return "Search";
-            case ShowEditFilterSettings:
-                return "Filter";
-            case SwitchAutoResort:
-                return "AutoResort";
-            case ShowSolver1:
-                return "Solver";
-            case ShowSpoiler:
-                return "spoiler";
-            case ShowHint:
-                return "hint";
-            case ShowParkingMenu:
-                return "MyParking";
-            case SwitchDayNight:
-                return "DayNight";
-            case ShowDrafts:
-                return "Drafts";
-            case ShowQuickDraft:
-                return "QuickDraft";
-            case ShowTrackableList:
-                return "TBList";
-            case AddWayPoint:
-                return "AddWaypoint";
-            case ShowSolver2:
-                return "Solver v2";
-            case ShowNotes:
-                return "Notes";
-            case UploadDrafts:
-                return "uploadDrafts";
-            case SwitchTorch:
-                return "torch";
-            case CreateRoute:
-                return "generateRoute";
-            case RememberGeoCache:
-                return "rememberGeoCacheTitle";
-        }
-        return "empty";
+        this.translationId = translationId;
     }
 }

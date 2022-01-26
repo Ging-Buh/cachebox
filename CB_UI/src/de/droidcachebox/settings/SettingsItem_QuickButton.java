@@ -79,7 +79,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
         for (Action action : actions) {
             if (action.action == null)
                 continue;
-            icm.addMenuItem(action.getName(), "",
+            icm.addMenuItem(action.translationId, "",
                     new SpriteDrawable(action.action.getIcon()),
                     (v, x, y, pointer, button) -> {
                         icm.close();
@@ -246,7 +246,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             Menu icm = new Menu("virtuell");
             QuickButtonItem item = tmpQuickList.get(position);
             Action action = item.getQuickAction();
-            MenuItem mi = icm.addMenuItem(action.getName(),"",
+            MenuItem mi = icm.addMenuItem(action.translationId,"",
                     new SpriteDrawable(action.action == null ? null : action.action.getIcon()),
                     (v, x, y, pointer, button) -> {
                         listView.setSelection(((ListViewItemBase) v).getIndex());
