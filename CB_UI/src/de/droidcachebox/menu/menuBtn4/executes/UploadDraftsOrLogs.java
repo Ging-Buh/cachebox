@@ -6,7 +6,6 @@ import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.dataclasses.Draft;
 import de.droidcachebox.dataclasses.Drafts;
-import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
@@ -57,7 +56,7 @@ public class UploadDraftsOrLogs {
                         int result;
                         if (draft.isTbDraft) {
                             // there is no TB draft. we have to log direct
-                            result = GroundspeakAPI.uploadTrackableLog(draft.TravelBugCode, draft.TrackingNumber, draft.gcCode, LogType.CB_LogType2GC(draft.type), draft.timestamp, draft.comment);
+                            result = GroundspeakAPI.uploadTrackableLog(draft.TravelBugCode, draft.TrackingNumber, draft.gcCode, draft.type.gsLogTypeId, draft.timestamp, draft.comment);
                         } else {
                             if (sendGCVote) {
                                 if (draft.gc_Vote > 0) {

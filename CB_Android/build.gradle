@@ -67,7 +67,9 @@ android {
 
     }
     packagingOptions {
-        exclude 'META-INF/robovm/ios/robovm.xml'
+        resources {
+            excludes += ['META-INF/robovm/ios/robovm.xml']
+        }
     }
 
     defaultConfig {

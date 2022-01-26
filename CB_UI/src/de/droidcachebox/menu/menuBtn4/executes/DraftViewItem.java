@@ -163,7 +163,7 @@ public class DraftViewItem extends ListViewItemBackground {
                 return null;
             return new SpriteDrawable(spr);
         } else {
-            return new SpriteDrawable(Sprites.LogIcons.get(fne.type.getIconID()));
+            return new SpriteDrawable(Sprites.LogIcons.get(fne.type.iconId));
         }
     }
 

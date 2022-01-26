@@ -269,7 +269,7 @@ public class Trackable implements Comparable<Trackable> {
      * @return ?
      */
     public boolean isLogTypePossible(LogType type, String userName) {
-        int ID = type.getGcLogTypeId();
+        int ID = type.gsLogTypeId;
 
         if (ID == 4)
             return true; // Note

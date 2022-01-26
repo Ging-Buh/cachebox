@@ -202,17 +202,17 @@ public class Trackables extends V_ListView {
         cm.addMenuItem("RefreshInventory", null, this::refreshTbList);
         cm.addMenuItem("all_note", "", Sprites.getSprite(IconName.TBNOTE.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.note), TemplateFormatter.replaceTemplate(Settings.AddNoteTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.note.gsLogTypeId, TemplateFormatter.replaceTemplate(Settings.AddNoteTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_visit", "", Sprites.getSprite(IconName.TBVISIT.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.visited), TemplateFormatter.replaceTemplate(Settings.VisitedTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.visited.gsLogTypeId, TemplateFormatter.replaceTemplate(Settings.VisitedTemplate.getValue(), new Date()));
             return true;
         });
         cm.addMenuItem("all_dropped", "", Sprites.getSprite(IconName.TBDROP.name()), (v, x, y, pointer, button) -> {
             cm.close();
-            logTBs(((MenuItem) v).getTitle(), LogType.CB_LogType2GC(LogType.dropped_off), TemplateFormatter.replaceTemplate(Settings.DroppedTemplate.getValue(), new Date()));
+            logTBs(((MenuItem) v).getTitle(), LogType.dropped_off.gsLogTypeId, TemplateFormatter.replaceTemplate(Settings.DroppedTemplate.getValue(), new Date()));
             refreshTbList();
             return true;
         });

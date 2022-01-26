@@ -541,7 +541,7 @@ public class GroundspeakAPI {
                         .post(getUrl(1, "geocachelogs") + "?" + WebbUtils.queryString(params))
                         .body(new JSONObject()
                                 .put("geocacheCode", draft.gcCode)
-                                .put("type", draft.type.getGcLogTypeId())
+                                .put("type", draft.type.gsLogTypeId)
                                 .put("loggedDate", getDate(draft.timestamp))
                                 .put("text", prepareNote(draft.comment))
                                 .put("usedFavoritePoint", draft.usedFavoritePoint)
@@ -561,7 +561,7 @@ public class GroundspeakAPI {
                         .post(getUrl(1, "logdrafts"))
                         .body(new JSONObject()
                                 .put("geocacheCode", draft.gcCode)
-                                .put("logType", draft.type.getGcLogTypeId())
+                                .put("logType", draft.type.gsLogTypeId)
                                 .put("loggedDate", getDate(draft.timestamp))
                                 .put("note", prepareNote(draft.comment))
                                 .put("useFavoritePoint", draft.usedFavoritePoint)
@@ -574,7 +574,7 @@ public class GroundspeakAPI {
             return OK;
         } catch (Exception e) {
             retry(e);
-            Log.err(sClass, "uploadDraftOrLog geocacheCode: " + draft.gcCode + " logType: " + draft.type.getGcLogTypeId() + ".\n" + LastAPIError, e);
+            Log.err(sClass, "uploadDraftOrLog geocacheCode: " + draft.gcCode + " logType: " + draft.type.gsLogTypeId + ".\n" + LastAPIError, e);
             return ERROR;
         }
     }

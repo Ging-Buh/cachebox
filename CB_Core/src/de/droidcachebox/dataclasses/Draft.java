@@ -123,7 +123,7 @@ public class Draft implements Serializable {
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         String stimestamp = iso8601Format.format(timestamp);
         args.put("Timestamp", stimestamp);
-        args.put("Type", type.getGcLogTypeId());
+        args.put("Type", type.gsLogTypeId);
         args.put("FoundNumber", foundNumber);
         args.put("Comment", comment);
         if (Id >= 0)
@@ -146,7 +146,7 @@ public class Draft implements Serializable {
         // search FieldNote Id : should be the last entry
         CoreCursor reader = DraftsDatabase.getInstance()
                 .rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog, GcId from FieldNotes where GcCode='" + gcCode
-                        + "' and type=" + type.getGcLogTypeId(), null);
+                        + "' and type=" + type.gsLogTypeId, null);
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
             Draft fne = new Draft(reader);
@@ -174,7 +174,7 @@ public class Draft implements Serializable {
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         String stimestamp = iso8601Format.format(timestamp);
         args.put("timestamp", stimestamp);
-        args.put("type", type.getGcLogTypeId());
+        args.put("type", type.gsLogTypeId);
         args.put("foundnumber", foundNumber);
         args.put("comment", comment);
         args.put("cachetype", cacheType);

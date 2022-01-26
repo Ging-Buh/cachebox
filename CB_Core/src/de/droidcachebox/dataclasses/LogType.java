@@ -1,34 +1,55 @@
 package de.droidcachebox.dataclasses;
 
 public enum LogType {
-    found, // 0
-    didnt_find, // 1
-    note, // 2
-    published, // 3
-    enabled, // 4
-    needs_maintenance, // 5
-    temporarily_disabled, // 6
-    owner_maintenance, // 7
-    will_attend, // 8
-    attended, // 9
-    webcam_photo_taken, // 10
-    archived, // 11
-    reviewer_note, // 12
-    needs_archived, // 13
-    unarchive, // 14
-    retract, // 15
-    update_coord, // 16
-    retrieve, // 17
-    dropped_off, // 18
-    mark_missing, // 19
-    grab_it, // 20
-    discovered, // 21
-    move_to_collection, // 22
-    move_to_inventory, // 23
-    announcement, // 24
-    visited, // 25
-    Submit_for_Review, //
+    found(2, 0, "Found it"),
+    didnt_find(3, 1, "Didn't find it"),
+    note(4, 2, "note"),
+    published(24, 3, "published"),
+    enabled(23, 4, "enabled"),
+    needs_maintenance(45, 5, "needs_maintenance"),
+    temporarily_disabled(22, 6, "temporarily_disabled"),
+    owner_maintenance(46, 7, "owner_maintenance"),
+    will_attend(9, 8, "will_attend"),
+    attended(10, 9, "attended"),
+    webcam_photo_taken(11, 10, "webcam_photo_taken"),
+    archived(5, 11, "archived"),
+    reviewer_note(18, 12, "reviewer_note"),
+    needs_archived(7, 13, "needs_archived"),
+    unarchive(1, 11, "unarchive"), // == archived
+    retract(25, 14,"retract"), // 15
+    update_coord(47, 16, "update_coord"),
+    retrieve(13, 17, "retrieve"),
+    dropped_off(14, 18, "dropped_off"),
+    mark_missing(16, 2, "mark_missing"), // == dnf
+    grab_it(19, 19, "grab_it"),
+    discovered(48, 20, "discovered"),
+    move_to_collection(69, 2, "move_to_collection"),
+    move_to_inventory(70, 2, "move_to_inventory"),
+    announcement(74, 15, "Event Announcement"),
+    visited(75, 21, "visited"),
+    Submit_for_Review(4, 2, "Submit for Review"), // 4=note
     ;
+    /**
+     * GS LogTypeId's:</br>4 - Post Note </br>13 - Retrieve It from a Cache </br>14 - Place in a cache </br>16 - Mark as missing </br>19 -
+     * Grab </br>48 - Discover </br>69 - Move to collection </br>70 - Move to inventory </br>75 - Visit
+     * GC has "unarchive" twice, we use  [1] not [12]
+     * GC has "reviewer_note" twice, we use [18] not [68]
+     */
+    public int gsLogTypeId;
+    public int iconId;
+    private final String string;
+
+    LogType(int gsLogTypeId, int iconId, String string) {
+        this.gsLogTypeId = gsLogTypeId;
+        this.iconId = iconId;
+        this.string = string;
+    }
+
+    @Override
+    public String toString() {
+        return string;
+    }
+
 
     /*
     GEOCACHE LOG TYPES
@@ -232,83 +253,9 @@ public enum LogType {
     }
 
     /**
-     * GS LogTypeId's:</br>4 - Post Note </br>13 - Retrieve It from a Cache </br>14 - Place in a cache </br>16 - Mark as missing </br>19 -
-     * Grab </br>48 - Discover </br>69 - Move to collection </br>70 - Move to inventory </br>75 - Visit
+     * Returns True if the log type is a TB Log
      *
-     * @param value
-     * @return
-     */
-    public static int CB_LogType2GC(LogType value) {
-        switch (value) {
-            case unarchive:
-                return 1;
-            case found:
-                return 2;
-            case didnt_find:
-                return 3;
-            case note:
-                return 4;
-            case archived:
-                return 5;
-            case needs_archived:
-                return 7;
-            case will_attend:
-                return 9;
-            case attended:
-                return 10;
-            case webcam_photo_taken:
-                return 11;
-            // GC hat unarchive doppelt, wir nutzen nur [1]
-            // case unarchive:
-            // return 12;
-            case retrieve:
-                return 13;
-            case dropped_off:
-                return 14;
-            case mark_missing:
-                return 16;
-            case reviewer_note:
-                return 18;
-            case grab_it:
-                return 19;
-            case temporarily_disabled:
-                return 22;
-            case enabled:
-                return 23;
-            case published:
-                return 24;
-            case retract:
-                return 25;
-            case needs_maintenance:
-                return 45;
-            case owner_maintenance:
-                return 46;
-            case update_coord:
-                return 47;
-            case discovered:
-                return 48;
-            // GC hat reviewer_note doppelt, wir nutzen nur [18]
-            // case reviewer_note:
-            // return 68;
-            case move_to_collection:
-                return 69;
-            case move_to_inventory:
-                return 70;
-            case visited:
-                return 75;
-
-            default:
-                break;
-
-        }
-
-        return 4;
-    }
-
-    /**
-     * Returns True if the log type a TB Log
-     *
-     * @return
+     * @return boolean true or false
      */
     public boolean isTbLog() {
         int t = this.ordinal();
@@ -326,141 +273,6 @@ public enum LogType {
             return true; // move_to_collection
         if (t == 23)
             return true; // move_to_inventory
-        if (t == 25)
-            return true; // visited
-
-        return false;
-    }
-
-    public int getIconID() {
-        // only for get icons for cacheLogs (not trackableLogs)
-        switch (this.ordinal()) {
-            case 0:
-                return 0; // Found
-            case 1:
-                return 1; // DNF
-            case 2:
-                return 2; // Note
-            case 3:
-                return 3; // Publish
-            case 4:
-                return 4; // Enable
-            case 5:
-                return 5; // needs maintains
-            case 6:
-                return 6; // Disable
-            case 7:
-                return 7; // Owner Maintains
-            case 8:
-                return 8; // Will attend
-            case 9:
-                return 9; // Attended
-            case 10:
-                return 10; // Photo
-            case 11:
-                return 11; // Archive
-            case 12:
-                return 12; // Reviewer Note
-            case 13:
-                return 13; // needs maintains
-            case 14:
-                return 11; // Unarchive
-            case 15:
-                return 14; // Retract
-            case 16:
-                return 16; // Update Coords
-            case 17:
-                return 17; // Retrive
-            case 18:
-                return 18; // Dropped
-            case 19:
-                return 2; // Mark missing
-            case 20:
-                return 19; // Grab It
-            case 21:
-                return 20; // Discover
-            case 22:
-                return 2; // Move to Collection
-            case 23:
-                return 2; // Move to Inventory
-            case 24:
-                return 15; // Announcement
-            case 25:
-                return 21; // Visited
-
-        }
-
-        return -1; // Note
-    }
-
-    public int getGcLogTypeId() {
-        return CB_LogType2GC(this);
-    }
-
-    @Override
-    public String toString() {
-
-        switch (this) {
-            case unarchive:
-                return "unarchive";
-            case found:
-                return "Found it";
-            case didnt_find:
-                return "Didn't find it";
-            case note:
-                return "note";
-            case archived:
-                return "archived";
-            case needs_archived:
-                return "needs_archived";
-            case will_attend:
-                return "will_attend";
-            case attended:
-                return "attended";
-            case webcam_photo_taken:
-                return "webcam_photo_taken";
-            // GC hat unarchive doppelt, wir nutzen nur [1]
-            // case unarchive:
-            // return 12;
-            case retrieve:
-                return "retrieve";
-            case dropped_off:
-                return "dropped_off";
-            case mark_missing:
-                return "mark_missing";
-            case reviewer_note:
-                return "reviewer_note";
-            case grab_it:
-                return "grab_it";
-            case temporarily_disabled:
-                return "temporarily_disabled";
-            case enabled:
-                return "enabled";
-            case published:
-                return "published";
-            case retract:
-                return "retract";
-            case needs_maintenance:
-                return "needs_maintenance";
-            case owner_maintenance:
-                return "owner_maintenance";
-            case update_coord:
-                return "update_coord";
-            case discovered:
-                return "discovered";
-            // GC hat reviewer_note doppelt, wir nutzen nur [18]
-            // case reviewer_note:
-            // return 68;
-            case move_to_collection:
-                return "move_to_collection";
-            case move_to_inventory:
-                return "move_to_inventory";
-            case visited:
-                return "visited";
-
-            default:
-                return "";
-
-        }
+        return t == 25; // visited
     }
 }
