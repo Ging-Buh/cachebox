@@ -24,7 +24,8 @@ public class ShowCredits extends AbstractShowAction {
 
     @Override
     public void execute() {
-        creditsView = new CreditsView(); // is always null or disposed at this point
+        if (creditsView == null)
+            creditsView = new CreditsView(); // is always null or disposed at this point
         ViewManager.leftTab.showView(creditsView);
     }
 
@@ -41,6 +42,11 @@ public class ShowCredits extends AbstractShowAction {
     @Override
     public CB_View_Base getView() {
         return creditsView;
+    }
+
+    @Override
+    public void viewIsHiding() {
+        creditsView = null;
     }
 
 }

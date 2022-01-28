@@ -40,7 +40,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class MapViewCacheList implements CacheListChangedListeners.CacheListChangedListener {
-    private static final String log = "MapViewCacheList";
+    private static final String sClass = "MapViewCacheList";
     public final CB_List<WayPointRenderInfo> wayPointsRenderInformation = new CB_List<>();
     private final int maxZoomLevel;
     /**
@@ -84,7 +84,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
             queueProcessor = new QueueProcessor();
             queueProcessor.setPriority(Thread.MIN_PRIORITY);
         } catch (Exception ex) {
-            Log.err(log, "MapCacheList.QueueProcessor", "onCreate", ex);
+            Log.err(sClass, "MapCacheList.QueueProcessor", "onCreate", ex);
         }
 
         // Log.debug(log, "MapCacheList.QueueProcessor Start");
@@ -469,7 +469,7 @@ public class MapViewCacheList implements CacheListChangedListeners.CacheListChan
                     }
                 } while (true);
             } catch (Exception ex3) {
-                Log.err(log, "MapCacheList.QueueProcessor.doInBackground()", "3", ex3);
+                Log.err(sClass, "MapCacheList.QueueProcessor.doInBackground()", "3", ex3);
             } finally {
                 // wenn der Thread beendet wurde, muss er neu gestartet werden!
                 state.set(4);

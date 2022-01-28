@@ -55,7 +55,7 @@ public class ProjectionCoordinate extends ActivityBase {
     }
 
     private void iniCacheNameLabel() {
-        CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - getTopHeight() - measuredLabelHeight, innerWidth - margin, measuredLabelHeight);
         title = new CB_Label(rec);
         addChild(title);
     }
@@ -78,7 +78,7 @@ public class ProjectionCoordinate extends ActivityBase {
         btnCoordinate = new CoordinateButton(rec, "CoordButton", fromCoordinate, coordinateButtonText);
 
         btnCoordinate.setCoordinateChangedListener(Coord -> {
-            activityBase.show();
+            show();
             fromCoordinate = Coord;
         });
 
@@ -87,7 +87,7 @@ public class ProjectionCoordinate extends ActivityBase {
 
     private void iniCoordButton2() {
 
-        CB_RectF labelRec = new CB_RectF(leftBorder + margin, btnCoordinate.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth, MeasuredLabelHeight);
+        CB_RectF labelRec = new CB_RectF(leftBorder + margin, btnCoordinate.getY() - buttonHeight - measuredLabelHeight, innerWidth, measuredLabelHeight);
 
         CB_Label lblP2P = new CB_Label(name + " lblP2P", labelRec, Translation.get("toPoint"));
         addChild(lblP2P);
@@ -96,7 +96,7 @@ public class ProjectionCoordinate extends ActivityBase {
         CoordinateButton bCoord2 = new CoordinateButton(rec, "CoordButton2", projectedCoordinate, null);
 
         bCoord2.setCoordinateChangedListener(Coord -> {
-            activityBase.show();
+            show();
             projectedCoordinate = Coord;
         });
 
@@ -113,20 +113,20 @@ public class ProjectionCoordinate extends ActivityBase {
         float wD = Fonts.measure(sDistance).width;
         float wMax = Math.max(wB, wD);
 
-        float y = btnCoordinate.getY() - ButtonHeight;
+        float y = btnCoordinate.getY() - buttonHeight;
         float eWidth = Fonts.measure(sUnit).width;
-        CB_RectF labelRec = new CB_RectF(leftBorder, y, wMax, ButtonHeight);
-        CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, innerWidth - labelRec.getWidth() - eWidth - (margin * 2), ButtonHeight);
-        CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
+        CB_RectF labelRec = new CB_RectF(leftBorder, y, wMax, buttonHeight);
+        CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, innerWidth - labelRec.getWidth() - eWidth - (margin * 2), buttonHeight);
+        CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, buttonHeight);
 
         CB_Label lblBearing = new CB_Label(name + " lblBearing", labelRec, sBearing);
         valueBearing = new EditTextField(textFieldRec, this, "*" + sBearing);
         valueBearing.disableKeyboardPopup();
         CB_Label lblBearingUnit = new CB_Label(name + " lblBearingUnit", UnitRec, "°");
 
-        labelRec.setY(lblBearing.getY() - ButtonHeight);
-        textFieldRec.setY(lblBearing.getY() - ButtonHeight);
-        UnitRec.setY(lblBearing.getY() - ButtonHeight);
+        labelRec.setY(lblBearing.getY() - buttonHeight);
+        textFieldRec.setY(lblBearing.getY() - buttonHeight);
+        UnitRec.setY(lblBearing.getY() - buttonHeight);
 
         lblDistance = new CB_Label(name + " lblDistance", labelRec, sDistance);
         valueDistance = new EditTextField(textFieldRec, this, "*" + sDistance);

@@ -19,7 +19,7 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
 public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString {
-    private static final String log = "SettingEnum";
+    private static final String sClass = "SettingEnum";
     private final CB_List<String> values;
 
     private EnumTyp myEnum;
@@ -84,7 +84,7 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString {
         try {
             ret = (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), stringValue);
         } catch (Exception e) {
-            Log.err(log, "Wrong ENUM value:" + stringValue, e);
+            Log.err(sClass, "Wrong ENUM value:" + stringValue, e);
             ret = getEnumFromString(defaultValue);
         }
 

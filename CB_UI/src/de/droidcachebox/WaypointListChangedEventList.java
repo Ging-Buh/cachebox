@@ -14,7 +14,7 @@ public class WaypointListChangedEventList {
         }
     }
 
-    public static void Remove(WaypointListChangedEvent event) {
+    public static void remove(WaypointListChangedEvent event) {
         synchronized (list) {
             list.remove(event);
         }

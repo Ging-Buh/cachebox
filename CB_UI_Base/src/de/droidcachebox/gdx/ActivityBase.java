@@ -19,11 +19,10 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 
 public class ActivityBase extends CB_View_Base {
-    protected float MeasuredLabelHeight;
-    protected float MeasuredLabelHeightBig;
-    protected float ButtonHeight;
+    protected float measuredLabelHeight;
+    protected float measuredLabelHeightBig;
+    protected float buttonHeight;
     protected float margin = 0;
-    protected ActivityBase activityBase;
 
     public ActivityBase(String Name) {
         this(new CB_RectF(0, 0, Math.min(UiSizes.getInstance().getSmallestWidth(), UiSizes.getInstance().getWindowHeight() * 0.66f), UiSizes.getInstance().getWindowHeight()), Name);
@@ -32,11 +31,10 @@ public class ActivityBase extends CB_View_Base {
     public ActivityBase(CB_RectF rec, String Name) {
         super(rec, Name);
         setBackground(Sprites.activityBackground);
-        MeasuredLabelHeight = Fonts.measure("T").height * 1.5f;
-        MeasuredLabelHeightBig = Fonts.measureForBigFont("T").height * 1.5f;
-        ButtonHeight = UiSizes.getInstance().getButtonHeight();
+        measuredLabelHeight = Fonts.measure("T").height * 1.5f;
+        measuredLabelHeightBig = Fonts.measureForBigFont("T").height * 1.5f;
+        buttonHeight = UiSizes.getInstance().getButtonHeight();
         registerSkinChangedEvent();
-        activityBase = this;
     }
 
     @Override

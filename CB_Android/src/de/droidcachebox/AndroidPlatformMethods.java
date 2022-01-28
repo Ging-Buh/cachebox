@@ -443,7 +443,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                     mainActivity.getIntent().removeExtra("GpxPath");
                     if (externalRequestGpxPath.endsWith(".map")) {
                         AbstractFile sourceFile = FileFactory.createFile(externalRequestGpxPath);
-                        AbstractFile destinationFile = FileFactory.createFile(FZKDownload.getInstance().getPathForMapFile(), sourceFile.getName());
+                        AbstractFile destinationFile = FileFactory.createFile(Settings.getInstance().getPathForMapFile(), sourceFile.getName());
                         boolean result = sourceFile.renameTo(destinationFile);
                         String sResult = result ? " ok!" : " no success!";
                         if (result) {
@@ -472,8 +472,8 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                 if (externalRequestMapDownloadPath != null) {
                     Log.info(sClass, "MapDownload");
                     mainActivity.getIntent().removeExtra("MapDownloadPath");
-                    FZKDownload.getInstance().importByUrl(externalRequestMapDownloadPath);
-                    GL.that.showActivity(FZKDownload.getInstance());
+                    FZKDownload fzkDownload = new FZKDownload();
+                    fzkDownload.showImportByUrl(externalRequestMapDownloadPath);
                 }
                 String externalRequestName = extras.getString("Name");
                 if (externalRequestName != null) {

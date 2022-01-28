@@ -1,5 +1,9 @@
 package de.droidcachebox.dataclasses;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -10,6 +14,7 @@ import java.util.Locale;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.database.DraftsDatabase;
+import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.utils.log.Log;
 
 public class Draft implements Serializable {
@@ -238,6 +243,37 @@ public class Draft implements Serializable {
             ret = false;
 
         return ret;
+    }
+
+    public Drawable getTypeIcon() {
+        if (isTbDraft) {
+            Sprite spr;
+            switch (type) {
+                case discovered:
+                    spr = Sprites.getSprite(Sprites.IconName.TBDISCOVER.name());
+                    break;
+                case dropped_off:
+                    spr = Sprites.getSprite(Sprites.IconName.TBDROP.name());
+                    break;
+                case grab_it:
+                    spr = Sprites.getSprite(Sprites.IconName.TBGRAB.name());
+                    break;
+                case retrieve:
+                    spr = Sprites.getSprite(Sprites.IconName.TBPICKED.name());
+                    break;
+                case visited:
+                    spr = Sprites.getSprite(Sprites.IconName.TBVISIT.name());
+                    break;
+                case note:
+                    spr = Sprites.getSprite(Sprites.IconName.TBNOTE.name());
+                    break;
+                default:
+                    return null;
+            }
+            return new SpriteDrawable(spr);
+        } else {
+            return new SpriteDrawable(Sprites.LogIcons.get(type.iconId));
+        }
     }
 
     public int getFoundNumber() {

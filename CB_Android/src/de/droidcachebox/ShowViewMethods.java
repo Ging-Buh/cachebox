@@ -53,8 +53,9 @@ import de.droidcachebox.gdx.ViewID;
 import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.locator.Locator;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
+import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
 import de.droidcachebox.menu.menuBtn3.executes.TrackRecorder;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -748,7 +749,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
                                         // for the photo to show within spoilers
                                         if (GlobalCore.isSetSelectedCache()) {
                                             GlobalCore.getSelectedCache().loadSpoilerRessources();
-                                            Spoiler.getInstance().ForceReload();
+                                            ((ShowSpoiler)Action.ShowSpoiler.action).forceReloadSpoiler();
                                         }
 
                                         ViewManager.that.reloadSprites(false);

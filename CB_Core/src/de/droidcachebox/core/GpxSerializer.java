@@ -27,8 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.dataclasses.Attribute;
 import de.droidcachebox.dataclasses.Cache;
@@ -61,7 +60,7 @@ public class GpxSerializer {
      */
     private static final int CACHES_PER_BATCH = 500;
     private final XmlSerializer gpx = new KXmlSerializer();
-    private final CacheDAO cacheDAO;
+    private final CachesDAO cachesDAO;
     /**
      * counter for exported caches, used for progress reporting
      */
@@ -70,7 +69,7 @@ public class GpxSerializer {
     private boolean cancel = false;
 
     public GpxSerializer() {
-        cacheDAO = new CacheDAO();
+        cachesDAO = new CachesDAO();
     }
 
     private String getState(final Cache cache) {
@@ -237,7 +236,7 @@ public class GpxSerializer {
 
         progressListener.publishProgress(countExported, Translation.get("readCacheDetails", String.valueOf(geocodesOfBatch.size())));
 
-        CacheList cacheList = CacheListDAO.getInstance().readCacheList(geocodesOfBatch, true, true, true);
+        CacheList cacheList = cachesDAO.readCacheList(geocodesOfBatch, true, true, true);
         for (int i = 0; i < cacheList.size(); i++) {
             if (cancel)
                 break;
@@ -262,10 +261,10 @@ public class GpxSerializer {
                 }
 
                 String additinalIfFound = cache.isFound() ? "|Found" : "";
-                String note = cacheDAO.getNote(cache);
+                String note = cachesDAO.getNote(cache);
                 if (note == null)
                     note = "";
-                String solver = cacheDAO.getSolver(cache);
+                String solver = cachesDAO.getSolver(cache);
                 if (solver == null)
                     solver = "";
 
@@ -364,8 +363,6 @@ public class GpxSerializer {
                 Log.err(sClass, "write waypoints for " + cache.getGeoCacheCode(), ex);
             }
         }
-
-        cacheList.dispose();
     }
 
     private void writeWaypoints(final Cache cache) throws IOException {
@@ -461,7 +458,7 @@ public class GpxSerializer {
             final boolean enabled = cache.isAttributePositiveSet(attribute);
 
             gpx.startTag(PREFIX_GROUNDSPEAK, "attribute");
-            gpx.attribute("", "id", Integer.toString(Attribute.GetAttributeID(attribute)));
+            gpx.attribute("", "id", Integer.toString(attribute.ordinal()));
             gpx.attribute("", "inc", enabled ? "1" : "0");
             gpx.text(validateChar(attribute.toString()));
             gpx.endTag(PREFIX_GROUNDSPEAK, "attribute");

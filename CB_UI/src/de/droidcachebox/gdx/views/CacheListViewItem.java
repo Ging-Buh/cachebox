@@ -29,7 +29,7 @@ import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.UnitFormatter;
 
 public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent {
-    private static final String log = "CacheListViewItem";
+    private static final String sClass = "CacheListViewItem";
 
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
     protected ExtendedCacheInfo cacheInfo;

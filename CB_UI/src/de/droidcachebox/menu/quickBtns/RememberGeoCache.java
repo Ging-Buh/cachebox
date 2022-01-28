@@ -21,8 +21,11 @@ public class RememberGeoCache extends AbstractAction {
             Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
             GlobalCore.setSelectedCache(rememberedCache);
         } else {
-            Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Settings.getInstance().acceptChanges();
+            Cache geoCache = GlobalCore.getSelectedCache();
+            if (geoCache != null) {
+                Settings.rememberedGeoCache.setValue(geoCache.getGeoCacheCode());
+                Settings.getInstance().acceptChanges();
+            }
         }
     }
 

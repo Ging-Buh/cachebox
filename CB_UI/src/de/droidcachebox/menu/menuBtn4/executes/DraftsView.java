@@ -38,8 +38,7 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.CacheList;
 import de.droidcachebox.dataclasses.Draft;
@@ -69,8 +68,10 @@ import de.droidcachebox.gdx.controls.popups.QuickDraftFeedbackPopUp;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.Logs;
+import de.droidcachebox.menu.menuBtn2.ShowLogs;
+import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.AbstractFile;
@@ -81,16 +82,12 @@ import de.droidcachebox.utils.http.WebbUtils;
 import de.droidcachebox.utils.log.Log;
 
 public class DraftsView extends V_ListView {
-    private static final String log = "DraftsView";
+    private static final String sClass = "DraftsView";
     private Draft currentDraft;
     private boolean firstShow;
     private Drafts drafts;
     private DraftsViewAdapter draftsViewAdapter;
     private EditDraft editDraft;
-
-    public Draft getCurrentDraft() {
-        return currentDraft;
-    }
 
     public DraftsView() {
         super(ViewManager.leftTab.getContentRec(), "DraftsView");
@@ -102,6 +99,10 @@ public class DraftsView extends V_ListView {
         setAdapter(null);
         setEmptyMsgItem(Translation.get("EmptyDrafts"));
         firstShow = true;
+    }
+
+    public Draft getCurrentDraft() {
+        return currentDraft;
     }
 
     public void afterEdit(Draft draft, boolean isNewDraft, EditDraft.SaveMode saveMode) {
@@ -131,7 +132,7 @@ public class DraftsView extends V_ListView {
                     // Found it! -> mark Cache as found
                     if (!GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(true);
-                        new CacheDAO().updateFound(GlobalCore.getSelectedCache());
+                        new CachesDAO().updateFound(GlobalCore.getSelectedCache());
                         Settings.foundOffset.setValue(draft.getFoundNumber());
                         Settings.getInstance().acceptChanges();
                     }
@@ -139,7 +140,7 @@ public class DraftsView extends V_ListView {
                 } else if (draft.type == LogType.didnt_find) {
                     if (GlobalCore.getSelectedCache().isFound()) {
                         GlobalCore.getSelectedCache().setFound(false);
-                        new CacheDAO().updateFound(GlobalCore.getSelectedCache());
+                        new CachesDAO().updateFound(GlobalCore.getSelectedCache());
                         Settings.foundOffset.setValue(Settings.foundOffset.getValue() - 1);
                         Settings.getInstance().acceptChanges();
                     } // and remove a previous found
@@ -191,6 +192,7 @@ public class DraftsView extends V_ListView {
     public void onHide() {
         firstShow = true;
         drafts.removeSettingsChangedHandler();
+        ((ShowDrafts) Action.ShowDrafts.action).viewIsHiding();
     }
 
     private void reloadDrafts() {
@@ -201,7 +203,6 @@ public class DraftsView extends V_ListView {
     }
 
     /**
-     *
      * @param logType one of the GeoCache LogType possibilities
      * @param andEdit call edit of log (draft) after creation, but not if it is a Quick one
      */
@@ -230,13 +231,13 @@ public class DraftsView extends V_ListView {
             if (logType == LogType.found || logType == LogType.attended || logType == LogType.webcam_photo_taken) {
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
-                    new CacheDAO().updateFound(GlobalCore.getSelectedCache());
+                    new CachesDAO().updateFound(GlobalCore.getSelectedCache());
                     afterAddDraft(true);
                 }
             } else if (logType == LogType.didnt_find) {
                 if (GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(false);
-                    new CacheDAO().updateFound(GlobalCore.getSelectedCache());
+                    new CachesDAO().updateFound(GlobalCore.getSelectedCache());
                     afterAddDraft(false);
                 }
             }
@@ -324,7 +325,7 @@ public class DraftsView extends V_ListView {
             if (newDraft.type == LogType.found || newDraft.type == LogType.attended || newDraft.type == LogType.webcam_photo_taken) {
                 if (!GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(true);
-                    new CacheDAO().updateFound(GlobalCore.getSelectedCache());
+                    new CachesDAO().updateFound(GlobalCore.getSelectedCache());
                     Settings.foundOffset.setValue(getCurrentDraft().getFoundNumber());
                     Settings.getInstance().acceptChanges();
                 }
@@ -334,7 +335,7 @@ public class DraftsView extends V_ListView {
             } else if (newDraft.type == LogType.didnt_find) {
                 if (GlobalCore.getSelectedCache().isFound()) {
                     GlobalCore.getSelectedCache().setFound(false);
-                    new CacheDAO().updateFound(GlobalCore.getSelectedCache());
+                    new CachesDAO().updateFound(GlobalCore.getSelectedCache());
                     Settings.foundOffset.setValue(Settings.foundOffset.getValue() - 1);
                     Settings.getInstance().acceptChanges();
                 }
@@ -400,8 +401,8 @@ public class DraftsView extends V_ListView {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            Log.err("createGeoCacheVisits", e.toString() + " at\n" + txtAbstractFile.getAbsolutePath());
-            new ButtonDialog(e.toString() + " at\n" + txtAbstractFile.getAbsolutePath(), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
+            Log.err("createGeoCacheVisits", e + " at\n" + txtAbstractFile.getAbsolutePath());
+            new ButtonDialog(e + " at\n" + txtAbstractFile.getAbsolutePath(), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
         }
     }
 
@@ -535,7 +536,7 @@ public class DraftsView extends V_ListView {
                         draft.isUploaded = true;
                         if (isLog && !draft.isTbDraft) {
                             draft.gcLogReference = GroundspeakAPI.logReferenceCode;
-                            Logs.getInstance().resetRenderInitDone(); // if own log is written !
+                            ((ShowLogs)Action.ShowLogs.action).resetRenderInitDone();// if own log is written !
                         }
                         afterEdit(draft, false, EditDraft.SaveMode.LocalUpdate);
                     } else {
@@ -575,10 +576,10 @@ public class DraftsView extends V_ListView {
                             // Stimme abgeben
                             try {
                                 if (!GCVote.sendVote(Settings.GcLogin.getValue(), Settings.GcVotePassword.getValue(), draft.gc_Vote, draft.CacheUrl, draft.gcCode)) {
-                                    Log.err(log, draft.gcCode + " GC-Vote");
+                                    Log.err(sClass, draft.gcCode + " GC-Vote");
                                 }
                             } catch (Exception e) {
-                                Log.err(log, draft.gcCode + " GC-Vote");
+                                Log.err(sClass, draft.gcCode + " GC-Vote");
                             }
                         }
                     }
@@ -600,7 +601,7 @@ public class DraftsView extends V_ListView {
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
             CacheList lCaches = new CacheList();
-            CacheListDAO.getInstance().readCacheList(lCaches, "Id = " + currentDraft.CacheId, false, false, false);
+            new CachesDAO().readCacheList(lCaches, "Id = " + currentDraft.CacheId, false, false, false);
             Cache tmpCache = null;
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
@@ -640,7 +641,7 @@ public class DraftsView extends V_ListView {
             // suche den Cache aus der DB.
             // Nicht aus der aktuellen cacheList, da dieser herausgefiltert sein könnte
             CacheList lCaches = new CacheList();
-            CacheListDAO.getInstance().readCacheList(lCaches, "Id = " + currentDraft.CacheId, false, false, false);
+            new CachesDAO().readCacheList(lCaches, "Id = " + currentDraft.CacheId, false, false, false);
             if (lCaches.size() > 0)
                 tmpCache = lCaches.get(0);
             final Cache cache = tmpCache;
@@ -667,7 +668,7 @@ public class DraftsView extends V_ListView {
                     if (cache != null) {
                         if (cache.isFound()) {
                             cache.setFound(false);
-                            new CacheDAO().updateFound(cache);
+                            new CachesDAO().updateFound(cache);
                             Settings.foundOffset.setValue(Settings.foundOffset.getValue() - 1);
                             Settings.getInstance().acceptChanges();
                             // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen

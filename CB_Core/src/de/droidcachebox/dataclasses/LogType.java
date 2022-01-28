@@ -16,7 +16,7 @@ public enum LogType {
     reviewer_note(18, 12, "reviewer_note"),
     needs_archived(7, 13, "needs_archived"),
     unarchive(1, 11, "unarchive"), // == archived
-    retract(25, 14,"retract"), // 15
+    retract(25, 14, "retract"), // 15
     update_coord(47, 16, "update_coord"),
     retrieve(13, 17, "retrieve"),
     dropped_off(14, 18, "dropped_off"),
@@ -29,6 +29,7 @@ public enum LogType {
     visited(75, 21, "visited"),
     Submit_for_Review(4, 2, "Submit for Review"), // 4=note
     ;
+    private final String string;
     /**
      * GS LogTypeId's:</br>4 - Post Note </br>13 - Retrieve It from a Cache </br>14 - Place in a cache </br>16 - Mark as missing </br>19 -
      * Grab </br>48 - Discover </br>69 - Move to collection </br>70 - Move to inventory </br>75 - Visit
@@ -37,19 +38,12 @@ public enum LogType {
      */
     public int gsLogTypeId;
     public int iconId;
-    private final String string;
 
     LogType(int gsLogTypeId, int iconId, String string) {
         this.gsLogTypeId = gsLogTypeId;
         this.iconId = iconId;
         this.string = string;
     }
-
-    @Override
-    public String toString() {
-        return string;
-    }
-
 
     /*
     GEOCACHE LOG TYPES
@@ -248,8 +242,12 @@ public enum LogType {
             case 75:
                 return visited;
         }
-
         return note;
+    }
+
+    @Override
+    public String toString() {
+        return string;
     }
 
     /**

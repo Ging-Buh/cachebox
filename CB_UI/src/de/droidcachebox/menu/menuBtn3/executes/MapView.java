@@ -48,8 +48,7 @@ import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.core.LiveMapQue;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.GeoCacheType;
@@ -364,15 +363,15 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
 
                     @Override
                     public void run() {
-                        CacheDAO cacheDAO = new CacheDAO();
+                        CachesDAO cachesDAO = new CachesDAO();
                         Cache bubblesCache = infoBubble.getCache();
                         if (bubblesCache.getGeoCacheDetail() == null)
-                            cacheDAO.loadDetail(bubblesCache);
+                            cachesDAO.loadDetail(bubblesCache);
                         String GCCode = bubblesCache.getGeoCacheCode();
                         ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = GroundspeakAPI.updateGeoCache(bubblesCache);
                         if (geoCacheRelateds.size() > 0) {
                             try {
-                                cacheDAO.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
+                                cachesDAO.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                             } catch (InterruptedException ex) {
                                 Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
                             }
@@ -385,7 +384,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         // Reload result from DB
                         synchronized (CBDB.getInstance().cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
-                            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                            cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         }
 
                         Cache selCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(GCCode);
@@ -424,7 +423,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         try {
             center = new CoordinateGPS(Settings.mapInitLatitude.getValue(), Settings.mapInitLongitude.getValue());
         } catch (Exception ex) {
-            Log.err(sClass, "MapView/CoordinateGPS" + ex.toString());
+            Log.err(sClass, "MapView/CoordinateGPS" + ex);
         }
 
         // update Info
@@ -843,9 +842,9 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                     // Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
                     // definiert
                     // ist!!!
-                    WaypointDAO.getInstance().ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
+                    WaypointDAO.getInstance().resetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
                 }
-                WaypointDAO.getInstance().WriteToDatabase(waypoint);
+                WaypointDAO.getInstance().writeToDatabase(waypoint);
 
                 // informiere WaypointListView über Änderung
                 WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());

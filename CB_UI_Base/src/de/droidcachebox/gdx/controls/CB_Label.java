@@ -47,7 +47,7 @@ import de.droidcachebox.utils.log.LogLevel;
  * @author Longri
  */
 public class CB_Label extends CB_View_Base {
-    private static final String log = "Label";
+    private static final String sClass = "Label";
 
     private static final float DEFAULTSCROLLSTEP = 0.7f;
     private static final int SCROLL_PAUSE = 60;
@@ -151,7 +151,7 @@ public class CB_Label extends CB_View_Base {
                     try {
                         mTextObject.draw(batch);
                     } catch (Exception ex) {
-                        Log.err(log, "Rendering " + mText + "\r\n" + mTextObject.toString() + "\r\n" + ex.toString() + "\r\n" + ex.getLocalizedMessage());
+                        Log.err(sClass, "Rendering " + mText + "\r\n" + mTextObject.toString() + "\r\n" + ex.toString() + "\r\n" + ex.getLocalizedMessage());
                     }
             }
 
@@ -296,7 +296,7 @@ public class CB_Label extends CB_View_Base {
                 if (mFont.getData().getGlyph(mText.charAt(start)) == null) {
                     char c = mText.charAt(start);
                     if (c != '\r' && c != '\n')
-                        Log.err(log, "Unknown Char {" + c + "} @:" + mText + "[" + start + "]");
+                        Log.err(sClass, "Unknown Char {" + c + "} @:" + mText + "[" + start + "]");
                 }
             }
         }
@@ -328,7 +328,7 @@ public class CB_Label extends CB_View_Base {
                     break;
             }
         } catch (Exception e) {
-            Log.err(log, "Für " + mText + "\n" + e);
+            Log.err(sClass, "Für " + mText + "\n" + e);
         }
         if (underlineStrikeoutDrawable != null) {
             underlineStrikeoutDrawable.dispose();
@@ -348,7 +348,7 @@ public class CB_Label extends CB_View_Base {
                 }
             };
             new Timer().schedule(later, 100);
-            Log.debug(log, "bounds are NULL on setTextPosition! Try setText()");
+            Log.debug(sClass, "bounds are NULL on setTextPosition! Try setText()");
             return;
         }
 

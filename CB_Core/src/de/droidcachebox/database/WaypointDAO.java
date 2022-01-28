@@ -24,12 +24,12 @@ public class WaypointDAO {
         return waypointDAO;
     }
 
-    public void WriteToDatabase(Waypoint WP) {
-        WriteToDatabase(WP, true);
+    public void writeToDatabase(Waypoint waypoint) {
+        writeToDatabase(waypoint, true);
     }
 
     // sometimes Replication for synchronization with CBServer should not be used (when importing caches from gc api)
-    public void WriteToDatabase(Waypoint waypoint, boolean useReplication) {
+    public void writeToDatabase(Waypoint waypoint, boolean useReplication) {
         int newCheckSum = createCheckSum(waypoint);
         if (useReplication) {
             Replication.WaypointNew(waypoint.geoCacheId, waypoint.getCheckSum(), newCheckSum, waypoint.getWaypointCode());
@@ -63,47 +63,47 @@ public class WaypointDAO {
         }
     }
 
-    public void UpdateDatabase(Waypoint WP) {
-        UpdateDatabase(WP, true);
+    public void updateDatabase(Waypoint WP) {
+        updateDatabase(WP, true);
     }
 
     // sometimes Replication for synchronization with CBServer should not be used (when importing caches from gc api)
-    public boolean UpdateDatabase(Waypoint WP, boolean useReplication) {
+    public boolean updateDatabase(Waypoint waypoint, boolean useReplication) {
         boolean result = false;
-        int newCheckSum = createCheckSum(WP);
+        int newCheckSum = createCheckSum(waypoint);
         if (useReplication) {
-            Replication.WaypointChanged(WP.geoCacheId, WP.getCheckSum(), newCheckSum, WP.getWaypointCode());
+            Replication.waypointChanged(waypoint.geoCacheId, waypoint.getCheckSum(), newCheckSum, waypoint.getWaypointCode());
         }
-        if (newCheckSum != WP.getCheckSum()) {
+        if (newCheckSum != waypoint.getCheckSum()) {
             Parameters args = new Parameters();
-            args.put("gccode", WP.getWaypointCode());
-            args.put("cacheid", WP.geoCacheId);
-            args.put("latitude", WP.getLatitude());
-            args.put("longitude", WP.getLongitude());
-            args.put("description", WP.getDescription());
-            args.put("type", WP.waypointType.ordinal());
-            args.put("syncexclude", WP.isSyncExcluded);
-            args.put("userwaypoint", WP.isUserWaypoint);
-            args.put("clue", WP.getClue());
-            args.put("title", WP.getTitle());
-            args.put("isStart", WP.isStartWaypoint);
+            args.put("gccode", waypoint.getWaypointCode());
+            args.put("cacheid", waypoint.geoCacheId);
+            args.put("latitude", waypoint.getLatitude());
+            args.put("longitude", waypoint.getLongitude());
+            args.put("description", waypoint.getDescription());
+            args.put("type", waypoint.waypointType.ordinal());
+            args.put("syncexclude", waypoint.isSyncExcluded);
+            args.put("userwaypoint", waypoint.isUserWaypoint);
+            args.put("clue", waypoint.getClue());
+            args.put("title", waypoint.getTitle());
+            args.put("isStart", waypoint.isStartWaypoint);
             try {
-                long count = CBDB.getInstance().update("Waypoint", args, "CacheId=" + WP.geoCacheId + " and GcCode=\"" + WP.getWaypointCode() + "\"", null);
+                long count = CBDB.getInstance().update("Waypoint", args, "CacheId=" + waypoint.geoCacheId + " and GcCode=\"" + waypoint.getWaypointCode() + "\"", null);
                 if (count > 0)
                     result = true;
             } catch (Exception ignored) {
             }
 
-            if (WP.isUserWaypoint) {
+            if (waypoint.isUserWaypoint) {
                 args = new Parameters();
                 args.put("hasUserData", true);
                 try {
-                    CBDB.getInstance().update("Caches", args, "Id = ?", new String[]{String.valueOf(WP.geoCacheId)});
+                    CBDB.getInstance().update("Caches", args, "Id = ?", new String[]{String.valueOf(waypoint.geoCacheId)});
                 } catch (Exception exc) {
                     return result;
                 }
             }
-            WP.setCheckSum(newCheckSum);
+            waypoint.setCheckSum(newCheckSum);
         }
         return result;
     }
@@ -111,32 +111,32 @@ public class WaypointDAO {
     /**
      * Create Waypoint Object from Reader.
      *
-     * @param reader ?
-     * @param full   Waypoints as FullWaypoints (true) or Waypoint (false)
+     * @param reader  ?
+     * @param getFull Waypoints as FullWaypoints (true) or Waypoint (false)
      * @return ?
      */
-    public Waypoint getWaypoint(CoreCursor reader, boolean full) {
-        Waypoint WP;
+    public Waypoint getWaypoint(CoreCursor reader, boolean getFull) {
+        Waypoint waypoint;
 
-        WP = new Waypoint(full);
+        waypoint = new Waypoint(getFull);
 
-        WP.setWaypointCode(reader.getString(0));
-        WP.geoCacheId = reader.getLong(1);
+        waypoint.setWaypointCode(reader.getString(0));
+        waypoint.geoCacheId = reader.getLong(1);
         double latitude = reader.getDouble(2);
         double longitude = reader.getDouble(3);
-        WP.setCoordinate(new Coordinate(latitude, longitude));
-        WP.waypointType = GeoCacheType.values()[reader.getShort(4)];
-        WP.isSyncExcluded = reader.getInt(5) == 1;
-        WP.isUserWaypoint = reader.getInt(6) == 1;
-        WP.setTitle(reader.getString(7).trim());
-        WP.isStartWaypoint = reader.getInt(8) == 1;
+        waypoint.setCoordinate(new Coordinate(latitude, longitude));
+        waypoint.waypointType = GeoCacheType.values()[reader.getShort(4)];
+        waypoint.isSyncExcluded = reader.getInt(5) == 1;
+        waypoint.isUserWaypoint = reader.getInt(6) == 1;
+        waypoint.setTitle(reader.getString(7).trim());
+        waypoint.isStartWaypoint = reader.getInt(8) == 1;
 
-        if (full) {
-            WP.setClue(reader.getString(10));
-            WP.setDescription(reader.getString(9));
-            WP.setCheckSum(createCheckSum(WP));
+        if (getFull) {
+            waypoint.setClue(reader.getString(10));
+            waypoint.setDescription(reader.getString(9));
+            waypoint.setCheckSum(createCheckSum(waypoint));
         }
-        return WP;
+        return waypoint;
     }
 
     private int createCheckSum(Waypoint waypoint) {
@@ -186,7 +186,7 @@ public class WaypointDAO {
     }
 
     // Each geoCache should have only one Start-waypoint. Before set a new one, reset here
-    public void ResetStartWaypoint(Cache cache, Waypoint except) {
+    public void resetStartWaypoint(Cache cache, Waypoint except) {
         for (int i = 0, n = cache.getWayPoints().size(); i < n; i++) {
             Waypoint wp = cache.getWayPoints().get(i);
             if (except == wp)
@@ -206,7 +206,7 @@ public class WaypointDAO {
     /**
      * Delete all Logs without exist Cache
      */
-    public void ClearOrphanedWaypoints() {
+    public void clearOrphanedWaypoints() {
         String SQL = "DELETE  FROM  Waypoint WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Waypoint.CacheId = c.Id)";
         CBDB.getInstance().execSQL(SQL);
     }
@@ -214,29 +214,30 @@ public class WaypointDAO {
     /**
      * Returns a WaypointList from reading DB!
      *
-     * @param CacheID ID of Cache
-     * @param Full    Waypoints as FullWaypoints (true) or Waypoint (false)
+     * @param geoCacheID ID of Cache
+     * @param getFull    Waypoints as FullWaypoints (true) or Waypoint (false)
      * @return ?
      */
-    public CB_List<Waypoint> getWaypointsFromCacheID(Long CacheID, boolean Full) {
+    public CB_List<Waypoint> getWaypointsFromCacheID(Long geoCacheID, boolean getFull) {
         CB_List<Waypoint> wpList = new CB_List<>();
         long aktCacheID = -1;
 
-        CoreCursor reader = CBDB.getInstance().rawQuery((Full ? SQL_WP_FULL : SQL_WP) + "  where CacheId = ?", new String[]{String.valueOf(CacheID)});
-        reader.moveToFirst();
-        while (!reader.isAfterLast()) {
-            Waypoint wp = getWaypoint(reader, Full);
-            if (wp.geoCacheId != aktCacheID) {
-                aktCacheID = wp.geoCacheId;
-                wpList = new CB_List<>();
-
+        CoreCursor reader = CBDB.getInstance().rawQuery((getFull ? SQL_WP_FULL : SQL_WP) + "  where CacheId = ?", new String[]{String.valueOf(geoCacheID)});
+        if (reader != null) {
+            if (reader.getCount() > 0) {
+                reader.moveToFirst();
+                while (!reader.isAfterLast()) {
+                    Waypoint wp = getWaypoint(reader, getFull);
+                    if (wp.geoCacheId != aktCacheID) {
+                        aktCacheID = wp.geoCacheId;
+                        wpList = new CB_List<>();
+                    }
+                    wpList.add(wp);
+                    reader.moveToNext();
+                }
             }
-            wpList.add(wp);
-            reader.moveToNext();
-
+            reader.close();
         }
-        reader.close();
-
         return wpList;
     }
 
@@ -256,19 +257,14 @@ public class WaypointDAO {
 
     private boolean waypointExists(String gcCode) {
         CoreCursor c = CBDB.getInstance().rawQuery("select GcCode from Waypoint where GcCode=@gccode", new String[]{gcCode});
-        {
-            c.moveToFirst();
-            if (!c.isAfterLast()) {
-                try {
-                    c.close();
-                    return true;
-                } catch (Exception e) {
-                    return false;
-                }
+        if (c != null) {
+            if (c.getCount() > 0) {
+                c.close();
+                return true;
             }
             c.close();
-            return false;
         }
+        return false;
     }
 
 }

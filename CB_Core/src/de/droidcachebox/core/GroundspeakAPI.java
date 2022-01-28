@@ -55,7 +55,6 @@ import de.droidcachebox.dataclasses.GeoCacheType;
 import de.droidcachebox.dataclasses.ImageEntry;
 import de.droidcachebox.dataclasses.LogEntry;
 import de.droidcachebox.dataclasses.LogType;
-import de.droidcachebox.dataclasses.TBList;
 import de.droidcachebox.dataclasses.Trackable;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.ex_import.DescriptionImageGrabber;
@@ -686,45 +685,47 @@ public class GroundspeakAPI {
         } while (true);
     }
 
-    public static TBList downloadUsersTrackables() {
-        TBList tbList = new TBList();
-        if (isAccessTokenInvalid()) return tbList;
-        LastAPIError = "";
-        int skip = 0;
-        int take = 50;
+    public static void downloadUsersTrackables(ArrayList<Trackable> tbList) {
+        if (isAccessTokenInvalid()) {
 
-        try {
-            boolean ready;
-            do {
-                JSONArray jTrackables = getNetz()
-                        .get(getUrl(1, "trackables"))
-                        .param("fields", "referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,owner.username,holder.username,currentGeocacheCode,type,inHolderCollection")
-                        .param("skip", skip)
-                        .param("take", take)
-                        .ensureSuccess().asJsonArray().getBody();
+        }
+        else {
+            tbList.clear();
+            LastAPIError = "";
+            int skip = 0;
+            int take = 50;
 
-                for (int ii = 0; ii < jTrackables.length(); ii++) {
-                    JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
-                    if (!jTrackable.optBoolean("inHolderCollection", false)) {
-                        Trackable tb = new Trackable();
-                        tb = createTrackable(jTrackable, tb);
-                        Log.debug(sClass, "downloadUsersTrackables: add " + tb.getName());
-                        tbList.add(tb);
-                    } else {
-                        Log.debug(sClass, "downloadUsersTrackables: not in HolderCollection" + jTrackable.optString("name", ""));
+            try {
+                boolean ready;
+                do {
+                    JSONArray jTrackables = getNetz()
+                            .get(getUrl(1, "trackables"))
+                            .param("fields", "referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,owner.username,holder.username,currentGeocacheCode,type,inHolderCollection")
+                            .param("skip", skip)
+                            .param("take", take)
+                            .ensureSuccess().asJsonArray().getBody();
+
+                    for (int ii = 0; ii < jTrackables.length(); ii++) {
+                        JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
+                        if (!jTrackable.optBoolean("inHolderCollection", false)) {
+                            Trackable tb = new Trackable();
+                            tb = createTrackable(jTrackable, tb);
+                            Log.debug(sClass, "downloadUsersTrackables: add " + tb.getName());
+                            tbList.add(tb);
+                        } else {
+                            Log.debug(sClass, "downloadUsersTrackables: not in HolderCollection" + jTrackable.optString("name", ""));
+                        }
                     }
-                }
 
-                ready = jTrackables.length() < take;
-                skip = skip + take;
+                    ready = jTrackables.length() < take;
+                    skip = skip + take;
+                }
+                while (!ready);
+                Log.info(sClass, "downloadUsersTrackables done \n");
+            } catch (Exception ex) {
+                retry(ex);
+                Log.err(sClass, "downloadUsersTrackables " + LastAPIError, ex);
             }
-            while (!ready);
-            Log.info(sClass, "downloadUsersTrackables done \n");
-            return tbList;
-        } catch (Exception ex) {
-            retry(ex);
-            Log.err(sClass, "downloadUsersTrackables " + LastAPIError, ex);
-            return tbList;
         }
     }
 

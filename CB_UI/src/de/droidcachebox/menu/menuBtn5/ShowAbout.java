@@ -26,7 +26,8 @@ public class ShowAbout extends AbstractShowAction {
 
     @Override
     public void execute() {
-        aboutView = new AboutView();
+        if (aboutView == null)
+            aboutView = new AboutView();
         ViewManager.leftTab.showView(aboutView);
     }
 
@@ -43,6 +44,11 @@ public class ShowAbout extends AbstractShowAction {
     @Override
     public CB_View_Base getView() {
         return aboutView;
+    }
+
+    @Override
+    public void viewIsHiding() {
+        aboutView = null;
     }
 
     @Override

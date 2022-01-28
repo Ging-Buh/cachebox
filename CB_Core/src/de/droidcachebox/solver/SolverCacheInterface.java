@@ -4,11 +4,11 @@ import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Waypoint;
 
 public interface SolverCacheInterface {
-    Cache sciGetSelectedCache();
+    Cache globalCoreGetSelectedCache();
 
-    Waypoint sciGetSelectedWaypoint();
+    Waypoint globalCoreGetSelectedWaypoint();
 
-    void sciSetSelectedCache(Cache cache);
+    void globalCoreSetSelectedCache(Cache cache);
 
-    void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint);
+    void globalCoreSetSelectedWaypoint(Cache cache, Waypoint waypoint);
 }

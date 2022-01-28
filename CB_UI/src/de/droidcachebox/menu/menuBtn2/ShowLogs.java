@@ -29,13 +29,14 @@ import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.Logs;
-import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
+import de.droidcachebox.menu.menuBtn2.executes.LogsView;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
 public class ShowLogs extends AbstractShowAction {
+    private LogsView logsView;
 
     public ShowLogs() {
         super("ShowLogs");
@@ -44,8 +45,10 @@ public class ShowLogs extends AbstractShowAction {
 
     @Override
     public void execute() {
+        if (logsView == null)
+            logsView = new LogsView();
         GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogListView
-        ViewManager.leftTab.showView(Logs.getInstance());
+        ViewManager.leftTab.showView(logsView);
     }
 
     @Override
@@ -60,7 +63,12 @@ public class ShowLogs extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return Logs.getInstance();
+        return logsView;
+    }
+
+    @Override
+    public void viewIsHiding() {
+        logsView = null;
     }
 
     @Override
@@ -82,7 +90,7 @@ public class ShowLogs extends AbstractShowAction {
             contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
             contextMenu.addCheckableMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), GlobalCore.filterLogsOfFriends, () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
-                Logs.getInstance().resetRenderInitDone();
+                resetRenderInitDone();
             });
         }
         contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
@@ -93,7 +101,7 @@ public class ShowLogs extends AbstractShowAction {
                     if (!isCanceled) {
                         if (GlobalCore.isSetSelectedCache()) {
                             GlobalCore.getSelectedCache().loadSpoilerRessources();
-                            Spoiler.getInstance().ForceReload();
+                            ((ShowSpoiler) Action.ShowSpoiler.action).forceReloadSpoiler();
                         }
                     }
                 }));
@@ -146,7 +154,7 @@ public class ShowLogs extends AbstractShowAction {
                                     CBDB.getInstance().setTransactionSuccessful();
                                     CBDB.getInstance().endTransaction();
                                     // update LogListView
-                                    Logs.getInstance().resetRenderInitDone();
+                                    resetRenderInitDone();
                                     // for update slider, ?, ?, ? with latest logs
                                     CacheSelectionChangedListeners.getInstance().fire(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
                                 }
@@ -177,6 +185,11 @@ public class ShowLogs extends AbstractShowAction {
                 new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("Friends"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
             }
         });
+    }
+
+    public void resetRenderInitDone() {
+        if (logsView != null)
+            logsView.resetRenderInitDone();
     }
 
 }

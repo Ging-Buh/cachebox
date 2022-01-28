@@ -45,7 +45,7 @@ import de.droidcachebox.utils.log.Log;
  */
 public class Sprites {
 
-    private static final String log = "Sprites";
+    private static final String sClass = "Sprites";
     public static ArrayList<Sprite> Arrows = null;
     public static ArrayList<Sprite> MapStars = null;
     public static SpriteList Stars = null;
@@ -185,12 +185,12 @@ public class Sprites {
             try {
                 atlasCustom = new TextureAtlas(FileHandleCustomAtlas);
             } catch (Exception e) {
-                Log.err(log, "Load Custom Atlas", e);
+                Log.err(sClass, "Load Custom Atlas", e);
             }
             try {
                 atlasCustomtNight = new TextureAtlas(FileHandleCustomNightAtlas);
             } catch (Exception e) {
-                Log.err(log, "Load Custom Night Atlas", e);
+                Log.err(sClass, "Load Custom Night Atlas", e);
             }
         }
     }
@@ -234,7 +234,7 @@ public class Sprites {
             tmp.setScale(scale);
 
         if (tmp == null) {
-            Log.info(log, "missing icon " + name);
+            Log.info(sClass, "missing icon " + name);
             tmp = createSprite(atlasDefault, "bigUndefined"); // damit kein null Sprite zurückgegeben wird falls ich was übersehen habe
         } else {
             if (name.endsWith("Solved")) {

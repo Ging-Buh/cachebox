@@ -71,7 +71,7 @@ public class MoveableList<T> extends CB_List<T> {
     private static final long serialVersionUID = -3030926604332765746L;
     protected CB_List<IChanged> ChangedEventList = new CB_List<>();
     private boolean dontFireEvent = false;
-    private int _MoveResultIndex;
+    private int moveResultIndex;
 
     public MoveableList() {
         super();
@@ -81,7 +81,7 @@ public class MoveableList<T> extends CB_List<T> {
         super(list);
     }
 
-    protected void fireChangedEvent() {
+    protected void fire() {
         if (dontFireEvent)
             return;
         synchronized (ChangedEventList) {
@@ -105,144 +105,142 @@ public class MoveableList<T> extends CB_List<T> {
         }
     }
 
-    private void PrivateMoveItem(int CutItem, int InsertItem) {
+    private void privateMoveItem(int CutItem, int InsertItem) {
         T CutItemInfo = this.get(CutItem);
 
         this.remove(CutItem);
         this.add(InsertItem, CutItemInfo);
 
-        fireChangedEvent();
+        fire();
 
     }
 
-    public void beginnTransaction() {
+    public void beginnUpdate() {
         dontFireEvent = true;
     }
 
-    public void endTransaction() {
+    public void endUpdate() {
         dontFireEvent = false;
-        fireChangedEvent();
+        fire();
     }
 
     @Override
     public int add(T t) {
         int ID = super.add(t);
-        fireChangedEvent();
+        fire();
         return ID;
     }
 
     @Override
     public void add(int index, T t) {
         super.add(index, t);
-        fireChangedEvent();
+        fire();
     }
 
     @Override
     public void addAll(CB_List<T> t) {
         super.addAll(t);
-        fireChangedEvent();
+        fire();
     }
 
     @Override
     public void addAll(int index, CB_List<T> t) {
         super.addAll(index, t);
-        fireChangedEvent();
+        fire();
     }
 
     @Override
     public void clear() {
         super.clear();
-        fireChangedEvent();
+        fire();
     }
 
     @Override
     public T remove(int index) {
         T t = super.remove(index);
-        fireChangedEvent();
+        fire();
         return t;
     }
 
-    public void MoveItemsLeft() {
-        PrivateMoveItem(0, this.size() - 1);
-        _MoveResultIndex = -1;
+    public void moveItemsLeft() {
+        privateMoveItem(0, this.size() - 1);
+        moveResultIndex = -1;
     }
 
-    public void MoveItemsRight() {
-        PrivateMoveItem(this.size() - 1, 0);
-        _MoveResultIndex = -1;
+    public void moveItemsRight() {
+        privateMoveItem(this.size() - 1, 0);
+        moveResultIndex = -1;
     }
 
     public void moveItemFirst(int index) {
-        PrivateMoveItem(index, 0);
-        _MoveResultIndex = 0;
+        privateMoveItem(index, 0);
+        moveResultIndex = 0;
 
     }
 
     public void MoveItemLast(int index) {
-        PrivateMoveItem(index, this.size() - 1);
-        _MoveResultIndex = this.size() - 1;
-
+        privateMoveItem(index, this.size() - 1);
+        moveResultIndex = this.size() - 1;
     }
 
-    public int MoveItem(int index, int Step) {
-        _MoveResultIndex = index;
+    public int moveItem(int index, int Step) {
+        moveResultIndex = index;
         if (index < 0)
             throw new IndexOutOfBoundsException();
         int Insert = 0;
         if (Step == 0) {
-            return _MoveResultIndex;
+            return moveResultIndex;
         } else if (Step > 0) {
-            Insert = ChkNewPos(index + Step);
+            Insert = chkNewPos(index + Step);
         } else {
-            Insert = ChkNewPos(index + Step, true);
+            Insert = chkNewPos(index + Step, true);
         }
 
         if (Insert == index)
-            return _MoveResultIndex;
+            return moveResultIndex;
 
-        PrivateMoveItem(index, Insert);
-        _MoveResultIndex = Insert;
-        return _MoveResultIndex;
+        privateMoveItem(index, Insert);
+        moveResultIndex = Insert;
+        return moveResultIndex;
     }
 
-    public void MoveItem(int index) {
-        this.MoveItem(index, 1);
+    public void moveItem(int index) {
+        this.moveItem(index, 1);
     }
 
-    private int ChkNewPos(int Pos, boolean Negative) {
+    private int chkNewPos(int Pos, boolean Negative) {
         if (((Pos < this.size()) & (Pos >= 0)))
             return Pos;
 
         if (Negative) {
             Pos += this.size();
-            Pos = ChkNewPos(Pos, true);
+            Pos = chkNewPos(Pos, true);
         } else {
             Pos -= this.size();
-            Pos = ChkNewPos(Pos);
+            Pos = chkNewPos(Pos);
         }
         return Pos;
     }
 
-    private int ChkNewPos(int Pos) {
-        return this.ChkNewPos(Pos, false);
+    private int chkNewPos(int Pos) {
+        return this.chkNewPos(Pos, false);
     }
 
     // / <summary>
-    // / Gigbt die Position der letzten Move Methode zur�ck.
+    // / returns the position of the last move.
     // / </summary>
-    // / <returns>Null-Basierender Index, des Ergebnisses der letzten Move Nethode</returns>
+    // / <returns>zero-based index, of the last move</returns>
     // / <remarks>Bei den Methoden <see cref="MoveItemsLeft">[MoveItemsLeft]</see> und <see cref="MoveItemsRight">[MoveItemsRight]</see>
     // / wird die Eigenschaft <see cref="MoveResultIndex">[MoveResultIndex]</see> auf <b>-1</b> gesetzt, <b>da alle Items bewegt wurden.</b>
     // </remarks>
     public int MoveResultIndex() {
-        return _MoveResultIndex;
+        return moveResultIndex;
     }
 
     public Iterator<T> reverseIterator() {
-        final MoveableList<T> that = this;
 
         Iterator<T> iterator = new Iterator<T>() {
-            int aktItem = that.size() - 1;
+            int aktItem = size() - 1;
 
             @Override
             public boolean hasNext() {
@@ -253,12 +251,12 @@ public class MoveableList<T> extends CB_List<T> {
 
             @Override
             public T next() {
-                if (that.size() == 0 || that.size() < aktItem) {
+                if (size() == 0 || size() < aktItem) {
                     aktItem = -1;
                     return null;
                 }
 
-                T ret = that.get(aktItem);
+                T ret = get(aktItem);
                 aktItem--;
                 return ret;
             }

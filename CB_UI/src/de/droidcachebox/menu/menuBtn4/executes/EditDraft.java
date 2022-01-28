@@ -35,7 +35,7 @@ import java.util.TimerTask;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Draft;
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.Fonts;
@@ -257,7 +257,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         if (currentDraft.isTbDraft) {
             ivTyp.setImageURL(currentDraft.TbIconUrl);
         } else {
-            ivTyp.setDrawable(DraftViewItem.getTypeIcon(currentDraft));
+            ivTyp.setDrawable(currentDraft.getTypeIcon());
         }
         scrollBoxContent.addNext(ivTyp, FIXED);
         title.setText(currentDraft.isTbDraft ? currentDraft.TbName : currentDraft.CacheName);
@@ -334,7 +334,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
 
         CB_Button btnFromNotes = new CB_Button(Translation.get("fromNotes"));
         btnFromNotes.setClickHandler((v, x, y, pointer, button) -> {
-            String text = new CacheDAO().getNote(currentDraft.CacheId);
+            String text = new CachesDAO().getNote(currentDraft.CacheId);
             if (text.length() > 0) {
                 String sBegin = "<Import from Geocaching.com>";
                 String sEnd = "</Import from Geocaching.com>";

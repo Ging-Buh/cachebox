@@ -75,7 +75,7 @@ android {
     defaultConfig {
         applicationId "de.droidcachebox"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 31
         // versionCode = Integer.decode(buildTime())
         // versionName = buildTime()
         setVersionCode(20220106)

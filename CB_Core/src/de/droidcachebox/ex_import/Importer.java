@@ -28,7 +28,7 @@ import de.droidcachebox.core.GCVote;
 import de.droidcachebox.core.GCVoteCacheInfo;
 import de.droidcachebox.core.RatingData;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.CategoryDAO;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.GCVoteDAO;
@@ -121,7 +121,7 @@ public class Importer {
         }
         importProgress.finishStep(stepID, "");
 
-        new CacheDAO().updateCacheCountForGPXFilenames();
+        new CachesDAO().updateCacheCountForGPXFilenames();
         CategoryDAO.getInstance().deleteEmptyCategories();
         CacheInfoList.writeListToDB();
         CacheInfoList.dispose();

@@ -1,6 +1,5 @@
 package de;
 
-import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -25,7 +24,7 @@ import de.droidcachebox.locator.CBLocation;
 import de.droidcachebox.locator.DesktopLocatorMethods;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.LocatorMethods;
-import de.droidcachebox.menu.MainViewInit;
+import de.droidcachebox.menu.MainView;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.utils.Plattform;
@@ -34,10 +33,10 @@ import de.droidcachebox.utils.Plattform;
 
 public class DesktopMain {
     private static final String sClass = "DesktopMain";
-    static float compassheading = -1;
+    private static final String OS = System.getProperty("os.name").toLowerCase();
+    static float compassHeading = -1;
     // Retrieve the user preference node for the package com.mycompany
     private static GL CB_UI;
-    private static final String OS = System.getProperty("os.name").toLowerCase();
 
     public static void start(DevicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame) {
 
@@ -56,23 +55,21 @@ public class DesktopMain {
         new DesktopTexturePacker();
 
         CB_RectF rec = new CB_RectF(0, 0, ui.Window.width, ui.Window.height);
-        CB_UI = new GL(ui.Window.width, ui.Window.height, new MainViewInit(rec), new ViewManager(rec));
+        CB_UI = new GL(ui.Window.width, ui.Window.height, new MainView(rec), new ViewManager(rec));
         Settings.getInstance().acceptChanges();
 
         GL_View_Base.debug = debug;
         GL_View_Base.disableScissor = scissor;
 
         if (Settings.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
-
             Settings.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
             Settings.newInstall.setValue(true);
-            Settings.getInstance().acceptChanges();
         } else {
             Settings.newInstall.setValue(false);
-            Settings.getInstance().acceptChanges();
         }
+        Settings.getInstance().acceptChanges();
 
-        int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
+        int sw = Math.min(ui.Window.height, ui.Window.width);
 
         // chek if use small skin
         if (sw < 360) GlobalCore.displayType = DisplayType.Small;
@@ -83,8 +80,7 @@ public class DesktopMain {
         // TODO Activate Full Screen
         if (false) {
             LwjglApplicationConfiguration lwjglAppCfg = new LwjglApplicationConfiguration();
-            DisplayMode dispMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
-            lwjglAppCfg.setFromDisplayMode(dispMode);
+            lwjglAppCfg.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
             lwjglAppCfg.fullscreen = true;
             lwjglAppCfg.forceExit = false;
 
@@ -92,14 +88,12 @@ public class DesktopMain {
         } else {
 
             LwjglApplicationConfiguration lwjglAppCfg = new LwjglApplicationConfiguration();
-            DisplayMode dispMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
-
-            lwjglAppCfg.setFromDisplayMode(dispMode);
+            lwjglAppCfg.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
             lwjglAppCfg.fullscreen = false;
             lwjglAppCfg.resizable = false;
             lwjglAppCfg.width = ui.Window.width;
             lwjglAppCfg.height = ui.Window.height;
-            lwjglAppCfg.title = "DCB Desctop Cachebox";
+            lwjglAppCfg.title = "DCB Desktop Cachebox";
             lwjglAppCfg.samples = 3;
             lwjglAppCfg.forceExit = false;
 
@@ -108,7 +102,7 @@ public class DesktopMain {
 
             GL.that.setGlListener(new GL_Listener_Interface() {
 
-                final AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
+                final AtomicBoolean isContinuousRenderMode = new AtomicBoolean(true);
 
                 @Override
                 public void requestRender() {
@@ -119,18 +113,18 @@ public class DesktopMain {
                 @Override
                 public void renderDirty() {
                     App.getGraphics().setContinuousRendering(false);
-                    isContinousRenderMode.set(false);
+                    isContinuousRenderMode.set(false);
                 }
 
                 @Override
-                public void renderContinous() {
+                public void renderContinuous() {
                     App.getGraphics().setContinuousRendering(true);
-                    isContinousRenderMode.set(true);
+                    isContinuousRenderMode.set(true);
                 }
 
                 @Override
-                public boolean isContinous() {
-                    return isContinousRenderMode.get();
+                public boolean isContinuous() {
+                    return isContinuousRenderMode.get();
                 }
 
             });
@@ -233,18 +227,18 @@ public class DesktopMain {
     }
 
     public static boolean isWindows() {
-        return (OS.indexOf("win") >= 0);
+        return (OS.contains("win"));
     }
 
     public static boolean isMac() {
-        return (OS.indexOf("mac") >= 0);
+        return (OS.contains("mac"));
     }
 
     public static boolean isUnix() {
-        return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0);
+        return (OS.contains("nix") || OS.contains("nux") || OS.indexOf("aix") > 0);
     }
 
     public static boolean isSolaris() {
-        return (OS.indexOf("sunos") >= 0);
+        return (OS.contains("sunos"));
     }
 }

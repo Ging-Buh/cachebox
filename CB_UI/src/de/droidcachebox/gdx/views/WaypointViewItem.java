@@ -31,7 +31,7 @@ import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
 public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent {
-    private static final String log = "WaypointViewItem";
+    private static final String sClass = "WaypointViewItem";
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
     protected ExtendedCacheInfo cacheInfo;
     protected boolean isPressed = false;
@@ -103,7 +103,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 GlyphLayout bounds = distance.setText(txt, arrowRec.getX(), arrowRec.getY());
                 distance.setPosition(x - (bounds.width / 2f), 0);
             } catch (Exception ex) {
-                Log.err(log, "setDistanceString: '" + txt + "'");
+                Log.err(sClass, "setDistanceString: '" + txt + "'");
             }
         }
     }

@@ -24,7 +24,7 @@ import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 
 public class H_ListView extends ListViewBase {
-    protected static final String log = "H_ListView";
+    protected static final String sClass = "H_ListView";
 
     public H_ListView(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -129,7 +129,7 @@ public class H_ListView extends ListViewBase {
                             break;
                     }
                 } catch (Exception e) {
-                    Log.err(log, "Thread set pos", e);
+                    Log.err(sClass, "Thread set pos", e);
                 }
             }
 

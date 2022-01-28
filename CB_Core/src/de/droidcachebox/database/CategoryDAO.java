@@ -23,7 +23,7 @@ import de.droidcachebox.dataclasses.GpxFilename;
 import de.droidcachebox.utils.log.Log;
 
 public class CategoryDAO {
-    private static final String log = "CategoryDAO";
+    private static final String sClass = "CategoryDAO";
     private static CategoryDAO categoryDAO;
 
     private CategoryDAO() {
@@ -65,7 +65,7 @@ public class CategoryDAO {
         try {
             CBDB.getInstance().update("Category", args, "Id=" + category.categoryId, null);
         } catch (Exception exc) {
-            Log.err(log, "setPinned", "CategoryDAO", exc);
+            Log.err(sClass, "setPinned", "CategoryDAO", exc);
         }
     }
 
@@ -73,7 +73,7 @@ public class CategoryDAO {
     public void loadCategoriesFromDatabase() {
         // read all Categories
 
-        CoreData.categories.beginnTransaction();
+        CoreData.categories.beginnUpdate();
         CoreData.categories.clear();
 
         CoreCursor reader = CBDB.getInstance().rawQuery("select ID, GPXFilename, Pinned from Category", null);
@@ -87,11 +87,11 @@ public class CategoryDAO {
             reader.close();
         }
         CoreData.categories.sort();
-        CoreData.categories.endTransaction();
+        CoreData.categories.endUpdate();
     }
 
     public void deleteEmptyCategories() {
-        CoreData.categories.beginnTransaction();
+        CoreData.categories.beginnUpdate();
 
         Categories delete = new Categories();
         for (int i = 0, n = CoreData.categories.size(); i < n; i++) {
@@ -105,6 +105,6 @@ public class CategoryDAO {
         for (int i = 0, n = delete.size(); i < n; i++) {
             CoreData.categories.remove(delete.get(i));
         }
-        CoreData.categories.endTransaction();
+        CoreData.categories.endUpdate();
     }
 }

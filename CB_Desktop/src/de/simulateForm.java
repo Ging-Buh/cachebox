@@ -149,7 +149,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
                 Coordinate pos = new CoordinateGPS(trk.y, trk.x);
                 Locator.getInstance().setNewLocation(new CBLocation(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.direction, 95, ProviderType.GPS));
 
-                DesktopMain.compassheading = (float) trk.direction;
+                DesktopMain.compassHeading = (float) trk.direction;
 
                 if (trackPointIndex < trackPointIndexEnd - 2) {
                     trackPointIndex++;

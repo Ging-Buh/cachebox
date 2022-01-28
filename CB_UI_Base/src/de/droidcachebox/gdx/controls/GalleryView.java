@@ -27,7 +27,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class GalleryView extends H_ListView {
-    private static final String log = "GalleryView";
+    private static final String sClass = "GalleryView";
 
     private boolean showSelectedItemCenter = false;
 
@@ -135,13 +135,13 @@ public class GalleryView extends H_ListView {
                         //Snap to 1
                         bottomAnimation = false;
                         scrollTo(pos1);
-                        Log.debug(log, "SnapIn first " + pos1);
+                        Log.debug(sClass, "SnapIn first " + pos1);
                         snapIn(idx);
                     } else {
                         //Snap to 2
                         bottomAnimation = true;
                         scrollTo(pos2);
-                        Log.debug(log, "SnapIn second " + pos2);
+                        Log.debug(sClass, "SnapIn second " + pos2);
                         snapIn(idx + 1);
                     }
                 });

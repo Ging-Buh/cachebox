@@ -40,7 +40,6 @@ import de.droidcachebox.translation.Translation;
  * TODO Visit,Home und distance müssen noch angezeigt werden!
  */
 public class TB_Details extends ActivityBase {
-    public static TB_Details that;
     private ScrollBox scrollBox;
     private Box scrollBoxContent;
     private CB_Button btnClose, btnAction;
@@ -54,13 +53,12 @@ public class TB_Details extends ActivityBase {
     public TB_Details() {
         super("TB_Details");
         createControls();
-        that = this;
     }
 
     public void show(Trackable trackable) {
         this.trackable = trackable;
         layout();
-        GL.that.showActivity(this);
+        show();
     }
 
     private void createControls() {
@@ -138,7 +136,7 @@ public class TB_Details extends ActivityBase {
         scrollBoxContent.addLast(image, FIXED);
         addScrollBoxContent(lblTypeName, TypeName, trackable.getTypeName());
         addScrollBoxContent(lblOwner, Owner, trackable.getOwner());
-        addScrollBoxContent(lblBirth, Birth, trackable.getBirth());
+        addScrollBoxContent(lblBirth, Birth, trackable.getDateCreatedString());
         addScrollBoxContent(lblGoal, currentGoal, trackable.getCurrentGoal());
         addScrollBoxContent(lblDescription, description, trackable.getDescription());
         scrollBoxContent.adjustHeight();
@@ -164,82 +162,18 @@ public class TB_Details extends ActivityBase {
 
     private void showLogMenu() {
         final Menu menuLog = new Menu("TB_DetailsLogMenuTitle");
-        menuLog.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> TB_Log.getInstance().Show(trackable, LogType.note));
+        menuLog.addMenuItem("note", Sprites.getSprite(IconName.TBNOTE.name()), () -> new TB_Log().show(trackable, LogType.note));
         if (trackable.isLogTypePossible(LogType.discovered, Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> TB_Log.getInstance().Show(trackable, LogType.discovered));
+            menuLog.addMenuItem("discovered", Sprites.getSprite(IconName.TBDISCOVER.name()), () -> new TB_Log().show(trackable, LogType.discovered));
         if (trackable.isLogTypePossible(LogType.visited, Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> TB_Log.getInstance().Show(trackable, LogType.visited));
+            menuLog.addMenuItem("visit", Sprites.getSprite(IconName.TBVISIT.name()), () -> new TB_Log().show(trackable, LogType.visited));
         if (trackable.isLogTypePossible(LogType.dropped_off, Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> TB_Log.getInstance().Show(trackable, LogType.dropped_off));
+            menuLog.addMenuItem("dropped", Sprites.getSprite(IconName.TBDROP.name()), () -> new TB_Log().show(trackable, LogType.dropped_off));
         if (trackable.isLogTypePossible(LogType.grab_it, Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> TB_Log.getInstance().Show(trackable, LogType.grab_it));
+            menuLog.addMenuItem("grabbed", Sprites.getSprite(IconName.TBGRAB.name()), () -> new TB_Log().show(trackable, LogType.grab_it));
         if (trackable.isLogTypePossible(LogType.retrieve, Settings.GcLogin.getValue()))
-            menuLog.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> TB_Log.getInstance().Show(trackable, LogType.retrieve));
+            menuLog.addMenuItem("picked", Sprites.getSprite(IconName.TBPICKED.name()), () -> new TB_Log().show(trackable, LogType.retrieve));
         menuLog.show();
-    }
-
-    @Override
-    public void dispose() {
-
-        if (scrollBox != null)
-            scrollBox.dispose();
-        scrollBox = null;
-        if (btnClose != null)
-            btnClose.dispose();
-        btnClose = null;
-        if (btnAction != null)
-            btnAction.dispose();
-        btnAction = null;
-        if (icon != null)
-            icon.dispose();
-        icon = null;
-        if (image != null)
-            image.dispose();
-        image = null;
-        if (title != null)
-            title.dispose();
-        title = null;
-        if (lblDescription != null)
-            lblDescription.dispose();
-        lblDescription = null;
-        if (description != null)
-            description.dispose();
-        description = null;
-        if (lblGoal != null)
-            lblGoal.dispose();
-        lblGoal = null;
-        if (currentGoal != null)
-            currentGoal.dispose();
-        currentGoal = null;
-        if (lblTypeName != null)
-            lblTypeName.dispose();
-        lblTypeName = null;
-        if (lblTbCode != null)
-            lblTbCode.dispose();
-        lblTbCode = null;
-        if (lblOwner != null)
-            lblOwner.dispose();
-        lblOwner = null;
-        if (lblBirth != null)
-            lblBirth.dispose();
-        lblBirth = null;
-        if (TypeName != null)
-            TypeName.dispose();
-        TypeName = null;
-        if (TbCode != null)
-            TbCode.dispose();
-        TbCode = null;
-        if (Owner != null)
-            Owner.dispose();
-        Owner = null;
-        if (Birth != null)
-            Birth.dispose();
-        Birth = null;
-
-        super.dispose();
-
-        that = null;
-
     }
 
 }

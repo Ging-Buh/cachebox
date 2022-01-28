@@ -47,7 +47,7 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.CategoryDAO;
 import de.droidcachebox.dataclasses.Attribute;
 import de.droidcachebox.dataclasses.Category;
@@ -93,7 +93,7 @@ import de.droidcachebox.utils.log.Log;
  * forth  tab (TextView): string filters by GCCodes, owner and geocache title
  */
 public class EditFilterSettings extends ActivityBase {
-    private static final String log = "EditFilterSettings";
+    private static final String sClass = "EditFilterSettings";
     private static final int presetViewId = 0;
     private static final int filterSetViewId = 1;
     private static final int categoryViewId = 2;
@@ -288,12 +288,12 @@ public class EditFilterSettings extends ActivityBase {
                 try {
                     synchronized (CBDB.getInstance().cacheList) {
                         String sqlWhere = filterProperties.getSqlWhere(Settings.GcLogin.getValue());
-                        CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                        new CachesDAO().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         GlobalCore.checkSelectedCacheValid();
                     }
                     CacheListChangedListeners.getInstance().fire();
                 } catch (Exception ex) {
-                    Log.err(log, "applyFilter", ex);
+                    Log.err(sClass, "applyFilter", ex);
                 }
             }
         }).show();
@@ -523,7 +523,7 @@ public class EditFilterSettings extends ActivityBase {
                                         fillPresetList();
                                         notifyDataSetChanged();
                                     } catch (Exception ex) {
-                                        Log.err(log, "DelUserPreset", ex);
+                                        Log.err(sClass, "DelUserPreset", ex);
                                     }
                                 }
                                 ShowEditFilterSettings.action.execute();

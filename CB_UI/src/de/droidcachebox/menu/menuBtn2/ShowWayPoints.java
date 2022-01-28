@@ -8,9 +8,11 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.Waypoints;
+import de.droidcachebox.menu.menuBtn2.executes.WayPointsView;
 
 public class ShowWayPoints extends AbstractShowAction {
+
+    private WayPointsView wayPointsView;
 
     public ShowWayPoints() {
         super("Waypoints");
@@ -18,7 +20,9 @@ public class ShowWayPoints extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(Waypoints.getInstance());
+        if (wayPointsView == null)
+            wayPointsView = new WayPointsView();
+        ViewManager.leftTab.showView(wayPointsView);
     }
 
     @Override
@@ -33,7 +37,12 @@ public class ShowWayPoints extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return Waypoints.getInstance();
+        return wayPointsView;
+    }
+
+    @Override
+    public void viewIsHiding() {
+        wayPointsView = null;
     }
 
     @Override
@@ -43,6 +52,12 @@ public class ShowWayPoints extends AbstractShowAction {
 
     @Override
     public Menu getContextMenu() {
-        return Waypoints.getInstance().getContextMenu();
+        if (wayPointsView == null) wayPointsView = new WayPointsView();
+        return wayPointsView.getContextMenu();
+    }
+
+    public void addWayPoint() {
+        if (wayPointsView == null) wayPointsView = new WayPointsView();
+        wayPointsView.addWP();
     }
 }

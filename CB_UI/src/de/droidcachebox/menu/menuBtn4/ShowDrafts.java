@@ -49,6 +49,11 @@ public class ShowDrafts extends AbstractShowAction {
     }
 
     @Override
+    public void viewIsHiding() {
+        draftsView = null;
+    }
+
+    @Override
     public boolean hasContextMenu() {
         return true;
     }

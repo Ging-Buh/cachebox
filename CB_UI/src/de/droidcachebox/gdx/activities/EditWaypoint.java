@@ -91,7 +91,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniCacheNameLabel() {
-        tvCacheName = new CB_Label(this.name + " tvCacheName", leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        tvCacheName = new CB_Label(this.name + " tvCacheName", leftBorder + margin, getHeight() - this.getTopHeight() - measuredLabelHeight, innerWidth - margin, measuredLabelHeight);
         tvCacheName.setFont(Fonts.getBubbleNormal());
         tvCacheName.setText(GlobalCore.getSelectedCache().getGeoCacheName());
         scrollBox.addChild(tvCacheName);
@@ -117,12 +117,12 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniLabelTyp() {
         cbStartPointWidth = UiSizes.getInstance().getButtonHeight() * 1.5f;
-        tvTyp = new CB_Label(this.name + " tvTyp", leftBorder + margin, bCoord.getY() - margin - MeasuredLabelHeight, innerWidth - margin - cbStartPointWidth, MeasuredLabelHeight);
+        tvTyp = new CB_Label(this.name + " tvTyp", leftBorder + margin, bCoord.getY() - margin - measuredLabelHeight, innerWidth - margin - cbStartPointWidth, measuredLabelHeight);
         tvTyp.setFont(Fonts.getBubbleNormal());
         tvTyp.setText(Translation.get("WayPointType"));
         scrollBox.addChild(tvTyp);
 
-        tvStartPoint = new CB_Label(this.name + " tvStartPoint", tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth, MeasuredLabelHeight);
+        tvStartPoint = new CB_Label(this.name + " tvStartPoint", tvTyp.getMaxX() + margin, bCoord.getY() - margin - measuredLabelHeight, cbStartPointWidth, measuredLabelHeight);
         tvStartPoint.setFont(Fonts.getBubbleNormal()).setHAlignment(HAlignment.CENTER);
         tvStartPoint.setText(Translation.get("start"));
         tvStartPoint.setVisible(false);
@@ -232,7 +232,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelTitle() {
-        tvTitle = new CB_Label(this.name + " tvTitle", leftBorder + margin, sType.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        tvTitle = new CB_Label(this.name + " tvTitle", leftBorder + margin, sType.getY() - margin - measuredLabelHeight, innerWidth - margin, measuredLabelHeight);
         tvTitle.setFont(Fonts.getBubbleNormal());
         tvTitle.setText(Translation.get("Title"));
         scrollBox.addChild(tvTitle);
@@ -249,7 +249,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelDesc() {
-        tvDescription = new CB_Label(this.name + " tvDescription", leftBorder + margin, etTitle.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        tvDescription = new CB_Label(this.name + " tvDescription", leftBorder + margin, etTitle.getY() - margin - measuredLabelHeight, innerWidth - margin, measuredLabelHeight);
         tvDescription.setFont(Fonts.getBubbleNormal());
         tvDescription.setText(Translation.get("Description"));
         scrollBox.addChild(tvDescription);
@@ -280,7 +280,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelClue() {
-        tvClue = new CB_Label(this.name + " tvClue", leftBorder + margin, etDescription.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
+        tvClue = new CB_Label(this.name + " tvClue", leftBorder + margin, etDescription.getY() - margin - measuredLabelHeight, innerWidth - margin, measuredLabelHeight);
         tvClue.setFont(Fonts.getBubbleNormal());
         tvClue.setText(Translation.get("Clue"));
         scrollBox.addChild(tvClue);
@@ -428,7 +428,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     public void keyboardFocusChanged(EditTextField editTextField) {
         if (editTextField != null) {
             // scroll to top
-            scrollBox.scrollTo(-(virtualHeight - editTextField.getMaxY() - MeasuredLabelHeight));
+            scrollBox.scrollTo(-(virtualHeight - editTextField.getMaxY() - measuredLabelHeight));
         }
     }
 

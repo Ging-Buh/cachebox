@@ -55,7 +55,7 @@ import de.droidcachebox.core.API_ErrorEventHandlerList;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
@@ -81,7 +81,6 @@ import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
 import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
 import de.droidcachebox.menu.menuBtn3.MapDownloadMenu;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
-import de.droidcachebox.menu.menuBtn3.executes.CompassView;
 import de.droidcachebox.menu.menuBtn3.executes.TrackList;
 import de.droidcachebox.menu.menuBtn3.executes.TrackRecorder;
 import de.droidcachebox.menu.menuBtn5.ShowAbout;
@@ -129,7 +128,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
     public static void reloadCacheList() {
         synchronized (CBDB.getInstance().cacheList) {
-            CacheListDAO.getInstance().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), false, false, Settings.showAllWaypoints.getValue());
+            new CachesDAO().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), false, false, Settings.showAllWaypoints.getValue());
         }
         CacheListChangedListeners.getInstance().fire();
     }
@@ -472,7 +471,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             }
 
             if (Settings.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Settings.SoundApproachDistance.getValue())) {
-                if (CompassView.getInstance().isVisible())
+                if (((de.droidcachebox.menu.menuBtn3.ShowCompass) ShowCompass.action).getView() != null)
                     return;// don't show if showing compass
                 if (((ShowMap) ShowMap.action).normalMapView.isVisible() && ((ShowMap) ShowMap.action).normalMapView.isCarMode())
                     return; // don't show on visible map at carMode

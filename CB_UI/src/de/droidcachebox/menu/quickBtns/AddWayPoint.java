@@ -1,12 +1,12 @@
 package de.droidcachebox.menu.quickBtns;
 
 import static de.droidcachebox.menu.Action.ShowMap;
+import static de.droidcachebox.menu.Action.ShowWayPoints;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.menu.menuBtn2.executes.Waypoints;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 
 public class AddWayPoint extends AbstractAction {
@@ -33,6 +33,6 @@ public class AddWayPoint extends AbstractAction {
             ((ShowMap) ShowMap.action).normalMapView.createWaypointAtCenter();
             return;
         }
-        Waypoints.getInstance().addWP();
+        ((de.droidcachebox.menu.menuBtn2.ShowWayPoints) ShowWayPoints.action).addWayPoint();
     }
 }

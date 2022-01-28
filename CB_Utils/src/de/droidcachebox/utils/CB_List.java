@@ -15,11 +15,11 @@
  */
 package de.droidcachebox.utils;
 
-import de.droidcachebox.utils.log.Log;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
+
+import de.droidcachebox.utils.log.Log;
 
 /**
  * A resizable, ordered array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class avoids a memory copy when
@@ -28,7 +28,7 @@ import java.util.Iterator;
  * @author Longri, based on FloatArray from Nathan Sweet (LibGdx)
  */
 public class CB_List<T> implements Serializable, Iterable<T> {
-    private static final String log = "CB_List";
+    private static final String sClass = "CB_List";
     private static final long serialVersionUID = 4378819539487000418L;
     protected final int INITIAL_SIZE = 5;
     protected T[] items;
@@ -375,7 +375,7 @@ public class CB_List<T> implements Serializable, Iterable<T> {
         try {
             Arrays.sort(items, 0, size - 1);
         } catch (Exception ex) {
-            Log.err(log, "Sort", ex);
+            Log.err(sClass, "Sort", ex);
         }
     }
 
@@ -404,13 +404,6 @@ public class CB_List<T> implements Serializable, Iterable<T> {
         System.arraycopy(this.items, begin, ret, 0, length);
 
         return ret;
-    }
-
-    public void dispose() {
-        if (items != null) {
-            Arrays.fill(items, null);
-        }
-        items = null;
     }
 
     public void trimToSize() {

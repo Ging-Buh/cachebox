@@ -15,17 +15,20 @@
  */
 package de.droidcachebox.dataclasses;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import de.droidcachebox.database.CoreCursor;
+import de.droidcachebox.database.Database_Core;
+import de.droidcachebox.database.DraftsDatabase;
 import de.droidcachebox.utils.UnitFormatter;
 import de.droidcachebox.utils.log.Log;
 
 public class Trackable implements Comparable<Trackable> {
-    private static final String log = "Trackable";
-    private final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
+    private static final String sClass = "Trackable";
+    private final SimpleDateFormat postFormatter = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
     private boolean archived;
     private String tbCode;
     private String currentGoal;
@@ -57,34 +60,111 @@ public class Trackable implements Comparable<Trackable> {
     }
 
     /**
-     * DAO Constructor <br>
      * Der Constructor, der ein Trackable über eine DB Abfrage erstellt! <img src="doc-files/1.png"/>
+     * ,,,,,,,,,,,,,,Home,
      *
-     * @param reader ?
+     * @param reader cursor from db
      */
     public Trackable(CoreCursor reader) {
         try {
-            id = reader.getInt(0);
-            archived = reader.getInt(1) != 0;
-            tbCode = reader.getString(2).trim();
-            cacheId = reader.getLong(3);
-            currentGoal = reader.getString(4).trim();
-            currentOwnerName = reader.getString(5).trim();
-            String sDate = reader.getString(6);
+            id = reader.getInt("Id");
+            archived = reader.getInt("Archived") != 0;
+            tbCode = reader.getString("GcCode").trim();
+            cacheId = reader.getLong("CacheId");
+            currentGoal = reader.getString("CurrentGoal").trim();
+            currentOwnerName = reader.getString("CurrentOwnerName").trim();
+            String sDate = reader.getString("DateCreated");
             dateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).parse(sDate);
-            description = reader.getString(7).trim();
-            iconUrl = reader.getString(8).trim();
-            imageUrl = reader.getString(9).trim();
-            name = reader.getString(10).trim();
-            ownerName = reader.getString(11).trim();
-            url = reader.getString(12).trim();
-            typeName = reader.getString(13).trim();
-            travelDistance = 0;
-            lastVisit = null;
+            description = reader.getString("Description").trim();
+            iconUrl = reader.getString("IconUrl").trim();
+            imageUrl = reader.getString("ImageUrl").trim();
+            name = reader.getString("Name").trim();
+            ownerName = reader.getString("OwnerName").trim();
+            url = reader.getString("Url").trim();
+            typeName = reader.getString("TypeName").trim();
+            travelDistance = reader.getInt("TravelDistance");
+            sDate = reader.getString("DateCreated");
+            lastVisit = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).parse(sDate);
             currentGeoCacheCode = "";
         } catch (Exception ex) {
-            Log.err(log, "Read Trackable from DB", ex);
+            Log.err(sClass, "Read Trackable from DB", ex);
         }
+    }
+
+    public void writeToDatabase() {
+        try {
+            DraftsDatabase.getInstance().insert("Trackable", createArgs());
+        } catch (Exception exc) {
+            Log.err(sClass, "Write Trackable error", exc);
+        }
+    }
+
+    private Database_Core.Parameters createArgs() {
+        String sTimestampCreated = "";
+        String sTimestampLastVisit = "";
+
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        try {
+            sTimestampCreated = iso8601Format.format(getDateCreated());
+        } catch (Exception e) {
+            Log.err(sClass, "sTimestampCreated", e);
+        }
+
+        try {
+            String lastVisit = formatLastVisit();
+            if (lastVisit.length() > 0)
+                sTimestampLastVisit = iso8601Format.format(lastVisit);
+            else
+                sTimestampLastVisit = "";
+        } catch (Exception e) {
+            Log.err(sClass, "sTimestampLastVisit", e);
+        }
+
+    /*
+            cid      name                 type               notnull      dflt_value      pk
+            -------  -------------------  -----------------  -----------  --------------  ---
+            0        Id                   integer            1                            1
+            1        Archived             bit                0                            0
+            2        GcCode               nvarchar (15)      0                            0
+            3        CacheId              bigint             0                            0
+            4        CurrentGoal          ntext              0                            0
+            5        CurrentOwnerName     nvarchar (255)     0                            0
+            6        DateCreated          datetime           0                            0
+            7        Description          ntext              0                            0
+            8        IconUrl              nvarchar (255)     0                            0
+            9        ImageUrl             nvarchar (255)     0                            0
+            10       name                 nvarchar (255)     0                            0
+            11       OwnerName            nvarchar (255)     0                            0
+            12       Url                  nvarchar (255)     0                            0
+            13       TypeName             ntext              0                            0
+            14       LastVisit            datetime           0                            0
+            15       Home                 ntext              0                            0
+            16       TravelDistance       integer            0            0               0
+    */
+
+        Log.debug(sClass, "new Parameters()");
+        Database_Core.Parameters args = new Database_Core.Parameters();
+        try {
+            args.put("Archived", archived ? 1 : 0);
+            args.put("GcCode", tbCode);
+            args.put("CurrentGoal", currentGoal);
+            args.put("CurrentOwnerName", currentOwnerName);
+            args.put("DateCreated", sTimestampCreated);
+            args.put("Description", description);
+            args.put("IconUrl", iconUrl);
+            args.put("ImageUrl", imageUrl);
+            args.put("name", name);
+            args.put("OwnerName", ownerName);
+            args.put("Url", url);
+            args.put("TypeName", typeName);
+            args.put("LastVisit", sTimestampLastVisit);
+            args.put("Home", "");
+            args.put("TravelDistance",  UnitFormatter.distanceString(travelDistance));
+            args.put("CacheId", currentGeoCacheCode);
+        } catch (Exception e) {
+            Log.err(sClass, "args", e);
+        }
+        return args;
     }
 
     /*
@@ -110,14 +190,10 @@ public class Trackable implements Comparable<Trackable> {
     }
      */
 
-    public String formatTravelDistance() {
-        return UnitFormatter.distanceString(travelDistance);
-    }
-
-    public String getBirth() {
+    public String getDateCreatedString() {
         if (dateCreated == null)
             return "";
-        return postFormater.format(dateCreated);
+        return postFormatter.format(dateCreated);
     }
 
     public String getCurrentGeoCacheCode() {
@@ -135,7 +211,7 @@ public class Trackable implements Comparable<Trackable> {
     public String formatLastVisit() {
         if (lastVisit == null)
             return "";
-        return postFormater.format(lastVisit);
+        return postFormatter.format(lastVisit);
     }
 
     public String getTypeName() {

@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -219,28 +218,6 @@ public class CacheInfo extends CB_View_Base {
         }
     }
 
-    @Override
-    public void dispose() {
-        mIconSprite = null;
-        mFoundOwnerSprite = null;
-        mRatingSprite = null;
-        mS_FontCache = null;
-        mD_FontCache = null;
-        mT_FontCache = null;
-        mTB_FontCache = null;
-        mSSprite = null;
-        mDSprite = null;
-        mTSprite = null;
-        mTBSprite = null;
-        mInfo_FontCache = null;
-        mFavoriteSprite = null;
-        mAvailableSprite = null;
-        if (mAttrSprites != null) {
-            Arrays.fill(mAttrSprites, null);
-            mAttrSprites = null;
-        }
-    }
-
     public void requestLayout() {
         try {
             if (mCache == null)
@@ -415,7 +392,7 @@ public class CacheInfo extends CB_View_Base {
                 }
             }
 
-            if (ifModeFlag(SHOW_ATTRIBUTES)) { // create Attribute Icons
+            if (ifModeFlag(SHOW_ATTRIBUTES) && mCache.getAttributes() != null) { // create Attribute Icons
                 float attSize = getWidth() / AttributesPerLine - mMargin;
                 int attCount = mCache.getAttributes().size();
                 int lineCount = getLineCount(attCount, AttributesPerLine);

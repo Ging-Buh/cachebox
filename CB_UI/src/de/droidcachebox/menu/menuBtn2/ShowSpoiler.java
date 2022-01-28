@@ -23,13 +23,14 @@ import de.droidcachebox.gdx.controls.dialogs.CancelWaitDialog;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn2.executes.Spoiler;
+import de.droidcachebox.menu.menuBtn2.executes.SpoilerView;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.ReadyListener;
 
 public class ShowSpoiler extends AbstractShowAction {
     private final Sprite SpoilerExistsIcon;
     private final Sprite NoSpoilerIcon;
+    private SpoilerView spoilerView;
 
     public ShowSpoiler() {
         super("spoiler");
@@ -40,7 +41,9 @@ public class ShowSpoiler extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(Spoiler.getInstance());
+        if (spoilerView == null)
+            spoilerView = new SpoilerView();
+        ViewManager.leftTab.showView(spoilerView);
     }
 
     @Override
@@ -60,7 +63,12 @@ public class ShowSpoiler extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return Spoiler.getInstance();
+        return spoilerView;
+    }
+
+    @Override
+    public void viewIsHiding() {
+        spoilerView = null;
     }
 
     @Override
@@ -77,6 +85,8 @@ public class ShowSpoiler extends AbstractShowAction {
     }
 
     private Menu createContextMenu() {
+        if (spoilerView == null)
+            spoilerView = new SpoilerView();
         Menu contextMenu = new Menu("SpoilerViewContextMenuTitle");
 
         contextMenu.addMenuItem("reloadSpoiler", null,
@@ -85,9 +95,9 @@ public class ShowSpoiler extends AbstractShowAction {
                     if (!isCanceled) {
                         if (GlobalCore.isSetSelectedCache()) {
                             GlobalCore.getSelectedCache().loadSpoilerRessources();
-                            Spoiler.getInstance().ForceReload();
-                            ViewManager.leftTab.showView(Spoiler.getInstance());
-                            Spoiler.getInstance().onShow();
+                            spoilerView.forceReload();
+                            ViewManager.leftTab.showView(spoilerView);
+                            spoilerView.onShow();
                         }
                     }
                 }));
@@ -97,15 +107,15 @@ public class ShowSpoiler extends AbstractShowAction {
             if (!isCanceled) {
                 if (GlobalCore.isSetSelectedCache()) {
                     GlobalCore.getSelectedCache().loadSpoilerRessources();
-                    Spoiler.getInstance().ForceReload();
-                    ViewManager.leftTab.showView(Spoiler.getInstance());
-                    Spoiler.getInstance().onShow();
+                    spoilerView.forceReload();
+                    ViewManager.leftTab.showView(spoilerView);
+                    spoilerView.onShow();
                 }
             }
         }));
 
         contextMenu.addMenuItem("startPictureApp", Sprites.getSprite("image-export"), () -> {
-            String file = Spoiler.getInstance().getSelectedFilePath();
+            String file = spoilerView.getSelectedFilePath();
             if (file != null) Platform.startPictureApp(file);
         });
 
@@ -140,6 +150,11 @@ public class ShowSpoiler extends AbstractShowAction {
                     }
 
                 }).show();
+    }
+
+    public void forceReloadSpoiler() {
+        if (spoilerView != null)
+            spoilerView.forceReload();
     }
 
 

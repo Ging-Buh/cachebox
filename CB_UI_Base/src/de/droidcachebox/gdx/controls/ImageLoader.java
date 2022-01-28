@@ -52,7 +52,7 @@ import de.droidcachebox.utils.log.Log;
  */
 public class ImageLoader {
 
-    private static final String log = "ImageLoader";
+    private static final String sClass = "ImageLoader";
     private static AssetManager assetManager = new AssetManager();
     private final boolean thumbnail;
     boolean ImageLoadError = false;
@@ -299,7 +299,7 @@ public class ImageLoader {
                 }).run();
 
             } catch (Exception e) {
-                Log.err(log, "for " + iconUrl, e);
+                Log.err(sClass, "for " + iconUrl, e);
             }
         });
         ImageDownloadThread.start();
@@ -370,11 +370,11 @@ public class ImageLoader {
 
                 } catch (com.badlogic.gdx.utils.GdxRuntimeException e) {
                     ImageLoadError = true;
-                    Log.err(log, "Load GL Image", e);
+                    Log.err(sClass, "Load GL Image", e);
                     State = 4;
                 } catch (Exception e) {
                     ImageLoadError = true;
-                    Log.err(log, "Load GL Image", e);
+                    Log.err(sClass, "Load GL Image", e);
                     e.printStackTrace();
                 }
                 inGenerate = false;
@@ -417,7 +417,7 @@ public class ImageLoader {
             originalPath = mPath;
             mPath = tmp;
         } else {
-            Log.err(log, "Thumb not generated for " + mPath + " ! " + thumbPraefix);
+            Log.err(sClass, "Thumb not generated for " + mPath + " ! " + thumbPraefix);
         }
     }
 

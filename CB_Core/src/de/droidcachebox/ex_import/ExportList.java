@@ -22,7 +22,7 @@ import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.utils.log.Log;
 
 public class ExportList extends ArrayList<ExportEntry> {
-    private static final String log = "ExportList";
+    private static final String sClass = "ExportList";
     private static final long serialVersionUID = -7774973724185994203L;
 
     public ExportList() {
@@ -37,7 +37,7 @@ public class ExportList extends ArrayList<ExportEntry> {
         try {
             reader = CBDB.getInstance().rawQuery(sql, null);
         } catch (Exception exc) {
-            Log.err(log, "ExportList", "LoadExportList", exc);
+            Log.err(sClass, "ExportList", "LoadExportList", exc);
         }
         reader.moveToFirst();
         while (!reader.isAfterLast()) {

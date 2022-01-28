@@ -17,7 +17,7 @@ import de.droidcachebox.utils.Plattform;
 import de.droidcachebox.utils.log.Log;
 
 public class AppRater {
-    private static final String log = "AppRater";
+    private static final String sClass = "AppRater";
     private final static String APP_TITLE = "Cachebox";
     private final static String APP_PACKAGE_NAME = "de.droidcachebox";
 
@@ -37,7 +37,7 @@ public class AppRater {
             public void run() {
                 Settings.AppRaterlaunchCount.setValue(launch_count);
                 Settings.getInstance().acceptChanges();
-                Log.info(log, "10 min usage, increment launch count");
+                Log.info(sClass, "10 min usage, increment launch count");
             }
         };
         t.schedule(ta, MINIMUM_RUN);

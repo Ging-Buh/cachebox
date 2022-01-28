@@ -22,7 +22,7 @@ class OperatorEntity extends Entity {
     }
 
     @Override
-    public void ReplaceTemp(Entity source, Entity dest) {
+    public void replaceTemp(Entity source, Entity dest) {
         if (links == source)
             links = dest;
         if (rechts == source)
@@ -30,15 +30,15 @@ class OperatorEntity extends Entity {
     }
 
     @Override
-    public void GetAllEntities(ArrayList<Entity> list) {
+    public void getAllEntities(ArrayList<Entity> list) {
         list.add(links);
         list.add(rechts);
     }
 
     @Override
-    public String Berechne() {
-        String lLinks = links.Berechne();
-        String lRechts = rechts.Berechne();
+    public String calculate() {
+        String lLinks = links.calculate();
+        String lRechts = rechts.calculate();
         String result = "";
         try {
             double dLinks = Double.parseDouble(lLinks);
@@ -65,8 +65,8 @@ class OperatorEntity extends Entity {
     }
 
     @Override
-    public String ToString() {
-        return "O" + Id + op + "(" + links.ToString() + "," + rechts.ToString() + ")";
+    public String toString() {
+        return "O" + entityId + op + "(" + links.toString() + "," + rechts.toString() + ")";
     }
 
 }

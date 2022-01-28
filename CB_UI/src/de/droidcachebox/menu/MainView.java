@@ -32,8 +32,7 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.DraftsDatabase;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.dataclasses.Cache;
@@ -62,19 +61,14 @@ import de.droidcachebox.utils.log.Log;
  * @author ging-buh
  * @author Longri
  */
-public class MainViewInit extends MainViewBase {
-    private static final String log = "MainViewInit";
+public class MainView extends MainViewBase {
+    private static final String sClass = "MainView";
     private TextureAtlas atlas;
     private ProgressBar progress;
-    private Image CB_Logo;
-    private Image Mapsforge_Logo;
-    private Image LibGdx_Logo;
-    private Image GC_Logo;
-    private CB_Label descTextView;
     private int step = 0;
     private boolean waitUntilDBSelected = false;
 
-    public MainViewInit(CB_RectF rec) {
+    public MainView(CB_RectF rec) {
         super(rec);
     }
 
@@ -139,20 +133,20 @@ public class MainViewInit extends MainViewBase {
     private void ini_Progressbar() {
 
         float ref = UiSizes.getInstance().getWindowHeight() / 13f;
-        CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
-        CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
+        CB_RectF CB_LogoRec = new CB_RectF(getHalfWidth() - (ref * 2.5f), getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
+        Image CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
         CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
         CB_Label dummy = new CB_Label();
-        this.initRow();
-        this.addLast(dummy);
-        this.addNext(dummy);
-        this.addNext(CB_Logo, FIXED);
-        this.addLast(dummy);
+        initRow();
+        addLast(dummy);
+        addNext(dummy);
+        addNext(CB_Logo, FIXED);
+        addLast(dummy);
 
-        String VersionString = GlobalCore.getInstance().getVersionString();
-        descTextView = new CB_Label(VersionString + br + br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE).setHAlignment(HAlignment.CENTER);
+        String version = GlobalCore.getInstance().getVersionString();
+        CB_Label descTextView = new CB_Label(version + br + br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE).setHAlignment(HAlignment.CENTER);
         descTextView.setHeight(descTextView.getTextHeight());
-        this.addLast(descTextView);
+        addLast(descTextView);
 
         // cause Sprites are not yet initialised, do it here manually
         Drawable progressBack = new NinePatchDrawable(atlas.createPatch(Sprites.IconName.btnNormal.name()));
@@ -160,8 +154,8 @@ public class MainViewInit extends MainViewBase {
         progress = new ProgressBar();
         progress.setBackground(progressBack);
         progress.setProgressFill(progressFill);
-        this.initRow(BOTTOMUp);
-        this.addLast(progress);
+        initRow(BOTTOMUp);
+        addLast(progress);
 
         float logoCalcRef = ref * 1.5f;
         CB_RectF rec_GC_Logo = new CB_RectF(20, 50, logoCalcRef, logoCalcRef);
@@ -172,14 +166,14 @@ public class MainViewInit extends MainViewBase {
         CB_RectF rec_Route = new CB_RectF(rec_Mapsforge_Logo);
         rec_FX2_Logo.setX(400);
 
-        GC_Logo = new Image(rec_GC_Logo, "GC_Logo", false);
+        Image GC_Logo = new Image(rec_GC_Logo, "GC_Logo", false);
         GC_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("gc_live")));
 
-        Mapsforge_Logo = new Image(rec_Mapsforge_Logo, "Mapsforge_Logo", false);
-        Mapsforge_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("mapsforge_logo")));
+        Image mapsforge_Logo = new Image(rec_Mapsforge_Logo, "Mapsforge_Logo", false);
+        mapsforge_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("mapsforge_logo")));
 
-        LibGdx_Logo = new Image(rec_LibGdx_Logo, "LibGdx_Logo", false);
-        LibGdx_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("libgdx")));
+        Image libGdx_Logo = new Image(rec_LibGdx_Logo, "LibGdx_Logo", false);
+        libGdx_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("libgdx")));
 
         Image route_Logo = new Image(rec_OSM, "Route_Logo", false);
         route_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("openrouteservice_logo")));
@@ -188,29 +182,29 @@ public class MainViewInit extends MainViewBase {
         OSM_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("osm_logo")));
 
         float yPos = descTextView.getY() - GC_Logo.getHeight();
-        float xPos = (this.getWidth() - ref - GC_Logo.getWidth() - Mapsforge_Logo.getWidth()) / 2;
+        float xPos = (getWidth() - ref - GC_Logo.getWidth() - mapsforge_Logo.getWidth()) / 2;
 
         GC_Logo.setPos(xPos, yPos);
         xPos += GC_Logo.getWidth() + ref;
 
-        Mapsforge_Logo.setPos(xPos, yPos);
+        mapsforge_Logo.setPos(xPos, yPos);
 
         yPos -= GC_Logo.getHeight();// + refHeight;
-        LibGdx_Logo.setPos(this.getHalfWidth() - LibGdx_Logo.getHalfWidth(), yPos);
+        libGdx_Logo.setPos(getHalfWidth() - libGdx_Logo.getHalfWidth(), yPos);
 
         yPos -= GC_Logo.getHeight();//
-        xPos = (this.getWidth() - (ref) - route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;
+        xPos = (getWidth() - (ref) - route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;
 
         route_Logo.setPos(xPos, yPos);
 
         xPos += route_Logo.getWidth() + ref;
         OSM_Logo.setPos(xPos, yPos);
 
-        this.addChild(GC_Logo);
-        this.addChild(LibGdx_Logo);
-        this.addChild(Mapsforge_Logo);
-        // this.addChild(Route_Logo);
-        this.addChild(OSM_Logo);
+        addChild(GC_Logo);
+        addChild(libGdx_Logo);
+        addChild(mapsforge_Logo);
+        // addChild(Route_Logo);
+        addChild(OSM_Logo);
 
     }
 
@@ -227,7 +221,7 @@ public class MainViewInit extends MainViewBase {
      */
     private void ini_Translations() {
         if (!Translation.isInitialized()) {
-            Log.info(log, "ini_Translations");
+            Log.info(sClass, "ini_Translations");
 
             // Load from Assets changes
             // delete work path from settings value
@@ -258,10 +252,10 @@ public class MainViewInit extends MainViewBase {
      * Load Sprites
      */
     private void ini_Sprites() {
-        Log.info(log, "ini_Sprites");
+        Log.info(sClass, "ini_Sprites");
         Sprites.loadSprites(false);
         if (!Sprites.loaded)
-            Log.err(log, "Error ini_Sprites");
+            Log.err(sClass, "Error ini_Sprites");
     }
 
     /**
@@ -269,7 +263,7 @@ public class MainViewInit extends MainViewBase {
      * chk directories
      */
     private void ini_Dirs() {
-        Log.info(log, "ini_Dirs");
+        Log.info(sClass, "ini_Dirs");
         ini_Dir(Settings.PocketQueryFolder.getValue());
         ini_Dir(Settings.tileCacheFolder.getValue());
         ini_Dir(GlobalCore.workPath + "/User");
@@ -302,13 +296,13 @@ public class MainViewInit extends MainViewBase {
      * show select DB Dialog
      */
     private void ini_SelectDB() {
-        Log.info(log, "ini_SelectDB");
+        Log.info(sClass, "ini_SelectDB");
         // search number of DB3 files
         FileList fileList = null;
         try {
             fileList = new FileList(GlobalCore.workPath, "DB3");
         } catch (Exception ex) {
-            Log.err(log, "getting DB3 fileList", ex);
+            Log.err(sClass, "getting DB3 fileList", ex);
         }
         if (fileList != null) {
             if ((fileList.size() > 1) && Settings.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill) {
@@ -330,20 +324,21 @@ public class MainViewInit extends MainViewBase {
      */
     private void ini_CacheDB() {
 
-        Log.debug(log, "\r\nini_CacheDB " + Settings.DatabaseName.getValue());
-        Log.debug(log, "\r\nini_CacheDB " + DatabaseName.getValue());
+        Log.debug(sClass, "\r\nini_CacheDB " + Settings.DatabaseName.getValue());
+        Log.debug(sClass, "\r\nini_CacheDB " + DatabaseName.getValue());
         CBDB.getInstance().startUp(GlobalCore.workPath + "/" + DatabaseName.getValue());
         Settings.getInstance().readFromDB();
-        Log.debug(log, "\r\nini_CacheDB " + Settings.DatabaseName.getValue());
+        Log.debug(sClass, "\r\nini_CacheDB " + Settings.DatabaseName.getValue());
 
         FilterInstances.setLastFilter(new FilterProperties(Settings.lastFilter.getValue()));
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
 
         CoreData.categories = new Categories();
-        new CacheDAO().updateCacheCountForGPXFilenames();
+        CachesDAO cachesDAO = new CachesDAO();
+        cachesDAO.updateCacheCountForGPXFilenames();
 
         synchronized (CBDB.getInstance().cacheList) {
-            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+            cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
         }
 
         CacheListChangedListeners.getInstance().fire();
@@ -357,7 +352,7 @@ public class MainViewInit extends MainViewBase {
      * Show ViewManager
      */
     private void ini_TabMainView() {
-        Log.info(log, "ini_TabMainView");
+        Log.info(sClass, "ini_TabMainView");
         GL.that.removeRenderView(this);
         GL.that.switchToMainView();
 
@@ -376,10 +371,10 @@ public class MainViewInit extends MainViewBase {
                                     w = wp;
                                 }
                             }
-                            Log.info(log, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache + WP.");
+                            Log.info(sClass, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache + WP.");
                             GlobalCore.setSelectedWaypoint(c, w);
                         } else {
-                            Log.info(log, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache.");
+                            Log.info(sClass, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache.");
                             GlobalCore.setSelectedCache(c);
                         }
                     }
@@ -389,35 +384,6 @@ public class MainViewInit extends MainViewBase {
 
         }
         GL.that.setAllIsInitialized(true);
-    }
-
-    @Override
-    public void dispose() {
-        this.removeChildrenDirect();
-
-        if (descTextView != null)
-            descTextView.dispose();
-        if (GC_Logo != null)
-            GC_Logo.dispose();
-        if (LibGdx_Logo != null)
-            LibGdx_Logo.dispose();
-        if (Mapsforge_Logo != null)
-            Mapsforge_Logo.dispose();
-        if (CB_Logo != null)
-            CB_Logo.dispose();
-        if (progress != null)
-            progress.dispose();
-        if (atlas != null)
-            atlas.dispose();
-
-        descTextView = null;
-        GC_Logo = null;
-        LibGdx_Logo = null;
-        Mapsforge_Logo = null;
-        CB_Logo = null;
-        progress = null;
-        atlas = null;
-
     }
 
 }

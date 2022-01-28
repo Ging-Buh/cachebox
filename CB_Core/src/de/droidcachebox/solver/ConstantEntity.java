@@ -12,15 +12,15 @@ public class ConstantEntity extends Entity {
     }
 
     @Override
-    public void GetAllEntities(ArrayList<Entity> list) {
+    public void getAllEntities(ArrayList<Entity> list) {
     }
 
     @Override
-    public void ReplaceTemp(Entity source, Entity dest) {
+    public void replaceTemp(Entity source, Entity dest) {
     }
 
     @Override
-    public String Berechne() {
+    public String calculate() {
         String value = String.valueOf(wert);
         if (Math.round(wert) == wert) {
             long iv = (long) Math.round(wert);
@@ -30,11 +30,11 @@ public class ConstantEntity extends Entity {
     }
 
     @Override
-    public String ToString() {
+    public String toString() {
         String value = String.valueOf(wert);
         if (Math.round(wert) == wert)
             value = String.valueOf((int) (Math.round(wert)));
-        return "C" + Id + ":(" + value + ")";
+        return "C" + entityId + ":(" + value + ")";
     }
 
 }

@@ -31,8 +31,10 @@ import java.util.TimerTask;
 import de.droidcachebox.Global;
 import de.droidcachebox.Platform;
 import de.droidcachebox.R;
+import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.ViewConst;
-import de.droidcachebox.menu.menuBtn2.executes.Description;
+import de.droidcachebox.menu.Action;
+import de.droidcachebox.menu.menuBtn2.ShowDescription;
 import de.droidcachebox.settings.Settings;
 
 /**
@@ -95,7 +97,7 @@ public final class InvertViewControl extends View {
                             mainActivity.runOnUiThread(() -> {
                                 if (firstDraw) {
                                     firstDraw = false;
-                                    Description dv = Description.getInstance();
+                                    CB_View_Base dv = ((ShowDescription)Action.ShowDescription.action).getView();
                                     Platform.showView(ViewConst.DESCRIPTION_VIEW, dv.getX(), dv.getY(), 0, 0, 0, 0);
                                 }
                             });

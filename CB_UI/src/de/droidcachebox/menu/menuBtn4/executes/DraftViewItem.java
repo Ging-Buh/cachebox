@@ -18,8 +18,6 @@ package de.droidcachebox.menu.menuBtn4.executes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.text.SimpleDateFormat;
@@ -27,10 +25,8 @@ import java.util.Locale;
 
 import de.droidcachebox.dataclasses.Draft;
 import de.droidcachebox.dataclasses.GeoCacheType;
-import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.Sprites;
-import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.Box;
 import de.droidcachebox.gdx.controls.CB_Button;
@@ -78,7 +74,7 @@ public class DraftViewItem extends ListViewItemBackground {
             // private void iniImage() {
             ivTyp = new Image(getLeftWidth(), getHeight() - (headHeight / 2) - (UiSizes.getInstance().getButtonHeight() / 1.5f / 2), UiSizes.getInstance().getButtonHeight() / 1.5f, UiSizes.getInstance().getButtonHeight() / 1.5f, "", false);
             header.addNext(ivTyp, FIXED);
-            ivTyp.setDrawable(getTypeIcon(draft));
+            ivTyp.setDrawable(draft.getTypeIcon());
             // private void iniDateLabel() {
             SimpleDateFormat postFormatter = new SimpleDateFormat("dd.MMM (HH:mm)", Locale.US);
             String foundNumber = "";
@@ -140,30 +136,6 @@ public class DraftViewItem extends ListViewItemBackground {
             mComment.setCursorPosition(0);
             addChild(mComment);
 
-        }
-    }
-
-    public static Drawable getTypeIcon(Draft fne) {
-        LogType type = fne.type;
-        if (fne.isTbDraft) {
-            Sprite spr = null;
-            if (type == LogType.discovered)
-                spr = Sprites.getSprite(IconName.TBDISCOVER.name());
-            if (type == LogType.dropped_off)
-                spr = Sprites.getSprite(IconName.TBDROP.name());
-            if (type == LogType.grab_it)
-                spr = Sprites.getSprite(IconName.TBGRAB.name());
-            if (type == LogType.retrieve)
-                spr = Sprites.getSprite(IconName.TBPICKED.name());
-            if (type == LogType.visited)
-                spr = Sprites.getSprite(IconName.TBVISIT.name());
-            if (type == LogType.note)
-                spr = Sprites.getSprite(IconName.TBNOTE.name());
-            if (spr == null)
-                return null;
-            return new SpriteDrawable(spr);
-        } else {
-            return new SpriteDrawable(Sprites.LogIcons.get(fne.type.iconId));
         }
     }
 

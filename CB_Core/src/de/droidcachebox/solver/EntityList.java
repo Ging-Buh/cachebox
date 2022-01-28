@@ -19,7 +19,7 @@ public class EntityList extends TreeMap<Integer, Entity> {
 
     public String Insert(Entity entity) {
         int id = this.lastKey() + 1;
-        entity.Id = id;
+        entity.entityId = id;
         this.put(id, entity);
         return "#" + id + "#";
     }
@@ -57,9 +57,9 @@ public class EntityList extends TreeMap<Integer, Entity> {
             if (inhalt != null) {
                 // dieses Entity loeschen und alle Verweise auf dieses Entity umleiten auf inhalt
                 for (Entity ee : this.values()) {
-                    ee.ReplaceTemp(entity, inhalt);
+                    ee.replaceTemp(entity, inhalt);
                 }
-                this.remove(entity.Id);
+                this.remove(entity.entityId);
                 ie--;
             }
         }
@@ -68,7 +68,7 @@ public class EntityList extends TreeMap<Integer, Entity> {
     public String ToString() {
         String result = "";
         for (Entity entity : this.values()) {
-            result += entity.ToString() + "\n";
+            result += entity.toString() + "\n";
         }
         return result;
     }

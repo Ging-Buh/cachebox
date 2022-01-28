@@ -16,24 +16,24 @@ public class ZuweisungEntity extends Entity {
     }
 
     @Override
-    public void ReplaceTemp(Entity source, Entity dest) {
+    public void replaceTemp(Entity source, Entity dest) {
         if (links == source)
             links = dest;
         if (rechts == source)
             rechts = dest;
-        links.IsLinks = true;
+        links.isLeftPartOfAssign = true;
     }
 
     @Override
-    public void GetAllEntities(ArrayList<Entity> list) {
+    public void getAllEntities(ArrayList<Entity> list) {
         list.add(links);
         list.add(rechts);
     }
 
     @Override
-    public String Berechne() {
+    public String calculate() {
         String lLinks = "";
-        String lRechts = rechts.Berechne();
+        String lRechts = rechts.calculate();
 
         // links muss der Name einer Variablen sein (=TempEntity)
         if (links instanceof VariableEntity) {
@@ -65,13 +65,13 @@ public class ZuweisungEntity extends Entity {
             }
             return lRechts;
         } else if (links instanceof CoordinateEntity) {
-            return ((CoordinateEntity) links).SetCoordinate(lRechts);
+            return ((CoordinateEntity) links).setCoordinate(lRechts);
         } else
             return Translation.get("LeftMustBeAVariable", lLinks);
     }
 
     @Override
-    public String ToString() {
-        return "Z" + Id + "(" + links + "," + rechts + ")";
+    public String toString() {
+        return "Z" + entityId + "(" + links + "," + rechts + ")";
     }
 }

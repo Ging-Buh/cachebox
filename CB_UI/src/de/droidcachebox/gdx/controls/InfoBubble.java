@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
@@ -73,7 +73,7 @@ public class InfoBubble extends CB_View_Base {
 
         // if Cache is an event we must load details for DateHidden
         if (mCache.isEvent() && mCache.mustLoadDetail())
-            new CacheDAO().loadDetail(mCache);
+            new CachesDAO().loadDetail(mCache);
 
         cacheInfo = new CacheInfo(size, "CacheInfo", cache);
         cacheInfo.setViewMode(mCache.isEvent() ? CacheInfo.VIEW_MODE_BUBBLE_EVENT : CacheInfo.VIEW_MODE_BUBBLE);

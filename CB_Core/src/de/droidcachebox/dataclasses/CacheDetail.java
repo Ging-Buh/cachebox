@@ -1,6 +1,8 @@
 package de.droidcachebox.dataclasses;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -18,23 +20,23 @@ import de.droidcachebox.utils.log.Log;
 
 public class CacheDetail implements Serializable {
     private static final long serialVersionUID = 2088367633865443637L;
-    private static final String log = "CacheDetail";
+    private static final String sClass = "CacheDetail";
 
     /**
      * Erschaffer des Caches
      */
-    public String PlacedBy = "";
+    public String placedBy = "";
 
     /**
      * Datum, an dem der Cache versteckt wurde
      */
-    public Date DateHidden;
+    public Date dateHidden;
     /**
      * ApiStatus 0 = Cache.NOT_LIVE: Cache wurde nicht per Api hinzugefuegt
      * 1 = Cache.IS_LITE: Cache wurde per GC Api hinzugefuegt und ist noch nicht komplett geladen (IsLite = true)
      * 2 = Cache.IS_FULL: Cache wurde per GC Api hinzugefuegt und ist komplett geladen (IsLite = false)
      */
-    public byte ApiStatus;
+    public byte apiStatus;
 
     /**
      * for Replication
@@ -52,27 +54,27 @@ public class CacheDetail implements Serializable {
     /**
      * Name der Tour, wenn die GPX-Datei aus GCTour importiert wurde
      */
-    public String TourName = "";
+    public String tourName = "";
 
     /**
      * Name der GPX-Datei aus der importiert wurde
      */
-    public long GPXFilename_ID = 0;
+    public long gpxFilename_ID = 0;
 
     /**
      * URL des Caches
      */
-    public String Url = "";
+    public String url = "";
 
     /**
      * Country des Caches
      */
-    public String Country = "";
+    public String country = "";
 
     /**
      * State des Caches
      */
-    public String State = "";
+    public String state = "";
     /**
      * Kurz Beschreibung des Caches
      */
@@ -98,39 +100,85 @@ public class CacheDetail implements Serializable {
      * Liste der Spoiler Ressourcen
      */
     private CB_List<ImageEntry> spoilerRessources = null;
-    private ArrayList<Attribute> AttributeList = null;
+    private ArrayList<Attribute> attributeList = null;
 
     /**
      * Constructor
      */
     public CacheDetail() {
-        this.DateHidden = new Date();
-        AttributeList = null;
+        this.dateHidden = new Date();
+        attributeList = null;
 
+    }
+
+    public CacheDetail(CoreCursor reader, boolean withReaderOffset, boolean withDescription) {
+        int readerOffset = withReaderOffset ? 21 : 0;
+        try {
+            placedBy = reader.getString(readerOffset).trim();
+        } catch (Exception e) {
+            placedBy = "";
+        }
+
+        if (reader.isNull(readerOffset + 5))
+            apiStatus = Cache.NOT_LIVE;
+        else
+            apiStatus = (byte) reader.getInt(readerOffset + 5);
+
+        String sDate = reader.getString(readerOffset + 1);
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        try {
+            dateHidden = iso8601Format.parse(sDate);
+        } catch (Exception ex) {
+            dateHidden = new Date();
+        }
+
+        url = reader.getString(readerOffset + 2).trim();
+
+        if (reader.getString(readerOffset + 3) != null)
+            tourName = reader.getString(readerOffset + 3).trim();
+        else
+            tourName = "";
+
+        if (reader.getString(readerOffset + 4).length() > 0)
+            gpxFilename_ID = reader.getLong(readerOffset + 4);
+        else
+            gpxFilename_ID = -1;
+        setAttributesPositive(new DLong(reader.getLong(readerOffset + 7), reader.getLong(readerOffset + 6)));
+        setAttributesNegative(new DLong(reader.getLong(readerOffset + 9), reader.getLong(readerOffset + 8)));
+
+        if (reader.getString(readerOffset + 10) != null)
+            setHint(reader.getString(readerOffset + 10).trim());
+        else
+            setHint("");
+        country = reader.getString(readerOffset + 11);
+        state = reader.getString(readerOffset + 12);
+
+        if (withDescription) {
+            longDescription = reader.getString(readerOffset + 13);
+            tmpSolver = reader.getString(readerOffset + 14);
+            tmpNote = reader.getString(readerOffset + 15);
+            shortDescription = reader.getString(readerOffset + 16);
+        }
     }
 
     public boolean isAttributePositiveSet(Attribute attribute) {
-        return attributesPositive.BitAndBiggerNull(Attribute.GetAttributeDlong(attribute));
-        // return (attributesPositive & Attributes.GetAttributeDlong(attribute))
-        // > 0;
+        return attributesPositive.bitAndBiggerNull(attribute.getDLong());
     }
 
     public boolean isAttributeNegativeSet(Attribute attribute) {
-        return attributesNegative.BitAndBiggerNull(Attribute.GetAttributeDlong(attribute));
-        // return (attributesNegative & Attributes.GetAttributeDlong(attribute))
-        // > 0;
+        return attributesNegative.bitAndBiggerNull(attribute.getDLong());
     }
 
     public void addAttributeNegative(Attribute attribute) {
         if (attributesNegative == null)
             attributesNegative = new DLong(0, 0);
-        attributesNegative.BitOr(Attribute.GetAttributeDlong(attribute));
+        attributesNegative.bitOr(attribute.getDLong());
     }
 
     public void addAttributePositive(Attribute attribute) {
         if (attributesPositive == null)
             attributesPositive = new DLong(0, 0);
-        attributesPositive.BitOr(Attribute.GetAttributeDlong(attribute));
+        attributesPositive.bitOr(attribute.getDLong());
     }
 
     public void setAttributesPositive(DLong i) {
@@ -141,56 +189,61 @@ public class CacheDetail implements Serializable {
         attributesNegative = i;
     }
 
-    public DLong getAttributesNegative(long Id) {
-        if (this.attributesNegative == null) {
-            CoreCursor c = CBDB.getInstance().rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                if (!c.isNull(0))
-                    this.attributesNegative = new DLong(c.getLong(1), c.getLong(0));
-                else
-                    this.attributesNegative = new DLong(0, 0);
-                break;
-            }
-            c.close();
-        }
-        return this.attributesNegative;
-    }
-
-    public DLong getAttributesPositive(long Id) {
-        if (this.attributesPositive == null) {
-            CoreCursor c = CBDB.getInstance().rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]{String.valueOf(Id)});
+    public DLong getAttributesNegative(long generatedId) {
+        if (attributesNegative == null) {
+            CoreCursor c = CBDB.getInstance().rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]{String.valueOf(generatedId)});
             if (c != null) {
-                c.moveToFirst();
-                if (!c.isNull(0))
-                    this.attributesPositive = new DLong(c.getLong(1), c.getLong(0));
-                else
-                    this.attributesPositive = new DLong(0, 0);
+                if (c.getCount() > 0) {
+                    c.moveToFirst();
+                    if (!c.isNull(0))
+                        attributesNegative = new DLong(c.getLong(1), c.getLong(0));
+                    else
+                        attributesNegative = new DLong(0, 0);
+                } else
+                    attributesNegative = new DLong(0, 0);
                 c.close();
             }
         }
-        return this.attributesPositive;
+        return attributesNegative;
+    }
+
+    public DLong getAttributesPositive(long generatedId) {
+        if (attributesPositive == null) {
+            CoreCursor c = CBDB.getInstance().rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]{String.valueOf(generatedId)});
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    c.moveToFirst();
+                    if (!c.isNull(0))
+                        attributesPositive = new DLong(c.getLong(1), c.getLong(0));
+                    else
+                        attributesPositive = new DLong(0, 0);
+                } else
+                    attributesPositive = new DLong(0, 0);
+                c.close();
+            }
+        }
+        return attributesPositive;
     }
 
     public ArrayList<Attribute> getAttributes(long Id) {
-        if (AttributeList == null) {
-            AttributeList = getAttributes(this.getAttributesPositive(Id), this.getAttributesNegative(Id));
+        if (attributeList == null) {
+            attributeList = getAttributes(this.getAttributesPositive(Id), this.getAttributesNegative(Id));
         }
-        return AttributeList;
+        return attributeList;
     }
 
     private ArrayList<Attribute> getAttributes(DLong attributesPositive, DLong attributesNegative) {
         ArrayList<Attribute> ret = new ArrayList<>();
-        for (Attribute attribute : Attribute.getAttributeLookup().keySet()) {
-            DLong att = Attribute.GetAttributeDlong(attribute);
-            if ((att.BitAndBiggerNull(attributesPositive))) {
+        for (Attribute attribute : Attribute.values()) {
+            DLong att = attribute.getDLong();
+            if ((att.bitAndBiggerNull(attributesPositive))) {
                 attribute.setNegative(false);
                 ret.add(attribute);
             }
         }
-        for (Attribute attribute : Attribute.getAttributeLookup().keySet()) {
-            DLong att = Attribute.GetAttributeDlong(attribute);
-            if ((att.BitAndBiggerNull(attributesNegative))) {
+        for (Attribute attribute : Attribute.values()) {
+            DLong att = attribute.getDLong();
+            if ((att.bitAndBiggerNull(attributesNegative))) {
                 attribute.setNegative(true);
                 ret.add(attribute);
             }
@@ -299,7 +352,7 @@ public class CacheDetail implements Serializable {
                 directory = path + "/" + gcCode.substring(0, 4);
                 loadSpoilerResourcesFromPath(directory, cache);
             } catch (Exception e) {
-                Log.err(log, e.getLocalizedMessage());
+                Log.err(sClass, e.getLocalizedMessage());
             }
 
             // Add own taken photo
@@ -308,7 +361,7 @@ public class CacheDetail implements Serializable {
                 try {
                     loadSpoilerResourcesFromPath(directory, cache);
                 } catch (Exception e) {
-                    Log.err(log, e.getLocalizedMessage());
+                    Log.err(sClass, e.getLocalizedMessage());
                 }
             }
         }
@@ -324,11 +377,7 @@ public class CacheDetail implements Serializable {
             if (filename.indexOf(cache.getGeoCacheCode().toLowerCase(Locale.getDefault())) >= 0) {
                 if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif")) {
                     // don't load Thumbs
-                    if (filename.startsWith(FileFactory.THUMB) || filename.startsWith(FileFactory.THUMB_OVERVIEW + FileFactory.THUMB)) {
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    return !filename.startsWith(FileFactory.THUMB) && !filename.startsWith(FileFactory.THUMB_OVERVIEW + FileFactory.THUMB);
                 }
             }
             return false;

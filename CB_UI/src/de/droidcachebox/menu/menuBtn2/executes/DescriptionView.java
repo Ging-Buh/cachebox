@@ -54,16 +54,17 @@ import de.droidcachebox.gdx.math.Line;
 import de.droidcachebox.gdx.math.Quadrangle;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.CacheListViewItem;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.CacheContextMenu;
+import de.droidcachebox.menu.menuBtn2.ShowDescription;
 import de.droidcachebox.translation.Translation;
 
-public class Description extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
+public class DescriptionView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private final static String BASIC = "Basic";
     private final static String PREMIUM = "Premium";
     private final static String BASIC_LIMIT = "3";
     private final static String PREMIUM_LIMIT = "6000";
-    private static Description description;
     private final String STRING_POWERD_BY;
     private CacheListViewItem cacheListViewItem;
     private CB_Button btnDownload;
@@ -73,14 +74,9 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
     private float margin;
     private Cache selectedCache;
 
-    private Description() {
+    public DescriptionView() {
         super(ViewManager.leftTab.getContentRec(), "DescriptionView");
         STRING_POWERD_BY = Translation.get("GC_title");
-    }
-
-    public static Description getInstance() {
-        if (description == null) description = new Description();
-        return description;
     }
 
     @Override
@@ -120,7 +116,7 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
         TimerTask tt = new TimerTask() {
             @Override
             public void run() {
-                description.onResized(description);
+                onResized(DescriptionView.this);
             }
         };
         t.schedule(tt, 70);
@@ -156,6 +152,7 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
     public void onHide() {
         CacheSelectionChangedListeners.getInstance().remove(this);
         Platform.hideView(ViewConst.DESCRIPTION_VIEW);
+        ((ShowDescription)Action.ShowDescription.action).viewIsHiding();
     }
 
     private void showWebView() {
@@ -167,7 +164,7 @@ public class Description extends CB_View_Base implements CacheSelectionChangedLi
                 float infoHeight = 0;
                 if (cacheListViewItem != null)
                     infoHeight = cacheListViewItem.getHeight();
-                Platform.showView(ViewConst.DESCRIPTION_VIEW, description.getX(), description.getY(), description.getWidth(), description.getHeight(), 0, (infoHeight + GL_UISizes.margin));
+                Platform.showView(ViewConst.DESCRIPTION_VIEW, getX(), getY(), getWidth(), getHeight(), 0, (infoHeight + GL_UISizes.margin));
             }
         };
         timer.schedule(task, 50);

@@ -7,10 +7,10 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn4.executes.Solver;
+import de.droidcachebox.menu.menuBtn4.executes.Solver1View;
 
 public class ShowSolver1 extends AbstractShowAction {
-    private Solver solver;
+    private Solver1View solver1View;
 
     public ShowSolver1() {
         super("Solver");
@@ -18,8 +18,9 @@ public class ShowSolver1 extends AbstractShowAction {
 
     @Override
     public void execute() {
-        solver = new Solver();
-        ViewManager.leftTab.showView(solver);
+        if (solver1View == null)
+            solver1View = new Solver1View();
+        ViewManager.leftTab.showView(solver1View);
     }
 
     @Override
@@ -34,6 +35,11 @@ public class ShowSolver1 extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return solver;
+        return solver1View;
+    }
+
+    @Override
+    public void viewIsHiding() {
+        solver1View = null;
     }
 }

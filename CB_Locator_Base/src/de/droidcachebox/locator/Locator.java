@@ -26,7 +26,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class Locator {
-    private static final String log = "Locator";
+    private static final String sClass = "Locator";
     private static Locator locator;
     private boolean fix = false;
     private long minGpsUpdateTime = 125;
@@ -49,7 +49,7 @@ public class Locator {
     private Locator() {
         Energy.addChangedEventListener(() -> {
             isDisplayOff = Energy.isDisplayOff();
-            Log.info(log, "Display off: " + isDisplayOff);
+            Log.info(sClass, "Display off: " + isDisplayOff);
         });
     }
 
@@ -163,7 +163,7 @@ public class Locator {
 
                     break;
                 default:
-                    Log.debug(log, "invalid Location provider");
+                    Log.debug(sClass, "invalid Location provider");
                     break;
             }
 
@@ -337,7 +337,7 @@ public class Locator {
      *
      */
     public void setAltCorrection(double value) {
-        Log.debug(log, "set alt corection to: " + value);
+        Log.debug(sClass, "set alt corection to: " + value);
         altCorrection = value;
     }
 

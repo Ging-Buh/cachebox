@@ -60,6 +60,11 @@ public class ShowGeoCaches extends AbstractShowAction {
     }
 
     @Override
+    public void viewIsHiding() {
+        geoCachesView = null;
+    }
+
+    @Override
     public boolean getEnabled() {
         return true;
     }
@@ -96,7 +101,7 @@ public class ShowGeoCaches extends AbstractShowAction {
                         GlobalCore.setSelectedWaypoint(nearestCacheWp.getCache(), nearestCacheWp.getWaypoint());
                         GlobalCore.setNearestCache(nearestCacheWp.getCache());
                     }
-                    geoCachesView.setSelectedCacheVisible();
+                    getGeoCachesView().setSelectedCacheVisible();
                 }
             }
         });

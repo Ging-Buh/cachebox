@@ -26,7 +26,7 @@ import de.droidcachebox.utils.CB_List;
  * @author Longri
  */
 public class GPS {
-    private static final String log = "GPS";
+    private static final String sClass = "GPS";
     private static int mSatVisible;
     private static int mSatFixed;
 

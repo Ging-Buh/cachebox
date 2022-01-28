@@ -38,15 +38,15 @@ public class Replication {
                     // Text
                     int dbCheckSum = -1;
                     CoreCursor c = CBDB.getInstance().rawQuery("select SolverCheckSum from Replication where CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.SolverText.ordinal())});
-                    c.moveToFirst();
-                    while (!c.isAfterLast()) {
-                        dbCheckSum = c.getInt(0);
-                        break;
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            c.moveToFirst();
+                            dbCheckSum = c.getInt(0);
+                        }
+                        c.close();
                     }
-                    ;
                     if (dbCheckSum < 0) {
-                        // a Change for the Solvertext for this Cache must be
-                        // added to the Replication Table
+                        // a Change for the Solvertext for this Cache must be added to the Replication Table
                         Parameters val = new Parameters();
                         val.put("CacheId", CacheId);
                         val.put("ChangeType", ChangeType.SolverText.ordinal());
@@ -82,12 +82,13 @@ public class Replication {
                     // Text
                     int dbCheckSum = -1;
                     CoreCursor c = CBDB.getInstance().rawQuery("select NotesCheckSum from Replication where CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.NotesText.ordinal())});
-                    c.moveToFirst();
-                    while (!c.isAfterLast()) {
-                        dbCheckSum = c.getInt(0);
-                        break;
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            c.moveToFirst();
+                            dbCheckSum = c.getInt(0);
+                        }
+                        c.close();
                     }
-                    ;
                     if (dbCheckSum < 0) {
                         // a Change for the Notestext for this Cache must be
                         // added to the Replication Table
@@ -110,7 +111,7 @@ public class Replication {
         }
     }
 
-    public static void WaypointChanged(long CacheId, int oldCheckSum, int newCheckSum, String WpGcCode) {
+    public static void waypointChanged(long CacheId, int oldCheckSum, int newCheckSum, String WpGcCode) {
         Changed(CacheId, oldCheckSum, newCheckSum, "WpCoordCheckSum", ChangeType.WaypointChanged, WpGcCode);
     }
 
@@ -136,12 +137,13 @@ public class Replication {
                 // store the original CheckSum of the item
                 int dbCheckSum = -1;
                 CoreCursor c = CBDB.getInstance().rawQuery("select " + checkSumType + " from Replication where CacheId=? and ChangeType=? and WpGcCode=?", new String[]{String.valueOf(CacheId), String.valueOf(changeType.ordinal()), WpGcCode});
-                c.moveToFirst();
-                while (!c.isAfterLast()) {
-                    dbCheckSum = c.getInt(0);
-                    break;
+                if (c != null) {
+                    if (c.getCount() > 0) {
+                        c.moveToFirst();
+                        dbCheckSum = c.getInt(0);
+                    }
+                    c.close();
                 }
-
                 if (dbCheckSum < 0) {
                     // a Change for the WP for this Cache must be added to the
                     // Replication Table

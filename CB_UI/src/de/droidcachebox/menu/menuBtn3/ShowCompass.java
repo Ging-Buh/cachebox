@@ -14,6 +14,7 @@ import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.Settings;
 
 public class ShowCompass extends AbstractShowAction {
+    CompassView compassView;
 
     public ShowCompass() {
         super("Compass");
@@ -21,12 +22,19 @@ public class ShowCompass extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(CompassView.getInstance());
+        if (compassView == null)
+            compassView = new CompassView();
+        ViewManager.leftTab.showView(compassView);
     }
 
     @Override
     public CB_View_Base getView() {
-        return CompassView.getInstance();
+        return compassView;
+    }
+
+    @Override
+    public void viewIsHiding() {
+        compassView = null;
     }
 
     @Override

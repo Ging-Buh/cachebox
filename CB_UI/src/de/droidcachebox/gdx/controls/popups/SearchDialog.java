@@ -33,7 +33,7 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.ImageDAO;
 import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.WaypointDAO;
@@ -417,7 +417,7 @@ public class SearchDialog extends PopUp_Base {
 
                     CBDB.getInstance().beginTransaction();
 
-                    CacheDAO cacheDAO = new CacheDAO();
+                    CachesDAO cachesDAO = new CachesDAO();
                     ImageDAO imageDAO = new ImageDAO();
                     WaypointDAO waypointDAO = WaypointDAO.getInstance();
 
@@ -432,7 +432,7 @@ public class SearchDialog extends PopUp_Base {
                                 if (cache.getGPXFilename_ID() == 0) {
                                     cache.setGPXFilename_ID(gpxFilename.id);
                                 }
-                                cacheDAO.writeToDatabase(cache);
+                                cachesDAO.writeToDatabase(cache);
                                 for (LogEntry log : geoCacheRelated.logs) {
                                     LogsTableDAO.getInstance().WriteLogEntry(log);
                                 }
@@ -441,7 +441,7 @@ public class SearchDialog extends PopUp_Base {
                                 }
                                 for (int i = 0, n = cache.getWayPoints().size(); i < n; i++) {
                                     Waypoint waypoint = cache.getWayPoints().get(i);
-                                    waypointDAO.WriteToDatabase(waypoint, false); // do not store replication information here
+                                    waypointDAO.writeToDatabase(waypoint, false); // do not store replication information here
                                 }
                             }
                         }
@@ -450,7 +450,7 @@ public class SearchDialog extends PopUp_Base {
                     CBDB.getInstance().setTransactionSuccessful();
                     CBDB.getInstance().endTransaction();
 
-                    new CacheDAO().updateCacheCountForGPXFilenames();
+                    new CachesDAO().updateCacheCountForGPXFilenames();
 
                     CacheListChangedListeners.getInstance().fire();
 

@@ -51,14 +51,12 @@ import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
-import de.droidcachebox.menu.menuBtn1.executes.Trackables;
 import de.droidcachebox.menu.menuBtn4.executes.TemplateFormatter;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
 public class TB_Log extends ActivityBase {
-    private static TB_Log that;
-    private Trackable TB;
+    private Trackable trackable;
     private CB_Button btnClose;
     private ImageButton btnAction;
     private Image icon, CacheIcon;
@@ -70,22 +68,16 @@ public class TB_Log extends ActivityBase {
     private RadioButton rbDirectLog;
     private RadioButton rbOnlyDraft;
 
-    private TB_Log() {
+    TB_Log() {
         super("TB_Log_Activity");
         createControls();
-        that = this;
     }
 
-    public static TB_Log getInstance() {
-        if (that == null) that = new TB_Log();
-        return that;
-    }
-
-    public void Show(Trackable TB, LogType Type) {
-        this.TB = TB;
-        this.logType = Type;
+    public void show(Trackable trackable, LogType logType) {
+        this.trackable = trackable;
+        this.logType = logType;
         layout();
-        GL.that.showActivity(this);
+        show();
     }
 
     private void createControls() {
@@ -194,11 +186,11 @@ public class TB_Log extends ActivityBase {
 
         this.setMargins(margin * 2, 0);
         this.addNext(icon, FIXED);
-        icon.setImageURL(TB.getIconUrl());
+        icon.setImageURL(trackable.getIconUrl());
         lblName.setWrapType(WrapType.WRAPPED);
         lblName.setBackground(null, null);
         this.addLast(lblName);
-        lblName.setText(TB.getName());
+        lblName.setText(trackable.getName());
         lblName.setEditable(false);
         lblName.showFromLineNo(0);
         lblName.setCursorPosition(0);
@@ -206,23 +198,23 @@ public class TB_Log extends ActivityBase {
         switch (this.logType) {
             case discovered:
                 btnAction.setImage(Sprites.getSprite(IconName.TBDISCOVER.name()));
-                edit.setText(TemplateFormatter.replaceTemplate(Settings.DiscoverdTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.DiscoverdTemplate.getValue(), trackable));
                 break;
             case visited:
                 btnAction.setImage(Sprites.getSprite(IconName.TBVISIT.name()));
-                edit.setText(TemplateFormatter.replaceTemplate(Settings.VisitedTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.VisitedTemplate.getValue(), trackable));
                 break;
             case dropped_off:
                 btnAction.setImage(Sprites.getSprite(IconName.TBDROP.name()));
-                edit.setText(TemplateFormatter.replaceTemplate(Settings.DroppedTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.DroppedTemplate.getValue(), trackable));
                 break;
             case grab_it:
                 btnAction.setImage(Sprites.getSprite(IconName.TBGRAB.name()));
-                edit.setText(TemplateFormatter.replaceTemplate(Settings.GrabbedTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.GrabbedTemplate.getValue(), trackable));
                 break;
             case retrieve:
                 btnAction.setImage(Sprites.getSprite(IconName.TBPICKED.name()));
-                edit.setText(TemplateFormatter.replaceTemplate(Settings.PickedTemplate.getValue(), TB));
+                edit.setText(TemplateFormatter.replaceTemplate(Settings.PickedTemplate.getValue(), trackable));
                 break;
             case note:
                 btnAction.setImage(Sprites.getSprite(IconName.TBNOTE.name()));
@@ -298,15 +290,15 @@ public class TB_Log extends ActivityBase {
 
                 TB_Log.this.finish();
 
-                // Refresh TB List after Droped Off or Picked or Grabed
+                // Refresh TB List after Dropped Off or Picked or Grabed
                 if (logType == LogType.dropped_off || logType == LogType.retrieve || logType == LogType.grab_it) {
-                    GL.that.runOnGL(() -> Trackables.trackables.refreshTbList());
+                    // GL.that.runOnGL(() -> Trackables.trackables.refreshTbList());
                 }
             }
 
             @Override
             public void run() {
-                result[0] = uploadTrackableLog(TB, getCache_GcCode(), logType.gsLogTypeId, new Date(), edit.getText());
+                result[0] = uploadTrackableLog(trackable, getCache_GcCode(), logType.gsLogTypeId, new Date(), edit.getText());
             }
 
             @Override
@@ -330,10 +322,10 @@ public class TB_Log extends ActivityBase {
         newFieldNote.CacheUrl = getCache_URL();
         newFieldNote.cacheType = getCache_Type();
         newFieldNote.isTbDraft = true;
-        newFieldNote.TbName = TB.getName();
-        newFieldNote.TbIconUrl = TB.getIconUrl();
-        newFieldNote.TravelBugCode = TB.getTbCode();
-        newFieldNote.TrackingNumber = TB.getTrackingCode();
+        newFieldNote.TbName = trackable.getName();
+        newFieldNote.TbIconUrl = trackable.getIconUrl();
+        newFieldNote.TravelBugCode = trackable.getTbCode();
+        newFieldNote.TrackingNumber = trackable.getTrackingCode();
         newFieldNote.writeToDatabase();
 
         TB_Log.this.finish();
@@ -343,11 +335,11 @@ public class TB_Log extends ActivityBase {
         /*
          * Muss je nach LogType leer oder gefüllt sein
          */
-        if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+        if (trackable.getCurrentGeoCacheCode() != null) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(trackable.getCurrentGeoCacheCode()) && trackable.getCurrentGeoCacheCode().length() > 0) {
                 if (logType == LogType.visited || logType == LogType.retrieve) {
                     // TB is perhaps not in the selected cache
-                    return TB.getCurrentGeoCacheCode();
+                    return trackable.getCurrentGeoCacheCode();
                 }
             }
         }
@@ -358,11 +350,11 @@ public class TB_Log extends ActivityBase {
         /*
          * Muss je nach LogType leer oder gefüllt sein
          */
-        if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+        if (trackable.getCurrentGeoCacheCode() != null) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(trackable.getCurrentGeoCacheCode()) && trackable.getCurrentGeoCacheCode().length() > 0) {
                 if (logType == LogType.visited || logType == LogType.retrieve) {
                     // TB is perhaps not in the selected cache, but don't want to change selected Cache
-                    return TB.getCurrentGeoCacheCode();
+                    return trackable.getCurrentGeoCacheCode();
                 }
             }
         }
@@ -373,11 +365,11 @@ public class TB_Log extends ActivityBase {
         /*
          * Muss je nach LogType leer oder gefüllt sein
          */
-        if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+        if (trackable.getCurrentGeoCacheCode() != null) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(trackable.getCurrentGeoCacheCode()) && trackable.getCurrentGeoCacheCode().length() > 0) {
                 if (logType == LogType.visited || logType == LogType.retrieve) {
                     // TB is perhaps not in the selected cache
-                    return Cache.generateCacheId(TB.getCurrentGeoCacheCode());
+                    return Cache.generateCacheId(trackable.getCurrentGeoCacheCode());
                 }
             }
         }
@@ -388,11 +380,11 @@ public class TB_Log extends ActivityBase {
         /*
          * Muss je nach LogType leer oder gefüllt sein
          */
-        if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+        if (trackable.getCurrentGeoCacheCode() != null) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(trackable.getCurrentGeoCacheCode()) && trackable.getCurrentGeoCacheCode().length() > 0) {
                 if (logType == LogType.visited || logType == LogType.retrieve) {
                     // TB is perhaps not in the selected cache, but don't want to change selected Cache
-                    return "https://coord.info/" + TB.getCurrentGeoCacheCode();
+                    return "https://coord.info/" + trackable.getCurrentGeoCacheCode();
                 }
             }
         }
@@ -403,8 +395,8 @@ public class TB_Log extends ActivityBase {
         /*
          * Muss je nach LogType leer oder gefüllt sein
          */
-        if (TB.getCurrentGeoCacheCode() != null) {
-            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(TB.getCurrentGeoCacheCode()) && TB.getCurrentGeoCacheCode().length() > 0) {
+        if (trackable.getCurrentGeoCacheCode() != null) {
+            if (!GlobalCore.getSelectedCache().getGeoCacheCode().equals(trackable.getCurrentGeoCacheCode()) && trackable.getCurrentGeoCacheCode().length() > 0) {
                 if (logType == LogType.retrieve) {
                     // TB is perhaps not in the selected cache
                     return GeoCacheType.Undefined.ordinal();
@@ -414,40 +406,4 @@ public class TB_Log extends ActivityBase {
         return (logType == LogType.dropped_off || logType == LogType.visited || logType == LogType.retrieve) ? GlobalCore.getSelectedCache().getGeoCacheType().ordinal() : -1;
     }
 
-    @Override
-    public void dispose() {
-        that = null;
-        TB = null;
-
-        if (btnClose != null)
-            btnClose.dispose();
-        btnClose = null;
-
-        if (btnAction != null)
-            btnAction.dispose();
-        btnAction = null;
-
-        if (icon != null)
-            icon.dispose();
-        icon = null;
-
-        if (lblName != null)
-            lblName.dispose();
-        btnAction = null;
-
-        if (lblName != null)
-            lblName.dispose();
-        btnAction = null;
-
-        if (contentBox != null)
-            contentBox.dispose();
-        contentBox = null;
-
-        if (edit != null)
-            edit.dispose();
-        edit = null;
-
-        logType = null;
-
-    }
 }

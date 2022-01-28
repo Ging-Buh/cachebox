@@ -18,7 +18,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri from => http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
  */
 public class UnZip {
-    private static final String log = "UnZip";
+    private static final String sClass = "UnZip";
 
     static public void extractHere(String zipFileName) throws IOException {
         extract(FileFactory.createFile(zipFileName), true);
@@ -33,7 +33,7 @@ public class UnZip {
      */
     static public void extract(AbstractFile zipFile, boolean here) throws IOException {
         String zipPathAndName = zipFile.getAbsolutePath();
-        Log.debug(log, "unzip from " + zipFile.getName());
+        Log.debug(sClass, "unzip from " + zipFile.getName());
         int BUFFER = 2048;
         ZipFile zip;
         if (Platform.AndroidVersion >= 24) {
@@ -64,7 +64,7 @@ public class UnZip {
                     destAbstractFile.delete();
                 }
             }
-            Log.debug(log, "  zipEntry: " + destAbstractFile.getAbsolutePath());
+            Log.debug(sClass, "  zipEntry: " + destAbstractFile.getAbsolutePath());
 
             AbstractFile destinationParent = destAbstractFile.getParentFile();
             destinationParent.mkdirs();
@@ -91,7 +91,7 @@ public class UnZip {
 
             }
             destAbstractFile.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
-            Log.debug(log, "  done with size " + destAbstractFile.length());
+            Log.debug(sClass, "  done with size " + destAbstractFile.length());
 
             if (currentEntry.endsWith(".zip")) {
                 // found a zip file, try to open recursive

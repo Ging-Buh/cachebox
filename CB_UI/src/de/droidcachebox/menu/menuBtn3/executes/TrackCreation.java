@@ -22,7 +22,6 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 
 public class TrackCreation extends AbstractShowAction {
-    private Menu cm2;
 
     public TrackCreation() {
         super("");
@@ -53,11 +52,16 @@ public class TrackCreation extends AbstractShowAction {
 
     @Override
     public Menu getContextMenu() {
-        cm2 = new Menu("TrackListViewCreateTrackTitle");
+        Menu cm2 = new Menu("TrackListViewCreateTrackTitle");
         cm2.addMenuItem("Point2Point", null, this::genTrackP2P);
         cm2.addMenuItem("Projection", null, this::genTrackProjection);
         cm2.addMenuItem("Circle", null, this::genTrackCircle);
         return cm2;
+    }
+
+    @Override
+    public void viewIsHiding() {
+
     }
 
     private void genTrackP2P() {

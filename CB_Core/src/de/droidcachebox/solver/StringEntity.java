@@ -11,20 +11,20 @@ public class StringEntity extends Entity {
     }
 
     @Override
-    public void GetAllEntities(ArrayList<Entity> list) {
+    public void getAllEntities(ArrayList<Entity> list) {
     }
 
     @Override
-    public void ReplaceTemp(Entity source, Entity dest) {
+    public void replaceTemp(Entity source, Entity dest) {
     }
 
     @Override
-    public String Berechne() {
+    public String calculate() {
         return Wert;
     }
 
     @Override
-    public String ToString() {
-        return "S:" + Id + ":(" + Wert + ")";
+    public String toString() {
+        return "S:" + entityId + ":(" + Wert + ")";
     }
 }

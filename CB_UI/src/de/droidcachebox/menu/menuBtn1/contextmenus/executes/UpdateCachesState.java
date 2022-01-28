@@ -14,8 +14,7 @@ import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
@@ -45,6 +44,7 @@ public class UpdateCachesState {
             Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
             progressDialog = new ProgressDialog(Translation.get("chkState"), new DownloadAnimation(), new RunAndReady() {
                 final static int blockSize = 50; // API 1.0 has a limit of 50, handled in GroundSpeakAPI but want to write to DB after BlockSize fetched
+                final CachesDAO cachesDAO = new CachesDAO();
 
                 @Override
                 public void run() {
@@ -65,7 +65,6 @@ public class UpdateCachesState {
                     result = 0;
                     ArrayList<Cache> caches = new ArrayList<>();
                     float progress = 0;
-                    CacheDAO cacheDAO = new CacheDAO();
 
                     do {
                         caches.clear();
@@ -76,7 +75,7 @@ public class UpdateCachesState {
                         skip = skip + blockSize;
                         CBDB.getInstance().beginTransaction();
                         for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
-                            if (cacheDAO.updateDatabaseCacheState(ci.cache))
+                            if (cachesDAO.updateDatabaseCacheState(ci.cache))
                                 changedCount++;
                         }
                         CBDB.getInstance().setTransactionSuccessful();
@@ -101,7 +100,7 @@ public class UpdateCachesState {
                         // Reload result from DB
                         synchronized (CBDB.getInstance().cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
-                            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                            cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         }
                         CacheListChangedListeners.getInstance().fire();
                         synchronized (CBDB.getInstance().cacheList) {

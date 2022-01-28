@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import de.droidcachebox.core.CoreData;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.dataclasses.Attribute;
@@ -79,7 +79,7 @@ public class GPXFileImporter {
     private final Waypoint waypoint = new Waypoint(true);
     private final LogEntry log = new LogEntry();
     private final String br = System.getProperty("line.separator");
-    private final CacheDAO cacheDAO = new CacheDAO();
+    private final CachesDAO cachesDAO = new CachesDAO();
     public Categories categories;
     private Integer currentWpt = 0;
     private Integer countWpt = 0;
@@ -151,10 +151,10 @@ public class GPXFileImporter {
             throw new Exception(TestCancel.canceled);
         }
 
-        if (cacheDAO.cacheExists(cache.generatedId)) {
-            cacheDAO.updateDatabase(cache);
+        if (cachesDAO.cacheExists(cache.generatedId)) {
+            cachesDAO.updateDatabase(cache);
         } else {
-            cacheDAO.writeToDatabase(cache);
+            cachesDAO.writeToDatabase(cache);
         }
 
         if (cache.getWayPoints().size() > 0) {
@@ -1416,10 +1416,10 @@ public class GPXFileImporter {
         so the setSolver and setNote have to be executed after handleCache
          */
         if (values.containsKey("cachebox-extension_solver")) {
-            cacheDAO.setSolver(cache, values.get("cachebox-extension_solver"));
+            cachesDAO.setSolver(cache, values.get("cachebox-extension_solver"));
         }
         if (values.containsKey("cachebox-extension_note")) {
-            cacheDAO.setNote(cache, values.get("cachebox-extension_note"));
+            cachesDAO.setNote(cache, values.get("cachebox-extension_note"));
         }
 
     }

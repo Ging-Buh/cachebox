@@ -59,10 +59,10 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn5.ShowAbout;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.UnitFormatter;
-import de.droidcachebox.utils.log.Log;
 
 public class AboutView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, GpsStateChangeEvent, PositionChangedEvent {
     private static final String sClass = "AboutView";
@@ -77,14 +77,11 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     private SatBarChart satBarChart;
     private int result = -1;
     private float margin;
-    private boolean mustShowNewInstallInfo;
 
     public AboutView() {
         super(ViewManager.leftTab.getContentRec(), sClass);
         registerSkinChangedEvent();
         createControls();
-        mustShowNewInstallInfo = true;
-        Log.debug(sClass, " created.");
     }
 
     @Override
@@ -105,8 +102,8 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         refreshText();
 
 
-        if (Settings.newInstall.getValue() && mustShowNewInstallInfo) {
-            mustShowNewInstallInfo = false;
+        if (Settings.newInstall.getValue()) {
+            Settings.newInstall.setValue(false);
             String langId = Settings.Sel_LanguagePath.getValue().substring(Settings.languagePath.getValue().length()).substring(1, 3);
             String Welcome = Translation.that.getTextFile("welcome", langId) + Translation.that.getTextFile("changelog", langId);
             ButtonDialog bd = new ButtonDialog(Welcome, Translation.get("welcome"), MsgBoxButton.OK, MsgBoxIcon.Information);
@@ -126,6 +123,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
 
         if (satBarChart != null)
             satBarChart.onHide();
+        ShowAbout.getInstance().viewIsHiding();
     }
 
     @Override

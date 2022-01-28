@@ -22,7 +22,7 @@ import de.droidcachebox.dataclasses.ImageEntry;
 import de.droidcachebox.utils.log.Log;
 
 public class ImageDAO {
-    private static final String log = "ImageDAO";
+    private static final String sClass = "ImageDAO";
 
     /**
      * @param image ?
@@ -43,7 +43,7 @@ public class ImageDAO {
                 CBDB.getInstance().insertWithConflictReplace("Images", args);
             }
         } catch (Exception exc) {
-            Log.err(log, "", exc);
+            Log.err(sClass, "", exc);
         }
     }
 

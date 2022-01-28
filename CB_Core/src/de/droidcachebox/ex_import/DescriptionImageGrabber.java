@@ -44,7 +44,7 @@ import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.log.Log;
 
 public class DescriptionImageGrabber {
-    private static final String log = "DescriptionImageGrabber";
+    private static final String sClass = "DescriptionImageGrabber";
 
     public static CB_List<Segment> Segmentize(String text, String leftSeperator, String rightSeperator) {
         CB_List<Segment> result = new CB_List<Segment>();
@@ -273,7 +273,7 @@ public class DescriptionImageGrabber {
     public static int grabImagesSelectedByCache(ImportProgress importProgress, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String description, String url, boolean withLogImages) {
         boolean imageLoadError = false;
         if (!descriptionImagesUpdated) {
-            Log.debug(log, "GrabImagesSelectedByCache -> grab description images");
+            Log.debug(sClass, "GrabImagesSelectedByCache -> grab description images");
             importProgress.changeMsg("importImages", Translation.get("DescriptionImageImportForGC") + gcCode);
 
             LinkedList<URI> imgUris = GetImageUris(description, url);
@@ -308,10 +308,10 @@ public class DescriptionImageGrabber {
                 args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
                 CBDB.getInstance().update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
             }
-            Log.debug(log, "GrabImagesSelectedByCache done");
+            Log.debug(sClass, "GrabImagesSelectedByCache done");
         }
         if (!additionalImagesUpdated) {
-            Log.debug(log, "GrabImagesSelectedByCache -> grab spoiler images");
+            Log.debug(sClass, "GrabImagesSelectedByCache -> grab spoiler images");
             // Get additional images (Spoiler)
 
             String[] files = getFilesInDirectory(AllSettings.SpoilerFolder.getValue(), gcCode);
@@ -365,7 +365,7 @@ public class DescriptionImageGrabber {
                         }
                     }
                 }
-                Log.debug(log, "images download done");
+                Log.debug(sClass, "images download done");
 
                 additionalImagesUpdated = true;
 
@@ -376,7 +376,7 @@ public class DescriptionImageGrabber {
                     // jetzt können noch alle "alten" Spoiler gelöscht werden.
                     // "alte" Spoiler sind die, die auf der SD vorhanden sind, aber nicht als Link über die API gemeldet wurden.
                     // Alle Spoiler in der Liste allSpoilers sind "alte"
-                    Log.debug(log, "Delete old spoilers.");
+                    Log.debug(sClass, "Delete old spoilers.");
                     for (String file : allSpoilers) {
                         String fileNameWithOutExt = file.replaceFirst("[.][^.]+$", "");
                         // Testen, ob dieser Dateiname einen gültigen ACB Hash hat (eingeschlossen zwischen @....@>
@@ -388,14 +388,14 @@ public class DescriptionImageGrabber {
                             try {
                                 f.delete();
                             } catch (Exception ex) {
-                                Log.err(log, "DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex);
+                                Log.err(sClass, "DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex);
                             }
                         }
                     }
                 }
 
             }
-            Log.debug(log, "GrabImagesSelectedByCache done");
+            Log.debug(sClass, "GrabImagesSelectedByCache done");
         }
         return 0;
     }

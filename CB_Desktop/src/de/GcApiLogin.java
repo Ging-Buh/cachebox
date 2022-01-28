@@ -15,7 +15,7 @@ import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
 
 public class GcApiLogin {
-    private static final String log = "GcApiLogin";
+    private static final String sClass = "GcApiLogin";
 
     private long lastCall = 0;
     private boolean isRunning = false;
@@ -50,7 +50,7 @@ public class GcApiLogin {
                 GC_AuthUrl = GC_AuthUrl.trim();
 
                 if (GC_AuthUrl.length() == 0) {
-                    Log.err(log, "APIUrlNotFound");
+                    Log.err(sClass, "APIUrlNotFound");
                     return;
                 }
 
@@ -58,7 +58,7 @@ public class GcApiLogin {
                     Log.info("CB_UI GCApiLogin", "Show WebSite " + GC_AuthUrl);
                     callOAuthPage(GC_AuthUrl);
                 } catch (Exception e) {
-                    Log.err(log, e.getLocalizedMessage());
+                    Log.err(sClass, e.getLocalizedMessage());
                 }
             }
         }).show();
@@ -95,7 +95,7 @@ public class GcApiLogin {
                     remote = response.getHeaderField("location");
                 } else retry = false;
             } catch (Exception e) {
-                Log.err(log, "Call_OAuth_Page");
+                Log.err(sClass, "Call_OAuth_Page");
                 return;
             }
         }

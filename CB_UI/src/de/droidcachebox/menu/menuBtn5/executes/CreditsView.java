@@ -34,6 +34,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.GL_UISizes;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn5.ShowCredits;
 import de.droidcachebox.translation.Translation;
 
 public class CreditsView extends CB_View_Base {
@@ -201,6 +202,10 @@ public class CreditsView extends CB_View_Base {
     public void resize(float width, float height) {
         logo.setY(this.getHeight() - ((ref * 5) / 4.11f) - ref);
         scrollBox.setHeight(logo.getY() - (ref / 2));
+    }
+
+    public void onHide() {
+        ShowCredits.getInstance().viewIsHiding();
     }
 
     public enum Job {

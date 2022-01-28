@@ -14,17 +14,17 @@ public class TempEntity extends Entity {
     }
 
     @Override
-    public void ReplaceTemp(Entity source, Entity dest) {
-        this.Text = this.Text.replace("#" + source.Id + "#", "#" + dest.Id + "#");
+    public void replaceTemp(Entity source, Entity dest) {
+        this.Text = this.Text.replace("#" + source.entityId + "#", "#" + dest.entityId + "#");
     }
 
     @Override
-    public String ToString() {
-        return "T" + Id + "(" + Text + ")";
+    public String toString() {
+        return "T" + entityId + "(" + Text + ")";
     }
 
     @Override
-    public String Berechne() {
+    public String calculate() {
         // dies kann eine Zahl, ein String oder eine Variable sein!
         Text = Text.trim();
         try {

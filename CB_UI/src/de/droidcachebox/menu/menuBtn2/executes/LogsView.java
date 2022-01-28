@@ -33,20 +33,21 @@ import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.LogListViewItem;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn2.ShowLogs;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.CB_List;
 
-public class Logs extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
+public class LogsView extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static CB_RectF itemRec;
-    private static Logs logs;
     CB_List<LogEntry> logEntries;
     private Cache currentCache;
     private LogListViewAdapter logListViewAdapter;
     private ArrayList<String> friendList;
 
-    private Logs() {
+    public LogsView() {
         super(ViewManager.leftTab.getContentRec(), "LogListView");
         setForceHandleTouchEvents();
         itemRec = (new CB_RectF(0, 0, getWidth(), UiSizes.getInstance().getButtonHeight() * 1.1f)).scaleCenter(0.97f);
@@ -58,11 +59,6 @@ public class Logs extends V_ListView implements CacheSelectionChangedListeners.C
         setDisposeFlag(false);
         setCache(GlobalCore.getSelectedCache());
 
-    }
-
-    public static Logs getInstance() {
-        if (logs == null) logs = new Logs();
-        return logs;
     }
 
     private void createFriendList() {
@@ -80,6 +76,7 @@ public class Logs extends V_ListView implements CacheSelectionChangedListeners.C
     @Override
     public void onHide() {
         CacheSelectionChangedListeners.getInstance().remove(this);
+        ((ShowLogs)Action.ShowLogs.action).viewIsHiding();
     }
 
     @Override

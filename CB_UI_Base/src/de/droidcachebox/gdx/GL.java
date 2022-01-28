@@ -208,7 +208,7 @@ public class GL implements ApplicationListener {
 
         GL_ThreadId = Thread.currentThread().getId();
 
-        if (glListener != null && glListener.isContinous()) {
+        if (glListener != null && glListener.isContinuous()) {
             glListener.renderDirty();
         }
 
@@ -431,7 +431,7 @@ public class GL implements ApplicationListener {
         // Log.debug(log, "GL_Listener => onStop");
         stopTimer();
         if (glListener != null)
-            glListener.renderContinous();
+            glListener.renderContinuous();
         child.onStop();
     }
 
@@ -1192,7 +1192,7 @@ public class GL implements ApplicationListener {
      */
     public void restartRendering() {
         if (glListener != null) {
-            glListener.renderContinous();
+            glListener.renderContinuous();
         }
         renderingIsStopped = false;
         renderOnce();
@@ -1291,8 +1291,6 @@ public class GL implements ApplicationListener {
 
     public void switchToMainView() {
         child = mMainView;
-        mSplash.dispose();
-        mSplash = null;
         initMarkerOverlay();
         mMainView.onShow();
         if (glListener != null)

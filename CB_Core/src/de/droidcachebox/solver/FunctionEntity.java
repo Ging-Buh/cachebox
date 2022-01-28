@@ -14,23 +14,23 @@ public class FunctionEntity extends Entity {
     }
 
     @Override
-    public void ReplaceTemp(Entity source, Entity dest) {
+    public void replaceTemp(Entity source, Entity dest) {
         if (entity == source)
             entity = dest;
     }
 
     @Override
-    public void GetAllEntities(ArrayList<Entity> list) {
+    public void getAllEntities(ArrayList<Entity> list) {
         list.add(entity);
     }
 
     @Override
-    public String Berechne() {
+    public String calculate() {
         String[] str;
         if (entity instanceof ParameterEntity) {
             str = ((ParameterEntity) entity).GetParameter();
         } else {
-            String argument = entity.Berechne();
+            String argument = entity.calculate();
             str = new String[1];
             str[0] = argument;
         }
@@ -43,7 +43,7 @@ public class FunctionEntity extends Entity {
     }
 
     @Override
-    public String ToString() {
-        return "F:" + function + "(" + entity.ToString() + ")";
+    public String toString() {
+        return "F:" + function + "(" + entity.toString() + ")";
     }
 }

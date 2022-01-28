@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 
 import de.droidcachebox.Platform;
-import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_View_Base;
 import de.droidcachebox.gdx.activities.EditCoord;
 import de.droidcachebox.gdx.activities.EditCoord.ReturnListener;
@@ -36,7 +35,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             if (edCo == null)
                 initialEdCo();
-            GL.that.showActivity(edCo);
+            edCo.show();
             return true;
         }
     };

@@ -46,7 +46,7 @@ import de.droidcachebox.utils.MathUtils.CalculationType;
 import de.droidcachebox.utils.log.Log;
 
 public class TrackRecorder {
-    private static final String log = "TrackRecorder";
+    private static final String sClass = "TrackRecorder";
     private final static ProviderType GPS = ProviderType.GPS;
     private final static CompassType _GPS = CompassType.GPS;
     private static TrackRecorder instance;
@@ -106,7 +106,7 @@ public class TrackRecorder {
                             .append("<trk><trkseg>\n</trkseg>\n</trk>\n</gpx>\n");
                     writer.close();
                 } catch (IOException e) {
-                    Log.err(log, "IOException", e);
+                    Log.err(sClass, "IOException", e);
                 }
             }
 
@@ -178,9 +178,9 @@ public class TrackRecorder {
             insertPos += b.length;
 
         } catch (FileNotFoundException e) {
-            Log.err(log, "FileNotFoundException", e);
+            Log.err(sClass, "FileNotFoundException", e);
         } catch (IOException e) {
-            Log.err(log, "IOException", e);
+            Log.err(sClass, "IOException", e);
         }
         writeAnnotateMedia = false;
         if (mustRecPos) {
@@ -246,9 +246,9 @@ public class TrackRecorder {
                     rand.write(bEnde);
                     rand.close();
                 } catch (FileNotFoundException e) {
-                    Log.err(log, "FileNotFoundException", e);
+                    Log.err(sClass, "FileNotFoundException", e);
                 } catch (IOException e) {
-                    Log.err(log, "Trackrecorder", "IOException", e);
+                    Log.err(sClass, "Trackrecorder", "IOException", e);
                 }
 
                 NewPoint = new TrackPoint(Locator.getInstance().getLongitude(GPS), Locator.getInstance().getLatitude(GPS), Locator.getInstance().getAlt(), Locator.getInstance().getHeading(_GPS), new Date());

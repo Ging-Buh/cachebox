@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.database.LogsTableDAO;
@@ -198,7 +198,7 @@ public class CacheInfoList {
                 }
             }
 
-            String stringForListingCheckSum = new CacheDAO().getDescription(cache);
+            String stringForListingCheckSum = new CachesDAO().getDescription(cache);
             int ListingCheckSum = (int) (SDBM_Hash.sdbm(stringForListingCheckSum) + SDBM_Hash.sdbm(recentOwnerLogString));
 
             boolean ListingChanged = cacheInfo.ListingChanged;
@@ -311,7 +311,7 @@ public class CacheInfoList {
             }
         }
 
-        String stringForListingCheckSum = new CacheDAO().getDescription(cache);
+        String stringForListingCheckSum = new CachesDAO().getDescription(cache);
         int ListingCheckSum = (int) (SDBM_Hash.sdbm(stringForListingCheckSum) + SDBM_Hash.sdbm(recentOwnerLogString));
 
         CacheInfo info = new CacheInfo(cache.generatedId, cache.getGPXFilename_ID());

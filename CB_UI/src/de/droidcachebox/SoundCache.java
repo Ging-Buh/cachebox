@@ -26,7 +26,7 @@ import de.droidcachebox.utils.IChanged;
 import de.droidcachebox.utils.log.Log;
 
 public class SoundCache {
-    private static final String log = "SoundCache";
+    private static final String sClass = "SoundCache";
     private static Music GlobalVolumeSound;
     private static Music GPS_lose;
     private static Music GPS_fix;
@@ -115,7 +115,7 @@ public class SoundCache {
         }
 
         if (handle == null || !handle.exists()) {
-            Log.err(log, "LoadSound: " + set.getValue().Path);
+            Log.err(sClass, "LoadSound: " + set.getValue().Path);
             return null;
         }
 
@@ -123,7 +123,7 @@ public class SoundCache {
         try {
             ret = Gdx.audio.newMusic(handle);
         } catch (Exception e) {
-            Log.err(log, "LoadSound: " + set.getValue().Path);
+            Log.err(sClass, "LoadSound: " + set.getValue().Path);
             return null;
         }
         return ret;

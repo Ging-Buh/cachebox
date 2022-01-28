@@ -74,7 +74,7 @@ public class TrackListView extends V_ListView {
 
     @Override
     public void onHide() {
-        ((ShowTracks) ShowTracks.action).onHide();
+        ((ShowTracks) ShowTracks.action).viewIsHiding();
     }
 
     public class TrackListViewAdapter implements Adapter {

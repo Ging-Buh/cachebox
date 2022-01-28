@@ -487,7 +487,7 @@ public class ManageSettings extends ActivityBase implements LanguageChanged.even
                             resortList();
                         }
                         // reshow Activity
-                        activityBase.show();
+                        show();
                         return true;
                     });
             stringInputBox.showAtTop();
@@ -652,13 +652,13 @@ public class ManageSettings extends ActivityBase implements LanguageChanged.even
                         SetValue.setValue(value);
                     resortList();
                     // reshow Activity
-                    activityBase.show();
+                    show();
                 }
 
                 @Override
                 public void cancelClicked() {
                     // reshow Activity
-                    activityBase.show();
+                    show();
                 }
             });
             numericInputBox.show();
@@ -686,13 +686,13 @@ public class ManageSettings extends ActivityBase implements LanguageChanged.even
                         SetValue.setValue((float) value);
                     resortList();
                     // reshow Activity
-                    activityBase.show();
+                    show();
                 }
 
                 @Override
                 public void cancelClicked() {
                     // reshow Activity
-                    activityBase.show();
+                    show();
                 }
             });
             numericInputBox.show();
@@ -881,13 +881,13 @@ public class ManageSettings extends ActivityBase implements LanguageChanged.even
                         SetValue.setValue(value);
                     resortList();
                     // reshow Activity
-                    activityBase.show();
+                    show();
                 }
 
                 @Override
                 public void cancelClicked() {
                     // reshow Activity
-                    activityBase.show();
+                    show();
                 }
             });
             numericInputBox.show();

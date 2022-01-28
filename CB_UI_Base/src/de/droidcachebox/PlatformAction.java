@@ -23,4 +23,5 @@ public class PlatformAction extends AbstractAction {
     public Sprite getIcon() {
         return sprite;
     }
+
 }

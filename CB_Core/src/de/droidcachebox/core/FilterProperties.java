@@ -29,7 +29,7 @@ import de.droidcachebox.utils.DLong;
 import de.droidcachebox.utils.log.Log;
 
 public class FilterProperties {
-    private static final String log = "FilterProperties";
+    private static final String sClass = "FilterProperties";
 
     private final static String SEPARATOR = ",";
     private final static String GPXSEPARATOR = "^";
@@ -231,13 +231,13 @@ public class FilterProperties {
                         }
                     }
                 } catch (JSONException ex) {
-                    Log.err(log, "Json Version FilterProperties(" + serialization + ")", ex);
+                    Log.err(sClass, "Json Version FilterProperties(" + serialization + ")", ex);
                 }
             } else {
-                Log.err(log, "Json Version FilterProperties(" + serialization + ")");
+                Log.err(sClass, "Json Version FilterProperties(" + serialization + ")");
             }
         } else {
-            Log.err(log, "old Version FilterProperties are no longer supported");
+            Log.err(sClass, "old Version FilterProperties are no longer supported");
         }
     }
 
@@ -535,7 +535,7 @@ public class FilterProperties {
 
             asJsonString = json.toString();
         } catch (JSONException ex) {
-            Log.err(log, "JSON toString", ex);
+            Log.err(sClass, "JSON toString", ex);
         }
         return asJsonString;
     }

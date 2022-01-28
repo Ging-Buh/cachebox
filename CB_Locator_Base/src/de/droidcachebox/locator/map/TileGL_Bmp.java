@@ -33,7 +33,7 @@ import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.log.Log;
 
 public class TileGL_Bmp extends TileGL {
-    private static final String log = "TileGL_Bmp";
+    private static final String sClass = "TileGL_Bmp";
     private final Format format;
     private byte[] bytes;
     private Texture texture;
@@ -75,7 +75,7 @@ public class TileGL_Bmp extends TileGL {
             return true;
         if (inCreation)
             return false;
-        Log.err(log, "Impossible: not in Creation and texture is null! " + this);
+        Log.err(sClass, "Impossible: not in Creation and texture is null! " + this);
         return false;
     }
 
@@ -120,7 +120,7 @@ public class TileGL_Bmp extends TileGL {
             pixmap.dispose();
             // Log.info(log, "Final step: " + this);
         } catch (Exception ex) {
-            Log.err(log, "[TileGL] can't create Pixmap or Texture: ", ex);
+            Log.err(sClass, "[TileGL] can't create Pixmap or Texture: ", ex);
         }
         bitmap = null;
         bytes = null;
@@ -136,7 +136,7 @@ public class TileGL_Bmp extends TileGL {
             if (bitmap instanceof GDXBitmap) ((GDXBitmap) bitmap).recycle();
             return byteArray;
         } catch (Exception ex) {
-            Log.err(log, "convert bitmap to byteArray", ex);
+            Log.err(sClass, "convert bitmap to byteArray", ex);
             return null;
         }
     }

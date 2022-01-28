@@ -15,10 +15,12 @@
  */
 package de.droidcachebox.menu.menuBtn4.executes;
 
+import static de.droidcachebox.menu.Action.ShowSolver1;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
@@ -32,6 +34,7 @@ import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.views.SelectSolverFunction;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.SolverLine;
 import de.droidcachebox.solver.SolverLines;
@@ -41,18 +44,18 @@ import de.droidcachebox.utils.Plattform;
 /**
  * @author Longri
  */
-public class Solver extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
+public class Solver1View extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private WindowState windowState = WindowState.Both;
     private SolverLines solverLines = new SolverLines("", GlobalCore.getInstance());
     private boolean mustLoadSolver;
     private Cache aktCache;
     private CB_Button btnSolve, btnFunct, btnSelect, btnInputWindow, btnBothWindow, btnResultWindow;
     private EditTextField edInput, edResult;
-    private final CacheDAO cacheDAO;
+    private final CachesDAO cachesDAO;
 
-    public Solver() {
+    public Solver1View() {
         super(ViewManager.leftTab.getContentRec(), "SolverView");
-        cacheDAO = new CacheDAO();
+        cachesDAO = new CachesDAO();
         addControls();
         layout();
     }
@@ -77,7 +80,7 @@ public class Solver extends CB_View_Base implements CacheSelectionChangedListene
         CacheSelectionChangedListeners.getInstance().addListener(this);
 
         if (mustLoadSolver) {
-            String sol = cacheDAO.getSolver(aktCache);
+            String sol = cachesDAO.getSolver(aktCache);
             if (sol == null)
                 sol = "";
             edInput.setText(sol);
@@ -92,12 +95,13 @@ public class Solver extends CB_View_Base implements CacheSelectionChangedListene
         KeyboardFocusChangedEventList.remove(this);
         CacheSelectionChangedListeners.getInstance().remove(this);
         if (aktCache != null) {
-            cacheDAO.setSolver(aktCache, edInput.getText());
+            cachesDAO.setSolver(aktCache, edInput.getText());
             // When Solver 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
             aktCache.setSolver1Changed(true);
         }
 
         mustLoadSolver = true;
+        ((ShowSolver1) ShowSolver1.action).viewIsHiding();
     }
 
     @Override

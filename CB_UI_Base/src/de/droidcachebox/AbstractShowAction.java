@@ -33,4 +33,10 @@ public abstract class AbstractShowAction extends AbstractAction {
      * @return CB_View_Base
      */
     public abstract CB_View_Base getView();
+
+    /**
+     * to make the getView return null
+     */
+    public abstract void viewIsHiding();
+
 }

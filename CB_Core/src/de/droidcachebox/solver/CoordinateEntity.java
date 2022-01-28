@@ -3,7 +3,7 @@ package de.droidcachebox.solver;
 import java.util.ArrayList;
 
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.dataclasses.Cache;
@@ -14,7 +14,7 @@ import de.droidcachebox.translation.Translation;
 
 public class CoordinateEntity extends Entity {
 
-    private String gcCode = "";
+    private final String gcCode;
 
     public CoordinateEntity(SolverLines solverLines, int id, String gcCode) {
         super(solverLines, id);
@@ -22,37 +22,38 @@ public class CoordinateEntity extends Entity {
     }
 
     @Override
-    public void GetAllEntities(ArrayList<Entity> list) {
+    public void getAllEntities(ArrayList<Entity> list) {
     }
 
     @Override
-    public void ReplaceTemp(Entity source, Entity dest) {
+    public void replaceTemp(Entity source, Entity dest) {
     }
 
-    private Coordinate LoadFromDB(String sql) {
-        CoreCursor reader = CBDB.getInstance().rawQuery(sql, null);
-        try {
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                String sGcCode = reader.getString(0).trim();
-                if (sGcCode.equalsIgnoreCase(this.gcCode)) { // gefunden. Suche abbrechen
-                    return new CoordinateGPS(reader.getDouble(1), reader.getDouble(2));
+    private Coordinate loadFromDB(String table) {
+        CoreCursor reader = CBDB.getInstance().rawQuery("select GcCode, Latitude, Longitude from " + table + " where GcCode = \"" + gcCode + "\"", null);
+        if (reader != null) {
+            try {
+                reader.moveToFirst();
+                while (!reader.isAfterLast()) {
+                    String sGcCode = reader.getString(0).trim();
+                    if (sGcCode.equalsIgnoreCase(gcCode)) {
+                        return new CoordinateGPS(reader.getDouble(1), reader.getDouble(2));
+                    }
+                    reader.moveToNext();
                 }
-                reader.moveToNext();
+            } finally {
+                reader.close();
             }
-        } finally {
-            reader.close();
         }
-
         return null;
     }
 
     @Override
-    public String Berechne() {
+    public String calculate() {
         // Cache selCache = CB_UI.GlobalCore.getSelectedCache();
         Cache selCache = null;
         if (SolverLines.solverCacheInterface != null) {
-            selCache = SolverLines.solverCacheInterface.sciGetSelectedCache();
+            selCache = SolverLines.solverCacheInterface.globalCoreGetSelectedCache();
         }
         Coordinate coord = null;
         if (selCache != null)
@@ -72,17 +73,17 @@ public class CoordinateEntity extends Entity {
         }
         if (coord == null)
             // gesuchten Waypoint nicht im aktuellen Cache gefunden, jetzt alle Caches mit den passenden GC/OC etc. Code suchen
-            coord = LoadFromDB("select GcCode, Latitude, Longitude from Caches where GcCode = \"" + this.gcCode + "\"");
+            coord = loadFromDB("Caches");
         if (coord == null)
             // gesuchter Waypoint ist kein Cache-Waypoint, jetzt in Waypoint-Tabelle danach suchen
-            coord = LoadFromDB("select GcCode, Latitude, Longitude from Waypoint where GcCode = \"" + this.gcCode + "\"");
+            coord = loadFromDB("Waypoint");
         if (coord == null)
             return Translation.get("CacheOrWaypointNotFound", gcCode);
         else
             return coord.formatCoordinate();
     }
 
-    public String SetCoordinate(String sCoord) {
+    public String setCoordinate(String sCoord) {
         if (SolverLines.isError(sCoord))
             return sCoord;
         Coordinate coord;
@@ -97,22 +98,28 @@ public class CoordinateEntity extends Entity {
         Waypoint dbWaypoint;
         // Suchen, ob dieser Waypoint bereits vorhanden ist.
         CoreCursor reader = CBDB.getInstance().rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
-        try {
-            reader.moveToFirst();
-            if (reader.isAfterLast())
-                return Translation.get("CacheOrWaypointNotFound", this.gcCode);
-            dbWaypoint = (Waypoint) waypointDAO.getWaypoint(reader, true);
-        } finally {
-            reader.close();
+        if (reader == null) {
+            return Translation.get("CacheOrWaypointNotFound", gcCode);
+        } else {
+            try {
+                if (reader.getCount() > 0) {
+                    reader.moveToFirst();
+                    dbWaypoint = waypointDAO.getWaypoint(reader, true);
+                } else {
+                    return Translation.get("CacheOrWaypointNotFound", gcCode);
+                }
+            } finally {
+                reader.close();
+            }
         }
         try {
             // if ((CB_UI.GlobalCore.getSelectedCache() == null) || (CB_UI.GlobalCore.getSelectedCache().Id != dbWaypoint.CacheId))
             if (SolverLines.solverCacheInterface != null) {
-                if ((SolverLines.solverCacheInterface.sciGetSelectedCache() == null) || (SolverLines.solverCacheInterface.sciGetSelectedCache().generatedId != dbWaypoint.geoCacheId)) {
+                if ((SolverLines.solverCacheInterface.globalCoreGetSelectedCache() == null) || (SolverLines.solverCacheInterface.globalCoreGetSelectedCache().generatedId != dbWaypoint.geoCacheId)) {
                     // Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
                     // Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
-                    CacheDAO cacheDAO = new CacheDAO();
-                    Cache cache = cacheDAO.getFromDbByCacheId(dbWaypoint.geoCacheId);
+                    CachesDAO cachesDAO = new CachesDAO();
+                    Cache cache = cachesDAO.getFromDbByCacheId(dbWaypoint.geoCacheId);
                     // String sFmt = "Change Coordinates of a waypoint which does not belong to the actual Cache?\n";
                     // sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
                     // String s = String.format(sFmt, cache.Name, waypoint.Title, coord.formatCoordinate());
@@ -122,14 +129,15 @@ public class CoordinateEntity extends Entity {
             }
             dbWaypoint.setCoordinate(new Coordinate(coord));
 
-            waypointDAO.UpdateDatabase(dbWaypoint);
+            waypointDAO.updateDatabase(dbWaypoint);
 
             // evtl. bereits geladenen Waypoint aktualisieren
             Cache cacheFromCacheList;
             synchronized (CBDB.getInstance().cacheList) {
                 cacheFromCacheList = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(dbWaypoint.geoCacheId);
             }
-            cacheFromCacheList = SolverLines.solverCacheInterface.sciGetSelectedCache();
+            if (cacheFromCacheList == null)
+                cacheFromCacheList = SolverLines.solverCacheInterface.globalCoreGetSelectedCache();
             if (cacheFromCacheList != null) {
                 for (int i = 0, n = cacheFromCacheList.getWayPoints().size(); i < n; i++) {
                     Waypoint wp = cacheFromCacheList.getWayPoints().get(i);
@@ -139,11 +147,11 @@ public class CoordinateEntity extends Entity {
                     }
                 }
                 if (SolverLines.solverCacheInterface != null) {
-                    if (SolverLines.solverCacheInterface.sciGetSelectedCache().generatedId == cacheFromCacheList.generatedId) {
-                        if (SolverLines.solverCacheInterface.sciGetSelectedWaypoint() == null) {
-                            SolverLines.solverCacheInterface.sciSetSelectedCache(SolverLines.solverCacheInterface.sciGetSelectedCache());
+                    if (SolverLines.solverCacheInterface.globalCoreGetSelectedCache().generatedId == cacheFromCacheList.generatedId) {
+                        if (SolverLines.solverCacheInterface.globalCoreGetSelectedWaypoint() == null) {
+                            SolverLines.solverCacheInterface.globalCoreSetSelectedCache(SolverLines.solverCacheInterface.globalCoreGetSelectedCache());
                         } else {
-                            SolverLines.solverCacheInterface.sciSetSelectedWaypoint(SolverLines.solverCacheInterface.sciGetSelectedCache(), SolverLines.solverCacheInterface.sciGetSelectedWaypoint());
+                            SolverLines.solverCacheInterface.globalCoreSetSelectedWaypoint(SolverLines.solverCacheInterface.globalCoreGetSelectedCache(), SolverLines.solverCacheInterface.globalCoreGetSelectedWaypoint());
                         }
                     }
                 }
@@ -155,8 +163,8 @@ public class CoordinateEntity extends Entity {
     }
 
     @Override
-    public String ToString() {
-        return "Gc" + Id + ":(" + gcCode + ")";
+    public String toString() {
+        return "Gc" + entityId + ":(" + gcCode + ")";
     }
 
 }

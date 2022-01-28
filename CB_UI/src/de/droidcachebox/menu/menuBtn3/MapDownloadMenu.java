@@ -39,8 +39,7 @@ public class MapDownloadMenu extends AbstractAction {
     }
 
     private void callFZKDownload() {
-        FZKDownload instance = FZKDownload.getInstance();
-        instance.show();
+        new FZKDownload().show();
     }
 
     private void callMapUrl(String url) {

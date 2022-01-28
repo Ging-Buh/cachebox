@@ -15,11 +15,15 @@
  */
 package de.droidcachebox.database;
 
+import com.badlogic.gdx.files.FileHandle;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.core.CoreData;
@@ -27,20 +31,19 @@ import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.CacheDetail;
+import de.droidcachebox.dataclasses.CacheList;
 import de.droidcachebox.dataclasses.Category;
-import de.droidcachebox.dataclasses.GeoCacheSize;
 import de.droidcachebox.dataclasses.GeoCacheType;
 import de.droidcachebox.dataclasses.GpxFilename;
 import de.droidcachebox.dataclasses.ImageEntry;
 import de.droidcachebox.dataclasses.LogEntry;
 import de.droidcachebox.dataclasses.Waypoint;
-import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.utils.CB_List;
-import de.droidcachebox.utils.DLong;
+import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.SDBM_Hash;
 import de.droidcachebox.utils.log.Log;
 
-public class CacheDAO {
+public class CachesDAO {
     static final String SQL_DETAILS = "PlacedBy, DateHidden, Url, TourName, GpxFilename_ID, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint, Country, State ";
     static final String SQL_GET_DETAIL_WITH_DESCRIPTION = "Description, Solver, Notes, ShortDescription ";
     static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates, FavPoints ";
@@ -50,112 +53,235 @@ public class CacheDAO {
     private static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
     private static final String sClass = "CacheDAO";
 
-    public CacheDAO() {
+    public CachesDAO() {
     }
 
-    Cache readFromCursor(CoreCursor reader, boolean fullDetails, boolean withDescription) {
-        try {
-            Cache cache = new Cache(fullDetails);
+    /**
+     * selecting by a list of GCCodes
+     * !!! only exportBatch
+     */
+    public CacheList readCacheList(ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
+        ArrayList<String> orParts = new ArrayList<>();
 
-            cache.generatedId = reader.getLong(0);
-            cache.setGeoCacheCode(reader.getString(1).trim());
-            cache.setCoordinate(new Coordinate(reader.getDouble(2), reader.getDouble(3)));
-            cache.setGeoCacheName(reader.getString(4).trim());
-            cache.geoCacheSize = GeoCacheSize.CacheSizesFromInt(reader.getInt(5));
-            cache.setDifficulty(((float) reader.getShort(6)) / 2);
-            cache.setTerrain(((float) reader.getShort(7)) / 2);
-            cache.setArchived(reader.getInt(8) != 0);
-            cache.setAvailable(reader.getInt(9) != 0);
-            cache.setFound(reader.getInt(10) != 0);
-            cache.setGeoCacheType(GeoCacheType.values()[reader.getShort(11)]);
-            cache.setOwner(reader.getString(12).trim());
-            cache.numTravelbugs = reader.getInt(13);
-            cache.setGeoCacheId(reader.getString(14));
-            cache.gcVoteRating = (reader.getShort(15)) / 100.0f;
-            cache.setFavorite(reader.getInt(16) > 0);
-            cache.setHasUserData(reader.getInt(17) > 0);
-            cache.setListingChanged(reader.getInt(18) > 0);
-            cache.setHasCorrectedCoordinates(reader.getInt(19) > 0);
-            cache.favPoints = reader.getInt(20);
-            if (fullDetails) {
-                readDetailFromCursor(reader, cache.getGeoCacheDetail(), true, withDescription);
+        for (String gcCode : GC_Codes) {
+            orParts.add("GcCode like '%" + gcCode + "%'");
+        }
+        String where = join(orParts);
+        CacheList cacheList = new CacheList();
+        readCacheList(cacheList, where, withDescription, fullDetails, loadAllWaypoints);
+        return cacheList;
+    }
+
+    private String join(ArrayList<String> array) {
+        StringBuilder retString = new StringBuilder();
+        int count = 0;
+        for (String tmp : array) {
+            retString.append(tmp);
+            count++;
+            if (count < array.size())
+                retString.append(" or ");
+        }
+        return retString.toString();
+    }
+
+    public void readCacheList(String sqlQualification, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
+        readCacheList(CBDB.getInstance().cacheList, sqlQualification, withDescription, fullDetails, loadAllWaypoints);
+    }
+
+    public void readCacheList(CacheList cacheList, String sqlQualification, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
+        cacheList.clear();
+
+        // Log.trace(log, "readCacheList 1.Waypoints");
+        SortedMap<Long, CB_List<Waypoint>> waypoints;
+        waypoints = new TreeMap<>();
+        // zuerst alle Waypoints einlesen
+        CB_List<Waypoint> wpList = new CB_List<>();
+        long aktCacheID = -1;
+
+        String query = fullDetails ? WaypointDAO.SQL_WP_FULL : WaypointDAO.SQL_WP;
+        if (!((fullDetails || loadAllWaypoints))) {
+            // when CacheList should be loaded without full details and without all Waypoints
+            // do not load all waypoints from db!
+            query += " where IsStart=\"true\" or Type=" + GeoCacheType.Final.ordinal(); // StartWaypoint or CacheTypes.Final
+        }
+        query += " order by CacheId";
+        CoreCursor reader = CBDB.getInstance().rawQuery(query, null);
+        if (reader == null) return;
+
+        reader.moveToFirst();
+        while (!reader.isAfterLast()) {
+            Waypoint wp = WaypointDAO.getInstance().getWaypoint(reader, fullDetails);
+            if (!(fullDetails || loadAllWaypoints)) {
+                // wenn keine FullDetails geladen werden sollen dann sollen nur die Finals und Start-Waypoints geladen werden
+                if (!(wp.isStartWaypoint || wp.waypointType == GeoCacheType.Final)) {
+                    reader.moveToNext();
+                    continue;
+                }
             }
-            return cache;
-        } catch (Exception exc) {
-            Log.err(sClass, "Read Cache", "", exc);
-            return null;
+            if (wp.geoCacheId != aktCacheID) {
+                aktCacheID = wp.geoCacheId;
+                wpList = new CB_List<>();
+                waypoints.put(aktCacheID, wpList);
+            }
+            wpList.add(wp);
+            reader.moveToNext();
+        }
+        reader.close();
+
+        // Log.trace(log, "readCacheList 2.Caches");
+        try {
+            if (fullDetails) {
+                query = SQL_GET_CACHE + ", " + SQL_DETAILS;
+                if (withDescription) {
+                    // load Cache with Description, Solver, Notes for Transfering Data from Server to ACB
+                    query += "," + SQL_GET_DETAIL_WITH_DESCRIPTION;
+                }
+            } else {
+                query = SQL_GET_CACHE;
+
+            }
+
+            // an empty sqlQualification and a sqlQualification other than where (p.e for join) starting with 5 blanks (by my definition)
+            boolean addWhere = sqlQualification.length() > 0 && !sqlQualification.startsWith("     ");
+            query = query + " from Caches c " + (addWhere ? "where " + sqlQualification : sqlQualification);
+            reader = CBDB.getInstance().rawQuery(query, null);
+
+        } catch (Exception e) {
+            Log.err(sClass, "CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
+        }
+        if (reader != null) {
+            if (reader.getCount() > 0) {
+                reader.moveToFirst();
+                while (!reader.isAfterLast()) {
+                    Cache cache = new Cache(reader, fullDetails, withDescription);
+                    cacheList.add(cache);
+                    cache.getWayPoints().clear();
+                    if (waypoints.containsKey(cache.generatedId)) {
+                        CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.generatedId);
+
+                        for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
+                            cache.getWayPoints().add(tmpwaypoints.get(i));
+                        }
+
+                        waypoints.remove(cache.generatedId);
+                    }
+                    reader.moveToNext();
+                }
+            }
+            reader.close();
+        }
+    }
+
+    /**
+     * @param Where                       sql
+     * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
+     * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
+     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
+     * @param isCanceled                  may be
+     * @return count deleted
+     */
+    public long delete(String Where,
+                       String SpoilerFolder,
+                       String SpoilerFolderLocal,
+                       String DescriptionImageFolder,
+                       String DescriptionImageFolderLocal,
+                       AtomicBoolean isCanceled) {
+        try {
+            delCacheImages(getGcCodes(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+            CBDB.getInstance().beginTransaction();
+            long ret = CBDB.getInstance().delete("Caches", Where, null);
+            if (isCanceled.get()) {
+                ret = 0;
+                CBDB.getInstance().endTransaction();
+            } else {
+                CBDB.getInstance().setTransactionSuccessful();
+                CBDB.getInstance().endTransaction();
+                updateCacheCountForGPXFilenames(); // CoreData.Categories will be set
+            }
+            return ret;
+        } catch (Exception e) {
+            Log.err(sClass, "CacheListDAO.DelFilter()", "Filter ERROR", e);
+            return -1;
+        }
+    }
+
+    private ArrayList<String> getGcCodes(String where) {
+        CacheList list = new CacheList();
+        readCacheList(list, where, false, false, false);
+
+        ArrayList<String> gcCodes = new ArrayList<>();
+        for (int i = 0, n = list.size(); i < n; i++) {
+            gcCodes.add(list.get(i).getGeoCacheCode());
+        }
+        return gcCodes;
+    }
+
+    /**
+     * Löscht alle Spoiler und Description Images der übergebenen Liste mit GC-Codes
+     *
+     * @param listOfGCCodes               listOfGCCodes
+     * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
+     * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
+     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
+     */
+    public void delCacheImages(ArrayList<String> listOfGCCodes, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+        String spoilerpath = SpoilerFolder;
+        if (SpoilerFolderLocal.length() > 0)
+            spoilerpath = SpoilerFolderLocal;
+
+        String imagespath = DescriptionImageFolder;
+        if (DescriptionImageFolderLocal.length() > 0)
+            imagespath = DescriptionImageFolderLocal;
+
+        Log.debug(sClass, "Del Spoilers from " + spoilerpath);
+        delCacheImagesByPath(spoilerpath, listOfGCCodes);
+        Log.debug(sClass, "Del Images from " + imagespath);
+        delCacheImagesByPath(imagespath, listOfGCCodes);
+
+        ImageDAO imageDAO = new ImageDAO();
+        for (final String GcCode : listOfGCCodes) {
+            imageDAO.deleteImagesForCache(GcCode);
+        }
+    }
+
+    private void delCacheImagesByPath(String path, ArrayList<String> list) {
+        for (String s : list) {
+            final String GcCode = s.toLowerCase();
+            String directory = path + "/" + GcCode.substring(0, Math.min(4, GcCode.length()));
+            if (!FileIO.directoryExists(directory))
+                continue;
+
+            FileHandle dir = new FileHandle(directory);
+            FileHandle[] files = dir.list();
+
+            for (FileHandle fileHandle : files) {
+
+                // simplyfied for startswith gccode, thumbs_gccode + ooverwiewthumbs_gccode
+                if (!fileHandle.name().toLowerCase().contains(GcCode))
+                    continue;
+
+                String filename = directory + "/" + fileHandle.name();
+                FileHandle file = new FileHandle(filename);
+                if (file.exists()) {
+                    if (!file.delete())
+                        Log.err(sClass, "Error deleting : " + filename);
+                }
+            }
         }
     }
 
     public void readDetail(Cache cache) {
         if (cache.getGeoCacheDetail() != null)
             return;
-        cache.setGeoCacheDetail(new CacheDetail());
-
         CoreCursor reader = CBDB.getInstance().rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.generatedId)});
-
-        try {
-            if (reader != null && reader.getCount() > 0) {
+        if (reader != null) {
+            if (reader.getCount() > 0) {
                 reader.moveToFirst();
-                readDetailFromCursor(reader, cache.getGeoCacheDetail(), false, false);
-
-                reader.close();
-            } else {
-                if (reader != null)
-                    reader.close();
+                cache.setGeoCacheDetail(new CacheDetail(reader, false, false));
             }
-        } catch (Exception e) {
             reader.close();
-        }
-    }
-
-    private void readDetailFromCursor(CoreCursor reader, CacheDetail detail, boolean withReaderOffset, boolean withDescription) {
-        // Reader includes Compleate Cache or Details only
-        int readerOffset = withReaderOffset ? 21 : 0;
-
-        try {
-            detail.PlacedBy = reader.getString(readerOffset).trim();
-        } catch (Exception e) {
-            detail.PlacedBy = "";
-        }
-
-        if (reader.isNull(readerOffset + 5))
-            detail.ApiStatus = Cache.NOT_LIVE;
-        else
-            detail.ApiStatus = (byte) reader.getInt(readerOffset + 5);
-
-        String sDate = reader.getString(readerOffset + 1);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-        try {
-            detail.DateHidden = iso8601Format.parse(sDate);
-        } catch (Exception ex) {
-            detail.DateHidden = new Date();
-        }
-
-        detail.Url = reader.getString(readerOffset + 2).trim();
-        if (reader.getString(readerOffset + 3) != null)
-            detail.TourName = reader.getString(readerOffset + 3).trim();
-        else
-            detail.TourName = "";
-        if (reader.getString(readerOffset + 4).length() > 0)
-            detail.GPXFilename_ID = reader.getLong(readerOffset + 4);
-        else
-            detail.GPXFilename_ID = -1;
-        detail.setAttributesPositive(new DLong(reader.getLong(readerOffset + 7), reader.getLong(readerOffset + 6)));
-        detail.setAttributesNegative(new DLong(reader.getLong(readerOffset + 9), reader.getLong(readerOffset + 8)));
-
-        if (reader.getString(readerOffset + 10) != null)
-            detail.setHint(reader.getString(readerOffset + 10).trim());
-        else
-            detail.setHint("");
-        detail.Country = reader.getString(readerOffset + 11);
-        detail.State = reader.getString(readerOffset + 12);
-
-        if (withDescription) {
-            detail.longDescription = reader.getString(readerOffset + 13);
-            detail.tmpSolver = reader.getString(readerOffset + 14);
-            detail.tmpNote = reader.getString(readerOffset + 15);
-            detail.shortDescription = reader.getString(readerOffset + 16);
         }
     }
 
@@ -322,57 +448,49 @@ public class CacheDAO {
      * or null if not in table
      */
     public Cache getFromDbByCacheId(long CacheID) {
+        Cache cache = null;
         CoreCursor reader = CBDB.getInstance().rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
-        try {
-            if (reader != null && reader.getCount() > 0) {
-                reader.moveToFirst();
-                Cache ret = readFromCursor(reader, false, false);
-
-                reader.close();
-                return ret;
-            } else {
-                if (reader != null)
-                    reader.close();
-                return null;
+        if (reader != null) {
+            if (reader.getCount() > 0) {
+                try {
+                    reader.moveToFirst();
+                    cache = new Cache(reader, false, false);
+                } catch (Exception e) {
+                    Log.err(sClass, e);
+                }
             }
-        } catch (Exception e) {
             reader.close();
-            Log.err(sClass, e);
-            return null;
         }
-
+        return cache;
     }
 
-    public Cache getFromDbByGcCode(String GcCode, boolean withDetail) // NO_UCD (test only)
+    public Cache getFromDbByGcCode(String GcCode, boolean withDetail) // (test only)
     {
+        Cache cache = null;
         String where = SQL_GET_CACHE + (withDetail ? ", " + SQL_DETAILS : "") + SQL_BY_GC_CODE;
-
         CoreCursor reader = CBDB.getInstance().rawQuery(where, new String[]{GcCode});
-
-        try {
-            if (reader != null && reader.getCount() > 0) {
-                reader.moveToFirst();
-                Cache ret = readFromCursor(reader, withDetail, false);
-
-                reader.close();
-                return ret;
-            } else {
-                if (reader != null)
-                    reader.close();
-                return null;
+        if (reader != null) {
+            if (reader.getCount() > 0) {
+                try {
+                    reader.moveToFirst();
+                    cache = new Cache(reader, withDetail, false);
+                } catch (Exception e) {
+                    Log.err(sClass, e);
+                }
             }
-        } catch (Exception e) {
             reader.close();
-            Log.err(sClass, e);
-            return null;
         }
-
+        return cache;
     }
 
     public boolean cacheExists(long CacheID) {
         CoreCursor reader = CBDB.getInstance().rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
-        boolean exists = (reader.getCount() > 0);
-        reader.close();
+        boolean exists;
+        if (reader != null) {
+            exists = reader.getCount() > 0;
+            reader.close();
+        }
+        else exists = false;
         return exists;
     }
 
@@ -424,7 +542,7 @@ public class CacheDAO {
             try {
                 CBDB.getInstance().update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.generatedId)});
             } catch (Exception exc) {
-                Log.err(sClass, "Update Cache", "", exc);
+                Log.err(sClass, "updateDatabaseCacheState", exc);
             }
         }
 
@@ -434,50 +552,49 @@ public class CacheDAO {
     public void updateCacheCountForGPXFilenames() {
         // welche GPXFilenamen sind in der DB erfasst
         CBDB.getInstance().beginTransaction();
-        try {
-            CoreCursor reader = CBDB.getInstance().rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
-            reader.moveToFirst();
-
-            while (!reader.isAfterLast()) {
-                long GPXFilename_ID = reader.getLong(0);
-                long CacheCount = reader.getLong(1);
-
-                Parameters val = new Parameters();
-                val.put("CacheCount", CacheCount);
-                CBDB.getInstance().update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
-
-                reader.moveToNext();
+        CoreCursor reader = CBDB.getInstance().rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
+        if (reader != null) {
+            if (reader.getCount() > 0) {
+                reader.moveToFirst();
+                while (!reader.isAfterLast()) {
+                    try {
+                        long GPXFilename_ID = reader.getLong(0);
+                        long CacheCount = reader.getLong(1);
+                        Parameters val = new Parameters();
+                        val.put("CacheCount", CacheCount);
+                        CBDB.getInstance().update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
+                        reader.moveToNext();
+                    } catch (Exception exc) {
+                        Log.err(sClass, "updateCacheCountForGPXFilenames", exc);
+                    }
+                }
+                CBDB.getInstance().delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
+                CBDB.getInstance().delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
+                CBDB.getInstance().setTransactionSuccessful();
             }
-
-            CBDB.getInstance().delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
-            CBDB.getInstance().delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
             reader.close();
-            CBDB.getInstance().setTransactionSuccessful();
-        } catch (Exception ignored) {
-        } finally {
-            CBDB.getInstance().endTransaction();
         }
-
+        CBDB.getInstance().endTransaction();
         CategoryDAO.getInstance().loadCategoriesFromDatabase();
     }
 
     public String getNote(Cache cache) {
-        String resultString = "";
-        CoreCursor c = CBDB.getInstance().rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(cache.generatedId)});
-        c.moveToFirst();
-        if (!c.isAfterLast()) {
-            resultString = c.getString(0);
-        }
-        cache.setNoteChecksum((int) SDBM_Hash.sdbm(resultString));
-        return resultString;
+        return getStringValue(cache.generatedId, "Notes");
     }
 
     public String getNote(long generatedId) {
+        return getStringValue(generatedId, "Notes");
+    }
+
+    private String getStringValue(long generatedId, String column) {
         String resultString = "";
-        CoreCursor c = CBDB.getInstance().rawQuery("select Notes from Caches where Id=?", new String[]{String.valueOf(generatedId)});
-        c.moveToFirst();
-        if (!c.isAfterLast()) {
-            resultString = c.getString(0);
+        CoreCursor c = CBDB.getInstance().rawQuery("select " + column + " from Caches where Id=?", new String[]{String.valueOf(generatedId)});
+        if (c != null) {
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                resultString = c.getString(0);
+                if (resultString == null) resultString = "";
+            }
         }
         return resultString;
     }
@@ -512,18 +629,8 @@ public class CacheDAO {
         return resultString;
     }
 
-    public String getSolver(long cacheId) {
-        try {
-            String resultString = "";
-            CoreCursor c = CBDB.getInstance().rawQuery("select Solver from Caches where Id=?", new String[]{String.valueOf(cacheId)});
-            c.moveToFirst();
-            if (!c.isAfterLast()) {
-                resultString = c.getString(0);
-            }
-            return resultString;
-        } catch (Exception ex) {
-            return "";
-        }
+    public String getSolver(long generatedId) {
+        return getStringValue(generatedId, "Solver");
     }
 
     /**
@@ -548,79 +655,12 @@ public class CacheDAO {
     }
 
     public String getDescription(Cache cache) {
-        String description = "";
-        CoreCursor reader = CBDB.getInstance().rawQuery("select Description from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
-        if (reader == null)
-            return "";
-        reader.moveToFirst();
-        while (!reader.isAfterLast()) {
-            if (reader.getString(0) != null)
-                description = reader.getString(0);
-            reader.moveToNext();
-        }
-        reader.close();
-
-        return description;
+        return getStringValue(cache.generatedId, "Description");
     }
 
     public String getShortDescription(Cache cache) {
-        String description = "";
-        CoreCursor reader = CBDB.getInstance().rawQuery("select ShortDescription from Caches where Id=?", new String[]{Long.toString(cache.generatedId)});
-        if (reader == null)
-            return "";
-        reader.moveToFirst();
-        while (!reader.isAfterLast()) {
-            if (reader.getString(0) != null)
-                description = reader.getString(0);
-            reader.moveToNext();
-        }
-        reader.close();
-
-        return description;
+        return getStringValue(cache.generatedId, "ShortDescription");
     }
-
-    /*
-    public ArrayList<String> getGcCodesFromMustLoadImages() {
-
-        ArrayList<String> GcCodes = new ArrayList<String>();
-
-        CoreCursor reader = CBDB.Data.rawQuery("select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
-
-        if (reader.getCount() > 0) {
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                String GcCode = reader.getString(0);
-                GcCodes.add(GcCode);
-                reader.moveToNext();
-            }
-        }
-        reader.close();
-        return GcCodes;
-    }
-
-     */
-
-    /*
-    public boolean loadBooleanValue(String gcCode, String key) {
-        CoreCursor reader = CBDB.Data.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
-        try {
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                if (reader.getInt(0) != 0) { // gefunden. Suche abbrechen
-                    return true;
-                }
-                reader.moveToNext();
-            }
-        } catch (Exception ex) {
-            return false;
-        } finally {
-            reader.close();
-        }
-
-        return false;
-    }
-
-     */
 
     public void writeCachesAndLogsAndImagesIntoDB(ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds, GpxFilename forCategory) throws InterruptedException {
         AtomicBoolean isCanceled = new AtomicBoolean(false); // todo implement
@@ -782,8 +822,8 @@ public class CacheDAO {
 
             if (update) {
                 // do not store replication information when importing caches with GC api
-                if (!WaypointDAO.getInstance().UpdateDatabase(waypoint, false)) {
-                    WaypointDAO.getInstance().WriteToDatabase(waypoint, false); // do not store replication information here
+                if (!WaypointDAO.getInstance().updateDatabase(waypoint, false)) {
+                    WaypointDAO.getInstance().writeToDatabase(waypoint, false); // do not store replication information here
                 }
             }
 
@@ -791,15 +831,14 @@ public class CacheDAO {
 
         if (oldCache == null) {
             CBDB.getInstance().cacheList.add(cache);
-            // cacheDAO.writeToDatabase(cache);
+            // writeToDatabase(cache);
         } else {
             // 2012-11-17: do not remove old instance from cacheList because of problems with cacheList and MapView
             // Database.getInstance().cacheList.remove(Database.getInstance().cacheList.GetCacheById(cache.Id));
             // Database.getInstance().cacheList.add(cache);
             oldCache.copyFrom(cache); // todo Problem Waypoints of user are no longer seen ? Solution Add to cache.waypoints
-            // cacheDAO.updateDatabase(cache);
+            // updateDatabase(cache);
         }
-
     }
 
     /**

@@ -28,7 +28,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class Energy {
-    private static final String log = "Energy";
+    private static final String sClass = "Energy";
     protected static final ArrayList<IChanged> ChangedEventList = new ArrayList<>();
     private static boolean isDisplayOff = false;
     private static boolean sliderIsShown = false;
@@ -40,13 +40,13 @@ public class Energy {
     public static void setDisplayOff() {
         isDisplayOff = true;
         fireChangedEvent();
-        Log.info(log, "ENERGY setDisplayOff");
+        Log.info(sClass, "ENERGY setDisplayOff");
     }
 
     public static void setDisplayOn() {
         isDisplayOff = false;
         fireChangedEvent();
-        Log.info(log, "ENERGY setDisplayOn");
+        Log.info(sClass, "ENERGY setDisplayOn");
     }
 
     public static boolean SliderIsShown() {

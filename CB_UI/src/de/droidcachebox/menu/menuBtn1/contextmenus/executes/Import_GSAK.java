@@ -17,7 +17,7 @@ import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.SQLiteInterface;
@@ -246,7 +246,7 @@ public class Import_GSAK extends ActivityBase {
 
 
     private void doImport() {
-        CacheDAO cacheDAO = new CacheDAO();
+        CachesDAO cachesDAO = new CachesDAO();
         GpxFilename gpxFilename = null;
         Category category = CoreData.categories.getCategory(edtCategory.getText());
         if (category != null) // should not happen!!!
@@ -287,7 +287,7 @@ public class Import_GSAK extends ActivityBase {
                             addWayPoints(cache);
                             // GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, createLogs(cache), new ArrayList<>());
                             GroundspeakAPI.GeoCacheRelated geocache = new GroundspeakAPI.GeoCacheRelated(cache, new ArrayList<>(), new ArrayList<>());
-                            cacheDAO.writeCacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
+                            cachesDAO.writeCacheAndLogsAndImagesIntoDB(geocache, gpxFilename, false);
                         }
                     } catch (Exception ex) {
                         Log.err(sClass, "Import " + GcCode, ex);
@@ -303,7 +303,7 @@ public class Import_GSAK extends ActivityBase {
             sql.close();
             sql = null;
             CBDB.getInstance().endTransaction();
-            cacheDAO.updateCacheCountForGPXFilenames();
+            cachesDAO.updateCacheCountForGPXFilenames();
 
             if (mImageDatabaseName.length() > 0) {
                 doImportImages("CacheImages");

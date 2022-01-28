@@ -31,24 +31,25 @@ import de.droidcachebox.gdx.controls.ImageLoader;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 
-public class Spoiler extends CB_View_Base {
+public class SpoilerView extends CB_View_Base {
     private final static int MAX_THUMB_WIDTH = 500;
     private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
-    private static Spoiler spoiler;
     private final CB_List<GalleryBigItem> bigItems = new CB_List<>();
     private final CB_List<GalleryItem> overviewItems = new CB_List<>();
-    private Cache actCache;
     private final GalleryView gallery;
     private final GalleryView galleryOverwiew;
-    private boolean forceReload = false;
     private final ImageDAO imageDAO = new ImageDAO();
+    private Cache actCache;
+    private boolean forceReload = false;
 
-    private Spoiler() {
+    public SpoilerView() {
         super(ViewManager.leftTab.getContentRec(), "SpoilerView");
 
         CB_RectF gr = new CB_RectF(this);
@@ -73,12 +74,7 @@ public class Spoiler extends CB_View_Base {
         this.addChild(galleryOverwiew);
     }
 
-    public static Spoiler getInstance() {
-        if (spoiler == null) spoiler = new Spoiler();
-        return spoiler;
-    }
-
-    public void ForceReload() {
+    public void forceReload() {
         forceReload = true;
         actCache = null;
         gallery.setAdapter(new GalaryImageAdapter());
@@ -88,32 +84,22 @@ public class Spoiler extends CB_View_Base {
     @Override
     public void onShow() {
         if (GlobalCore.isSetSelectedCache()) {
-
             if (!forceReload && GlobalCore.getSelectedCache().equals(actCache)) {
                 return;
             }
-
             forceReload = false;
-
             actCache = GlobalCore.getSelectedCache();
-
             if (actCache.hasSpoiler()) {
-
                 GalleryItem firstItem = null;
                 synchronized (bigItems) {
                     bigItems.clear();
                     overviewItems.clear();
-
                     CB_RectF orItemRec = new CB_RectF(galleryOverwiew);
                     orItemRec.setWidth(galleryOverwiew.getHeight());
-
                     ArrayList<ImageEntry> dbImages = imageDAO.getImagesForCache(actCache.getGeoCacheCode());
-
                     for (int i = 0, n = actCache.getSpoilerRessources().size(); i < n; i++) {
                         ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
-
                         String description = "";
-
                         String localName = FileIO.getFileNameWithoutExtension(imageEntry.getLocalPath());
                         for (ImageEntry dbImage : dbImages) {
                             String localNameFromDB = FileIO.getFileNameWithoutExtension(dbImage.getLocalPath());
@@ -152,7 +138,7 @@ public class Spoiler extends CB_View_Base {
 
                             String path = selectionImage.getImageLoader().getOriginalImagePath();
 
-                            Image img = new Image(Spoiler.this, "Image for Activity", true);
+                            Image img = new Image(SpoilerView.this, "Image for Activity", true);
                             img.setImage(path);
 
                             ImageActivity ac = new ImageActivity(img);
@@ -196,6 +182,10 @@ public class Spoiler extends CB_View_Base {
             }
         }
         // Log.info(log, "End onShow");
+    }
+
+    public void onHide() {
+        ((ShowSpoiler) Action.ShowSpoiler.action).viewIsHiding();
     }
 
     private String removeHashFromLabel(String label) {

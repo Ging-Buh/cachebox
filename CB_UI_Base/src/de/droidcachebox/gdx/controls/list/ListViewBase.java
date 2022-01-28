@@ -36,7 +36,7 @@ import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 
 public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent {
-    private static final String log = "ListViewBase";
+    private static final String sClass = "ListViewBase";
     /**
      * Enthällt die Indexes, welche schon als Child exestieren.
      */
@@ -351,7 +351,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                     emptyMsgItem.setPosition(getHalfWidth() - (bounds.width / 2), getHalfHeight() - (bounds.height / 2));
                 }
             } catch (Exception ex) {
-                Log.err(log, "render", ex);
+                Log.err(sClass, "render", ex);
             }
             if (emptyMsgItem != null)
                 emptyMsgItem.draw(batch, 0.5f);
@@ -399,7 +399,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
         try {
             super.renderChildren(batch, parentInfo);
         } catch (Exception ex) {
-            Log.err(log, "renderChilds", ex);
+            Log.err(sClass, "renderChilds", ex);
         }
 
     }
@@ -472,7 +472,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                 setListPos(mPosDefault.get(mPosDefault.size() - 1), true);
             }
         } catch (Exception ex) {
-            Log.err(log, "scroll to item", ex);
+            Log.err(sClass, "scroll to item", ex);
         }
 
     }

@@ -4,28 +4,28 @@ import java.util.ArrayList;
 
 public class Entity {
     protected SolverLines solverLines;
-    protected int Id;
-    protected boolean IsLinks; // wird auf true, wenn dies links vom = ist.
+    protected int entityId;
+    protected boolean isLeftPartOfAssign; // becomes true if this is to the left of the =.
 
-    public Entity(SolverLines solverLines, int id) {
+    public Entity(SolverLines solverLines, int entityId) {
         this.solverLines = solverLines;
-        this.Id = id;
-        IsLinks = false;
+        this.entityId = entityId;
+        isLeftPartOfAssign = false;
     }
 
-    // alle Vorkommen von source durch dest ersetzen, da source nur ein Verweis auf dest ist!
-    public void ReplaceTemp(Entity source, Entity dest) {
+    // replace all occurrences of source with dest because source is just a reference to dest!
+    public void replaceTemp(Entity source, Entity dest) {
     }
 
-    // alle Entities herausgeben, die in diesem enthalten sind
-    public void GetAllEntities(ArrayList<Entity> list) {
+    // publish all entities contained in this one
+    public void getAllEntities(ArrayList<Entity> list) {
     }
 
-    public String Berechne() {
+    public String calculate() {
         return "";
     }
 
-    public String ToString() {
+    public String toString() {
         return "";
     }
 }

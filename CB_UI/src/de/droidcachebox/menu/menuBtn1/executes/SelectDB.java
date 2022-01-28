@@ -29,8 +29,7 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.DraftsDatabase;
 import de.droidcachebox.dataclasses.Categories;
 import de.droidcachebox.gdx.ActivityBase;
@@ -170,10 +169,11 @@ public class SelectDB extends ActivityBase {
                         Settings.getInstance().acceptChanges();
 
                         CoreData.categories = new Categories();
-                        new CacheDAO().updateCacheCountForGPXFilenames();
+                        CachesDAO cachesDAO = new CachesDAO();
+                        cachesDAO.updateCacheCountForGPXFilenames();
 
                         synchronized (CBDB.getInstance().cacheList) {
-                            CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                            cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                             GlobalCore.checkSelectedCacheValid();
                         }
 

@@ -14,7 +14,7 @@ import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.Platform;
 import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.GeoCacheSize;
 import de.droidcachebox.dataclasses.GeoCacheType;
@@ -90,11 +90,11 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         cacheDifficulty = new Spinner("EditCacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
         cacheTyp = new Spinner("EditCacheType", cacheTypList(), cacheTypSelection());
         cacheTerrain = new Spinner("EditCacheTerrain", cacheTerrainList(), index -> {
-            activityBase.show();
+            show();
             newValues.setTerrain((index + 2.0f) / 2.0f);
         });
         cacheSize = new Spinner("EditCacheSize", cacheSizeList(), index -> {
-            activityBase.show();
+            show();
             newValues.geoCacheSize = geoCacheSizeNumbers[index];
         });
         cacheCoords = new CoordinateButton("cacheCoords");
@@ -163,7 +163,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         newValues = new Cache(true);
         newValues.copyFrom(updateCache);
         newValues.setShortDescription("");
-        newValues.setLongDescription(new CacheDAO().getDescription(updateCache));
+        newValues.setLongDescription(new CachesDAO().getDescription(updateCache));
         updateCache.setLongDescription(newValues.getLongDescription());
         cache = updateCache;
         doShow();
@@ -232,7 +232,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private void btnOKClickHandler() {
         btnOK.setClickHandler((v, x, y, pointer, button) -> {
             boolean update = false;
-            CacheDAO cacheDAO = new CacheDAO();
+            CachesDAO cachesDAO = new CachesDAO();
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
             cache.generatedId = Cache.generateCacheId(gcc);
 
@@ -259,11 +259,11 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             cache.setCountry(cacheCountry.getText());
             cache.setLongDescription(cacheDescription.getText());
             if (update) {
-                cacheDAO.updateDatabase(cache);
+                cachesDAO.updateDatabase(cache);
                 CacheListChangedListeners.getInstance().fire();
             } else {
                 CBDB.getInstance().cacheList.add(cache);
-                cacheDAO.writeToDatabase(cache);
+                cachesDAO.writeToDatabase(cache);
                 GlobalCore.setSelectedCache(cache);
                 CacheListChangedListeners.getInstance().fire();
                 ((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().setSelectedCacheVisible();
@@ -305,7 +305,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
     private ISpinnerSelectionChanged cacheTypSelection() {
         return index -> {
-            activityBase.show();
+            show();
             newValues.setGeoCacheType(geoCacheTypNumbers[index]);
         };
     }
@@ -333,7 +333,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
     private void setCacheCoordsChangeListener() {
         cacheCoords.setCoordinateChangedListener(coord -> {
-            activityBase.show();
+            show();
             newValues.setCoordinate(coord); // oder = cacheCoords.getMyPosition()
         });
     }
@@ -359,7 +359,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 
     private ISpinnerSelectionChanged cacheDifficultySelection() {
         return index -> {
-            activityBase.show();
+            show();
             newValues.setDifficulty((index + 2.0f) / 2.0f);
         };
     }

@@ -7,14 +7,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.droidcachebox.R;
 import de.droidcachebox.ViewOptionsMenu;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.GL_Listener_Interface;
 import de.droidcachebox.utils.log.Log;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listener_Interface {
     public final static int GLSURFACE_VIEW20 = 0;
@@ -120,7 +122,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
     }
 
     @Override
-    public void renderContinous() {
+    public void renderContinuous() {
         // .Log.info(log, "Set: renderContinous");
         switch (currentSurfaceType) {
             case GLSURFACE_VIEW20:
@@ -135,7 +137,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
     }
 
     @Override
-    public boolean isContinous() {
+    public boolean isContinuous() {
         return isContinuousRenderMode.get();
     }
 

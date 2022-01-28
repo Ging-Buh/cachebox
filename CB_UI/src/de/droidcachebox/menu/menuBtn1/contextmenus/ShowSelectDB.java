@@ -24,9 +24,8 @@ import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
-import de.droidcachebox.database.CacheListDAO;
 import de.droidcachebox.database.CacheWithWP;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Categories;
 import de.droidcachebox.gdx.GL;
@@ -53,7 +52,7 @@ public class ShowSelectDB extends AbstractAction {
         return true;
     }
 
-    @Override
+     @Override
     public Sprite getIcon() {
         return Sprites.getSprite(IconName.manageDb.name());
     }
@@ -82,16 +81,16 @@ public class ShowSelectDB extends AbstractAction {
 
             @Override
             public void run() {
-                CacheDAO cacheDAO = new CacheDAO();
+                CachesDAO cachesDAO = new CachesDAO();
                 CBDB.getInstance().close();
                 CBDB.getInstance().startUp(GlobalCore.workPath + "/" + Settings.DatabaseName.getValue());
                 Settings.getInstance().readFromDB();
                 CoreData.categories = new Categories();
                 FilterInstances.setLastFilter(new FilterProperties(Settings.lastFilter.getValue()));
                 String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
-                cacheDAO.updateCacheCountForGPXFilenames();
+                cachesDAO.updateCacheCountForGPXFilenames();
                 synchronized (CBDB.getInstance().cacheList) {
-                    CacheListDAO.getInstance().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                    cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                 }
 
                 GlobalCore.setSelectedCache(null);
@@ -101,7 +100,7 @@ public class ShowSelectDB extends AbstractAction {
                         synchronized (CBDB.getInstance().cacheList) {
                             CacheWithWP ret = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(null));
                             if (ret != null && ret.getCache() != null) {
-                                cacheDAO.loadDetail(ret.getCache());
+                                cachesDAO.loadDetail(ret.getCache());
                                 GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                 GlobalCore.setNearestCache(ret.getCache());
                             }
@@ -116,7 +115,7 @@ public class ShowSelectDB extends AbstractAction {
                                 Cache c = CBDB.getInstance().cacheList.get(i);
                                 if (c.getGeoCacheCode().equalsIgnoreCase(lastSelectedCache)) {
                                     try {
-                                        cacheDAO.loadDetail(c);
+                                        cachesDAO.loadDetail(c);
                                         GlobalCore.setSelectedCache(c);
                                     } catch (Exception ex) {
                                         Log.err(sClass, "set last selected Cache", ex);
@@ -130,7 +129,7 @@ public class ShowSelectDB extends AbstractAction {
                     // get first of list, if none selected till now
                     if (GlobalCore.getSelectedCache() == null) {
                         Cache c = CBDB.getInstance().cacheList.get(0);
-                        cacheDAO.loadDetail(c);
+                        cachesDAO.loadDetail(c);
                         GlobalCore.setSelectedCache(c);
                     }
                 }

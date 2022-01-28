@@ -71,7 +71,7 @@ public class ShowTracks extends AbstractShowAction {
         return cm;
     }
 
-    public void onHide() {
+    public void viewIsHiding() {
         isExecuting = false;
         trackListView = null;
     }

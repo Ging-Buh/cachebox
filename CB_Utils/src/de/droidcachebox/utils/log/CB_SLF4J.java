@@ -57,7 +57,7 @@ import de.droidcachebox.utils.Plattform;
  * @author Longri 2014
  */
 public class CB_SLF4J {
-    private static final String log = "CB_SLF4J";
+    private static final String sClass = "CB_SLF4J";
     private static final String br = System.getProperty("line.separator");
     public static String logfile;
     private static CB_SLF4J cb_slf4J;
@@ -111,7 +111,7 @@ public class CB_SLF4J {
     public static CB_SLF4J getInstance(String workpath) {
         if (cb_slf4J == null) cb_slf4J = new CB_SLF4J(workpath);
         if (!workpath.equals(WORKPATH)) {
-            Log.info(log, "changed workpath to " + workpath);
+            Log.info(sClass, "changed workpath to " + workpath);
             cb_slf4J = new CB_SLF4J(workpath);
         }
         return cb_slf4J;
@@ -120,7 +120,7 @@ public class CB_SLF4J {
     public void setLogLevel(LogLevel level) {
         if (level != LogLevel.getLogLevel()) {
             LogLevel.setLogLevel(level);
-            Log.info(log, "Set LogLevel to:" + level.toString());
+            Log.info(sClass, "Set LogLevel to:" + level.toString());
         }
     }
 

@@ -15,7 +15,7 @@ import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.log.Log;
 
 public class SQLiteClass implements SQLiteInterface {
-    private static final String log = "SQLiteClass";
+    private static final String sClass = "SQLiteClass";
     private final Activity activity;
     private SQLiteDatabase myDB = null;
 
@@ -40,7 +40,7 @@ public class SQLiteClass implements SQLiteInterface {
             myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READONLY);
             return true;
         } catch (Exception ex) {
-            Log.err(log, "openReadOnly: ", ex);
+            Log.err(sClass, "openReadOnly: ", ex);
             return false;
         }
     }
@@ -54,7 +54,7 @@ public class SQLiteClass implements SQLiteInterface {
             try {
                 abstractFile.delete();
             } catch (IOException ex) {
-                Log.err(log, "createDB: delete", ex);
+                Log.err(sClass, "createDB: delete", ex);
             }
         }
 
@@ -65,7 +65,7 @@ public class SQLiteClass implements SQLiteInterface {
             myDB = activity.openOrCreateDatabase(dbAbstractFile.getAbsolutePath(), 0, null);
             return true;
         } catch (Exception exc) {
-            Log.err(log, "createDB: openOrCreateDatabase", exc);
+            Log.err(sClass, "createDB: openOrCreateDatabase", exc);
             return false;
         }
     }
@@ -123,7 +123,7 @@ public class SQLiteClass implements SQLiteInterface {
         try {
             return myDB.insert(tableName, null, getContentValues(val));
         } catch (Exception ex) {
-            Log.err(log, "insert: ", ex);
+            Log.err(sClass, "insert: ", ex);
         }
 
         return ret;
@@ -134,7 +134,7 @@ public class SQLiteClass implements SQLiteInterface {
         try {
             return myDB.update(tableName, getContentValues(val), whereClause, whereArgs);
         } catch (Exception ex) {
-            Log.err(log, "update: ", ex);
+            Log.err(sClass, "update: ", ex);
             return 0;
         }
     }

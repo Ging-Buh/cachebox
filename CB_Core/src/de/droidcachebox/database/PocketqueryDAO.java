@@ -19,28 +19,26 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import de.droidcachebox.core.GroundspeakAPI.PQ;
 import de.droidcachebox.database.Database_Core.Parameters;
 import de.droidcachebox.utils.log.Log;
 
 public class PocketqueryDAO {
-    private static final String log = "PocketqueryDAO";
+    private static final String sClass = "PocketqueryDAO";
 
     public int writeToDatabase(PQ pq) {
         Parameters args = new Parameters();
         args.put("PQName", pq.name);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String stimestamp = iso8601Format.format(pq.lastGenerated);
-        args.put("CreationTimeOfPQ", stimestamp);
-
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        args.put("CreationTimeOfPQ", iso8601Format.format(pq.lastGenerated));
         try {
             CBDB.getInstance().insertWithConflictReplace("PocketQueries", args);
         } catch (Exception exc) {
-            Log.err(log, "Write Pocketquery to DB", pq.name, exc);
+            Log.err(sClass, "Write Pocketquery to DB", pq.name, exc);
             return -1;
         }
-
         return 0;
     }
 
@@ -53,29 +51,26 @@ public class PocketqueryDAO {
      */
     public Date getLastGeneratedDate(String pqName) {
         CoreCursor reader = CBDB.getInstance().rawQuery("select max(CreationTimeOfPQ) from PocketQueries where PQName=@PQName", new String[]{pqName});
-        try {
-            if (reader.getCount() > 0) {
-                reader.moveToFirst();
-                while (!reader.isAfterLast()) {
+        if (reader != null) {
+            try {
+                if (reader.getCount() > 0) {
+                    reader.moveToFirst();
                     String sDate = reader.getString(0);
                     if (sDate == null) {
-                        // nicht gefunden!
                         return null;
                     }
-                    DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     try {
                         return iso8601Format.parse(sDate);
                     } catch (ParseException e) {
-                        // PQ ist in der DB, aber das Datum konnte nicht geparst werden
-                        e.printStackTrace();
                         return new Date(0);
                     }
                 }
+            } catch (Exception ex) {
+                return new Date(0);
+            } finally {
+                reader.close();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            reader.close();
         }
         return null;
     }

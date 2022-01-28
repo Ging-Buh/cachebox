@@ -82,7 +82,7 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.Locator.CompassType;
 import de.droidcachebox.locator.LocatorMethods;
 import de.droidcachebox.maps.BRouter;
-import de.droidcachebox.menu.MainViewInit;
+import de.droidcachebox.menu.MainView;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.TrackRecorder;
@@ -268,7 +268,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             int width = UiSizes.getInstance().getWindowWidth();
             int height = UiSizes.getInstance().getWindowHeight();
             CB_RectF rec = new CB_RectF(0, 0, width, height);
-            new GL(width, height, new MainViewInit(rec), new ViewManager(rec));
+            new GL(width, height, new MainView(rec), new ViewManager(rec));
             GL.that.setTextInput(new Android_TextInput(this));
 
             showViewListener = new ShowViewMethods(this);

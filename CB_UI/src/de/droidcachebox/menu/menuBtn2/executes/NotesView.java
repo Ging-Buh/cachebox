@@ -19,7 +19,7 @@ import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
 import de.droidcachebox.core.GroundspeakAPI;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.CB_View_Base;
@@ -28,26 +28,27 @@ import de.droidcachebox.gdx.WrapType;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.EditTextField;
 import de.droidcachebox.gdx.math.CB_RectF;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
+import de.droidcachebox.menu.menuBtn2.ShowNotes;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
 /**
  * @author Longri
  */
-public class Notes extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
-    private static Notes notes;
+public class NotesView extends CB_View_Base implements CacheSelectionChangedListeners.CacheSelectionChangedListener, KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
     private final EditTextField note;
     private final float notesDefaultYPos;
     private final CB_Button btnUpload;
     private float notesHeight;
     private Cache currentCache;
     private String notesText;
-    private final CacheDAO cacheDAO;
+    private final CachesDAO cachesDAO;
 
-    private Notes() {
+    public NotesView() {
         super(ViewManager.leftTab.getContentRec(), "NotesView");
-        cacheDAO = new CacheDAO();
+        cachesDAO = new CachesDAO();
 
         initRow(BOTTOMUp);
         CB_Button getSolverButton = new CB_Button(Translation.get("getSolver"));
@@ -81,7 +82,7 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
         getSolverButton.setClickHandler((v, x, y, pointer, button) -> {
             String solver;
             if (currentCache != null) {
-                solver = cacheDAO.getSolver(currentCache);
+                solver = cachesDAO.getSolver(currentCache);
             } else solver = null;
             solver = solver != null ? "<Solver>\r\n" + solver + "\r\n</Solver>" : "";
             String text = note.getText();
@@ -103,11 +104,6 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
             return true;
         });
 
-    }
-
-    public static Notes getInstance() {
-        if (notes == null) notes = new Notes();
-        return notes;
     }
 
     @Override
@@ -141,12 +137,13 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
         CacheSelectionChangedListeners.getInstance().remove(this);
         KeyboardFocusChangedEventList.remove(this);
         saveNotes();
+        ((ShowNotes)Action.ShowNotes.action).viewIsHiding();
     }
 
     private void loadNotes(Cache newCache) {
         if (currentCache != newCache) {
             currentCache = newCache;
-            notesText = currentCache != null ? cacheDAO.getNote(currentCache.generatedId) : "";
+            notesText = currentCache != null ? cachesDAO.getNote(currentCache.generatedId) : "";
             if (notesText == null)
                 notesText = "";
             note.setText(notesText);
@@ -163,7 +160,7 @@ public class Notes extends CB_View_Base implements CacheSelectionChangedListener
             if (text != null) {
                 try {
                     if (currentCache != null)
-                        cacheDAO.setNote(currentCache, text);
+                        cachesDAO.setNote(currentCache, text);
                 } catch (Exception e) {
                     Log.err("NotesView", "Write note to database", e);
                 }

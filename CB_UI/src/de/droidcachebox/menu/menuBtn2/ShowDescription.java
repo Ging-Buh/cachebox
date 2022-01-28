@@ -24,9 +24,11 @@ import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.CacheContextMenu;
-import de.droidcachebox.menu.menuBtn2.executes.Description;
+import de.droidcachebox.menu.menuBtn2.executes.DescriptionView;
 
 public class ShowDescription extends AbstractShowAction {
+
+    private DescriptionView descriptionView;
 
     public ShowDescription() {
         super("Description");
@@ -34,7 +36,8 @@ public class ShowDescription extends AbstractShowAction {
 
     @Override
     public void execute() {
-        ViewManager.leftTab.showView(Description.getInstance());
+        if (descriptionView == null) descriptionView = new DescriptionView();
+        ViewManager.leftTab.showView(descriptionView);
     }
 
     @Override
@@ -49,7 +52,12 @@ public class ShowDescription extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return Description.getInstance();
+        return descriptionView;
+    }
+
+    @Override
+    public void viewIsHiding() {
+        descriptionView = null;
     }
 
     @Override
@@ -63,10 +71,12 @@ public class ShowDescription extends AbstractShowAction {
     }
 
     public void updateDescriptionView(boolean forceReload) {
-        if (forceReload) Description.getInstance().forceReload();
-        if (Description.getInstance().isVisible()) {
-            // so this will never be called, i think
-            Description.getInstance().onShow();
+        if (descriptionView != null) {
+            if (forceReload) descriptionView.forceReload();
+            if (descriptionView.isVisible()) {
+                // so this will never be called, i think
+                descriptionView.onShow();
+            }
         }
     }
 }

@@ -23,7 +23,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
+import de.droidcachebox.database.CoreCursor;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.utils.CB_List;
@@ -124,6 +125,32 @@ public class Cache implements Comparable<Cache>, Serializable {
         geoCacheSize = GeoCacheSize.other;
         setAvailable(true);
         wayPoints = new CB_List<>();
+    }
+
+    public Cache(CoreCursor reader, boolean fullDetails, boolean withDescription) {
+        generatedId = reader.getLong(0);
+        setGeoCacheCode(reader.getString(1).trim());
+        setCoordinate(new Coordinate(reader.getDouble(2), reader.getDouble(3)));
+        setGeoCacheName(reader.getString(4).trim());
+        geoCacheSize = GeoCacheSize.CacheSizesFromInt(reader.getInt(5));
+        setDifficulty(((float) reader.getShort(6)) / 2);
+        setTerrain(((float) reader.getShort(7)) / 2);
+        setArchived(reader.getInt(8) != 0);
+        setAvailable(reader.getInt(9) != 0);
+        setFound(reader.getInt(10) != 0);
+        setGeoCacheType(GeoCacheType.values()[reader.getShort(11)]);
+        setOwner(reader.getString(12).trim());
+        numTravelbugs = reader.getInt(13);
+        setGeoCacheId(reader.getString(14));
+        gcVoteRating = (reader.getShort(15)) / 100.0f;
+        setFavorite(reader.getInt(16) > 0);
+        setHasUserData(reader.getInt(17) > 0);
+        setListingChanged(reader.getInt(18) > 0);
+        setHasCorrectedCoordinates(reader.getInt(19) > 0);
+        favPoints = reader.getInt(20);
+        if (fullDetails) {
+            geoCacheDetail = new CacheDetail(reader, true, withDescription);
+        }
     }
 
     public static long generateCacheId(String GcCode) {
@@ -474,14 +501,14 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public long getGPXFilename_ID() {
         if (geoCacheDetail != null) {
-            return geoCacheDetail.GPXFilename_ID;
+            return geoCacheDetail.gpxFilename_ID;
         }
         return 0;
     }
 
     public void setGPXFilename_ID(long gpxFilenameId) {
         if (geoCacheDetail != null) {
-            geoCacheDetail.GPXFilename_ID = gpxFilenameId;
+            geoCacheDetail.gpxFilename_ID = gpxFilenameId;
         }
 
     }
@@ -638,7 +665,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public String getPlacedBy() {
         if (geoCacheDetail != null) {
-            return geoCacheDetail.PlacedBy;
+            return geoCacheDetail.placedBy;
         } else {
             return EMPTY_STRING;
         }
@@ -646,13 +673,13 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public void setPlacedBy(String value) {
         if (geoCacheDetail != null) {
-            geoCacheDetail.PlacedBy = value;
+            geoCacheDetail.placedBy = value;
         }
     }
 
     public Date getDateHidden() {
         if (geoCacheDetail != null) {
-            return geoCacheDetail.DateHidden;
+            return geoCacheDetail.dateHidden;
         } else {
             return null;
         }
@@ -660,13 +687,13 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public void setDateHidden(Date date) {
         if (geoCacheDetail != null) {
-            geoCacheDetail.DateHidden = date;
+            geoCacheDetail.dateHidden = date;
         }
     }
 
     public byte getApiStatus() {
         if (geoCacheDetail != null) {
-            return geoCacheDetail.ApiStatus;
+            return geoCacheDetail.apiStatus;
         } else {
             return NOT_LIVE;
         }
@@ -674,7 +701,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public void setApiStatus(byte value) {
         if (geoCacheDetail != null) {
-            geoCacheDetail.ApiStatus = value;
+            geoCacheDetail.apiStatus = value;
         }
     }
 
@@ -736,7 +763,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public String getUrl() {
         if (geoCacheDetail != null) {
-            return geoCacheDetail.Url;
+            return geoCacheDetail.url;
         } else {
             return EMPTY_STRING;
         }
@@ -744,13 +771,13 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public void setUrl(String value) {
         if (geoCacheDetail != null) {
-            geoCacheDetail.Url = value;
+            geoCacheDetail.url = value;
         }
     }
 
     public String getCountry() {
         if (geoCacheDetail != null) {
-            return geoCacheDetail.Country;
+            return geoCacheDetail.country;
         } else {
             return EMPTY_STRING;
         }
@@ -758,13 +785,13 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public void setCountry(String value) {
         if (geoCacheDetail != null) {
-            geoCacheDetail.Country = value;
+            geoCacheDetail.country = value;
         }
     }
 
     public String getState() {
         if (geoCacheDetail != null) {
-            return geoCacheDetail.State;
+            return geoCacheDetail.state;
         } else {
             return EMPTY_STRING;
         }
@@ -772,7 +799,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public void setState(String value) {
         if (geoCacheDetail != null) {
-            geoCacheDetail.State = value;
+            geoCacheDetail.state = value;
         }
     }
 
@@ -827,7 +854,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getLongDescription() {
         if (geoCacheDetail != null) {
             if (geoCacheDetail.getLongDescription() == null || geoCacheDetail.getLongDescription().length() == 0) {
-                return new CacheDAO().getDescription(this);
+                return new CachesDAO().getDescription(this);
             }
             return geoCacheDetail.getLongDescription();
         } else {
@@ -845,7 +872,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     public String getShortDescription() {
         if (geoCacheDetail != null) {
             if (geoCacheDetail.getShortDescription() == null || geoCacheDetail.getShortDescription().length() == 0) {
-                return new CacheDAO().getShortDescription(this);
+                return new CachesDAO().getShortDescription(this);
             }
             return geoCacheDetail.getShortDescription();
         } else {
@@ -861,7 +888,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public String getTourName() {
         if (geoCacheDetail != null) {
-            return geoCacheDetail.TourName;
+            return geoCacheDetail.tourName;
         } else {
             return EMPTY_STRING;
         }
@@ -869,7 +896,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 
     public void setTourName(String value) {
         if (geoCacheDetail != null) {
-            geoCacheDetail.TourName = value;
+            geoCacheDetail.tourName = value;
         }
     }
 

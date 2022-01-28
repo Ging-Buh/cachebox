@@ -20,7 +20,7 @@ import static de.droidcachebox.menu.Action.ShowMap;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WaypointListChangedEventList;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.GeoCacheType;
@@ -45,25 +45,27 @@ import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.CoordinateGPS;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
+import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.solver.DataType;
 import de.droidcachebox.solver.SolverLine;
 import de.droidcachebox.solver.SolverLines;
 import de.droidcachebox.utils.log.Log;
 
-public class Solver2 extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
+public class Solver2View extends V_ListView implements CacheSelectionChangedListeners.CacheSelectionChangedListener {
     private static final String sClass = "Solver2";
     private final ISolverBackStringListener backListener;
     private boolean neu;
     private CustomAdapter lvAdapter;
     private SolverLines solverLines;
     private Cache currentCache;
-    private final CacheDAO cacheDAO;
+    private final CachesDAO cachesDAO;
 
-    public Solver2() {
+    public Solver2View() {
         super(ViewManager.leftTab.getContentRec(), "SolverView2");
-        cacheDAO = new CacheDAO();
+        cachesDAO = new CachesDAO();
         currentCache = null;
         neu = false;
         backListener = backString -> {
@@ -93,7 +95,7 @@ public class Solver2 extends V_ListView implements CacheSelectionChangedListener
 
             // Store Solver Content into Database after editing one line
             if (GlobalCore.isSetSelectedCache())
-                cacheDAO.setSolver(GlobalCore.getSelectedCache(), solverLines.getSolverString());
+                cachesDAO.setSolver(GlobalCore.getSelectedCache(), solverLines.getSolverString());
         };
     }
 
@@ -118,7 +120,7 @@ public class Solver2 extends V_ListView implements CacheSelectionChangedListener
             solverLines = new SolverLines("", GlobalCore.getInstance());
         } else {
             currentCache = GlobalCore.getSelectedCache();
-            String s = cacheDAO.getSolver(currentCache);
+            String s = cachesDAO.getSolver(currentCache);
             if (s == null)
                 s = "";
             solverLines = new SolverLines(s, GlobalCore.getInstance());
@@ -166,10 +168,10 @@ public class Solver2 extends V_ListView implements CacheSelectionChangedListener
 
     @Override
     public void onHide() {
-        Log.debug(sClass, "onHide()");
         CacheSelectionChangedListeners.getInstance().remove(this);
         if (GlobalCore.isSetSelectedCache())
-            cacheDAO.setSolver(GlobalCore.getSelectedCache(), solverLines.getSolverString());
+            cachesDAO.setSolver(GlobalCore.getSelectedCache(), solverLines.getSolverString());
+        ((ShowSolver2) Action.ShowSolver2.action).viewIsHiding();
     }
 
     @Override
@@ -208,7 +210,7 @@ public class Solver2 extends V_ListView implements CacheSelectionChangedListener
             return; // geoCache did not change
         // Solver save
         if (currentCache != null)
-            cacheDAO.setSolver(currentCache, solverLines.getSolverString());
+            cachesDAO.setSolver(currentCache, solverLines.getSolverString());
         // load next geoCache
         currentCache = selectedCache;
         intiList();
@@ -238,7 +240,7 @@ public class Solver2 extends V_ListView implements CacheSelectionChangedListener
 
                 // Store Solver Content into Database after editing one line
                 if (GlobalCore.isSetSelectedCache())
-                    cacheDAO.setSolver(GlobalCore.getSelectedCache(), solverLines.getSolverString());
+                    cachesDAO.setSolver(GlobalCore.getSelectedCache(), solverLines.getSolverString());
 
                 reloadList();
                 return true;
@@ -298,7 +300,7 @@ public class Solver2 extends V_ListView implements CacheSelectionChangedListener
                 if (waypoint != null) {
                     // save waypoint into db
                     GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
-                    WaypointDAO.getInstance().WriteToDatabase(waypoint);
+                    WaypointDAO.getInstance().writeToDatabase(waypoint);
                     WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
                     GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
                 }

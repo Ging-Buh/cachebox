@@ -97,7 +97,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class ShowMap extends AbstractShowAction {
-    private static final String log = "ShowMap";
+    private static final String sClass = "ShowMap";
     private static Router router;
     private final Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
     public MapView normalMapView;
@@ -135,6 +135,11 @@ public class ShowMap extends AbstractShowAction {
     @Override
     public boolean getEnabled() {
         return true;
+    }
+
+    @Override
+    public void viewIsHiding() {
+
     }
 
     @Override
@@ -437,7 +442,7 @@ public class ShowMap extends AbstractShowAction {
                         track.setName("Route");
                         TrackList.getInstance().setRoutingTrack(track);
                     } else {
-                        Log.err(log, "no route generated");
+                        Log.err(sClass, "no route generated");
                     }
                 }
             }
@@ -501,7 +506,7 @@ public class ShowMap extends AbstractShowAction {
                                 try {
                                     UnZip.extract(target, false);
                                 } catch (Exception ex) {
-                                    Log.err(log, target + ": Unzip error: " + ex.toString());
+                                    Log.err(sClass, target + ": Unzip error: " + ex.toString());
                                     new ButtonDialog(target + ": " + ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation).show();
                                 }
                                 Gdx.files.absolute(target).delete();
@@ -568,7 +573,7 @@ public class ShowMap extends AbstractShowAction {
                             try {
                                 UnZip.extractHere(target);
                             } catch (Exception ex) {
-                                Log.err(log, "Unzip error: " + ex.toString());
+                                Log.err(sClass, "Unzip error: " + ex.toString());
                                 new ButtonDialog(ex.toString(), "Unzip", MsgBoxButton.OK, MsgBoxIcon.Exclamation).show();
                             }
                             Gdx.files.absolute(target).delete();
@@ -820,7 +825,7 @@ public class ShowMap extends AbstractShowAction {
                         // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
                         RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
                     } catch (Exception ex1) {
-                        Log.err(log, "getMapStyles for " + selectedTheme, ex1);
+                        Log.err(sClass, "getMapStyles for " + selectedTheme, ex1);
                     }
                     return stylesCallBack.getStyles();
                 } catch (Exception ignored) {
@@ -841,7 +846,7 @@ public class ShowMap extends AbstractShowAction {
                     // CB_RenderThemeHandler.getRenderTheme(PlatformUIBase.getGraphicFactory(MapsForgeLayer.displayModel.getScaleFactor()), MapsForgeLayer.displayModel, renderTheme);
                     RenderThemeHandler.getRenderTheme(getMapsForgeGraphicFactory(), MapsForgeLayer.displayModel, renderTheme);
                 } catch (Exception e) {
-                    Log.err(log, e.toString());
+                    Log.err(sClass, e.toString());
                 }
                 return getOverlaysCallback.getOverlays();
             } catch (Exception ignored) {

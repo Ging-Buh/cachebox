@@ -42,6 +42,11 @@ public class ShowImportMenu extends AbstractShowAction {
     }
 
     @Override
+    public void viewIsHiding() {
+
+    }
+
+    @Override
     public Sprite getIcon() {
         return Sprites.getSprite(IconName.cacheListIcon.name());
     }

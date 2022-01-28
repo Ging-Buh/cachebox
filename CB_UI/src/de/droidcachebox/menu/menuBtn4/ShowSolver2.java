@@ -7,11 +7,11 @@ import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn4.executes.Solver2;
+import de.droidcachebox.menu.menuBtn4.executes.Solver2View;
 
 public class ShowSolver2 extends AbstractShowAction {
 
-    private Solver2 solver2;
+    private Solver2View solver2View;
 
     public ShowSolver2() {
         super("Solver v2");
@@ -19,8 +19,8 @@ public class ShowSolver2 extends AbstractShowAction {
 
     @Override
     public void execute() {
-        solver2 = new Solver2();
-        ViewManager.leftTab.showView(solver2);
+        solver2View = new Solver2View();
+        ViewManager.leftTab.showView(solver2View);
     }
 
     @Override
@@ -35,7 +35,12 @@ public class ShowSolver2 extends AbstractShowAction {
 
     @Override
     public CB_View_Base getView() {
-        return solver2;
+        return solver2View;
+    }
+
+    @Override
+    public void viewIsHiding() {
+        solver2View = null;
     }
 
     @Override
@@ -45,6 +50,6 @@ public class ShowSolver2 extends AbstractShowAction {
 
     @Override
     public Menu getContextMenu() {
-        return solver2.getContextMenu();
+        return solver2View.getContextMenu();
     }
 }

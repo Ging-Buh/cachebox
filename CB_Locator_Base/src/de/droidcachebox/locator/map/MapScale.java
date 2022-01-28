@@ -31,7 +31,7 @@ import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.utils.log.Log;
 
 public class MapScale extends CB_View_Base implements InvalidateTextureListeners.InvalidateTextureListener {
-    private static final String log = "MapScale";
+    private static final String sClass = "MapScale";
     private final static NumberFormat nf = NumberFormat.getInstance();
     private final int[] scaleNumUnits = new int[]{4, 3, 4, 3, 4, 5, 3};
     private final float[] scaleSteps = new float[]{1, 1.5f, 2, 3, 4, 5, 7.5f};
@@ -106,7 +106,7 @@ public class MapScale extends CB_View_Base implements InvalidateTextureListeners
                 }
             }
         } catch (Exception exc) {
-            Log.err(log, "MapView.zoomChanged()", "", exc);
+            Log.err(sClass, "MapView.zoomChanged()", "", exc);
         }
 
         if (imperialUnits) {

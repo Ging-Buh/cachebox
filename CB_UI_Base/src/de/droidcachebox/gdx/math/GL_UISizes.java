@@ -32,7 +32,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class GL_UISizes implements SizeChangedEvent {
-    private static final String log = "GL_UISizes";
+    private static final String sClass = "GL_UISizes";
     /**
      * das Rechteck, welches die Größe und Position aller GL_View's auf der linken Seite darstellt. Dieses Rechteck ist immer Gültig! Das
      * Rechteck UI_Reight hat die Gleiche Größe und Position wie UI_Left, wenn es sich nicht um ein Tablet layout handelt.
@@ -137,8 +137,8 @@ public class GL_UISizes implements SizeChangedEvent {
      */
     public static void initial(float width, float height) {
 
-        Log.debug(log, "Initial UISizes => " + width + "/" + height);
-        Log.debug(log, "DPI = " + dpi);
+        Log.debug(sClass, "Initial UISizes => " + width + "/" + height);
+        Log.debug(sClass, "DPI = " + dpi);
 
 
         if (mapViewDPIFaktor.getValue() == 1) {
@@ -188,7 +188,7 @@ public class GL_UISizes implements SizeChangedEvent {
             try {
                 Fonts.loadFonts();
             } catch (Exception ex) {
-                Log.err(log, "Initialize: Load fonts", ex);
+                Log.err(sClass, "Initialize: Load fonts", ex);
             }
 
             calcPos();
@@ -202,7 +202,7 @@ public class GL_UISizes implements SizeChangedEvent {
      * Berechnet die Positionen der UI-Elemente
      */
     private static void calcPos() {
-        Log.debug(log, "GL_UISizes.calcPos()");
+        Log.debug(sClass, "GL_UISizes.calcPos()");
 
         float w = uiLeft.getWidth();
         float h = uiLeft.getHeight();
@@ -244,7 +244,7 @@ public class GL_UISizes implements SizeChangedEvent {
      * Berechnet die Größen der UI-Elemente
      */
     private static void calcSizes() {
-        Log.debug(log, "GL_UISizes.calcSizes()");
+        Log.debug(sClass, "GL_UISizes.calcSizes()");
         // größe der Frames berechnen
         int frameLeftwidth = UiSizes.getInstance().getRefWidth();
         // private static int BottomButtonHeight = convertDip2Pix(65);
@@ -311,7 +311,7 @@ public class GL_UISizes implements SizeChangedEvent {
 
     @Override
     public void sizeChanged() {
-        Log.debug(log, "GL_UISizes.sizeChanged()");
+        Log.debug(sClass, "GL_UISizes.sizeChanged()");
         calcPos();
 
     }

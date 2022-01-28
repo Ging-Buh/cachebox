@@ -75,16 +75,16 @@ public class SolverLine {
         // Alle Entities holen, die Bestandteil eines anderen sind
         ArrayList<Entity> list = new ArrayList<Entity>();
         for (Entity ent : entities.values()) {
-            ent.GetAllEntities(list);
+            ent.getAllEntities(list);
         }
         // diese koennen dann geloescht werden
         for (Entity ent : list) {
-            entities.remove(ent.Id);
+            entities.remove(ent.entityId);
         }
         // es sollte nur 1 Entity uebrig bleiben. Dies beinhaltet dann die komplette Formel
         if (entities.values().size() >= 1) {
-            Solution = entities.get(entities.firstKey()).Berechne();
-            entities.get(entities.firstKey()).GetAllEntities(list);
+            Solution = entities.get(entities.firstKey()).calculate();
+            entities.get(entities.firstKey()).getAllEntities(list);
 
             SortedMap<String, Integer> missingVariables = null;
             for (Entity tent : list) {
@@ -213,11 +213,11 @@ public class SolverLine {
             if (!(entity instanceof TempEntity))
                 continue;
             TempEntity tEntity = (TempEntity) entity;
-            if (tEntity.IsLinks)
+            if (tEntity.isLeftPartOfAssign)
                 continue;
             String s = tEntity.Text.trim();
 
-            ParameterEntity pEntity = new ParameterEntity(solverLines, entity.Id);
+            ParameterEntity pEntity = new ParameterEntity(solverLines, entity.entityId);
 
             while (s.length() > 0) {
                 s = s.trim();
@@ -237,8 +237,8 @@ public class SolverLine {
             if (pEntity.Liste.size() > 1) {
                 // Auflistung nur erstellen, wenn mehr als 1 Eintrag!!!
                 for (Entity eee : entities.values())
-                    eee.ReplaceTemp(entity, pEntity);
-                entities.put(entity.Id, pEntity);
+                    eee.replaceTemp(entity, pEntity);
+                entities.put(entity.entityId, pEntity);
 
                 for (Entity ent : pEntity.Liste)
                     entities.Insert(ent);
@@ -279,11 +279,11 @@ public class SolverLine {
                 continue;
             TempEntity tEntity = (TempEntity) entity;
 
-            if (tEntity.IsLinks)
+            if (tEntity.isLeftPartOfAssign)
                 continue;
             String s = tEntity.Text.trim();
 
-            AuflistungEntity aEntity = new AuflistungEntity(solverLines, entity.Id);
+            AuflistungEntity aEntity = new AuflistungEntity(solverLines, entity.entityId);
             while (s.length() > 0) {
                 s = s.trim();
                 int pos = s.indexOf('"');
@@ -314,8 +314,8 @@ public class SolverLine {
                 }
                 // Auflistung nur erstellen, wenn mehr als 1 Eintrag!!!
                 for (Entity eee : entities.values())
-                    eee.ReplaceTemp(entity, aEntity);
-                entities.put(entity.Id, aEntity);
+                    eee.replaceTemp(entity, aEntity);
+                entities.put(entity.entityId, aEntity);
 
                 for (Entity ent : aEntity.Liste)
                     entities.Insert(ent);
@@ -343,14 +343,14 @@ public class SolverLine {
             if (!(entity instanceof TempEntity))
                 continue;
             TempEntity tEntity = (TempEntity) entity;
-            if (tEntity.IsLinks)
+            if (tEntity.isLeftPartOfAssign)
                 continue;
             String s = tEntity.Text.trim();
             if (s.equals(""))
                 continue;
             if (s.substring(0, 1).equals("\""))
                 continue; // im String nichts trennen
-            AuflistungEntity aEntity = new AuflistungEntity(solverLines, entity.Id);
+            AuflistungEntity aEntity = new AuflistungEntity(solverLines, entity.entityId);
 
             ArrayList<tmpListEntity> sList = new ArrayList<tmpListEntity>();
             String tmp = "";
@@ -409,9 +409,9 @@ public class SolverLine {
             if (aEntity.Liste.size() > 1) {
                 // Auflistung nur erstellen, wenn mehr als 1 Eintrag!!!
                 for (Entity eee : entities.values())
-                    eee.ReplaceTemp(entity, aEntity);
+                    eee.replaceTemp(entity, aEntity);
                 // eee.ReplaceTemp(entities[entities.Keys[ie]], aEntity);
-                entities.put(entity.Id, aEntity);
+                entities.put(entity.entityId, aEntity);
 
                 for (Entity ent : aEntity.Liste)
                     entities.Insert(ent);
@@ -467,7 +467,7 @@ public class SolverLine {
             }
             if (s.length() > 0) {
                 // evtl. eine Variable
-                if (tEntity.IsLinks) {
+                if (tEntity.isLeftPartOfAssign) {
                     // Variable bei Bedarf erzeugen
                     if (!solverLines.Variablen.containsKey(s.toLowerCase()))
                         solverLines.Variablen.put(s.toLowerCase(), "");

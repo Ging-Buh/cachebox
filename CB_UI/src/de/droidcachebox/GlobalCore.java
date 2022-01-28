@@ -35,7 +35,7 @@ import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
-import de.droidcachebox.database.CacheDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.CacheList;
 import de.droidcachebox.dataclasses.Waypoint;
@@ -62,8 +62,8 @@ public class GlobalCore implements SolverCacheInterface {
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
     public static final String aboutMsg = aboutMsg1 + teamLink + aboutMsg2;
     public static final String splashMsg = aboutMsg + br + br + "POWERED BY:";
-    private static final String CurrentVersion = "2.0.";
-    private static final String log = "GlobalCore";
+    private static final String currentVersion = "2.0.";
+    private static final String sClass = "GlobalCore";
     public static String workPath = "";
     public static DisplayType displayType = DisplayType.Normal;
     public static boolean restartAfterKill = false;
@@ -79,7 +79,7 @@ public class GlobalCore implements SolverCacheInterface {
     private static boolean autoResort;
     private static Cache nearestCache = null;
     private static Waypoint selectedWayPoint = null;
-    private static int CurrentRevision;
+    private static int currentRevision;
     private static String VersionPrefix;
 
     private GlobalCore() {
@@ -141,18 +141,18 @@ public class GlobalCore implements SolverCacheInterface {
 
             // remove Detail Info from old selectedCache
             if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.getGeoCacheDetail() != null)) {
-                Log.debug(log, "[GlobalCore]setSelectedWaypoint: deleteDetail " + selectedCache.getGeoCacheCode());
+                Log.debug(sClass, "[GlobalCore]setSelectedWaypoint: deleteDetail " + selectedCache.getGeoCacheCode());
                 selectedCache.deleteDetail(Settings.showAllWaypoints.getValue());
             }
 
             selectedCache = cache;
-            Log.debug(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
+            Log.debug(sClass, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGeoCacheCode());
             selectedWayPoint = waypoint;
 
             // load Detail Info if not available
             if (selectedCache.getGeoCacheDetail() == null) {
-                Log.debug(log, "[GlobalCore]setSelectedWaypoint: loadDetail of " + cache.getGeoCacheCode());
-                new CacheDAO().loadDetail(selectedCache);
+                Log.debug(sClass, "[GlobalCore]setSelectedWaypoint: loadDetail of " + cache.getGeoCacheCode());
+                new CachesDAO().loadDetail(selectedCache);
             }
 
             CacheSelectionChangedListeners.getInstance().fire(selectedCache, selectedWayPoint);
@@ -186,13 +186,13 @@ public class GlobalCore implements SolverCacheInterface {
         // Prüfen, ob der SelectedCache noch in der cacheList drin ist.
         if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId) == null)) {
             // der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
-            Log.debug(log, "Change SelectedCache from " + GlobalCore.getSelectedCache().getGeoCacheCode() + "to" + List.get(0).getGeoCacheCode());
+            Log.debug(sClass, "Change SelectedCache from " + GlobalCore.getSelectedCache().getGeoCacheCode() + "to" + List.get(0).getGeoCacheCode());
             GlobalCore.setSelectedCache(List.get(0));
         }
         // Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
         if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0)) {
             GlobalCore.setSelectedCache(List.get(0));
-            Log.debug(log, "Set SelectedCache to " + List.get(0).getGeoCacheCode() + " first in List.");
+            Log.debug(sClass, "Set SelectedCache to " + List.get(0).getGeoCacheCode() + " first in List.");
         }
     }
 
@@ -281,7 +281,7 @@ public class GlobalCore implements SolverCacheInterface {
             } catch (Exception ex1) {
                 // if nothing works
                 info = "#1000#master#687f624ef#2000-01-01";
-                Log.err(log, "initVersionInfos " + ex.getLocalizedMessage());
+                Log.err(sClass, "initVersionInfos " + ex.getLocalizedMessage());
             }
         }
         try {
@@ -289,43 +289,43 @@ public class GlobalCore implements SolverCacheInterface {
             VersionPrefix = sections[1];
             String dat = sections[4];
             Date d = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(dat);
-            CurrentRevision = Integer.decode((new SimpleDateFormat("yyyyMMdd", Locale.US)).format(d));
+            currentRevision = Integer.decode((new SimpleDateFormat("yyyyMMdd", Locale.US)).format(d));
         } catch (Exception ex) {
             // for parsing of date gives an error
             VersionPrefix = "1000";
-            CurrentRevision = 0;
+            currentRevision = 0;
         }
     }
 
     public String getVersionString() {
-        return "Version: " + CurrentVersion + CurrentRevision + "  (" + VersionPrefix + ")";
+        return "Version: " + currentVersion + currentRevision + "  (" + VersionPrefix + ")";
     }
 
     public Integer getCurrentRevision() {
-        return CurrentRevision;
+        return currentRevision;
     }
 
     // Interface für den Solver zum Zugriff auf den SelectedCache.
     // Direkter Zugriff geht nicht da der Solver im Core definiert ist
     @Override
-    public Cache sciGetSelectedCache() {
+    public Cache globalCoreGetSelectedCache() {
         return getSelectedCache();
     }
 
     @Override
-    public void sciSetSelectedCache(Cache cache) {
+    public void globalCoreSetSelectedCache(Cache cache) {
         setSelectedCache(cache);
         CacheListChangedListeners.getInstance().fire();
     }
 
     @Override
-    public void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint) {
+    public void globalCoreSetSelectedWaypoint(Cache cache, Waypoint waypoint) {
         setSelectedWaypoint(cache, waypoint);
         CacheListChangedListeners.getInstance().fire();
     }
 
     @Override
-    public Waypoint sciGetSelectedWaypoint() {
+    public Waypoint globalCoreGetSelectedWaypoint() {
         return getSelectedWayPoint();
     }
 

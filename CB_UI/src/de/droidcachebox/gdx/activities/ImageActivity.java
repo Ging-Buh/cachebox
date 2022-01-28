@@ -23,6 +23,9 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import java.util.LinkedHashMap;
+
 import de.droidcachebox.gdx.ActivityBase;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -42,14 +45,12 @@ import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.PointL;
 import de.droidcachebox.utils.log.Log;
 
-import java.util.LinkedHashMap;
-
 /**
  * @author Longri
  */
 public class ImageActivity extends ActivityBase {
 
-    private static final String log = "ImageActivity";
+    private static final String sClass = "ImageActivity";
     private static final int ZOOM_TIME = 1000;
     private static final int MAX_MAP_ZOOM = 22;
     private final PointL screenCenterW = new PointL(0, 0);
@@ -300,7 +301,7 @@ public class ImageActivity extends ActivityBase {
 
             if (lastDynamicZoom != dynZoom) {
 
-                Log.debug(log, "Mouse Zoom:" + div + "/" + zoomValue + "/" + dynZoom);
+                Log.debug(sClass, "Mouse Zoom:" + div + "/" + zoomValue + "/" + dynZoom);
 
                 lastDynamicZoom = dynZoom;
                 zoomBtn.setZoom((int) lastDynamicZoom);
@@ -408,7 +409,7 @@ public class ImageActivity extends ActivityBase {
             }
             return true;
         } catch (Exception ex) {
-            Log.err(log, "-onTouchDragged Error", ex);
+            Log.err(sClass, "-onTouchDragged Error", ex);
         }
 
         return false;

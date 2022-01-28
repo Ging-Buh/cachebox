@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
-import de.droidcachebox.database.CacheListDAO;
+import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.database.LogsTableDAO;
 import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.gdx.Fonts;
@@ -91,7 +91,7 @@ public class DeleteDialog extends ButtonDialog {
 
             @Override
             public void run() {
-                long nun = CacheListDAO.getInstance().delete(
+                long nun = new CachesDAO().delete(
                         what,
                         Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(),
                         Settings.DescriptionImageFolder.getValue(),
@@ -100,7 +100,7 @@ public class DeleteDialog extends ButtonDialog {
                 if (!isCanceled.get()) {
                     GL.that.toast(Translation.get("DeletedCaches", String.valueOf(nun)));
                     LogsTableDAO.getInstance().ClearOrphanedLogs();
-                    WaypointDAO.getInstance().ClearOrphanedWaypoints();
+                    WaypointDAO.getInstance().clearOrphanedWaypoints();
                 }
             }
 

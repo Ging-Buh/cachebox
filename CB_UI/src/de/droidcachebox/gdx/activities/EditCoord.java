@@ -27,7 +27,7 @@ import de.droidcachebox.utils.converter.UTMConvert;
 import de.droidcachebox.utils.log.Log;
 
 public class EditCoord extends ActivityBase {
-    private static final String log = "EditCoord";
+    private static final String sClass = "EditCoord";
     private final UTMConvert convert = new UTMConvert();
     private final EditTextField invisibleTextField = new EditTextField(this, "invisibleTextField");
     private final String utmTest = "ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -879,7 +879,7 @@ public class EditCoord extends ActivityBase {
         }
 
         CoordinateGPS newCoord = new CoordinateGPS(sCoord.toString());
-        Log.info(log, "Buttons of aktPage " + aktPage + " = '" + sCoord + "'" + " --> " + newCoord.formatCoordinate());
+        Log.info(sClass, "Buttons of aktPage " + aktPage + " = '" + sCoord + "'" + " --> " + newCoord.formatCoordinate());
         if (newCoord.isValid()) {
             coord = newCoord;
             return true;

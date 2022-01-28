@@ -16,7 +16,7 @@ import de.droidcachebox.utils.log.Log;
 import de.droidcachebox.utils.log.LogLevel;
 
 public class SQLiteClass implements SQLiteInterface {
-    private static final String log = "SQLiteClass";
+    private static final String sClass = "SQLiteClass";
     private Connection myDB = null;
 
     public SQLiteClass() {
@@ -30,7 +30,7 @@ public class SQLiteClass implements SQLiteInterface {
     @Override
     public boolean open(String databasePath) {
         try {
-            Log.trace(log, "open data base: " + databasePath);
+            Log.trace(sClass, "open data base: " + databasePath);
             myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
             return true;
         } catch (Exception exc) {
@@ -41,7 +41,7 @@ public class SQLiteClass implements SQLiteInterface {
     public boolean openReadOnly(String databasePath) {
         try {
             // todo this is == RW
-            Log.trace(log, "open data base: " + databasePath);
+            Log.trace(sClass, "open data base: " + databasePath);
             myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
             return true;
         } catch (Exception exc) {
@@ -53,7 +53,7 @@ public class SQLiteClass implements SQLiteInterface {
         // if exists, delete old database file
         AbstractFile abstractFile = FileFactory.createFile(databasePath);
         if (abstractFile.exists()) {
-            Log.trace(log, "RESET DB, delete file: " + databasePath);
+            Log.trace(sClass, "RESET DB, delete file: " + databasePath);
             try {
                 abstractFile.delete();
             } catch (IOException e) {
@@ -62,7 +62,7 @@ public class SQLiteClass implements SQLiteInterface {
         }
 
         try {
-            Log.trace(log, "create data base: " + databasePath);
+            Log.trace(sClass, "create data base: " + databasePath);
             myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
             myDB.commit();
             myDB.close();
@@ -85,7 +85,7 @@ public class SQLiteClass implements SQLiteInterface {
                     sb.append(arg).append(", ");
             } else
                 sb.append("NULL");
-            Log.trace(log, sb.toString());
+            Log.trace(sClass, sb.toString());
         }
 
         ResultSet rs = null;
@@ -102,7 +102,7 @@ public class SQLiteClass implements SQLiteInterface {
             rs = statement.executeQuery();
 
         } catch (SQLException ex) {
-            Log.trace(log, ex);
+            Log.trace(sClass, ex);
         }
 
         // TODO Hack to get Rowcount
@@ -141,7 +141,7 @@ public class SQLiteClass implements SQLiteInterface {
         if (myDB == null)
             return false;
 
-        Log.trace(log, "execSQL : " + sql);
+        Log.trace(sClass, "execSQL : " + sql);
 
         boolean ret;
         try {
@@ -169,7 +169,7 @@ public class SQLiteClass implements SQLiteInterface {
                 }
             }
 
-            Log.trace(log, sb.toString());
+            Log.trace(sClass, sb.toString());
         }
 
         if (myDB == null)
@@ -268,7 +268,7 @@ public class SQLiteClass implements SQLiteInterface {
                 st.setObject(j, entry.getValue());
             }
 
-            Log.trace(log, "INSERT: " + sql);
+            Log.trace(sClass, "INSERT: " + sql);
             return st.execute() ? 0 : 1;
 
         } catch (SQLException e) {
@@ -288,7 +288,7 @@ public class SQLiteClass implements SQLiteInterface {
                 }
             }
 
-            Log.trace(log, sb.toString());
+            Log.trace(sClass, sb.toString());
         }
 
         if (myDB == null)
@@ -330,7 +330,7 @@ public class SQLiteClass implements SQLiteInterface {
     @Override
     public void beginTransaction() {
         try {
-            Log.trace(log, "begin transaction");
+            Log.trace(sClass, "begin transaction");
             if (myDB != null)
                 myDB.setAutoCommit(false);
         } catch (SQLException e) {
@@ -342,7 +342,7 @@ public class SQLiteClass implements SQLiteInterface {
     @Override
     public void setTransactionSuccessful() {
         try {
-            Log.trace(log, "set Transaction Successful");
+            Log.trace(sClass, "set Transaction Successful");
             if (myDB != null)
                 myDB.commit();
         } catch (SQLException ignored) {
@@ -352,7 +352,7 @@ public class SQLiteClass implements SQLiteInterface {
     @Override
     public void endTransaction() {
         try {
-            Log.trace(log, "endTransaction");
+            Log.trace(sClass, "endTransaction");
             if (myDB != null)
                 myDB.setAutoCommit(true);
         } catch (SQLException e) {
@@ -366,7 +366,7 @@ public class SQLiteClass implements SQLiteInterface {
         if (myDB == null)
             return;
 
-        Log.trace(log, "insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
+        Log.trace(sClass, "insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
         StringBuilder sql = new StringBuilder();
 
         sql.append("insert OR REPLACE into ");
@@ -423,7 +423,7 @@ public class SQLiteClass implements SQLiteInterface {
         if (myDB == null)
             return;
 
-        Log.trace(log, "insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
+        Log.trace(sClass, "insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
 
         StringBuilder sql = new StringBuilder();
 

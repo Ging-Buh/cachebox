@@ -83,7 +83,7 @@ public class ColorPicker extends ActivityBase {
 
         addChild(btnOK);
         btnOK.setClickHandler((v, x, y, pointer, button) -> {
-            activityBase.finish();
+            finish();
             if (colorCallBack != null)
                 colorCallBack.returnColor(currentColor);
             return true;

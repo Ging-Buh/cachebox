@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.Align;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.core.CacheListChangedListeners;
@@ -45,6 +46,7 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.gdx.views.CacheListViewItem;
 import de.droidcachebox.locator.PositionChangedEvent;
 import de.droidcachebox.locator.PositionChangedListeners;
+import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.CacheContextMenu;
 import de.droidcachebox.menu.quickBtns.ShowSearchDialog;
@@ -54,7 +56,7 @@ import de.droidcachebox.utils.Point;
 import de.droidcachebox.utils.log.Log;
 
 public class GeoCachesView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
-    private static final String log = "GeoCacheListListView";
+    private static final String sClass = "GeoCacheListListView";
     private V_ListView geoCacheListView;
     private Scrollbar scrollBar;
     private GeoCacheListViewAdapter geoCacheListViewAdapter;
@@ -116,7 +118,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         }
 
         isShown = true;
-        Log.debug(log, "CacheList onShow");
+        Log.debug(sClass, "CacheList onShow");
         setBackground(Sprites.ListBack);
 
         PositionChangedListeners.addListener(this);
@@ -131,7 +133,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
                     geoCacheListView.setDraggable();
                 }
             } catch (Exception ex) {
-                Log.err(log, "create ");
+                Log.err(sClass, "create ");
             }
         }
 
@@ -161,7 +163,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         if (GlobalCore.getSelectedCache() == null)
             return;
 
-        Log.debug(log, "start bg-task for making selected Cache visible.");
+        Log.debug(sClass, "start bg-task for making selected Cache visible.");
 
         geoCacheListView.runIfListInitial(() -> {
             int id = 0;
@@ -205,7 +207,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
     @Override
     public void onHide() {
         isShown = false;
-        Log.debug(log, "CacheList onHide");
+        Log.debug(sClass, "CacheList onHide");
         PositionChangedListeners.removeListener(this);
         CacheListChangedListeners.getInstance().removeListener(this);
         CacheSelectionChangedListeners.getInstance().remove(this);
@@ -214,6 +216,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         }
         geoCacheListViewAdapter = null;
         geoCacheListView.setAdapter(null);
+        ((AbstractShowAction) Action.ShowGeoCaches.action).viewIsHiding();
     }
 
     /*
@@ -251,14 +254,14 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
     public void handleCacheChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
-            Log.debug(log, "handle geoCache " + cache.getGeoCacheCode());
+            Log.debug(sClass, "handle geoCache " + cache.getGeoCacheCode());
             CacheListViewItem selItem = (CacheListViewItem) geoCacheListView.getSelectedItem();
             if (selItem != null && GlobalCore.getSelectedCache().generatedId != selItem.getCache().generatedId) {
                 // TODO Run if ListView Initial and after showing
                 geoCacheListView.runIfListInitial(this::setSelectedCacheVisible);
             }
         } else {
-            Log.debug(log, "geoCache is nothing");
+            Log.debug(sClass, "geoCache is nothing");
         }
     }
 

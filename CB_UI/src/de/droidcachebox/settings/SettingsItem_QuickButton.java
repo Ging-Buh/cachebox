@@ -144,7 +144,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             int index = listView.getSelectedIndex();
 
             if (index >= 0 && index < tmpQuickList.size()) {
-                tmpQuickList.MoveItem(index, 1);
+                tmpQuickList.moveItem(index, 1);
 
                 reloadListViewItems();
                 int newIndex = index + 1;
@@ -161,7 +161,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
             int index = listView.getSelectedIndex();
 
             if (index >= 0 && index < tmpQuickList.size()) {
-                tmpQuickList.MoveItem(index, -1);
+                tmpQuickList.moveItem(index, -1);
 
                 reloadListViewItems();
 

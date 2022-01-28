@@ -12,15 +12,15 @@ public class VariableEntity extends Entity {
     }
 
     @Override
-    public void GetAllEntities(ArrayList<Entity> list) {
+    public void getAllEntities(ArrayList<Entity> list) {
     }
 
     @Override
-    public void ReplaceTemp(Entity source, Entity dest) {
+    public void replaceTemp(Entity source, Entity dest) {
     }
 
     @Override
-    public String Berechne() {
+    public String calculate() {
         if (solverLines.Variablen.containsKey(Name.toLowerCase())) {
             return solverLines.Variablen.get(Name.toLowerCase());
         } else
@@ -28,7 +28,7 @@ public class VariableEntity extends Entity {
     }
 
     @Override
-    public String ToString() {
-        return "V" + Id + ":(" + Name + ")";
+    public String toString() {
+        return "V" + entityId + ":(" + Name + ")";
     }
 }

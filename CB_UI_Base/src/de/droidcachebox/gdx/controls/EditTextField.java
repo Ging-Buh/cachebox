@@ -69,7 +69,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
     protected long blinkTime = 420;
     protected Timer blinkTimer;
     protected IBecomesFocus becomesFocusListener;
-    private static final String log = "EditTextField";
+    private static final String sClass = "EditTextField";
     private final Lock displayTextLock = new ReentrantLock();
     private final CB_List<IListPosChanged> listPosChangedHandlers = new CB_List<>();
     protected TextFieldStyle style;
@@ -259,7 +259,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
             }
             thisInvalidate = true;
         } catch (Exception ex) {
-            Log.err(log, "onResized", ex);
+            Log.err(sClass, "onResized", ex);
         }
     }
 
@@ -358,12 +358,12 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
                         try {
                             style.font.draw(batch, line.displayText, bgLeftWidth - leftPos, textY);
                         } catch (Exception ex) {
-                            Log.err(log, "not displayed: " + line.displayText + " length: " + line.displayText.length() + "\n" + ex);
+                            Log.err(sClass, "not displayed: " + line.displayText + " length: " + line.displayText.length() + "\n" + ex);
                         }
                         textY -= style.font.getLineHeight();
                     }
                 } else {
-                    Log.err(log, "a line of lines is null");
+                    Log.err(sClass, "a line of lines is null");
                 }
             }
 
@@ -388,7 +388,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
             }
 
         } catch (Exception ex) {
-            Log.err(log, "render ", ex);
+            Log.err(sClass, "render ", ex);
         } finally {
             displayTextLock.unlock();
         }
@@ -655,7 +655,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
                 }
                 GL.that.renderOnce();
             } catch (Exception ex) {
-                Log.err(log, "onTouchDragged", ex);
+                Log.err(sClass, "onTouchDragged", ex);
             }
         }
         // Scrollen nach oben / unten soll möglich sein trotzdem dass hier evtl. schon links / rechts gescrollt wird ????
@@ -1129,7 +1129,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
                 }
             }
         } catch (Exception ex) {
-            Log.err(log, this.name + " setTextAtCursorVisible", ex);
+            Log.err(sClass, this.name + " setTextAtCursorVisible", ex);
             if (cursor.x == -1)
                 setCursorPosition(0);
         }
