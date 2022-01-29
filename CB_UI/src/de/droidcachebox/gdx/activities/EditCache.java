@@ -266,7 +266,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
                 cachesDAO.writeToDatabase(cache);
                 GlobalCore.setSelectedCache(cache);
                 CacheListChangedListeners.getInstance().fire();
-                ((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().setSelectedCacheVisible();
+                ((ShowGeoCaches) Action.ShowGeoCaches.action).setSelectedCacheVisible();
             }
 
             // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB

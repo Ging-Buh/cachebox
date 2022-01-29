@@ -1,15 +1,11 @@
 package de.droidcachebox.menu.quickBtns;
 
-import static de.droidcachebox.menu.Action.ShowGeoCaches;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.controls.popups.SearchDialog;
-import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
-import de.droidcachebox.utils.log.Log;
 
 public class ShowSearchDialog extends AbstractAction {
 
@@ -23,12 +19,10 @@ public class ShowSearchDialog extends AbstractAction {
 
     @Override
     public void execute() {
-        if (!((ShowGeoCaches) ShowGeoCaches.action).getGeoCachesView().isVisible()) {
-            ShowGeoCaches.action.execute();
-        }
-        searchDialog = new SearchDialog();
-        searchDialogIsRunning = true;
+        if (searchDialog == null || searchDialog.isDisposed())
+            searchDialog = new SearchDialog();
         searchDialog.showNotCloseAutomaticly();
+        searchDialogIsRunning = true;
     }
 
     @Override
@@ -43,17 +37,12 @@ public class ShowSearchDialog extends AbstractAction {
 
     public void closeSearchDialog() {
         if (searchDialogIsRunning) {
-            searchDialog.close();
+            searchDialog.close(); // will implicit dispose searchDialog
             searchDialogIsRunning = false;
         }
     }
 
     public void showAgain() {
-        if (searchDialog != null && searchDialog.isDisposed()) {
-            Log.info("searchDialog show again", "recreation after dispose.");
-            execute();
-            return;
-        }
         if (searchDialogIsRunning) {
             searchDialog.showNotCloseAutomaticly();
         } else {

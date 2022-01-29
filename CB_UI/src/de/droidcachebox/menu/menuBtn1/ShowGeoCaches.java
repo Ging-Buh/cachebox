@@ -38,11 +38,13 @@ public class ShowGeoCaches extends AbstractShowAction {
 
     private EditCache editCache;
     private GeoCachesView geoCachesView;
+    boolean isExecuting;
 
     public ShowGeoCaches() {
         super("cacheList", "  (" + CBDB.getInstance().cacheList.size() + ")");
         editCache = null;
         geoCachesView = null;
+        isExecuting = false;
     }
 
     @Override
@@ -52,6 +54,7 @@ public class ShowGeoCaches extends AbstractShowAction {
         if (geoCachesView == null)
             geoCachesView = new GeoCachesView();
         ViewManager.leftTab.showView(geoCachesView);
+        isExecuting = true;
     }
 
     @Override
@@ -62,6 +65,7 @@ public class ShowGeoCaches extends AbstractShowAction {
     @Override
     public void viewIsHiding() {
         geoCachesView = null;
+        isExecuting = false;
     }
 
     @Override
@@ -101,7 +105,7 @@ public class ShowGeoCaches extends AbstractShowAction {
                         GlobalCore.setSelectedWaypoint(nearestCacheWp.getCache(), nearestCacheWp.getWaypoint());
                         GlobalCore.setNearestCache(nearestCacheWp.getCache());
                     }
-                    getGeoCachesView().setSelectedCacheVisible();
+                    setSelectedCacheVisible();
                 }
             }
         });
@@ -190,9 +194,20 @@ public class ShowGeoCaches extends AbstractShowAction {
         }
     }
 
-    public GeoCachesView getGeoCachesView() {
-        if (geoCachesView == null) geoCachesView = new GeoCachesView();
-        return geoCachesView;
+    public void setSelectedCacheVisible() {
+        if (geoCachesView != null)
+            geoCachesView.setSelectedCacheVisible();
+    }
+
+    public float setHeightOfSearchDialog(float heightOfSearchDialog) {
+        if (geoCachesView != null)
+            return geoCachesView.setHeightOfSearchDialog(heightOfSearchDialog);
+        return 0;
+    }
+
+    public void resetHeightForSearchDialog() {
+        if (geoCachesView != null)
+            geoCachesView.resetHeightForSearchDialog();
     }
 
     public void setNameExtension(String newExtension) {

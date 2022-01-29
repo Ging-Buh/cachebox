@@ -213,7 +213,7 @@ public class CacheContextMenu {
 
         GlobalCore.setSelectedCache(null);
         CacheListChangedListeners.getInstance().fire();
-        ((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().setSelectedCacheVisible();
+        ((ShowGeoCaches) Action.ShowGeoCaches.action).setSelectedCacheVisible();
 
     }
 

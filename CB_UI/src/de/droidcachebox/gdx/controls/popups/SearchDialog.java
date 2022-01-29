@@ -78,14 +78,9 @@ import de.droidcachebox.utils.log.Log;
  */
 public class SearchDialog extends PopUp_Base {
     private static final String sClass = "SearchDialog";
-
-    private final YPositionChanged listener = new YPositionChanged() {
-
-        @Override
-        public void Position(float SliderTop, float SliderBottom) {
-            setY(((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().getMaxY() - SearchDialog.this.getHeight());
-        }
-    };
+    // we show independent from geoCachesView at top of screen (?but below slider)
+    // private final YPositionChanged listener = (SliderTop, SliderBottom) -> setY(((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().getMaxY() - SearchDialog.this.getHeight());
+    private final YPositionChanged onSliderPositionChanged = (sliderTop, sliderBottom) -> setY(sliderBottom - SearchDialog.this.getHeight());
     private final MultiToggleButton mTglBtnTitle;
     private final MultiToggleButton mTglBtnGc;
     private final MultiToggleButton mTglBtnOwner;
@@ -96,7 +91,6 @@ public class SearchDialog extends PopUp_Base {
     private final CB_Button mBtnCancel;
     private final EditTextField mInput;
     AtomicBoolean isCanceled = new AtomicBoolean(false);
-    private boolean mSearchIsActive = false;
     /**
      * for current Search Mode <br/>
      * 0 = Title <br/>
@@ -202,7 +196,6 @@ public class SearchDialog extends PopUp_Base {
 
         mBtnSearch.setClickHandler((v, x, y15, pointer, button) -> {
             GL.that.setFocusedEditTextField(null);
-            mSearchIsActive = false;
             beginSearchIndex = 0;
             searchNow(false);
             return true;
@@ -318,7 +311,6 @@ public class SearchDialog extends PopUp_Base {
             boolean criterionMatches = false;
 
             synchronized (CBDB.getInstance().cacheList) {
-                mSearchIsActive = true;
                 Cache tmp = null;
                 if (beginSearchIndex < 0) beginSearchIndex = 0;
                 for (int i = beginSearchIndex, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
@@ -343,7 +335,6 @@ public class SearchDialog extends PopUp_Base {
 
                 if (!criterionMatches) {
                     mBtnNext.disable();
-                    mSearchIsActive = false;
                     // new ButtonDialog(Translation.get("NoCacheFound"), Translation.get("Search"), MsgBoxButton.OK, MsgBoxIcon.Asterisk).show();
                     // ButtonDialog implicit closes/disposes the search when shown, so no message
                 } else {
@@ -410,6 +401,7 @@ public class SearchDialog extends PopUp_Base {
         new CancelWaitDialog(Translation.get("searchOverAPI"), new DownloadAnimation(), new RunAndReady() {
             ArrayList<GeoCacheRelated> geoCacheRelateds;
             GpxFilename gpxFilename;
+
             @Override
             public void ready() {
 
@@ -572,23 +564,30 @@ public class SearchDialog extends PopUp_Base {
     @Override
     public void onShow() {
         try {
-
-            setY(((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().getMaxY() - this.getHeight());
-            ((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().setTopPlaceHolder(this.getHeight());
-
+            // setY(((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().getMaxY() - this.getHeight());
+            // we show independent from geoCachesView at top of screen (?but below slider and Quickbuttons)
+            float yPosition = ((ShowGeoCaches) Action.ShowGeoCaches.action).setHeightOfSearchDialog(getHeight());
+            if (yPosition > 0) {
+                setY(yPosition - getHeight());
+            } else {
+                // setY(UiSizes.getInstance().getWindowHeight() - getHeight() - 3 * UiSizes.getInstance().getButtonHeight());
+                if (Slider.that != null)
+                    setY(Slider.that.getSlideBoxY() - getHeight());
+                else
+                    setY(UiSizes.getInstance().getWindowHeight() - getHeight());
+            }
             if (GL.that.PopUpIsHidden())
                 showNotCloseAutomaticly();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.err(sClass, "onShow", e);
         }
-
-        Slider.that.registerPosChangedEvent(listener);
+        Slider.that.registerPositionChangedListener(onSliderPositionChanged);
     }
 
     @Override
     public void onHide() {
-        Slider.that.removePosChangedEvent(listener);
-        ((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().resetPlaceHolder();
+        Slider.that.removePositionChangedEventListener(onSliderPositionChanged);
+        ((ShowGeoCaches) Action.ShowGeoCaches.action).resetHeightForSearchDialog();
     }
 
     private void askPremium() {
@@ -603,7 +602,8 @@ public class SearchDialog extends PopUp_Base {
                     ButtonDialog bd = new ButtonDialog(Translation.get("GC_basic"), Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live);
                     bd.setButtonClickHandler((which, data) -> {
                         if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
-                            new ImportGCPosition().show();                                }
+                            new ImportGCPosition().show();
+                        }
                         return true;
                     });
                     bd.show();

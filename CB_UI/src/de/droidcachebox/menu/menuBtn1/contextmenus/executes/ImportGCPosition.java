@@ -71,6 +71,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     private final Box box;
     private final ScrollBox scrollBox;
     private final SimpleDateFormat simpleDateFormat;
+    private final AtomicBoolean isCanceled;
     private CB_Button btnPlus;
     private CB_Button btnMinus;
     private CB_CheckBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
@@ -80,7 +81,6 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
     private ImportAnimation dis;
     private boolean importStarted = false;
     private int searchState = 0; // 0=GPS, 1=Map, 2=manuel
-    private final AtomicBoolean canceled;
     private CB_Button btnBeforeAfterEqual;
     private EditTextField edtDate;
     private EditTextField edtImportLimit;
@@ -121,7 +121,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         scrollBox.setVirtualHeight(box.getHeight());
 
         initClickHandlersAndContent();
-        canceled = new AtomicBoolean();
+        isCanceled = new AtomicBoolean();
 
     }
 
@@ -262,7 +262,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             if (importStarted) {
                 // or add messagebox to confirm cancellation
-                canceled.set(true);
+                isCanceled.set(true);
             } else {
                 finish();
             }
@@ -428,7 +428,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         btnOK.disable();
         importStarted = true;
 
-        canceled.set(false);
+        isCanceled.set(false);
 
         // disable UI
         dis = new ImportAnimation(box);

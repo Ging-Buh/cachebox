@@ -177,18 +177,18 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
         return true;
     }
 
-    public void registerPosChangedEvent(YPositionChanged listener) {
+    public void registerPositionChangedListener(YPositionChanged listener) {
         if (!eventList.contains(listener))
             eventList.add(listener);
     }
 
-    public void removePosChangedEvent(YPositionChanged listener) {
+    public void removePositionChangedEventListener(YPositionChanged listener) {
         eventList.remove(listener);
     }
 
-    private void callPosChangedEvent() {
+    private void fire() {
         for (YPositionChanged event : eventList) {
-            event.Position(mSlideBox.getMaxY(), mSlideBox.getY());
+            event.sliderPositionCanged(mSlideBox.getMaxY(), mSlideBox.getY());
         }
     }
 
@@ -284,7 +284,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
         mSlideBoxContent.setY(mSlideBox.getMaxY() - GL_UISizes.margin);
         setQuickButtonListHeight();
         GL.that.renderOnce();
-        callPosChangedEvent();
+        fire();
     }
 
     private void setQuickButtonListHeight() {
@@ -449,8 +449,12 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
         }
     }
 
+    public float getSlideBoxY() {
+        return mSlideBox.getY();
+    }
+
     public interface YPositionChanged {
-        void Position(float top, float Bottom);
+        void sliderPositionCanged(float top, float bottom);
     }
 
 }

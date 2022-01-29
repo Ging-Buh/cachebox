@@ -62,7 +62,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
     private GeoCacheListViewAdapter geoCacheListViewAdapter;
     private BitmapFontCache emptyMsg;
     private boolean isShown = false;
-    private float searchPlaceholder = 0;
+    private float heightOfSearchDialog = 0;
 
     public GeoCachesView() {
         super(ViewManager.leftTab.getContentRec(), "CacheListView");
@@ -112,7 +112,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         if (isShown)
             return;
 
-        if (searchPlaceholder > 0) {
+        if (heightOfSearchDialog > 0) {
             // show Search Dialog again
             ((ShowSearchDialog) ShowSearchDialog.action).showAgain();
         }
@@ -211,9 +211,13 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         PositionChangedListeners.removeListener(this);
         CacheListChangedListeners.getInstance().removeListener(this);
         CacheSelectionChangedListeners.getInstance().remove(this);
-        if (searchPlaceholder < 0) {
+        /*
+        if (heightOfSearchDialog > 0) {
             ((ShowSearchDialog) ShowSearchDialog.action).closeSearchDialog();
+            heightOfSearchDialog = 0;
         }
+
+         */
         geoCacheListViewAdapter = null;
         geoCacheListView.setAdapter(null);
         ((AbstractShowAction) Action.ShowGeoCaches.action).viewIsHiding();
@@ -292,17 +296,18 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
     public void onResized(CB_RectF rec) {
         super.onResized(rec);
         geoCacheListView.setSize(rec);
-        geoCacheListView.setHeight(rec.getHeight() + searchPlaceholder);
+        geoCacheListView.setHeight(rec.getHeight() - heightOfSearchDialog);
         geoCacheListView.setZeroPos();
     }
 
-    public void setTopPlaceHolder(float placeHoldHeight) {
-        searchPlaceholder = -placeHoldHeight;
+    public float setHeightOfSearchDialog(float heightOfSearchDialog) {
+        this.heightOfSearchDialog = heightOfSearchDialog;
         onResized(this);
+        return getMaxY();
     }
 
-    public void resetPlaceHolder() {
-        searchPlaceholder = 0;
+    public void resetHeightForSearchDialog() {
+        heightOfSearchDialog = 0;
         onResized(this);
     }
 

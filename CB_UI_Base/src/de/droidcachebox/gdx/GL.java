@@ -611,9 +611,11 @@ public class GL implements ApplicationListener {
             aktView = mActivity;
 
         aktView.removeChild(popUp);
+
         if (aktPopUp != null)
             aktPopUp.onHide();
         aktPopUp = null;
+
         if (popUp != null)
             popUp.dispose();
 

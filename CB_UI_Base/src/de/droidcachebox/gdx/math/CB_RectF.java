@@ -119,13 +119,13 @@ public class CB_RectF {
     /**
      * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
      */
-    public boolean setSize(float Width, float Height) {
+    public boolean setSize(float width, float height) {
         if (member == null)
             throw new IllegalStateException("Is Disposed"); // isDisposed! false; // isDisposed!
-        if (member[2] == Width && member[3] == Height)
+        if (member[2] == width && member[3] == height)
             return false;
-        member[2] = Width;
-        member[3] = Height;
+        member[2] = width;
+        member[3] = height;
         calcCrossCorner();
         sizeChanged();
         return true;

@@ -78,7 +78,6 @@ import de.droidcachebox.locator.Locator;
 import de.droidcachebox.locator.map.MapTileLoader;
 import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
-import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.FZKDownload;
 import de.droidcachebox.menu.menuBtn5.ShowSettings;
@@ -111,7 +110,6 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
     private SharedPreferences androidSetting;
     private SharedPreferences.Editor androidSettingEditor;
     private AndroidEventListener handlingGetApiAuth;
-    private boolean mustShowCacheList = true;
     private LocationManager locationManager;
     private AndroidEventListener handlingGetDirectoryAccess, handlingGetDocumentAccess;
     private Intent locationServiceIntent;
@@ -672,19 +670,9 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             public void run() {
                 if (externalRequestGCCode != null) {
                     mainActivity.runOnUiThread(() -> {
-                        Log.info("importCacheByGCCode", "mustShowCacheList: " + mustShowCacheList);
-                        if (mustShowCacheList) {
-                            // show cachelist first then search dialog
-                            mustShowCacheList = false;
-                            ViewManager.leftTab.showView(((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView());
-                            Log.info("importCacheByGCCode", "do it again");
-                            importCacheByGCCode(externalRequestGCCode); // now the search can start (doSearchOnline)
-                        } else {
-                            mustShowCacheList = true;
-                            SearchDialog searchDialog = new SearchDialog();
-                            searchDialog.showNotCloseAutomaticly();
-                            searchDialog.doSearchOnline(externalRequestGCCode, SearchDialog.SearchMode.GcCode);
-                        }
+                        SearchDialog searchDialog = new SearchDialog();
+                        searchDialog.showNotCloseAutomaticly();
+                        searchDialog.doSearchOnline(externalRequestGCCode, SearchDialog.SearchMode.GcCode);
                     });
                 }
             }

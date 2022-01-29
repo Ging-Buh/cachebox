@@ -24,7 +24,6 @@ import de.droidcachebox.gdx.controls.animation.AnimationBase;
 import de.droidcachebox.gdx.controls.animation.DownloadAnimation;
 import de.droidcachebox.gdx.controls.animation.WorkAnimation;
 import de.droidcachebox.gdx.math.CB_RectF;
-import de.droidcachebox.utils.log.Log;
 
 public class ImportAnimation extends Box {
     private static final String sClass = "ImportAnimation";
@@ -58,8 +57,7 @@ public class ImportAnimation extends Box {
 
                 addChild(mAnimation);
             }
-            catch (Exception ex) {
-                Log.err(sClass, ex);
+            catch (Exception ignored) {
             }
         });
     }
