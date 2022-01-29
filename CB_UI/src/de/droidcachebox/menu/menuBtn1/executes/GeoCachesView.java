@@ -15,8 +15,6 @@
  */
 package de.droidcachebox.menu.menuBtn1.executes;
 
-import static de.droidcachebox.menu.Action.ShowSearchDialog;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -49,7 +47,6 @@ import de.droidcachebox.locator.PositionChangedListeners;
 import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn1.contextmenus.CacheContextMenu;
-import de.droidcachebox.menu.quickBtns.ShowSearchDialog;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.Point;
@@ -111,11 +108,6 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         scrollBar.onShow();
         if (isShown)
             return;
-
-        if (heightOfSearchDialog > 0) {
-            // show Search Dialog again
-            ((ShowSearchDialog) ShowSearchDialog.action).showAgain();
-        }
 
         isShown = true;
         Log.debug(sClass, "CacheList onShow");
@@ -211,13 +203,6 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         PositionChangedListeners.removeListener(this);
         CacheListChangedListeners.getInstance().removeListener(this);
         CacheSelectionChangedListeners.getInstance().remove(this);
-        /*
-        if (heightOfSearchDialog > 0) {
-            ((ShowSearchDialog) ShowSearchDialog.action).closeSearchDialog();
-            heightOfSearchDialog = 0;
-        }
-
-         */
         geoCacheListViewAdapter = null;
         geoCacheListView.setAdapter(null);
         ((AbstractShowAction) Action.ShowGeoCaches.action).viewIsHiding();

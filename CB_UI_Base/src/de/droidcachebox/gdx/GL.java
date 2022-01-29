@@ -128,7 +128,7 @@ public class GL implements ApplicationListener {
     private CB_View_Base mToastOverlay;
     private boolean toastIsShown;
     private EditTextField focusedEditTextField;
-    private PopUp_Base aktPopUp;
+    private PopUp_Base currentPopUp;
     private float darknessAlpha = 0f;
 
     public GL(int _width, int _height, MainViewBase splash, MainViewBase mainView) {
@@ -142,7 +142,7 @@ public class GL implements ApplicationListener {
         currentDialogIsShown = false;
         currentActivityIsShown = false;
         MarkerIsShown = false;
-        aktPopUp = null;
+        currentPopUp = null;
         that = this;
         allIsInitialized = false;
         dialogHistory = new ArrayList<>();
@@ -480,8 +480,8 @@ public class GL implements ApplicationListener {
                 y = (height - dialog.getHeight()) / 2;
             dialog.setPos(x, y);
 
-            if (aktPopUp != null) {
-                closePopUp(aktPopUp);
+            if (currentPopUp != null) {
+                closePopUp(currentPopUp);
             }
 
             if (currentDialog != null && currentDialog != dialog) {
@@ -501,14 +501,14 @@ public class GL implements ApplicationListener {
                     GL_View_Base vDialog = mDialog.getChild(0);
                     if (vDialog instanceof Menu)
                         closeDialog(currentDialog);
-                    if (aktPopUp != null) {
-                        closePopUp(aktPopUp);
+                    if (currentPopUp != null) {
+                        closePopUp(currentPopUp);
                     }
                     return true;
                 }
 
-                if (aktPopUp != null) {
-                    closePopUp(aktPopUp);
+                if (currentPopUp != null) {
+                    closePopUp(currentPopUp);
                     return true;
                 }
 
@@ -609,17 +609,16 @@ public class GL implements ApplicationListener {
         CB_View_Base aktView = currentDialogIsShown ? mDialog : child;
         if (currentActivityIsShown)
             aktView = mActivity;
-
+        // remove popUp from view
         aktView.removeChild(popUp);
-
-        if (aktPopUp != null)
-            aktPopUp.onHide();
-        aktPopUp = null;
-
+        // may be the popUp to close is not the current one: hide the current
+        if (currentPopUp != null)
+            currentPopUp.onHide();
+        currentPopUp = null;
+        // that was it then
         if (popUp != null)
             popUp.dispose();
-
-        renderOnce();
+        renderOnce(); // to show without it
     }
 
     public void showActivity(final ActivityBase activity) {
@@ -627,8 +626,8 @@ public class GL implements ApplicationListener {
         clearRenderViews();
         Platform.showForDialog();
 
-        if (aktPopUp != null) {
-            closePopUp(aktPopUp);
+        if (currentPopUp != null) {
+            closePopUp(currentPopUp);
         }
 
         darknessAnimationRuns = true;
@@ -772,7 +771,7 @@ public class GL implements ApplicationListener {
     }
 
     public boolean PopUpIsHidden() {
-        return (aktPopUp == null);
+        return (currentPopUp == null);
     }
 
     private void disposeTexture() {
@@ -1107,8 +1106,8 @@ public class GL implements ApplicationListener {
             aktView = mActivity;
 
         aktView.addChild(popUp);
-        aktPopUp = popUp;
-        aktPopUp.onShow();
+        currentPopUp = popUp;
+        currentPopUp.onShow();
         renderOnce();
     }
 

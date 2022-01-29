@@ -586,8 +586,16 @@ public class SearchDialog extends PopUp_Base {
 
     @Override
     public void onHide() {
+        Log.info(sClass, "onHide");
         Slider.that.removePositionChangedEventListener(onSliderPositionChanged);
         ((ShowGeoCaches) Action.ShowGeoCaches.action).resetHeightForSearchDialog();
+    }
+
+    @Override
+    public void close() {
+        Log.info(sClass, "closing");
+        // could inform ShowSearchDialog
+        super.close(); // will hide(this if shown or other shown) and dispose
     }
 
     private void askPremium() {
