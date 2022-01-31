@@ -81,6 +81,7 @@ import de.droidcachebox.menu.ViewManager;
 import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.menu.menuBtn3.executes.FZKDownload;
 import de.droidcachebox.menu.menuBtn5.ShowSettings;
+import de.droidcachebox.menu.quickBtns.ShowSearchDialog;
 import de.droidcachebox.settings.SettingBase;
 import de.droidcachebox.settings.SettingBool;
 import de.droidcachebox.settings.SettingInt;
@@ -670,9 +671,8 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             public void run() {
                 if (externalRequestGCCode != null) {
                     mainActivity.runOnUiThread(() -> {
-                        SearchDialog searchDialog = new SearchDialog();
-                        searchDialog.showNotCloseAutomaticly();
-                        searchDialog.doSearchOnline(externalRequestGCCode, SearchDialog.SearchMode.GcCode);
+                        Action.ShowSearchDialog.action.execute();
+                        ((ShowSearchDialog)Action.ShowSearchDialog.action).doSearchOnline(externalRequestGCCode, SearchDialog.SearchMode.GcCode);
                     });
                 }
             }

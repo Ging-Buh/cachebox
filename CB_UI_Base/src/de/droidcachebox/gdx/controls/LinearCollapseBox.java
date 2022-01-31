@@ -32,9 +32,9 @@ public class LinearCollapseBox extends CollapseBox {
         return v;
     }
 
-    public void removeChild(final GL_View_Base view) {
+    public void removeChild(final GL_View_Base child) {
 
-        linearLayout.removeChild(view);
+        linearLayout.removeChild(child);
         layout();
     }
 

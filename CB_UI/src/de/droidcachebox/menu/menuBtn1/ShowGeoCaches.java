@@ -16,6 +16,7 @@ import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CacheWithWP;
 import de.droidcachebox.database.Database_Core;
 import de.droidcachebox.gdx.CB_View_Base;
+import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.activities.EditCache;
@@ -30,15 +31,16 @@ import de.droidcachebox.menu.menuBtn1.contextmenus.ShowImportMenu;
 import de.droidcachebox.menu.menuBtn1.contextmenus.ShowSelectDB;
 import de.droidcachebox.menu.menuBtn1.executes.DeleteDialog;
 import de.droidcachebox.menu.menuBtn1.executes.GeoCachesView;
+import de.droidcachebox.menu.quickBtns.ShowSearchDialog;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
 public class ShowGeoCaches extends AbstractShowAction {
 
+    boolean isExecuting;
     private EditCache editCache;
     private GeoCachesView geoCachesView;
-    boolean isExecuting;
 
     public ShowGeoCaches() {
         super("cacheList", "  (" + CBDB.getInstance().cacheList.size() + ")");
@@ -127,7 +129,13 @@ public class ShowGeoCaches extends AbstractShowAction {
         if (!FilterInstances.isLastFilterSet())
             mi.setCheckable(false);
         cm.addMenuItem("Search", Sprites.getSprite(IconName.lupe.name()), () -> {
-            ShowSearchDialog.action.execute();
+            cm.close();
+            // to ensure that cm is really closed and so the SearchDialog is a child of geoCachesView (else empty space is shown)
+            // there is no event in geoCachesView that can be triggered for ShowSearchDialog.action.execute() (popup)
+            GL.that.runOnGL(() -> {
+                geoCachesView.setHeightOfSearchDialog(((ShowSearchDialog) ShowSearchDialog.action).getHeightOfSearchDialog());
+                ShowSearchDialog.action.execute();
+            });
         });
         cm.addMenuItem("importExport", Sprites.getSprite(IconName.importIcon.name()), () -> new ShowImportMenu().execute());
         mi = cm.addMenuItem("setOrResetFavorites", "", Sprites.getSprite(IconName.favorit.name()), (v, x, y, pointer, button) -> {
@@ -199,9 +207,9 @@ public class ShowGeoCaches extends AbstractShowAction {
             geoCachesView.setSelectedCacheVisible();
     }
 
-    public float setHeightOfSearchDialog(float heightOfSearchDialog) {
+    public float getYPositionForSearchDialog(float heightOfSearchDialog) {
         if (geoCachesView != null)
-            return geoCachesView.setHeightOfSearchDialog(heightOfSearchDialog);
+            return geoCachesView.getYPositionForSearchDialog(heightOfSearchDialog);
         return 0;
     }
 

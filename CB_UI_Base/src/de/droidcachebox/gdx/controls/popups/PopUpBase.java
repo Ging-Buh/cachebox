@@ -13,13 +13,15 @@ import de.droidcachebox.gdx.math.UiSizes;
  *
  * @author Longri
  */
-public abstract class PopUp_Base extends CB_View_Base {
+public abstract class PopUpBase extends CB_View_Base {
     public static final int SHOW_TIME_NEVER_CLOSE = -1;
     public static final int SHOW_TIME_NORMAL = 4000;
     public static final int SHOW_TIME_SHORT = 2000;
+    public boolean autoClose;
 
-    public PopUp_Base(CB_RectF rec, String Name) {
+    public PopUpBase(CB_RectF rec, String Name) {
         super(rec, Name);
+        autoClose = true;
     }
 
     public void show(int msec) {
@@ -38,18 +40,21 @@ public abstract class PopUp_Base extends CB_View_Base {
         show(x, y, SHOW_TIME_NORMAL);
     }
 
-    public void showNotCloseAutomaticly(float x, float y) {
+    public void showNotCloseAutomatically(float x, float y) {
         show(x, y, SHOW_TIME_NEVER_CLOSE);
     }
 
-    public void showNotCloseAutomaticly() {
+    public void showNotCloseAutomatically() {
         show(this.getX(), this.getY(), SHOW_TIME_NEVER_CLOSE);
     }
 
     public void show(float x, float y, int msec) {
         GL.that.showPopUp(this, x, y);
-        if (msec != SHOW_TIME_NEVER_CLOSE)
+        if (msec == SHOW_TIME_NEVER_CLOSE) {
+            autoClose = false;
+        } else {
             startCloseTimer(msec);
+        }
     }
 
     public void close() {
@@ -63,10 +68,8 @@ public abstract class PopUp_Base extends CB_View_Base {
                 close();
             }
         };
-
         Timer timer = new Timer();
         timer.schedule(task, msec);
-
     }
 
 }

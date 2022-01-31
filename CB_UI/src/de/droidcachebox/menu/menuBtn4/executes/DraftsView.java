@@ -63,7 +63,7 @@ import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
 import de.droidcachebox.gdx.controls.list.ListViewItemBase;
 import de.droidcachebox.gdx.controls.list.V_ListView;
-import de.droidcachebox.gdx.controls.popups.PopUp_Base;
+import de.droidcachebox.gdx.controls.popups.PopUpBase;
 import de.droidcachebox.gdx.controls.popups.QuickDraftFeedbackPopUp;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
@@ -352,7 +352,7 @@ public class DraftsView extends V_ListView {
         // for status change, for icons in map
         CacheListChangedListeners.getInstance().fire();
         CacheSelectionChangedListeners.getInstance().fire(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
-        new QuickDraftFeedbackPopUp(found).show(PopUp_Base.SHOW_TIME_SHORT);
+        new QuickDraftFeedbackPopUp(found).show(PopUpBase.SHOW_TIME_SHORT);
         Platform.vibrate();
     }
 

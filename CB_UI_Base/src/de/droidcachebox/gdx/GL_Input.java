@@ -153,7 +153,7 @@ public class GL_Input implements InputProcessor {
 
         // wenn dieser TouchDown ausserhalb einer TextView war, dann reset TextFieldFocus
         if (GL.that.getFocusedEditTextField() != null) {
-            if (!(view instanceof EditTextField) && !(view instanceof SelectionMarker) && !(view instanceof CB_Button) && GL.that.PopUpIsHidden()) {
+            if (!(view instanceof EditTextField) && !(view instanceof SelectionMarker) && !(view instanceof CB_Button) && GL.that.popUpIsHidden()) {
                 GL.that.setFocusedEditTextField(null);
             }
         }

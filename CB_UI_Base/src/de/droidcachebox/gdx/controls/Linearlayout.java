@@ -91,8 +91,8 @@ public class Linearlayout extends CB_View_Base {
     }
 
     @Override
-    public void removeChild(final GL_View_Base view) {
-        removeChildDirect(view);
+    public void removeChild(final GL_View_Base child) {
+        removeChildDirect(child);
         layout();
     }
 

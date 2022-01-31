@@ -55,7 +55,7 @@ import de.droidcachebox.gdx.controls.TextInputInterface;
 import de.droidcachebox.gdx.controls.animation.Fader;
 import de.droidcachebox.gdx.controls.dialogs.Dialog;
 import de.droidcachebox.gdx.controls.dialogs.Toast;
-import de.droidcachebox.gdx.controls.popups.PopUp_Base;
+import de.droidcachebox.gdx.controls.popups.PopUpBase;
 import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.main.MainViewBase;
 import de.droidcachebox.gdx.main.Menu;
@@ -91,22 +91,22 @@ public class GL implements ApplicationListener {
     private GL_Listener_Interface glListener; // implementation in ../ViewGL : Desktop-Launcher/DesktopMain/start
     private AsyncExecutor asyncExecutor;
     private int width, height;
-    private MainViewBase mSplash;
+    private final MainViewBase mSplash;
     private boolean allIsInitialized;
     private boolean renderingIsStopped;
     private boolean darknessAnimationRuns;
     private Fader grayFader;
-    private long GL_ThreadId;
+    private long glThreadId;
     private Timer myTimer;
     private long timerValue;
     private PolygonSpriteBatch mPolygonSpriteBatch;
-    private int FpsInfoPos = 0;
+    private int fpsInfoPos = 0;
     private ParentInfo prjMatrix;
-    private Sprite FpsInfoSprite;
+    private Sprite fpsInfoSprite;
     // private RenderStarted renderStartedListener = null;
     private float stateTime = 0;
-    private long FBO_RunBegin = System.currentTimeMillis();
-    private boolean FBO_RunLapsed = false;
+    private long fboRunBegin = System.currentTimeMillis();
+    private boolean fboRunElapsed = false;
     private ModelBatch modelBatch;
     private float lastRenderOnceTime = -1;
     private float lastTouchX = 0;
@@ -124,11 +124,11 @@ public class GL implements ApplicationListener {
     private boolean currentActivityIsShown;
     private CB_View_Base mMarkerOverlay;
     private SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
-    private boolean MarkerIsShown;
+    private boolean markerIsShown;
     private CB_View_Base mToastOverlay;
     private boolean toastIsShown;
     private EditTextField focusedEditTextField;
-    private PopUp_Base currentPopUp;
+    private PopUpBase currentPopUp;
     private float darknessAlpha = 0f;
 
     public GL(int _width, int _height, MainViewBase splash, MainViewBase mainView) {
@@ -141,7 +141,7 @@ public class GL implements ApplicationListener {
         darknessAnimationRuns = false;
         currentDialogIsShown = false;
         currentActivityIsShown = false;
-        MarkerIsShown = false;
+        markerIsShown = false;
         currentPopUp = null;
         that = this;
         allIsInitialized = false;
@@ -206,7 +206,7 @@ public class GL implements ApplicationListener {
         }
         setGrayscale(grayFader.getValue());
 
-        GL_ThreadId = Thread.currentThread().getId();
+        glThreadId = Thread.currentThread().getId();
 
         if (glListener != null && glListener.isContinuous()) {
             glListener.renderDirty();
@@ -249,16 +249,11 @@ public class GL implements ApplicationListener {
                 for (Runnable run : runOnGL_ListWaitPool) {
                     if (run != null) {
                         // Run only MAX_FBO_RENDER_CALLS
-                        if (run instanceof Runnable) {
-
-                            if (canFBO()) {
-                                run.run();
-                            } else {
-                                // Log.debug(log, "Max_FBO_Render_Calls" + run.toString());
-                                runOnGL_List.add(run);
-                            }
-                        } else
+                        if (canFBO()) {
                             run.run();
+                        } else {
+                            runOnGL_List.add(run);
+                        }
                     }
                 }
 
@@ -330,7 +325,7 @@ public class GL implements ApplicationListener {
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
 
-        if (currentDialogIsShown || toastIsShown || MarkerIsShown)
+        if (currentDialogIsShown || toastIsShown || markerIsShown)
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
 
         if (currentDialogIsShown && mDialog.getChildCount() > 0) {
@@ -346,7 +341,7 @@ public class GL implements ApplicationListener {
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
 
-        if (MarkerIsShown) {
+        if (markerIsShown) {
             mMarkerOverlay.renderChildren(mPolygonSpriteBatch, prjMatrix);
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());
         }
@@ -370,20 +365,20 @@ public class GL implements ApplicationListener {
 
         if (isTestVersion) {
             float FpsInfoSize = 4 * UiSizes.getInstance().getScale();
-            if (FpsInfoSprite != null) {
-                mPolygonSpriteBatch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
+            if (fpsInfoSprite != null) {
+                mPolygonSpriteBatch.draw(fpsInfoSprite, fpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
             } else {
                 if (Sprites.Stars != null)// SpriteCache is initial
                 {
-                    FpsInfoSprite = new Sprite(Sprites.getSprite("pixel2x2"));
-                    FpsInfoSprite.setColor(1.0f, 1.0f, 0.0f, 1.0f);
-                    FpsInfoSprite.setSize(FpsInfoSize, FpsInfoSize);
+                    fpsInfoSprite = new Sprite(Sprites.getSprite("pixel2x2"));
+                    fpsInfoSprite.setColor(1.0f, 1.0f, 0.0f, 1.0f);
+                    fpsInfoSprite.setSize(FpsInfoSize, FpsInfoSize);
                 }
             }
 
-            FpsInfoPos += UiSizes.getInstance().getScale();
-            if (FpsInfoPos > 60 * UiSizes.getInstance().getScale()) {
-                FpsInfoPos = 0;
+            fpsInfoPos += UiSizes.getInstance().getScale();
+            if (fpsInfoPos > 60 * UiSizes.getInstance().getScale()) {
+                fpsInfoPos = 0;
             }
 
         }
@@ -428,7 +423,6 @@ public class GL implements ApplicationListener {
 
     public void onStop() {
         // App wird verkleinert oder Gerät ausgeschaltet
-        // Log.debug(log, "GL_Listener => onStop");
         stopTimer();
         if (glListener != null)
             glListener.renderContinuous();
@@ -465,6 +459,7 @@ public class GL implements ApplicationListener {
     }
 
     public void showDialog(final Dialog dialog, boolean atTop) {
+        Log.info("GL", "show dialog(Menu) " + dialog.getTitle());
         try {
             setFocusedEditTextField(null);
             clearRenderViews();
@@ -481,7 +476,7 @@ public class GL implements ApplicationListener {
             dialog.setPos(x, y);
 
             if (currentPopUp != null) {
-                closePopUp(currentPopUp);
+                hidePopUp(currentPopUp);
             }
 
             if (currentDialog != null && currentDialog != dialog) {
@@ -502,13 +497,13 @@ public class GL implements ApplicationListener {
                     if (vDialog instanceof Menu)
                         closeDialog(currentDialog);
                     if (currentPopUp != null) {
-                        closePopUp(currentPopUp);
+                        hidePopUp(currentPopUp);
                     }
                     return true;
                 }
 
                 if (currentPopUp != null) {
-                    closePopUp(currentPopUp);
+                    hidePopUp(currentPopUp);
                     return true;
                 }
 
@@ -605,29 +600,32 @@ public class GL implements ApplicationListener {
         renderOnce();
     }
 
-    public void closePopUp(PopUp_Base popUp) {
-        CB_View_Base aktView = currentDialogIsShown ? mDialog : child;
-        if (currentActivityIsShown)
-            aktView = mActivity;
-        // remove popUp from view
-        aktView.removeChild(popUp);
-        // may be the popUp to close is not the current one: hide the current
-        if (currentPopUp != null)
-            currentPopUp.onHide();
-        currentPopUp = null;
-        // that was it then
-        if (popUp != null)
-            popUp.dispose();
-        renderOnce(); // to show without it
+    public void hidePopUp(PopUpBase popUp) {
+        if (currentPopUp == popUp) {
+            currentPopUp = null;
+        }
+        if (popUp != null) {
+            popUp.parent.removeChild(popUp);
+            popUp.onHide();
+            renderOnce();
+        }
+    }
+
+    public void closePopUp(PopUpBase popUp) {
+        if (popUp != null) {
+            hidePopUp(popUp);
+            if (popUp.autoClose) popUp.dispose();
+        }
     }
 
     public void showActivity(final ActivityBase activity) {
+        Log.info("GL", "show activity " + activity.name);
         setFocusedEditTextField(null);
         clearRenderViews();
         Platform.showForDialog();
 
         if (currentPopUp != null) {
-            closePopUp(currentPopUp);
+            hidePopUp(currentPopUp);
         }
 
         darknessAnimationRuns = true;
@@ -753,7 +751,7 @@ public class GL implements ApplicationListener {
                 break;
         }
 
-        MarkerIsShown = true;
+        markerIsShown = true;
     }
 
     public void hideMarker() {
@@ -763,14 +761,14 @@ public class GL implements ApplicationListener {
         selectionMarkerLeft.setInvisible();
         selectionMarkerRight.setInvisible();
 
-        MarkerIsShown = false;
+        markerIsShown = false;
     }
 
     public boolean isNotShownDialogOrActivity() {
         return !currentDialogIsShown && !currentActivityIsShown;
     }
 
-    public boolean PopUpIsHidden() {
+    public boolean popUpIsHidden() {
         return (currentPopUp == null);
     }
 
@@ -785,7 +783,7 @@ public class GL implements ApplicationListener {
     }
 
     public boolean isGlThread() {
-        return GL_ThreadId == Thread.currentThread().getId();
+        return glThreadId == Thread.currentThread().getId();
     }
 
     public void setBatchColor(HSV_Color color) {
@@ -883,17 +881,17 @@ public class GL implements ApplicationListener {
     }
 
     private void FBO_RunBegin() {
-        FBO_RunBegin = System.currentTimeMillis();
-        FBO_RunLapsed = false;
+        fboRunBegin = System.currentTimeMillis();
+        fboRunElapsed = false;
     }
 
     private boolean canFBO() {
-        if (FBO_RunLapsed)
+        if (fboRunElapsed)
             return false;
         int MAX_FBO_RENDER_TIME = 200;
-        if (FBO_RunBegin + MAX_FBO_RENDER_TIME >= System.currentTimeMillis())
+        if (fboRunBegin + MAX_FBO_RENDER_TIME >= System.currentTimeMillis())
             return true;
-        FBO_RunLapsed = true;
+        fboRunElapsed = true;
         return false;
     }
 
@@ -1087,7 +1085,7 @@ public class GL implements ApplicationListener {
 
     GL_View_Base touchActiveView(int x, int y, int pointer, int button) {
         GL_View_Base view = null;
-        if (MarkerIsShown) {
+        if (markerIsShown) {
             view = mMarkerOverlay.touchDown(x, (int) mMarkerOverlay.getHeight() - y, pointer, button);
         }
         if (view == null) {
@@ -1097,17 +1095,18 @@ public class GL implements ApplicationListener {
         return view;
     }
 
-    public void showPopUp(PopUp_Base popUp, float x, float y) {
+    public void showPopUp(PopUpBase popUp, float x, float y) {
         popUp.setX(x);
         popUp.setY(y);
 
-        CB_View_Base aktView = currentDialogIsShown ? mDialog : child;
+        CB_View_Base currentView = currentDialogIsShown ? mDialog : child;
         if (currentActivityIsShown && !currentDialogIsShown)
-            aktView = mActivity;
+            currentView = mActivity;
 
-        aktView.addChild(popUp);
+        popUp.onShow();
+        currentView.addChild(popUp);
+        popUp.parent = currentView;
         currentPopUp = popUp;
-        currentPopUp.onShow();
         renderOnce();
     }
 

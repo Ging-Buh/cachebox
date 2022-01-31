@@ -40,7 +40,7 @@ import de.droidcachebox.utils.CB_List;
  *
  * @author Longri
  */
-public class PopUpMenu extends PopUp_Base {
+public class PopUpMenu extends PopUpBase {
 
 
     private final float[] TEMPLATE_ONE_SEGMENT = new float[]{10, 90};

@@ -89,7 +89,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                     if (GlobalCore.isSetSelectedCache()) {
                         float distance = GlobalCore.getSelectedCache().recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
                         if (GlobalCore.getSelectedWayPoint() != null) {
-                            distance = GlobalCore.getSelectedWayPoint().getDistance();
+                            distance = GlobalCore.getSelectedWayPoint().recalculateAndGetDistance();
                         }
 
                         if (!approachSoundCompleted && (distance < Settings.SoundApproachDistance.getValue())) {

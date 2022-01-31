@@ -132,7 +132,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
                 } else {
                     lat = wayPoint.getLatitude();
                     lon = wayPoint.getLongitude();
-                    calculatedDistance = wayPoint.getDistance();
+                    calculatedDistance = wayPoint.recalculateAndGetDistance();
                 }
 
                 Coordinate position = Locator.getInstance().getMyPosition();

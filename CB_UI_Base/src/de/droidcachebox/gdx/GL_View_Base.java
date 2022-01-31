@@ -234,11 +234,11 @@ public class GL_View_Base extends CB_RectF {
         return view;
     }
 
-    public void removeChild(final GL_View_Base view) {
+    public void removeChild(final GL_View_Base child) {
         GL.that.runOnGLWithThreadCheck(() -> {
             try {
                 if (childs != null && childs.size() > 0)
-                    childs.remove(view);
+                    childs.remove(child);
             } catch (Exception ignored) {
             }
             chkChildClickable();

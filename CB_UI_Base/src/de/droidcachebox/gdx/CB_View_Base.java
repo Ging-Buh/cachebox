@@ -25,12 +25,12 @@ public class CB_View_Base extends GL_View_Base {
 
     // # Constructors
 
-    public CB_View_Base(SizeF size, String Name) {
-        super(size, Name);
+    public CB_View_Base(SizeF size, String name) {
+        super(size, name);
     }
 
-    public CB_View_Base(CB_RectF rec, GL_View_Base Parent, String Name) {
-        super(rec, Parent, Name);
+    public CB_View_Base(CB_RectF rec, GL_View_Base Parent, String name) {
+        super(rec, Parent, name);
     }
 
     public CB_View_Base(String name) {

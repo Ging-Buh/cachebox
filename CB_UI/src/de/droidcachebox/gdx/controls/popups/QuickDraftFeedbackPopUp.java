@@ -10,7 +10,7 @@ import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 
-public class QuickDraftFeedbackPopUp extends PopUp_Base {
+public class QuickDraftFeedbackPopUp extends PopUpBase {
 
     int counter;
     boolean tooSmall;

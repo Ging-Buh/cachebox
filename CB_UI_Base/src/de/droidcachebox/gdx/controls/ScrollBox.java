@@ -160,8 +160,8 @@ public class ScrollBox extends CB_View_Base {
     }
 
     @Override
-    public void removeChild(final GL_View_Base view) {
-        contentItem.removeChild(view);
+    public void removeChild(final GL_View_Base child) {
+        contentItem.removeChild(child);
         scrollBoxContent.notifyDataSetChanged();
     }
 

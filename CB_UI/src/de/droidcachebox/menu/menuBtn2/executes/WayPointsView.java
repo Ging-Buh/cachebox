@@ -146,7 +146,7 @@ public class WayPointsView extends V_ListView implements CacheSelectionChangedLi
     }
 
     @Override
-    public void handleCacheChanged(Cache selectedCache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint waypoint) {
         try {
             // view must be refilled with values
             // cache and currentCache are the same objects so ==, but content has changed, thus setting currentCache to null
@@ -254,7 +254,7 @@ public class WayPointsView extends V_ListView implements CacheSelectionChangedLi
                         currentCache = null;
                         currentWaypoint = null;
 
-                        handleCacheChanged(GlobalCore.getSelectedCache(), waypoint);
+                        handleCacheSelectionChanged(GlobalCore.getSelectedCache(), waypoint);
 
                     } else {
                         currentWaypoint.setTitle(waypoint.getTitle());

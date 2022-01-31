@@ -210,7 +210,7 @@ public class Slider extends CB_View_Base implements CacheSelectionChangedListene
     }
 
     @Override
-    public void handleCacheChanged(final Cache cache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(final Cache cache, Waypoint waypoint) {
         setSelectedCache(cache, waypoint);
     }
 

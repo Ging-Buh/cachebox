@@ -387,7 +387,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             // add Slider as last
             Slider slider = new Slider(this, "Slider");
             addChild(slider);
-            slider.handleCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
+            slider.handleCacheSelectionChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
 
             String state = Settings.nightMode.getValue() ? "Night" : "Day";
 
@@ -467,7 +467,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         if (GlobalCore.isSetSelectedCache()) {
             float distance = GlobalCore.getSelectedCache().recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
             if (GlobalCore.getSelectedWayPoint() != null) {
-                distance = GlobalCore.getSelectedWayPoint().getDistance();
+                distance = GlobalCore.getSelectedWayPoint().recalculateAndGetDistance();
             }
 
             if (Settings.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Settings.SoundApproachDistance.getValue())) {

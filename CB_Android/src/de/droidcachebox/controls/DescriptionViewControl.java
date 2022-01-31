@@ -65,7 +65,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     private static ProgressDialog pd;
     private static Cache aktCache;
     private static String message = "";
-    private static Activity mainActivity;
+    private Activity mainActivity;
     private final CachesDAO cachesDAO;
     // private static int downloadTryCounter = 0;
     private final DialogInterface.OnClickListener downloadCacheDialogResult = new DialogInterface.OnClickListener() {

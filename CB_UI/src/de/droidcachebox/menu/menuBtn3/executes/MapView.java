@@ -728,7 +728,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     }
 
     @Override
-    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache cache, Waypoint waypoint) {
         setSelectedCache(cache, waypoint);
     }
 

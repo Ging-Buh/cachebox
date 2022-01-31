@@ -79,48 +79,11 @@ public class Waypoint implements Serializable {
         detail = new WaypointDetail();
     }
 
-    // / <summary>
-    // / Entfernung von der letzten gültigen Position
-    // / </summary>
-    public float getDistance() {
-        Coordinate fromPos = Locator.getInstance().getLocation().toCordinate();
+    public float recalculateAndGetDistance() {
+        Coordinate fromPos = Locator.getInstance().getMyPosition();
         float[] dist = new float[4];
-
         MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), coordinate.getLatitude(), coordinate.getLongitude(), dist);
         return dist[0];
-    }
-
-    /**
-     * @param strText ?
-     */
-    public void parseTypeString(String strText) {
-        // Log.d(TAG, "Parsing type string: " + strText);
-
-        /*
-         * Geocaching.com cache types are in the form Geocache|Multi-cache Waypoint|Question to Answer Waypoint|Stages of a Multicache Other
-         * pages / bcaching.com results do not contain the | separator, so make sure that the parsing functionality does work with both
-         * variants
-         */
-
-        String[] arrSplitted = strText.split("\\|");
-        if (arrSplitted[0].toLowerCase().equals("geocache")) {
-            this.waypointType = GeoCacheType.Cache;
-        } else {
-            String strCacheType;
-            if (arrSplitted.length > 1)
-                strCacheType = arrSplitted[1];
-            else
-                strCacheType = arrSplitted[0];
-
-            String[] strFirstWord = strCacheType.split(" ");
-
-            for (String word : strFirstWord) {
-                this.waypointType = GeoCacheType.parseString(word);
-                if (this.waypointType != GeoCacheType.Undefined)
-                    break;
-            }
-
-        }
     }
 
     public void clear() {
@@ -139,15 +102,6 @@ public class Waypoint implements Serializable {
     @Override
     public String toString() {
         return "WP:" + getWaypointCode() + " " + coordinate.toString();
-    }
-
-    public void dispose() {
-        setWaypointCode(null);
-        coordinate = null;
-        setTitle(null);
-        setDescription(null);
-        waypointType = null;
-        setClue(null);
     }
 
     public String getWaypointCode() {

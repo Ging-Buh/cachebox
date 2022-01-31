@@ -76,7 +76,7 @@ import de.droidcachebox.utils.log.Log;
 /**
  * @author Longri
  */
-public class SearchDialog extends PopUp_Base {
+public class SearchDialog extends PopUpBase {
     private static final String sClass = "SearchDialog";
     // we show independent from geoCachesView at top of screen (?but below slider)
     // private final YPositionChanged listener = (SliderTop, SliderBottom) -> setY(((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().getMaxY() - SearchDialog.this.getHeight());
@@ -172,7 +172,7 @@ public class SearchDialog extends PopUp_Base {
         this.addChild(mInput);
 
         setLang();
-        switchSearchMode(SearchMode.Title);
+        switchSearchMode(SearchMode.GcCode);
 
         mBtnCancel.setClickHandler((v, x, y1, pointer, button) -> {
             close();
@@ -563,39 +563,26 @@ public class SearchDialog extends PopUp_Base {
 
     @Override
     public void onShow() {
-        try {
-            // setY(((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().getMaxY() - this.getHeight());
-            // we show independent from geoCachesView at top of screen (?but below slider and Quickbuttons)
-            float yPosition = ((ShowGeoCaches) Action.ShowGeoCaches.action).setHeightOfSearchDialog(getHeight());
-            if (yPosition > 0) {
-                setY(yPosition - getHeight());
+        // setY(((ShowGeoCaches) Action.ShowGeoCaches.action).getGeoCachesView().getMaxY() - this.getHeight());
+        // we show independent from geoCachesView at top of screen (?but below slider and Quickbuttons)
+        float yPosition = ((ShowGeoCaches) Action.ShowGeoCaches.action).getYPositionForSearchDialog(getHeight());
+        if (yPosition > 0) {
+            setY(yPosition - getHeight());
+        } else {
+            // setY(UiSizes.getInstance().getWindowHeight() - getHeight() - 3 * UiSizes.getInstance().getButtonHeight());
+            if (Slider.that != null) {
+                setY(Slider.that.getSlideBoxY() - getHeight());
             } else {
-                // setY(UiSizes.getInstance().getWindowHeight() - getHeight() - 3 * UiSizes.getInstance().getButtonHeight());
-                if (Slider.that != null)
-                    setY(Slider.that.getSlideBoxY() - getHeight());
-                else
-                    setY(UiSizes.getInstance().getWindowHeight() - getHeight());
+                setY(UiSizes.getInstance().getWindowHeight() - getHeight());
             }
-            if (GL.that.PopUpIsHidden())
-                showNotCloseAutomaticly();
-        } catch (Exception e) {
-            Log.err(sClass, "onShow", e);
         }
-        Slider.that.registerPositionChangedListener(onSliderPositionChanged);
+        if (Slider.that != null) Slider.that.registerPositionChangedListener(onSliderPositionChanged);
     }
 
     @Override
     public void onHide() {
-        Log.info(sClass, "onHide");
-        Slider.that.removePositionChangedEventListener(onSliderPositionChanged);
         ((ShowGeoCaches) Action.ShowGeoCaches.action).resetHeightForSearchDialog();
-    }
-
-    @Override
-    public void close() {
-        Log.info(sClass, "closing");
-        // could inform ShowSearchDialog
-        super.close(); // will hide(this if shown or other shown) and dispose
+        if (Slider.that != null) Slider.that.removePositionChangedEventListener(onSliderPositionChanged);
     }
 
     private void askPremium() {

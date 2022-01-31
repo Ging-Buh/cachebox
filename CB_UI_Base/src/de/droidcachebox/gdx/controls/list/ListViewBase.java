@@ -675,11 +675,11 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     @Override
-    public void removeChild(final GL_View_Base view) {
+    public void removeChild(final GL_View_Base child) {
         GL.that.runOnGL(() -> {
             try {
                 if (childs.size() > 0)
-                    childs.remove(view);
+                    childs.remove(child);
             } catch (Exception ignored) {
             }
             chkChildClickable();

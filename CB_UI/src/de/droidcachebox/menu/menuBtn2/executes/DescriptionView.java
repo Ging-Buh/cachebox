@@ -327,7 +327,7 @@ public class DescriptionView extends CB_View_Base implements CacheSelectionChang
     }
 
     @Override
-    public void handleCacheChanged(Cache selectedCache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint waypoint) {
         if (!cacheListViewItem.getCache().equals(selectedCache)) {
             //todo  implement more simple by cacheListViewItem.setCache(selectedCache);
             // next doesn't work

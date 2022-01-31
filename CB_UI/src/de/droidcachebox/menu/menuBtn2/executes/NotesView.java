@@ -172,7 +172,7 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
     }
 
     @Override
-    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache cache, Waypoint waypoint) {
         saveNotes();
         loadNotes(cache);
     }

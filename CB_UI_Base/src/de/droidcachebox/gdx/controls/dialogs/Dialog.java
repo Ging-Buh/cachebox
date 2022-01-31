@@ -60,8 +60,8 @@ public abstract class Dialog extends CB_View_Base {
     protected String title;
     private CB_Label titleLabel;
 
-    public Dialog(CB_RectF rec, String Name) {
-        super(rec, Name);
+    public Dialog(CB_RectF rec, String name) {
+        super(rec, name);
         // constructor without title and footer
         mHeaderHeight = calcHeaderHeight();
         mFooterHeight = mHeaderHeight;
@@ -158,21 +158,21 @@ public abstract class Dialog extends CB_View_Base {
     }
 
     @Override
-    public void removeChild(GL_View_Base view) {
-        if (view instanceof SelectionMarker) {
-            overlayForTextMarker.remove(view);
+    public void removeChild(GL_View_Base child) {
+        if (child instanceof SelectionMarker) {
+            overlayForTextMarker.remove(child);
             if (contentBox != null) {
-                contentBox.removeChildDirect(view);
+                contentBox.removeChildDirect(child);
             } else {
-                childs.remove(view);
+                childs.remove(child);
             }
 
         } else {
             if (contentBox != null) {
-                contentBox.removeChildDirect(view);
+                contentBox.removeChildDirect(child);
             } else {
                 if (contentChildren != null)
-                    contentChildren.remove(view);
+                    contentChildren.remove(child);
             }
         }
 

@@ -125,7 +125,7 @@ public class LogsView extends V_ListView implements CacheSelectionChangedListene
     }
 
     @Override
-    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache cache, Waypoint waypoint) {
         setCache(cache);
     }
 

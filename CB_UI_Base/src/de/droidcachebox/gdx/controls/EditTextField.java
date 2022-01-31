@@ -221,7 +221,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
             x = (int) (windowW - popUp.getWidth());
 
         y += worldY + (popUp.getHeight() * 0.2f);
-        popUp.showNotCloseAutomaticly(x, y);
+        popUp.showNotCloseAutomatically(x, y);
 
     }
 

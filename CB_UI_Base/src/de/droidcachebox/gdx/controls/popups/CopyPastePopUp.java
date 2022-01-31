@@ -16,7 +16,7 @@ import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.log.Log;
 
-public class CopyPastePopUp extends PopUp_Base {
+public class CopyPastePopUp extends PopUpBase {
     private final static String sClass = "CopyPastePopUp";
     private ImageButton btnCopy;
     private ImageButton btnCut;

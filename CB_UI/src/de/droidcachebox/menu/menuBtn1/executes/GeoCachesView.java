@@ -54,7 +54,7 @@ import de.droidcachebox.utils.log.Log;
 
 public class GeoCachesView extends CB_View_Base implements CacheListChangedListeners.CacheListChangedListener, CacheSelectionChangedListeners.CacheSelectionChangedListener, PositionChangedEvent {
     private static final String sClass = "GeoCacheListListView";
-    private V_ListView geoCacheListView;
+    private final V_ListView geoCacheListView;
     private Scrollbar scrollBar;
     private GeoCacheListViewAdapter geoCacheListViewAdapter;
     private BitmapFontCache emptyMsg;
@@ -108,9 +108,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         scrollBar.onShow();
         if (isShown)
             return;
-
         isShown = true;
-        Log.debug(sClass, "CacheList onShow");
         setBackground(Sprites.ListBack);
 
         PositionChangedListeners.addListener(this);
@@ -132,13 +130,11 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                // aktuellen Cache in der List anzeigen
+                // mark selected Cache in list
                 if (GlobalCore.isSetSelectedCache()) {
                     setSelectedCacheVisible();
-
                 } else
                     geoCacheListView.setSelection(0);
-
                 resetRenderInitDone();
                 geoCacheListView.chkSlideBack();
             }
@@ -182,8 +178,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
                 @Override
                 public void run() {
                     GL.that.runOnGL(() -> {
-                        if (geoCacheListView != null)
-                            geoCacheListView.chkSlideBack();
+                        geoCacheListView.chkSlideBack();
                         GL.that.renderOnce();
                     });
                 }
@@ -240,7 +235,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
      */
 
     @Override
-    public void handleCacheChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache cache, Waypoint waypoint) {
         // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
             Log.debug(sClass, "handle geoCache " + cache.getGeoCacheCode());
@@ -285,7 +280,12 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
         geoCacheListView.setZeroPos();
     }
 
-    public float setHeightOfSearchDialog(float heightOfSearchDialog) {
+    public void setHeightOfSearchDialog(float heightOfSearchDialog) {
+        this.heightOfSearchDialog = heightOfSearchDialog;
+        onResized(this);
+    }
+
+    public float getYPositionForSearchDialog(float heightOfSearchDialog) {
         this.heightOfSearchDialog = heightOfSearchDialog;
         onResized(this);
         return getMaxY();
@@ -387,7 +387,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
                 if (cache == null)
                     return 0;
 
-                // alle Items haben die gleiche Größe (Höhe)
+                // all items with same height
                 return UiSizes.getInstance().getCacheListItemRec().getHeight();
             }
         }

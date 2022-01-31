@@ -46,7 +46,7 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
             for (CacheSelectionChangedListener listener : this) {
                 try {
                     Log.debug("'Selected Cache change' by ", listener.toString());
-                    listener.handleCacheChanged(selectedCache, waypoint);
+                    listener.handleCacheSelectionChanged(selectedCache, waypoint);
                     Log.debug("'Selected Cache changed' done. ", listener.toString());
                 } catch (Exception ex) {
                     Log.err(listener.toString(), selectedCache == null ? "Geocache = null" : ex.toString());
@@ -59,6 +59,6 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
     }
 
     public interface CacheSelectionChangedListener {
-        void handleCacheChanged(Cache selectedCache, Waypoint waypoint);
+        void handleCacheSelectionChanged(Cache selectedCache, Waypoint waypoint);
     }
 }

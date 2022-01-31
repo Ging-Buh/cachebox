@@ -1454,8 +1454,7 @@ public class GPXFileImporter {
             if (typeString.contains("Waypoint|Flag")) {
                 typeString = values.get("wpt_desc");
             }
-
-            waypoint.parseTypeString(typeString);
+            waypoint.waypointType = parseWayPointTypeString(typeString);
         }
 
         if (values.containsKey("wpt_cmt")) {
@@ -1474,4 +1473,30 @@ public class GPXFileImporter {
         waypoint.clear();
 
     }
+
+    private GeoCacheType parseWayPointTypeString(String type) {
+        /*
+         * Geocaching.com cache types are in the form Geocache|Multi-cache, Waypoint|Question to Answer, Waypoint|Stages of a Multicache.
+         * Other pages (e.g. bcaching.com) results do not contain the | separator, so make sure that the parsing functionality does work with both variants
+         */
+        String[] tmp = type.split("\\|");
+        if (tmp[0].equalsIgnoreCase("geocache")) {
+            return GeoCacheType.Cache;
+        } else {
+            String tmp1;
+            GeoCacheType geoCacheType = GeoCacheType.Undefined;
+            if (tmp.length > 1)
+                tmp1 = tmp[1];
+            else
+                tmp1 = tmp[0];
+            tmp = tmp1.split(" ");
+            for (String word : tmp) {
+                geoCacheType = GeoCacheType.parseString(word);
+                if (geoCacheType != GeoCacheType.Undefined)
+                    break;
+            }
+            return geoCacheType;
+        }
+    }
+
 }
