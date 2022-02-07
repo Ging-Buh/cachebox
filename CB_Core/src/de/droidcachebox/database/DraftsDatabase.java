@@ -76,5 +76,6 @@ public class DraftsDatabase extends Database_Core {
                 if (sql != null) sql.close();
                 sql = null;
                 draftsDatabase = null;
+                isOpen = false;
         }
 }

@@ -69,7 +69,6 @@ public class ShowQuickDraft extends AbstractAction {
                 cm.addMenuItem("DNF", Sprites.getSprite("log1icon"), () -> {
                     ((ShowDrafts) ShowDrafts.action).addNewDraft(LogType.didnt_find, false);
                 });
-                break;
         }
         cm.show();
     }

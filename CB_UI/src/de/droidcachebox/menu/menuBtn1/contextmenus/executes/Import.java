@@ -878,7 +878,7 @@ public class Import extends ActivityBase {
                 System.gc();
                 long startTime = System.currentTimeMillis();
                 CBDB.getInstance().beginTransaction();
-                CBDB.getInstance().cacheList.clear();
+                CBDB.cacheList.clear();
                 try {
                     importer = new Importer();
                     importer.importGpx(pqFolderName, importProgress, isCanceled::get);

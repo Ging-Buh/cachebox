@@ -398,13 +398,13 @@ public class ImageLoader {
             try {
                 tl.loadAsync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
                 GL.that.runOnGL(() -> {
-                    // Log.info(log, "LoadSync " + mPath + ":" + ImgName);
+                    // Log.debug(log, "LoadSync " + mPath + ":" + ImgName);
                     mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
                     Sprite sprite = new Sprite(mImageTex);
                     spriteWidth = sprite.getWidth();
                     spriteHeight = sprite.getHeight();
                     setSprite(sprite);
-                    // Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
+                    // Log.debug(log, "LoadSync " + mPath + ":" + ImgName + " ready");
                 });
             } catch (Exception ignored) {
             }

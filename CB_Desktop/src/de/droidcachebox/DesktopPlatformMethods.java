@@ -57,7 +57,7 @@ public class DesktopPlatformMethods implements Platform.PlatformMethods {
     }
 
     @Override
-    public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
+    public void readPlatformSetting(SettingBase<?> setting) {
         if (setting instanceof SettingString) {
             String value = prefs.get(setting.getName(), ((SettingString) setting).getDefaultValue());
             ((SettingString) setting).setValue(value);
@@ -69,7 +69,6 @@ public class DesktopPlatformMethods implements Platform.PlatformMethods {
             ((SettingInt) setting).setValue(value);
         }
         setting.clearDirty();
-        return setting;
     }
 
     @Override

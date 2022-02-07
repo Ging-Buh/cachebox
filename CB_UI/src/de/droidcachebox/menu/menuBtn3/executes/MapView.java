@@ -133,7 +133,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         super(cb_RectF, mapMode.name());
         lastScreenCenter = new PointL(0, 0);
         this.mapMode = mapMode;
-        Log.info(sClass, "creating Mapview for " + mapMode + " map");
+        Log.debug(sClass, "creating Mapview for " + mapMode + " map");
         mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
 
         if (mapMode != MapMode.Normal) {
@@ -382,12 +382,12 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         }
 
                         // Reload result from DB
-                        synchronized (CBDB.getInstance().cacheList) {
+                        synchronized (CBDB.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
                             cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         }
 
-                        Cache selCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(GCCode);
+                        Cache selCache = CBDB.cacheList.getCacheByGcCodeFromCacheList(GCCode);
                         GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
                         CacheListChangedListeners.getInstance().fire();
@@ -1202,7 +1202,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         if ((InitialFlags & INITIAL_THEME) != 0) {
             if (MapTileLoader.getInstance().getCurrentLayer() != null) {
                 if (MapTileLoader.getInstance().getCurrentLayer().isMapsForge()) {
-                    Log.info(sClass, "modify layer " + MapTileLoader.getInstance().getCurrentLayer().getName() + " for mapview " + mapMode);
+                    Log.debug(sClass, "modify layer " + MapTileLoader.getInstance().getCurrentLayer().getName() + " for mapview " + mapMode);
                     MapTileLoader.getInstance().modifyCurrentLayer(isCarMode);
                     lastDescriptorOrdered = new Descriptor(0, 0, 10);
                     renderOnce("INITIAL_THEME");
@@ -1237,12 +1237,12 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     protected void setInitialLocation() {
         // Log.debug(sClass, "setInitialLocation");
         try {
-            if (CBDB.getInstance().cacheList != null) {
-                synchronized (CBDB.getInstance().cacheList) {
-                    if (CBDB.getInstance().cacheList.size() > 0) {
+            if (CBDB.cacheList != null) {
+                synchronized (CBDB.cacheList) {
+                    if (CBDB.cacheList.size() > 0) {
                         // Koordinaten des ersten Caches der Datenbank
                         // nehmen
-                        setCenter(new CoordinateGPS(CBDB.getInstance().cacheList.get(0).getCoordinate().getLatitude(), CBDB.getInstance().cacheList.get(0).getCoordinate().getLongitude()));
+                        setCenter(new CoordinateGPS(CBDB.cacheList.get(0).getCoordinate().getLatitude(), CBDB.cacheList.get(0).getCoordinate().getLongitude()));
                         positionInitialized = true;
                         // setLockPosition(0);
                     } else {

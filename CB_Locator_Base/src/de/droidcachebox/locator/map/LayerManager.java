@@ -90,10 +90,10 @@ public class LayerManager {
                 // therefore checked on additionalMapsforgeLayer.add for duplicates. A bit
                 if (names.length > 1) {
                     for (int i = 1; i < names.length; i++) {
-                        Log.info(sClass, "check mapLayer add: " + names[i]);
+                        Log.debug(sClass, "check mapLayer add: " + names[i]);
                         for (Layer additionalLayer : layers) {
                             if (names[i].contains(additionalLayer.getName())) {
-                                Log.info(sClass, "done mapLayer add: ");
+                                Log.debug(sClass, "done mapLayer add: ");
                                 layer.addAdditionalMap(additionalLayer);
                             }
                         }
@@ -153,9 +153,9 @@ public class LayerManager {
         }
 
         Array<String> alreadyAdded = new Array<>(); // avoid same file in different directories
-        Log.info(sClass, "dirMaps = " + MapPackFolderLocal.getValue()); // should depend on repository setting (own or global)
+        Log.debug(sClass, "dirMaps = " + MapPackFolderLocal.getValue()); // should depend on repository setting (own or global)
         addToLayers(MapPackFolderLocal.getValue(), alreadyAdded, newLayerList);
-        Log.info(sClass, "dirGlobalMaps = " + MapPackFolder.getValue());
+        Log.debug(sClass, "dirGlobalMaps = " + MapPackFolder.getValue());
         addToLayers(MapPackFolder.getValue(), alreadyAdded, newLayerList);
 
         if (currentMapLayer.getValue()[0].startsWith("content")) {
@@ -200,7 +200,7 @@ public class LayerManager {
 
     private Layer getUserMap(String url, String name) {
         try {
-            //Log.info(log, "getUserMap by url=" + url + " Name=" + name);
+            //Log.debug(log, "getUserMap by url=" + url + " Name=" + name);
             Layer.StorageType storageType = Layer.StorageType.PNG;
             if (url.contains("{name:")) {
                 //replace name

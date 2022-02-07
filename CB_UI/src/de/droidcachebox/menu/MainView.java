@@ -221,7 +221,7 @@ public class MainView extends MainViewBase {
      */
     private void ini_Translations() {
         if (!Translation.isInitialized()) {
-            Log.info(sClass, "ini_Translations");
+            Log.debug(sClass, "ini_Translations");
 
             // Load from Assets changes
             // delete work path from settings value
@@ -252,7 +252,7 @@ public class MainView extends MainViewBase {
      * Load Sprites
      */
     private void ini_Sprites() {
-        Log.info(sClass, "ini_Sprites");
+        Log.debug(sClass, "ini_Sprites");
         Sprites.loadSprites(false);
         if (!Sprites.loaded)
             Log.err(sClass, "Error ini_Sprites");
@@ -263,7 +263,7 @@ public class MainView extends MainViewBase {
      * chk directories
      */
     private void ini_Dirs() {
-        Log.info(sClass, "ini_Dirs");
+        Log.debug(sClass, "ini_Dirs");
         ini_Dir(Settings.PocketQueryFolder.getValue());
         ini_Dir(Settings.tileCacheFolder.getValue());
         ini_Dir(GlobalCore.workPath + "/User");
@@ -296,7 +296,7 @@ public class MainView extends MainViewBase {
      * show select DB Dialog
      */
     private void ini_SelectDB() {
-        Log.info(sClass, "ini_SelectDB");
+        Log.debug(sClass, "ini_SelectDB");
         // search number of DB3 files
         FileList fileList = null;
         try {
@@ -323,12 +323,10 @@ public class MainView extends MainViewBase {
      * Load Cache DB3
      */
     private void ini_CacheDB() {
-
-        Log.debug(sClass, "\r\nini_CacheDB " + Settings.DatabaseName.getValue());
-        Log.debug(sClass, "\r\nini_CacheDB " + DatabaseName.getValue());
+        Log.debug(sClass, "ini_DB " + DatabaseName.getValue());
         CBDB.getInstance().startUp(GlobalCore.workPath + "/" + DatabaseName.getValue());
+        Log.debug(sClass, "ini_DB " + Settings.DatabaseName.getValue());
         Settings.getInstance().readFromDB();
-        Log.debug(sClass, "\r\nini_CacheDB " + Settings.DatabaseName.getValue());
 
         FilterInstances.setLastFilter(new FilterProperties(Settings.lastFilter.getValue()));
         String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
@@ -337,7 +335,7 @@ public class MainView extends MainViewBase {
         CachesDAO cachesDAO = new CachesDAO();
         cachesDAO.updateCacheCountForGPXFilenames();
 
-        synchronized (CBDB.getInstance().cacheList) {
+        synchronized (CBDB.cacheList) {
             cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
         }
 
@@ -352,13 +350,13 @@ public class MainView extends MainViewBase {
      * Show ViewManager
      */
     private void ini_TabMainView() {
-        Log.info(sClass, "ini_TabMainView");
+        Log.debug(sClass, "ini_TabMainView");
         GL.that.removeRenderView(this);
         GL.that.switchToMainView();
 
         if (GlobalCore.restartCache != null) {
-            synchronized (CBDB.getInstance().cacheList) {
-                Cache c = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(GlobalCore.restartCache);
+            synchronized (CBDB.cacheList) {
+                Cache c = CBDB.cacheList.getCacheByGcCodeFromCacheList(GlobalCore.restartCache);
                 if (c != null) {
                     if (GlobalCore.restartWayPoint != null) {
                         CB_List<Waypoint> waypoints = WaypointDAO.getInstance().getWaypointsFromCacheID(c.generatedId, true);
@@ -371,10 +369,10 @@ public class MainView extends MainViewBase {
                                     w = wp;
                                 }
                             }
-                            Log.info(sClass, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache + WP.");
+                            Log.debug(sClass, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache + WP.");
                             GlobalCore.setSelectedWaypoint(c, w);
                         } else {
-                            Log.info(sClass, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache.");
+                            Log.debug(sClass, "ini_TabMainView: Set selectedCache to" + c.getGeoCacheCode() + " from restartCache.");
                             GlobalCore.setSelectedCache(c);
                         }
                     }

@@ -310,11 +310,11 @@ public class SearchDialog extends PopUpBase {
 
             boolean criterionMatches = false;
 
-            synchronized (CBDB.getInstance().cacheList) {
+            synchronized (CBDB.cacheList) {
                 Cache tmp = null;
                 if (beginSearchIndex < 0) beginSearchIndex = 0;
-                for (int i = beginSearchIndex, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
-                    tmp = CBDB.getInstance().cacheList.get(i);
+                for (int i = beginSearchIndex, n = CBDB.cacheList.size(); i < n; i++) {
+                    tmp = CBDB.cacheList.get(i);
 
                     switch (mSearchState) {
                         case Title:
@@ -415,12 +415,12 @@ public class SearchDialog extends PopUpBase {
 
                     int counter = 0;
 
-                    synchronized (CBDB.getInstance().cacheList) {
+                    synchronized (CBDB.cacheList) {
                         for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
                             Cache cache = geoCacheRelated.cache;
                             counter++;
-                            if (CBDB.getInstance().cacheList.getCacheByIdFromCacheList(cache.generatedId) == null) {
-                                CBDB.getInstance().cacheList.add(cache);
+                            if (CBDB.cacheList.getCacheByIdFromCacheList(cache.generatedId) == null) {
+                                CBDB.cacheList.add(cache);
                                 if (cache.getGPXFilename_ID() == 0) {
                                     cache.setGPXFilename_ID(gpxFilename.id);
                                 }
@@ -448,7 +448,7 @@ public class SearchDialog extends PopUpBase {
 
                     if (counter == 1) {
                         // select this Cache
-                        Cache cache = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(geoCacheRelateds.get(0).cache.generatedId);
+                        Cache cache = CBDB.cacheList.getCacheByIdFromCacheList(geoCacheRelateds.get(0).cache.generatedId);
                         GlobalCore.setSelectedCache(cache);
                     }
 

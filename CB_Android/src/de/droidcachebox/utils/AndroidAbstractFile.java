@@ -222,7 +222,7 @@ public class AndroidAbstractFile extends AbstractFile {
         boolean ret = mFile.renameTo(((AndroidAbstractFile) abstractFile).mFile);
         if (!ret) {
             try {
-                // log.info("rename has no success. doing copyFile and delete");
+                // Log.debug("rename has no success. doing copyFile and delete");
                 ret = copyToFile(abstractFile);
                 if (ret) {
                     mFile.delete();

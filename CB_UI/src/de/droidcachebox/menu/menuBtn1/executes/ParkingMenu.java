@@ -55,8 +55,8 @@ public class ParkingMenu extends ButtonDialog {
         readyContentBox();
 
         // chk disable select and delete Button
-        synchronized (CBDB.getInstance().cacheList) {
-            Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
+        synchronized (CBDB.cacheList) {
+            Cache cache = CBDB.cacheList.getCacheByGcCodeFromCacheList("CBPark");
             if (cache == null) {
                 btnSelectWP.disable();
                 btnDeleteP.disable();
@@ -73,8 +73,8 @@ public class ParkingMenu extends ButtonDialog {
         });
 
         btnSelectWP.setClickHandler((view, x, y, pointer, button) -> {
-            synchronized (CBDB.getInstance().cacheList) {
-                Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
+            synchronized (CBDB.cacheList) {
+                Cache cache = CBDB.cacheList.getCacheByGcCodeFromCacheList("CBPark");
                 if (cache != null)
                     GlobalCore.setSelectedCache(cache);
             }

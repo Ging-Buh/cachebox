@@ -37,7 +37,7 @@ public class AppRater {
             public void run() {
                 Settings.AppRaterlaunchCount.setValue(launch_count);
                 Settings.getInstance().acceptChanges();
-                Log.info(sClass, "10 min usage, increment launch count");
+                Log.debug(sClass, "10 min usage, increment launch count");
             }
         };
         t.schedule(ta, MINIMUM_RUN);

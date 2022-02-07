@@ -127,7 +127,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     }
 
     public static void reloadCacheList() {
-        synchronized (CBDB.getInstance().cacheList) {
+        synchronized (CBDB.cacheList) {
             new CachesDAO().readCacheList(FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue()), false, false, Settings.showAllWaypoints.getValue());
         }
         CacheListChangedListeners.getInstance().fire();
@@ -234,9 +234,9 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         // set last selected Cache
         String sGc = Settings.lastSelectedCache.getValue();
         if (sGc != null && sGc.length() > 0) {
-            synchronized (CBDB.getInstance().cacheList) {
-                for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
-                    Cache c = CBDB.getInstance().cacheList.get(i);
+            synchronized (CBDB.cacheList) {
+                for (int i = 0, n = CBDB.cacheList.size(); i < n; i++) {
+                    Cache c = CBDB.cacheList.get(i);
                     if (c.getGeoCacheCode().equalsIgnoreCase(sGc)) {
                         Log.debug(sClass, "ViewManager: Set selectedCache to " + c.getGeoCacheCode() + " from lastSaved.");
                         GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
@@ -323,7 +323,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         mainBtn5.addAction(ShowAbout.getInstance(), true);
         mainBtn5.addAction(ShowQuit.getInstance(), false, GestureDirection.Down);
 
-        Log.info(sClass, "start with 'about view'");
+        Log.debug(sClass, "start with 'about view'");
         ShowAbout.getInstance().execute(); // activated as first view
     }
 
@@ -427,28 +427,23 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
                 mainBtn1.setButtonSprites(Sprites.CacheList);
             }
         }
+        String name;
+        synchronized (CBDB.cacheList) {
+            int filterCount = CBDB.cacheList.size();
 
-        // ##################################
-        // Set new list size at context menu
-        // ##################################
-        String Name;
-
-        synchronized (CBDB.getInstance().cacheList) {
-            int filterCount = CBDB.getInstance().cacheList.size();
-
-            if (CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark") != null) {
+            if (CBDB.cacheList.getCacheByGcCodeFromCacheList("CBPark") != null) {
                 filterCount = filterCount - 1;
             }
 
-            int DBCount = CBDB.getInstance().getCacheCountInDB();
+            int cacheCountInDB = CBDB.getInstance().getCacheCountInDB();
             String strFilterCount = "";
-            if (filterCount != DBCount) {
+            if (filterCount != cacheCountInDB) {
                 strFilterCount = filterCount + "/";
             }
 
-            Name = "  (" + strFilterCount + DBCount + ")";
+            name = "  (" + strFilterCount + cacheCountInDB + ")";
         }
-        ((ShowGeoCaches) ShowGeoCaches.action).setNameExtension(Name);
+        ((ShowGeoCaches) ShowGeoCaches.action).setNameExtension(name);
     }
 
     @Override

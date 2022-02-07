@@ -37,7 +37,7 @@ public class BRouter implements Router {
         if (brouter == null) brouter = new BRouterServiceConnection();
         if (brouter.isConnected()) return true;
         if (mainActivity.bindService(intent, brouter, Context.BIND_AUTO_CREATE)) {
-            Log.info(sClass, "Bind service successful!");
+            Log.debug(sClass, "Bind service successful!");
             return true;
         } else {
             Log.err(sClass, "Connect BRouter failed");

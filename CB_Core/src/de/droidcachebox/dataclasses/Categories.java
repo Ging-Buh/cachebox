@@ -119,7 +119,7 @@ public class Categories extends MoveableList<Category> {
         }
     }
 
-    public FilterProperties updateFilterProperties(FilterProperties filter) {
+    public void updateFilterProperties(FilterProperties filter) {
         if (filter.gpxFilenameIds == null) filter.gpxFilenameIds = new ArrayList<>();
         filter.gpxFilenameIds.clear();
         if (filter.categories == null) filter.categories = new ArrayList<>();
@@ -136,7 +136,6 @@ public class Categories extends MoveableList<Category> {
                     filter.gpxFilenameIds.add(gpx.id);
             }
         }
-        return filter;
     }
 
 }

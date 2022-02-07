@@ -208,9 +208,9 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             if (savedInstanceState != null) {
                 GlobalCore.restartAfterKill = true;
                 if (savedInstanceState.isEmpty()) {
-                    Log.info(sClass, "=> onCreate; savedInstanceState is empty");
+                    Log.debug(sClass, "=> onCreate; savedInstanceState is empty");
                 } else {
-                    Log.info(sClass, "=> onCreate; initializations from savedInstanceState");
+                    Log.debug(sClass, "=> onCreate; initializations from savedInstanceState");
                     // ? everything, that is initialized in Splash
                     if (savedInstanceState.getBoolean("useSmallSkin"))
                         GlobalCore.displayType = DisplayType.Small;
@@ -232,7 +232,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     GlobalCore.restartWayPoint = savedInstanceState.getString("selectedWayPoint");
                 }
             } else {
-                Log.info(sClass, "=> onCreate first start");
+                Log.debug(sClass, "=> onCreate first start");
                 GlobalCore.restartAfterKill = false;
             }
 
@@ -247,12 +247,12 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             if (clipboardService != null) {
                 if (clipboardService instanceof android.content.ClipboardManager) {
                     Platform.setClipboard(new AndroidContentClipboard((android.content.ClipboardManager) clipboardService));
-                    Log.info(sClass, "got AndroidContentClipboard");
+                    Log.debug(sClass, "got AndroidContentClipboard");
                 } /*
                 else {
                     if (clipboardService instanceof android.text.ClipboardManager) {
                         PlatformUIBase.setClipboard(new AndroidTextClipboard((android.text.ClipboardManager) clipboardService));
-                        Log.info(sClass, "got AndroidTextClipboard");
+                        Log.debug(sClass, "got AndroidTextClipboard");
                     }
                 }
                 */
@@ -308,10 +308,10 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             androidUIBaseMethods.startService();
 
             isCreated = true;
-            Log.info(sClass, "onCreate <=");
+            Log.debug(sClass, "onCreate <=");
 
         } else {
-            Log.info(sClass, "restartFromSplash: cannot start Main without previous Splash");
+            Log.debug(sClass, "restartFromSplash: cannot start Main without previous Splash");
             restartFromSplash();
         }
         // do no dialogs in create
@@ -319,7 +319,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.info(sClass, "=> onSaveInstanceState");
+        Log.debug(sClass, "=> onSaveInstanceState");
         savedInstanceState.putBoolean("useSmallSkin", GlobalCore.displayType == DisplayType.Small);
         savedInstanceState.putString("WorkPath", GlobalCore.workPath);
 
@@ -332,20 +332,20 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWayPoint().getWaypointCode());
 
         super.onSaveInstanceState(savedInstanceState);
-        Log.info(sClass, "onSaveInstanceState <=");
+        Log.debug(sClass, "onSaveInstanceState <=");
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         // setIntent(intent) here to make future calls (from external) to getIntent() get the most recent Intent data
         // is not necessary for us, I think
-        Log.info(sClass, "=> onNewIntent");
+        Log.debug(sClass, "=> onNewIntent");
         super.onNewIntent(intent);
     }
 
     @Override
     protected void onStop() {
-        Log.info(sClass, "=> onStop");
+        Log.debug(sClass, "=> onStop");
 
         if (mSensorManager != null)
             mSensorManager.unregisterListener(mSensorEventListener);
@@ -354,7 +354,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
         super.onStop();
 
-        Log.info(sClass, "onStop <=");
+        Log.debug(sClass, "onStop <=");
         lastState = LastState.onStop;
     }
 
@@ -375,11 +375,11 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         GL.that.restartRendering(); // does ViewGL.renderContinous();
 
         if (lastState == LastState.onStop) {
-            Log.info(sClass, "=> Resume from Stop");
+            Log.debug(sClass, "=> Resume from Stop");
             showWaitToRenderStarted();
             InvalidateTextureListeners.getInstance().fireInvalidateTexture();
         } else {
-            Log.info(sClass, "=> onResume");
+            Log.debug(sClass, "=> onResume");
         }
 
         OnResumeListeners.getInstance().onResume();
@@ -396,7 +396,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
         setWakeLock(Settings.SuppressPowerSaving.getValue());
 
-        Log.info(sClass, "onResume <=");
+        Log.debug(sClass, "onResume <=");
         lastState = LastState.onResume;
         // having a protokoll of the program start: but now reset to SettingsClass.AktLogLevel but >= LogLevel.ERROR
         if (Settings.AktLogLevel.getEnumValue() == LogLevel.OFF)
@@ -453,19 +453,19 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     @Override
     protected void onPause() {
-        Log.info(sClass, "=> onPause");
+        Log.debug(sClass, "=> onPause");
 
         if (isFinishing()) {
-            Log.info(sClass, "is completely Finishing()");
+            Log.debug(sClass, "is completely Finishing()");
         }
 
         super.onPause();
-        Log.info(sClass, "onPause <=");
+        Log.debug(sClass, "onPause <=");
     }
 
     @Override
     public void onDestroy() {
-        Log.info(sClass, "=> onDestroy AndroidApplication");
+        Log.debug(sClass, "=> onDestroy AndroidApplication");
         try {
             Platform.addToMediaScannerList(Settings.DraftsGarminPath.getValue());
             Platform.addToMediaScannerList(CB_SLF4J.logfile);
@@ -473,7 +473,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             for (String fn : Platform.getMediaScannerList()) {
                 intent.setData(Uri.fromFile(new java.io.File(fn)));
                 sendBroadcast(intent);
-                Log.info(sClass, "Send " + fn + " to MediaScanner.");
+                Log.debug(sClass, "Send " + fn + " to MediaScanner.");
             }
         } catch (Exception e) {
             Log.err(sClass, "Send files to MediaScanner: " + e.getMessage());
@@ -487,12 +487,12 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         screenBroadcastReceiver = null;
 
         if (isRestart) {
-            Log.info(sClass, "isRestart");
+            Log.debug(sClass, "isRestart");
             super.onDestroy();
             isRestart = false;
         } else {
             if (isFinishing()) {
-                Log.info(sClass, "isFinishing");
+                Log.debug(sClass, "isFinishing");
                 if (GlobalCore.RunFromSplash) {
 
                     if (wakeLock != null) {
@@ -520,7 +520,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 if (GlobalCore.RunFromSplash)
                     System.exit(0);
             } else {
-                Log.info(sClass, "isFinishing==false");
+                Log.debug(sClass, "isFinishing==false");
                 showViewListener.onDestroyWithoutFinishing();
 
                 SettingsDatabase.getInstance().close();
@@ -530,7 +530,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 super.onDestroy();
             }
         }
-        Log.info(sClass, "onDestroy AndroidApplication <=");
+        Log.debug(sClass, "onDestroy AndroidApplication <=");
         lastState = LastState.onDestroy;
     }
 
@@ -572,7 +572,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        Log.info(sClass, "=> onPrepareOptionsMenu");
+        Log.debug(sClass, "=> onPrepareOptionsMenu");
         int menuId = showViewListener.getAktViewId();
         if (menuId != 0) {
             menu.clear();
@@ -611,7 +611,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     double altCorrection = Double.parseDouble(s[11]);
                     if (altCorrection == 0)
                         return;
-                    // Log.info(sClass, "AltCorrection: " + String.valueOf(altCorrection));
+                    // Log.debug(sClass, "AltCorrection: " + String.valueOf(altCorrection));
                     Locator.getInstance().setAltCorrection(altCorrection);
                     // Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
                     androidUIBaseMethods.getLocationManager().removeNmeaListener(this);
@@ -625,7 +625,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     }
 
     void restartFromSplash() {
-        Log.info(sClass, "=> Must restart from splash!");
+        Log.debug(sClass, "=> Must restart from splash!");
         Intent splashIntent = new Intent().setClass(this, Splash.class);
         startActivity(splashIntent);
         finish();
@@ -642,7 +642,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                 wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CacheBox:PartialWakeLock");
             }
             if (wakeLock != null) {
-                Log.info(sClass, "wakeLock.acquire()");
+                Log.debug(sClass, "wakeLock.acquire()");
                 // even if not held, you must acquire to change behavior of powerservice
                 wakeLock.acquire();
             }
@@ -682,12 +682,12 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         if (Database.Data != null) {
             if (Database.Data.cacheList != null) {
                 int no = Database.Data.cacheList.size();
-                Log.info(sClass, "Number of geocaches: " + no + " in " + Database.Data.getDatabasePath());
+                Log.debug(sClass, "Number of geocaches: " + no + " in " + Database.Data.getDatabasePath());
             } else {
-                Log.info(sClass, "Number of geocaches: 0 (null)" + " in " + Database.Data.getDatabasePath());
+                Log.debug(sClass, "Number of geocaches: 0 (null)" + " in " + Database.Data.getDatabasePath());
             }
         } else {
-            Log.info(sClass, "Database not initialized.");
+            Log.debug(sClass, "Database not initialized.");
         }
     }
      */

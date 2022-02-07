@@ -31,10 +31,10 @@ public class SwitchAutoResort extends AbstractAction {
     public void execute() {
         GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
         if (GlobalCore.getAutoResort()) {
-            if (!CBDB.getInstance().cacheList.resortAtWork) {
-                synchronized (CBDB.getInstance().cacheList) {
+            if (!CBDB.cacheList.resortAtWork) {
+                synchronized (CBDB.cacheList) {
                     Log.debug("ShowCacheList", "sort CacheList by Quick Action SwitchAutoresort");
-                    CacheWithWP ret = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                    CacheWithWP ret = CBDB.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                     if (ret != null && ret.getCache() != null) {
                         GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                         GlobalCore.setNearestCache(ret.getCache());

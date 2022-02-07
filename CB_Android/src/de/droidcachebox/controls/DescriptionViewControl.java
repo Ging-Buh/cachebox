@@ -80,11 +80,11 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(0);
                     newCache = geoCacheRelated.cache;
 
-                    synchronized (CBDB.getInstance().cacheList) {
+                    synchronized (CBDB.cacheList) {
                         CBDB.getInstance().beginTransaction();
 
-                        CBDB.getInstance().cacheList.remove(aktCache);
-                        CBDB.getInstance().cacheList.add(newCache);
+                        CBDB.cacheList.remove(aktCache);
+                        CBDB.cacheList.add(newCache);
 
                         cachesDAO.updateDatabase(newCache);
                         newCache.setLongDescription("");

@@ -26,16 +26,16 @@ class MultiThreadQueueProcessor extends Thread {
     private final MapTiles mapTiles;
     boolean isWorking, canTakeOrder, doStop;
     long startTime;
-    private String log = "MapTileQueueThread";
+    private String sClass = "MapTileQueueThread";
 
     MultiThreadQueueProcessor(MapTiles mapTiles) {
         threadIndex++;
-        log = log + "[" + threadIndex + "]";
+        sClass = sClass + "[" + threadIndex + "]";
         this.mapTiles = mapTiles;
         isWorking = false;
         startTime = System.currentTimeMillis();
         canTakeOrder = true;
-        Log.info(log, "Starting a new thread with index: " + threadIndex);
+        Log.debug(sClass, "Starting a new thread with index: " + threadIndex);
         doStop = false;
     }
 
@@ -67,9 +67,9 @@ class MultiThreadQueueProcessor extends Thread {
                     //vLog.debug(log, "waking up");
                 }
             } while (!doStop);
-            Log.info(log, "stopping");
+            Log.debug(sClass, "stopping");
         } catch (Exception ex3) {
-            Log.err(log, ex3);
+            Log.err(sClass, ex3);
             try {
                 Thread.sleep(200);
             } catch (InterruptedException ignored) {

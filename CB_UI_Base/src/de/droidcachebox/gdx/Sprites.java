@@ -234,7 +234,7 @@ public class Sprites {
             tmp.setScale(scale);
 
         if (tmp == null) {
-            Log.info(sClass, "missing icon " + name);
+            Log.debug(sClass, "missing icon " + name);
             tmp = createSprite(atlasDefault, "bigUndefined"); // damit kein null Sprite zurückgegeben wird falls ich was übersehen habe
         } else {
             if (name.endsWith("Solved")) {

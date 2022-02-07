@@ -133,8 +133,8 @@ public class CoordinateEntity extends Entity {
 
             // evtl. bereits geladenen Waypoint aktualisieren
             Cache cacheFromCacheList;
-            synchronized (CBDB.getInstance().cacheList) {
-                cacheFromCacheList = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(dbWaypoint.geoCacheId);
+            synchronized (CBDB.cacheList) {
+                cacheFromCacheList = CBDB.cacheList.getCacheByIdFromCacheList(dbWaypoint.geoCacheId);
             }
             if (cacheFromCacheList == null)
                 cacheFromCacheList = SolverLines.solverCacheInterface.globalCoreGetSelectedCache();

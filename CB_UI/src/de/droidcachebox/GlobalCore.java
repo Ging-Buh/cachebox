@@ -37,7 +37,6 @@ import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CachesDAO;
 import de.droidcachebox.dataclasses.Cache;
-import de.droidcachebox.dataclasses.CacheList;
 import de.droidcachebox.dataclasses.Waypoint;
 import de.droidcachebox.gdx.DisplayType;
 import de.droidcachebox.gdx.GL;
@@ -180,19 +179,20 @@ public class GlobalCore implements SolverCacheInterface {
     }
 
     public static void checkSelectedCacheValid() {
-
-        CacheList List = CBDB.getInstance().cacheList;
-
         // Prüfen, ob der SelectedCache noch in der cacheList drin ist.
-        if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId) == null)) {
-            // der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
-            Log.debug(sClass, "Change SelectedCache from " + GlobalCore.getSelectedCache().getGeoCacheCode() + "to" + List.get(0).getGeoCacheCode());
-            GlobalCore.setSelectedCache(List.get(0));
+        if (CBDB.cacheList.size() > 0 ) {
+            if (GlobalCore.isSetSelectedCache()) {
+                if (CBDB.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId) == null) {
+                    // selected geocache is not in cacheList
+                    GlobalCore.setSelectedCache(CBDB.cacheList.get(0));
+                }
+            }
+            else {
+                GlobalCore.setSelectedCache(CBDB.cacheList.get(0));
+            }
         }
-        // Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
-        if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0)) {
-            GlobalCore.setSelectedCache(List.get(0));
-            Log.debug(sClass, "Set SelectedCache to " + List.get(0).getGeoCacheCode() + " first in List.");
+        else {
+            if (GlobalCore.getSelectedCache() != null )GlobalCore.setSelectedCache(null);
         }
     }
 

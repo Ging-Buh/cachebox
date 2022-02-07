@@ -115,7 +115,7 @@ public class GPXFileImporter {
         if (gpxFilename == null)
             return;
 
-        Log.info(sClass, "gpx import from " + gpxFilename.gpxFileName);
+        Log.debug(sClass, "gpx import from " + gpxFilename.gpxFileName);
         Map<String, String> values = new HashMap<>();
 
         System.setProperty("sjxp.namespaces", "false");

@@ -53,7 +53,7 @@ public class TextFilterView extends CB_View_Base implements KeyboardFocusChanged
      * 1 = Gc-Code <br/>
      * 2 = Owner <br/>
      */
-    private int aktFilterMode = 0;
+    private int currentFilterMode = 0;
 
     public TextFilterView(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -144,7 +144,7 @@ public class TextFilterView extends CB_View_Base implements KeyboardFocusChanged
      *              2 = Owner <br/>
      */
     private void switchFilterMode(int state) {
-        aktFilterMode = state;
+        currentFilterMode = state;
 
         if (state == 0) {
             mTglBtnTitle.setState(1);
@@ -189,19 +189,18 @@ public class TextFilterView extends CB_View_Base implements KeyboardFocusChanged
         }
     }
 
-    public FilterProperties updateFilterProperties(FilterProperties filter) {
+    public void updateFilterProperties(FilterProperties filter) {
         if (sql.getText().length() > 0) {
             filter.setUserDefinedSQL(sql.getText());
         } else {
             String txtFilter = mEingabe.getText().toLowerCase(); // only the text to search for
-            if (aktFilterMode == 0)
+            if (currentFilterMode == 0)
                 filter.filterName = txtFilter;
-            else if (aktFilterMode == 1)
+            else if (currentFilterMode == 1)
                 filter.filterGcCode = txtFilter;
-            else if (aktFilterMode == 2)
+            else if (currentFilterMode == 2)
                 filter.filterOwner = txtFilter;
         }
-        return filter;
     }
 
     @Override

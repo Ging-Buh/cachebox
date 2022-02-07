@@ -137,7 +137,7 @@ public class Splash extends Activity {
 
     private void info(String text) {
         if (logIsInitialized) {
-            Log.info(sClass, text);
+            Log.debug(sClass, text);
         }
     }
 
@@ -160,10 +160,10 @@ public class Splash extends Activity {
         GlobalCore.RunFromSplash = true;
         Intent mainIntent;
         if (main == null) {
-            Log.info(sClass, "Start Main");
+            Log.debug(sClass, "Start Main");
             mainIntent = new Intent().setClass(this, Main.class);
         } else {
-            Log.info(sClass, "Connect to Main to onNewIntent(Intent)");
+            Log.debug(sClass, "Connect to Main to onNewIntent(Intent)");
             mainIntent = main.getIntent();
         }
         int width = frame.getMeasuredWidth();
@@ -208,7 +208,7 @@ public class Splash extends Activity {
 
         final Uri uri = getIntent().getData();
         if (uri != null) {
-            Log.info(sClass, "Intent Data:" + uri.toString());
+            Log.debug(sClass, "Intent Data:" + uri.toString());
             String scheme = uri.getScheme();
             if (scheme != null) {
                 scheme = scheme.toLowerCase();
@@ -300,7 +300,7 @@ public class Splash extends Activity {
             int height = frame.getMeasuredHeight();
             DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
             if (height == 0 || width == 0) {
-                Log.info(sClass, "Width/Height still 0, so calc from displaymetrics");
+                Log.debug(sClass, "Width/Height still 0, so calc from displaymetrics");
                 height = displaymetrics.heightPixels;
                 width = displaymetrics.widthPixels;
                 int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -330,7 +330,7 @@ public class Splash extends Activity {
             // class GL_UISizes
             GL_UISizes.defaultDPI = displaymetrics.density;
 
-            Log.info(sClass, "Screen width/height: " + ui.Window.width + "/" + ui.Window.height);
+            Log.debug(sClass, "Screen width/height: " + ui.Window.width + "/" + ui.Window.height);
         }
     }
 
@@ -574,7 +574,7 @@ public class Splash extends Activity {
     private void finishInitializationAndStartMain() {
         saveWorkPathToPreferences();
 
-        Log.info(sClass, "Initialized for use with " + workPath);
+        Log.debug(sClass, "Initialized for use with " + workPath);
 
         if (pleaseWaitDialog == null)
             runOnUiThread(this::showPleaseWaitDialog);
@@ -590,7 +590,7 @@ public class Splash extends Activity {
             return;
         }
 
-        Log.info(sClass, "start Settings Database " + workPath + "/User/Config.db3");
+        Log.debug(sClass, "start Settings Database " + workPath + "/User/Config.db3");
         boolean userFolderExists = FileIO.createDirectory(workPath + "/User");
         if (!userFolderExists) {
             Log.err(sClass, "Can't create " + workPath + "/User");
@@ -604,10 +604,10 @@ public class Splash extends Activity {
         if (SettingsDatabase.getInstance().isDatabaseNew()) {
             Settings.getInstance().loadAllDefaultValues();
             Settings.getInstance().writeToDatabases();
-            Log.info(sClass, "Default Settings written to new configDB.");
+            Log.debug(sClass, "Default Settings written to new configDB.");
         } else {
             Settings.getInstance().readFromDB();
-            Log.info(sClass, "Settings read from configDB.");
+            Log.debug(sClass, "All settings read");
         }
         Settings.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue()));
 
@@ -637,7 +637,7 @@ public class Splash extends Activity {
             Log.err(sClass, "Copy Asset", e);
         }
 
-        Log.info(sClass, GlobalCore.getInstance().getVersionString());
+        Log.debug(sClass, GlobalCore.getInstance().getVersionString());
 
         if (pleaseWaitDialog != null) {
             pleaseWaitDialog.dismiss();
@@ -670,24 +670,24 @@ public class Splash extends Activity {
     private void mediaInfo() {
         //<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"></uses-permission> is only for system apps
         try {
-            Log.info(sClass, "android.os.Build.VERSION.SDK_INT= " + android.os.Build.VERSION.SDK_INT);
-            Log.info(sClass, "workPath set to " + workPath);
-            Log.info(sClass, "getFilesDir()= " + getFilesDir());// user invisible
-            Log.info(sClass, "Environment.getExternalStoragePublicDirectory()= " + Environment.getExternalStoragePublicDirectory("").getAbsolutePath());
-            Log.info(sClass, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
-            Log.info(sClass, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
+            Log.debug(sClass, "android.os.Build.VERSION.SDK_INT= " + android.os.Build.VERSION.SDK_INT);
+            Log.debug(sClass, "workPath set to " + workPath);
+            Log.debug(sClass, "getFilesDir()= " + getFilesDir());// user invisible
+            Log.debug(sClass, "Environment.getExternalStoragePublicDirectory()= " + Environment.getExternalStoragePublicDirectory("").getAbsolutePath());
+            Log.debug(sClass, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
+            Log.debug(sClass, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
 
             // normally [0] is the internal SD, [1] is the external SD
             File[] dirs = getExternalFilesDirs(null);
             for (int i = 0; i < dirs.length; i++) {
-                Log.info(sClass, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
+                Log.debug(sClass, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
             }
             // will be automatically created
 				/*
 				if (android.os.Build.VERSION.SDK_INT >= LOLLIPOP) {
 					dirs = getExternalMediaDirs();
 					for (int i = 0; i < dirs.length; i++) {
-						Log.info(log, "getExternalMediaDirs[" + i + "]= " + dirs[i].getAbsolutePath());
+						Log.debug(log, "getExternalMediaDirs[" + i + "]= " + dirs[i].getAbsolutePath());
 					}
 				}
 				*/

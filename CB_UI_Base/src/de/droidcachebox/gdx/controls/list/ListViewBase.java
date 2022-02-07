@@ -499,7 +499,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                             return;
                         }
                         setListPos(mAnimationTarget, true);
-                        //Log.info(log, "ListAnimation ready mPos=" + mPos);
+                        //Log.debug(log, "ListAnimation ready mPos=" + mPos);
 
                         stopTimer();
                         return;

@@ -18,7 +18,7 @@ public class RememberGeoCache extends AbstractAction {
     @Override
     public void execute() {
         if (Settings.rememberedGeoCache.getValue().length() > 0) {
-            Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
+            Cache rememberedCache = CBDB.cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
             GlobalCore.setSelectedCache(rememberedCache);
         } else {
             Cache geoCache = GlobalCore.getSelectedCache();

@@ -1,6 +1,7 @@
 package de.droidcachebox.menu.menuBtn4;
 
 import static de.droidcachebox.menu.Action.UploadDrafts;
+import static de.droidcachebox.menu.Action.UploadLogs;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -89,7 +90,7 @@ public class ShowDrafts extends AbstractShowAction {
 
         // independent from cache-selection
         cm.addMenuItem("uploadDrafts", UploadDrafts.action.getIcon(), () -> UploadDrafts.action.execute());
-        cm.addMenuItem("directLog", UploadLogs.getInstance().getIcon(), () -> UploadLogs.getInstance().execute());
+        cm.addMenuItem("directLog", UploadLogs.action.getIcon(), () -> UploadLogs.action.execute());
         cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
 
         // extensions for owner
@@ -109,6 +110,7 @@ public class ShowDrafts extends AbstractShowAction {
             draftsView = new DraftsView();
         }
         draftsView.addNewDraft(logType, true);
+
     }
 
     private void deleteAllDrafts() {
@@ -124,7 +126,18 @@ public class ShowDrafts extends AbstractShowAction {
     public void addNewDraft(LogType logType, boolean andEdit) {
         if (draftsView == null || draftsView.isDisposed()) {
             draftsView = new DraftsView();
+            draftsView.addNewDraft(logType, andEdit); // andEdit will always be false, if called from QuickDraft
+            draftsView = null; // do not make Gesture Button active (thus context menu is shown on first click)
         }
-        draftsView.addNewDraft(logType, andEdit); // andEdit will always be false, if called from QuickDraft
+        else {
+            draftsView.addNewDraft(logType, andEdit); // andEdit will always be false, if called from QuickDraft
+        }
+    }
+
+    public void notifyDataSetChanged() {
+        if (draftsView == null || draftsView.isDisposed()) {
+            draftsView = new DraftsView();
+        }
+        draftsView.notifyDataSetChanged();
     }
 }

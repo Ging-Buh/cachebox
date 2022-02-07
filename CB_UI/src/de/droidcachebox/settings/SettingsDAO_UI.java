@@ -9,13 +9,12 @@ public class SettingsDAO_UI extends SettingsDAO {
     }
 
     @Override
-    public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
+    public void readPlatformSetting(SettingBase<?> setting) {
         try {
-            setting = Platform.readPlatformSetting(setting);
+            Platform.readPlatformSetting(setting);
             setting.clearDirty();
         } catch (Exception e) {
             setting.loadDefault();
         }
-        return setting;
     }
 }

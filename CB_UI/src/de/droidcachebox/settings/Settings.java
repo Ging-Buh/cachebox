@@ -45,7 +45,7 @@ public class Settings extends SettingsList implements AllSettings {
         else
             isWritable = false;
         if (isWritable)
-            Log.info(sClass, "Download to " + pathForMapFile);
+            Log.debug(sClass, "Download to " + pathForMapFile);
         else {
             Log.err(sClass, "Download to " + pathForMapFile + " is not possible!");
             // don't use SettingsClass.MapPackFolder.getDefaultValue()
@@ -53,7 +53,7 @@ public class Settings extends SettingsList implements AllSettings {
             // own or global repository is writable by default, but do check again
             pathForMapFile = MapPackFolderLocal.getValue();
             isWritable = FileIO.canWrite(pathForMapFile);
-            Log.info(sClass, "Download to " + pathForMapFile + " is possible? " + isWritable);
+            Log.debug(sClass, "Download to " + pathForMapFile + " is possible? " + isWritable);
         }
         return pathForMapFile;
     }

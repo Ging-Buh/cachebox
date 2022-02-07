@@ -614,11 +614,11 @@ public class DraftsView extends V_ListView {
                 return;
             }
 
-            synchronized (CBDB.getInstance().cacheList) {
-                cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
+            synchronized (CBDB.cacheList) {
+                cache = CBDB.cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
                 if (cache == null) {
-                    CBDB.getInstance().cacheList.add(tmpCache);
-                    cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
+                    CBDB.cacheList.add(tmpCache);
+                    cache = CBDB.cacheList.getCacheByGcCodeFromCacheList(currentDraft.gcCode);
                 }
             }
 
@@ -673,8 +673,8 @@ public class DraftsView extends V_ListView {
                             Settings.getInstance().acceptChanges();
                             // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
                             // damit das Smiley Symbol aus der Map und der CacheList verschwindet
-                            synchronized (CBDB.getInstance().cacheList) {
-                                Cache tc = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(cache.generatedId);
+                            synchronized (CBDB.cacheList) {
+                                Cache tc = CBDB.cacheList.getCacheByIdFromCacheList(cache.generatedId);
                                 if (tc != null) {
                                     tc.setFound(false);
                                 }

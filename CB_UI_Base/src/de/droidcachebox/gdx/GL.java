@@ -459,7 +459,7 @@ public class GL implements ApplicationListener {
     }
 
     public void showDialog(final Dialog dialog, boolean atTop) {
-        Log.info("GL", "show dialog(Menu) " + dialog.getTitle());
+        Log.debug("GL", "show dialog(Menu) " + dialog.getTitle());
         try {
             setFocusedEditTextField(null);
             clearRenderViews();
@@ -619,7 +619,7 @@ public class GL implements ApplicationListener {
     }
 
     public void showActivity(final ActivityBase activity) {
-        Log.info("GL", "show activity " + activity.name);
+        Log.debug("GL", "show activity " + activity.name);
         setFocusedEditTextField(null);
         clearRenderViews();
         Platform.showForDialog();

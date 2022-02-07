@@ -17,6 +17,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
     private static final long serialVersionUID = -969846843815877942L;
     private static SettingsList that;
     private boolean isLoaded = false;
+    private Database_Core dataDB;
 
     public SettingsList() {
         that = this;
@@ -64,24 +65,31 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
         getSettingsDB().beginTransaction();
         SettingsDAO dao = createSettingsDAO();
         // if used from Splash, DataDB is not possible = Data == null
-        Database_Core Data = getDataDB();
-        try {
-            if (Data != null)
-                Data.beginTransaction();
-        } catch (Exception ex) {
-            Data = null;
-        }
 
         boolean needRestart = false;
-        String currentSettingName = "";
+        String settingName = "";
         try {
             for (SettingBase<?> setting : this) {
                 if (setting.isDirty()) {
-                    currentSettingName = setting.name;
+                    settingName = setting.name;
 
                     if (Local == setting.getStoreType()) {
-                        if (Data != null)
-                            dao.writeSetting(Data, setting);
+                        if (dataDB == null) {
+                            dataDB = getDataDB();
+                        }
+                        if (dataDB != null) {
+                            if (dataDB.isOpen()) {
+                                // there are only a few settings that go into CBDB
+                                try {
+                                    dataDB.beginTransaction();
+                                    dao.writeSetting(dataDB, setting);
+                                    dataDB.setTransactionSuccessful();
+                                    dataDB.endTransaction();
+                                } catch (Exception ex) {
+                                    dataDB.endTransaction();
+                                }
+                            }
+                        }
                     } else if (Global == setting.getStoreType() || (canNotUsePlatformSettings() && Platform == setting.getStoreType())) {
                         dao.writeSetting(getSettingsDB(), setting);
                     } else if (Platform == setting.getStoreType()) {
@@ -95,91 +103,49 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                     setting.clearDirty();
                 }
             }
-            // all changes successful
-            if (Data != null)
-                Data.setTransactionSuccessful();
             getSettingsDB().setTransactionSuccessful();
         } catch (Exception ex) {
-            Log.err(sClass, currentSettingName, ex);
+            Log.err(sClass, settingName, ex);
         } finally {
             getSettingsDB().endTransaction();
-            if (Data != null)
-                Data.endTransaction();
         }
         return needRestart;
     }
 
     public void readFromDB() {
         AtomicInteger tryCount = new AtomicInteger(0);
+        SettingsDAO dao = createSettingsDAO();
+        Database_Core dataDB = getDataDB();
+        boolean dataDBIsOpen = dataDB != null && dataDB.isOpen();
         while (tryCount.incrementAndGet() < 10) {
-            SettingsDAO dao = createSettingsDAO();
             try {
-
                 for (SettingBase<?> setting : this) {
-                    // String debugString;
-                    // boolean isPlatform = false;
-                    // boolean isPlattformoverride = false;
-
                     if (Local == setting.getStoreType()) {
-                        if (getDataDB() == null || getDataDB().getDatabasePath() == null)
+                        if (dataDBIsOpen) {
+                            dao.readSettingOrDefault(dataDB, setting);
+                        } else {
                             setting.loadDefault();
-                        else
-                            setting = dao.readSetting(getDataDB(), setting);
+                        }
                     } else if (Global == setting.getStoreType() || (canNotUsePlatformSettings() && Platform == setting.getStoreType())) {
-                        setting = dao.readSetting(getSettingsDB(), setting);
+                        dao.readSettingOrDefault(getSettingsDB(), setting);
                     } else if (Platform == setting.getStoreType()) {
-                        // isPlatform = true;
-                        SettingBase<?> cpy = setting.copy();
-                        cpy = dao.readSetting(getSettingsDB(), cpy);
-                        setting = dao.readPlatformSetting(setting);
-
-                        // chk for Value on User.db3 and cleared Platform Value
-
-                        if (setting instanceof SettingString) {
-                            SettingString st = (SettingString) setting;
-
-                            if (st.value.length() == 0) {
-                                // Platform Settings are empty use db3 value or default
-                                setting = dao.readSetting(getSettingsDB(), setting);
-                                dao.writePlatformSetting(setting);
-                            }
-                        } else if (!cpy.value.equals(setting.value)) {
-                            if (setting.value.equals(setting.defaultValue)) {
+                        SettingBase<?> platformSetting = setting.copy(); // cause we do not know how to new
+                        dao.readSettingOrDefault(getSettingsDB(), setting);
+                        dao.readPlatformSetting(platformSetting);
+                        if (!platformSetting.value.equals(setting.value)) {
+                            if (platformSetting.value.equals(setting.defaultValue)) {
                                 // override Platformsettings with UserDBSettings
-                                setting.setValueFrom(cpy);
-                                dao.writePlatformSetting(setting);
+                                platformSetting.setValueFrom(setting);
+                                dao.writePlatformSetting(platformSetting);
                                 setting.clearDirty();
                                 // isPlattformoverride = true;
                             } else {
                                 // override UserDBSettings with Platformsettings
-                                cpy.setValueFrom(setting);
-                                dao.writeSetting(getSettingsDB(), cpy);
-                                cpy.clearDirty();
+                                setting.setValueFrom(platformSetting);
+                                dao.writeSetting(getSettingsDB(), platformSetting);
                             }
                         }
                     }
-
-                    /*
-                    if (setting instanceof SettingEncryptedString) {// Don't write encrypted settings in to a log file
-                        debugString = "*******";
-                    } else {
-                        debugString = setting.value.toString();
-                    }
-
-                    if (isPlatform) {
-                        if (isPlattformoverride) {
-                            Log.trace(log, "Override Platform setting [" + setting.name + "] from DB to: " + debugString);
-                        } else {
-                            Log.trace(log, "Override PlatformDB setting [" + setting.name + "] from Platform to: " + debugString);
-                        }
-                    } else {
-                        if (!setting.value.equals(setting.defaultValue)) {
-                            Log.trace(log, "Change " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
-                        } else {
-                            Log.trace(log, "Default " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
-                        }
-                    }
-                     */
                 }
                 tryCount.set(100);
             } catch (Exception e) {

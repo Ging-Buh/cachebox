@@ -81,24 +81,25 @@ public class ShowSelectDB extends AbstractAction {
 
             @Override
             public void run() {
+                Log.info(sClass, "Selected " + Settings.DatabaseName.getValue());
                 CachesDAO cachesDAO = new CachesDAO();
                 CBDB.getInstance().close();
                 CBDB.getInstance().startUp(GlobalCore.workPath + "/" + Settings.DatabaseName.getValue());
-                Settings.getInstance().readFromDB();
+                Settings.getInstance().readFromDB(); // ? should only read the SettingStoreType.Local, the others remain unchanged
                 CoreData.categories = new Categories();
                 FilterInstances.setLastFilter(new FilterProperties(Settings.lastFilter.getValue()));
                 String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
-                cachesDAO.updateCacheCountForGPXFilenames();
-                synchronized (CBDB.getInstance().cacheList) {
+                cachesDAO.updateCacheCountForGPXFilenames(); // ? why may the entries be incorrect?
+                synchronized (CBDB.cacheList) {
                     cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                 }
 
                 GlobalCore.setSelectedCache(null);
-                if (CBDB.getInstance().cacheList.size() > 0) {
+                if (CBDB.cacheList.size() > 0) {
                     GlobalCore.setAutoResort(Settings.StartWithAutoSelect.getValue());
-                    if (GlobalCore.getAutoResort() && !CBDB.getInstance().cacheList.resortAtWork) {
-                        synchronized (CBDB.getInstance().cacheList) {
-                            CacheWithWP ret = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(null));
+                    if (GlobalCore.getAutoResort() && !CBDB.cacheList.resortAtWork) {
+                        synchronized (CBDB.cacheList) {
+                            CacheWithWP ret = CBDB.cacheList.resort(Locator.getInstance().getValidPosition(null));
                             if (ret != null && ret.getCache() != null) {
                                 cachesDAO.loadDetail(ret.getCache());
                                 GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
@@ -111,8 +112,8 @@ public class ShowSelectDB extends AbstractAction {
                         // set selectedCache from last selected Cache
                         String lastSelectedCache = Settings.lastSelectedCache.getValue();
                         if (lastSelectedCache != null && lastSelectedCache.length() > 0) {
-                            for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
-                                Cache c = CBDB.getInstance().cacheList.get(i);
+                            for (int i = 0, n = CBDB.cacheList.size(); i < n; i++) {
+                                Cache c = CBDB.cacheList.get(i);
                                 if (c.getGeoCacheCode().equalsIgnoreCase(lastSelectedCache)) {
                                     try {
                                         cachesDAO.loadDetail(c);
@@ -128,7 +129,7 @@ public class ShowSelectDB extends AbstractAction {
 
                     // get first of list, if none selected till now
                     if (GlobalCore.getSelectedCache() == null) {
-                        Cache c = CBDB.getInstance().cacheList.get(0);
+                        Cache c = CBDB.cacheList.get(0);
                         cachesDAO.loadDetail(c);
                         GlobalCore.setSelectedCache(c);
                     }

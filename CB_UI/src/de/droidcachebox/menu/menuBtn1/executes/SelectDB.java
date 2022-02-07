@@ -172,7 +172,7 @@ public class SelectDB extends ActivityBase {
                         CachesDAO cachesDAO = new CachesDAO();
                         cachesDAO.updateCacheCountForGPXFilenames();
 
-                        synchronized (CBDB.getInstance().cacheList) {
+                        synchronized (CBDB.cacheList) {
                             cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                             GlobalCore.checkSelectedCacheValid();
                         }
@@ -364,6 +364,7 @@ public class SelectDB extends ActivityBase {
 
     @Override
     public void finish() {
+        Log.debug(sClass, "finish (close activity) msg to platformConnector: " + !mustSelect);
         GL.that.runOnGL(() -> GL.that.closeActivity(!mustSelect));
     }
 

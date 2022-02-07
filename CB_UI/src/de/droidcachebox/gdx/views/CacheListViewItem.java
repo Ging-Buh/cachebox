@@ -120,7 +120,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
         if (mCache.getCoordinate() == null) {
             // mCache was disposed
-            Cache c = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(mCache.generatedId);
+            Cache c = CBDB.cacheList.getCacheByIdFromCacheList(mCache.generatedId);
             if (c == null) {
                 return;
             }

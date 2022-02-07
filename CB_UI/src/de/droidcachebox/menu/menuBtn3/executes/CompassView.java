@@ -651,7 +651,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
         CoordinateGPS position = Locator.getInstance().getMyPosition();
 
         if (position == null) {
-            Log.info(sClass, "but position is null");
+            Log.debug(sClass, "but position is null");
             return;
         }
 
@@ -667,7 +667,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
         try {
             MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
         } catch (Exception e1) {
-            Log.info(sClass, "PositionChanged but error calculating distance and bearing");
+            Log.debug(sClass, "PositionChanged but error calculating distance and bearing");
             return;
         }
 
@@ -702,7 +702,7 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
                 }
             }
         } else {
-            Log.info(sClass, "PositionChanged but lblDistance is null or disposed");
+            Log.debug(sClass, "PositionChanged but lblDistance is null or disposed");
         }
 
         if (lblAccuracy != null && !lblAccuracy.isDisposed()) {

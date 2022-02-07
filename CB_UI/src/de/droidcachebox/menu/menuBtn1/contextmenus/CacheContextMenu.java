@@ -119,7 +119,7 @@ public class CacheContextMenu {
                     Settings.rememberedGeoCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
                     Settings.getInstance().acceptChanges();
                 } else if (btnNumber == ButtonDialog.BTN_MIDDLE_NEUTRAL) {
-                    Cache rememberedCache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
+                    Cache rememberedCache = CBDB.cacheList.getCacheByGcCodeFromCacheList(Settings.rememberedGeoCache.getValue());
                     if (rememberedCache != null) GlobalCore.setSelectedCache(rememberedCache);
                 } else {
                     Settings.rememberedGeoCache.setValue("");
@@ -155,10 +155,10 @@ public class CacheContextMenu {
                         }
 
                         // Reload result from DB
-                        synchronized (CBDB.getInstance().cacheList) {
+                        synchronized (CBDB.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
                             cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
-                            GlobalCore.setSelectedCache(CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList(GCCode));
+                            GlobalCore.setSelectedCache(CBDB.cacheList.getCacheByGcCodeFromCacheList(GCCode));
                             CacheListChangedListeners.getInstance().fire();
                         }
 
@@ -235,7 +235,7 @@ public class CacheContextMenu {
         CachesDAO cachesDAO = new CachesDAO();
         cachesDAO.updateDatabase(GlobalCore.getSelectedCache());
         // Update cacheList
-        CBDB.getInstance().cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());
+        CBDB.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());
         // Update View
         ((ShowDescription) ShowDescription.action).updateDescriptionView(true);
         CacheListChangedListeners.getInstance().fire();

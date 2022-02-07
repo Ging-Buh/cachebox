@@ -49,7 +49,7 @@ public class Locator {
     private Locator() {
         Energy.addChangedEventListener(() -> {
             isDisplayOff = Energy.isDisplayOff();
-            Log.info(sClass, "Display off: " + isDisplayOff);
+            Log.debug(sClass, "Display off: " + isDisplayOff);
         });
     }
 

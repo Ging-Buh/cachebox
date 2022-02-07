@@ -184,7 +184,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         do {
             count++;
             newValues.setGeoCacheCode(prefix + String.format(Locale.US, "%04d", count));
-        } while (CBDB.getInstance().cacheList.getCacheByIdFromCacheList(Cache.generateCacheId(newValues.getGeoCacheCode())) != null);
+        } while (CBDB.cacheList.getCacheByIdFromCacheList(Cache.generateCacheId(newValues.getGeoCacheCode())) != null);
         newValues.setGeoCacheName(newValues.getGeoCacheCode());
         newValues.setOwner("Unbekannt");
         newValues.setState("");
@@ -236,7 +236,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
             cache.generatedId = Cache.generateCacheId(gcc);
 
-            Cache cl = CBDB.getInstance().cacheList.getCacheByIdFromCacheList(cache.generatedId);
+            Cache cl = CBDB.cacheList.getCacheByIdFromCacheList(cache.generatedId);
 
             if (cl != null) {
                 update = true;
@@ -262,7 +262,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
                 cachesDAO.updateDatabase(cache);
                 CacheListChangedListeners.getInstance().fire();
             } else {
-                CBDB.getInstance().cacheList.add(cache);
+                CBDB.cacheList.add(cache);
                 cachesDAO.writeToDatabase(cache);
                 GlobalCore.setSelectedCache(cache);
                 CacheListChangedListeners.getInstance().fire();

@@ -879,7 +879,7 @@ public class EditCoord extends ActivityBase {
         }
 
         CoordinateGPS newCoord = new CoordinateGPS(sCoord.toString());
-        Log.info(sClass, "Buttons of aktPage " + aktPage + " = '" + sCoord + "'" + " --> " + newCoord.formatCoordinate());
+        Log.debug(sClass, "Buttons of aktPage " + aktPage + " = '" + sCoord + "'" + " --> " + newCoord.formatCoordinate());
         if (newCoord.isValid()) {
             coord = newCoord;
             return true;

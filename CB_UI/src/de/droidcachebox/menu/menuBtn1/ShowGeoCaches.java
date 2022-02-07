@@ -43,7 +43,7 @@ public class ShowGeoCaches extends AbstractShowAction {
     private GeoCachesView geoCachesView;
 
     public ShowGeoCaches() {
-        super("cacheList", "  (" + CBDB.getInstance().cacheList.size() + ")");
+        super("cacheList", "  (" + CBDB.cacheList.size() + ")");
         editCache = null;
         geoCachesView = null;
         isExecuting = false;
@@ -99,10 +99,10 @@ public class ShowGeoCaches extends AbstractShowAction {
 
         MenuItem mi;
         cm.addMenuItem("ResortList", Sprites.getSprite(IconName.sortIcon.name()), () -> {
-            if (!CBDB.getInstance().cacheList.resortAtWork) {
-                synchronized (CBDB.getInstance().cacheList) {
+            if (!CBDB.cacheList.resortAtWork) {
+                synchronized (CBDB.cacheList) {
                     Log.debug("ShowCacheList", "sort CacheList by Menu ResortList");
-                    CacheWithWP nearestCacheWp = CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                    CacheWithWP nearestCacheWp = CBDB.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                     if (nearestCacheWp != null && nearestCacheWp.getCache() != null) {
                         GlobalCore.setSelectedWaypoint(nearestCacheWp.getCache(), nearestCacheWp.getWaypoint());
                         GlobalCore.setNearestCache(nearestCacheWp.getCache());
@@ -173,10 +173,10 @@ public class ShowGeoCaches extends AbstractShowAction {
         mi = cm.addMenuItem("AutoResort", null, () -> {
             GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
             if (GlobalCore.getAutoResort()) {
-                if (!CBDB.getInstance().cacheList.resortAtWork) {
-                    synchronized (CBDB.getInstance().cacheList) {
+                if (!CBDB.cacheList.resortAtWork) {
+                    synchronized (CBDB.cacheList) {
                         Log.debug("ShowCacheList", "sort CacheList by Menu AutoResort");
-                        CBDB.getInstance().cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
+                        CBDB.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()));
                     }
                 }
             }

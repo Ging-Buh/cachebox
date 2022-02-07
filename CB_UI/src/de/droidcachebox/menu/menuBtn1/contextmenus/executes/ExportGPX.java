@@ -60,7 +60,7 @@ public class ExportGPX {
             }
         }
         // Export all Caches from DB
-        final ArrayList<String> allGeocodes = CBDB.getInstance().cacheList.getGcCodes();
+        final ArrayList<String> allGeocodes = CBDB.cacheList.getGcCodes();
         final int numberOfGeoCachesToExport = allGeocodes.size();
         final GpxSerializer gpxSerializer = new GpxSerializer();
         try {

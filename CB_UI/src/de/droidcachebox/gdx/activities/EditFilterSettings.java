@@ -126,13 +126,13 @@ public class EditFilterSettings extends ActivityBase {
                 case presetViewId:
                     break;
                 case filterSetViewId:
-                    tmpFilterProps = filterSetView.updateFilterProperties(tmpFilterProps);
+                    filterSetView.updateFilterProperties(tmpFilterProps);
                     break;
                 case categoryViewId:
-                    tmpFilterProps = categoryView.updateFilterProperties(tmpFilterProps); // categories to tmpFilterProps
+                    categoryView.updateFilterProperties(tmpFilterProps); // categories to tmpFilterProps
                     break;
                 case textFilterViewId:
-                    tmpFilterProps = textFilterView.updateFilterProperties(tmpFilterProps); // textFilters to tmpFilterProps
+                    textFilterView.updateFilterProperties(tmpFilterProps); // textFilters to tmpFilterProps
                     break;
                 default:
             }
@@ -286,7 +286,7 @@ public class EditFilterSettings extends ActivityBase {
             @Override
             public void run() {
                 try {
-                    synchronized (CBDB.getInstance().cacheList) {
+                    synchronized (CBDB.cacheList) {
                         String sqlWhere = filterProperties.getSqlWhere(Settings.GcLogin.getValue());
                         new CachesDAO().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         GlobalCore.checkSelectedCacheValid();
@@ -311,17 +311,17 @@ public class EditFilterSettings extends ActivityBase {
             case filterSetViewId:
                 btnFilterSetFilters.setState(0);
                 filterSetView.setInvisible();
-                tmpFilterProps = filterSetView.updateFilterProperties(tmpFilterProps);
+                filterSetView.updateFilterProperties(tmpFilterProps);
                 break;
             case categoryViewId:
                 btnCategoryFilters.setState(0);
                 categoryView.setInvisible();
-                tmpFilterProps = categoryView.updateFilterProperties(tmpFilterProps);
+                categoryView.updateFilterProperties(tmpFilterProps);
                 break;
             case textFilterViewId:
                 btnTextFilters.setState(0);
                 textFilterView.setInvisible();
-                tmpFilterProps = textFilterView.updateFilterProperties(tmpFilterProps);
+                textFilterView.updateFilterProperties(tmpFilterProps);
                 KeyboardFocusChangedEventList.remove(textFilterView);
                 break;
             default:
@@ -697,7 +697,7 @@ public class EditFilterSettings extends ActivityBase {
             setDisposeFlag(false);
         }
 
-        FilterProperties updateFilterProperties(FilterProperties filter) {
+        void updateFilterProperties(FilterProperties filter) {
             filter.setFinds(finds.getChecked());
             filter.setNotAvailable(notAvailable.getChecked());
             filter.setArchived(archived.getChecked());
@@ -732,8 +732,6 @@ public class EditFilterSettings extends ActivityBase {
             for (int i = 0; i < attributes.getChildLength(); i++) {
                 filter.attributes[i + 1] = attributes.getChild(i).getChecked();
             }
-
-            return filter;
         }
 
         private void setFilter(FilterProperties props) {
@@ -996,7 +994,7 @@ public class EditFilterSettings extends ActivityBase {
             setAdapter(new CategoryEntryAdapter(categoryEntries, categoryListViewItems));
         }
 
-        FilterProperties updateFilterProperties(FilterProperties filter) {
+        void updateFilterProperties(FilterProperties filter) {
             // Set Category State
             if (categoryListViewItems != null) {
                 for (CategoryListViewItem tmp : categoryListViewItems) {
@@ -1016,7 +1014,7 @@ public class EditFilterSettings extends ActivityBase {
                     }
                 }
             }
-            return CoreData.categories.updateFilterProperties(filter);
+            CoreData.categories.updateFilterProperties(filter);
         }
 
         private void fillCategoryList() {

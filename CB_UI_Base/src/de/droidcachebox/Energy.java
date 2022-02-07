@@ -40,13 +40,13 @@ public class Energy {
     public static void setDisplayOff() {
         isDisplayOff = true;
         fireChangedEvent();
-        Log.info(sClass, "ENERGY setDisplayOff");
+        Log.debug(sClass, "ENERGY setDisplayOff");
     }
 
     public static void setDisplayOn() {
         isDisplayOff = false;
         fireChangedEvent();
-        Log.info(sClass, "ENERGY setDisplayOn");
+        Log.debug(sClass, "ENERGY setDisplayOn");
     }
 
     public static boolean SliderIsShown() {

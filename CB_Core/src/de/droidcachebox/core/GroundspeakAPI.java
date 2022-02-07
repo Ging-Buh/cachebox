@@ -569,7 +569,7 @@ public class GroundspeakAPI {
                         .asVoid();
             }
             LastAPIError = "";
-            Log.info(sClass, "uploadDraftOrLog done: " + draft.gcCode);
+            Log.debug(sClass, "uploadDraftOrLog done: " + draft.gcCode);
             return OK;
         } catch (Exception e) {
             retry(e);
@@ -721,7 +721,7 @@ public class GroundspeakAPI {
                     skip = skip + take;
                 }
                 while (!ready);
-                Log.info(sClass, "downloadUsersTrackables done \n");
+                Log.debug(sClass, "downloadUsersTrackables done \n");
             } catch (Exception ex) {
                 retry(ex);
                 Log.err(sClass, "downloadUsersTrackables " + LastAPIError, ex);
@@ -730,7 +730,7 @@ public class GroundspeakAPI {
     }
 
     public static Trackable fetchTrackable(String TBCode, Trackable tb) {
-        Log.info(sClass, "fetchTrackable for " + TBCode);
+        Log.debug(sClass, "fetchTrackable for " + TBCode);
         LastAPIError = "";
         APIError = 0;
         if (isAccessTokenInvalid()) {
@@ -773,7 +773,7 @@ public class GroundspeakAPI {
     }
 
     public static int uploadTrackableLog(String TBCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note) {
-        Log.info(sClass, "uploadTrackableLog");
+        Log.debug(sClass, "uploadTrackableLog");
         if (cacheCode == null) cacheCode = "";
         if (isAccessTokenInvalid()) return ERROR;
         try {
@@ -986,7 +986,7 @@ public class GroundspeakAPI {
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody();
-            Log.info(sClass, "uploadLogImage done");
+            Log.debug(sClass, "uploadLogImage done");
         } catch (Exception ex) {
             APIError = ERROR;
             LastAPIError = ex.toString() + url.toString();
@@ -1055,7 +1055,7 @@ public class GroundspeakAPI {
 
     public static void fetchMyCacheLimits() {
         if (System.currentTimeMillis() - lastTimeLimitFetched > 60000) {
-            Log.info(sClass, "fetchMyCacheLimits");
+            Log.debug(sClass, "fetchMyCacheLimits");
             // update one time per minute may be enough
             me = fetchUserInfos("me");
             lastTimeLimitFetched = System.currentTimeMillis();

@@ -225,7 +225,7 @@ public class GcApiLogin extends Activity {
         @Override
         protected void onPostExecute(String GC_AuthUrl) {
             try {
-                Log.info("Forms GCApiLogin", "Show WebSite " + GC_AuthUrl);
+                Log.debug("Forms GCApiLogin", "Show WebSite " + GC_AuthUrl);
                 ShowWebsite(GC_AuthUrl);
             } catch (Exception e) {
                 e.printStackTrace();

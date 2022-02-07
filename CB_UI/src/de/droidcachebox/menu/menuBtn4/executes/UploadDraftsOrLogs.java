@@ -15,6 +15,7 @@ import de.droidcachebox.gdx.controls.dialogs.ProgressDialog;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.menuBtn2.ShowLogs;
+import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
 
@@ -105,7 +106,7 @@ public class UploadDraftsOrLogs {
                             new ButtonDialog(uploadMessage, Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
                     }
                 }
-                new DraftsView().notifyDataSetChanged();
+                ((ShowDrafts)Action.ShowDrafts.action).notifyDataSetChanged();
             }
 
             @Override

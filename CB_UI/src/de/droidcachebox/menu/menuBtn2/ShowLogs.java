@@ -120,7 +120,7 @@ public class ShowLogs extends AbstractShowAction {
             String sCanceled = canceled ? Translation.get("isCanceled") + br : "";
             pd.close();
             if (result != -1) {
-                synchronized (CBDB.getInstance().cacheList) {
+                synchronized (CBDB.cacheList) {
                     new ButtonDialog(sCanceled + Translation.get("LogsLoaded") + " " + ChangedCount, Translation.get("LoadLogs"), MsgBoxIcon.None).show();
                 }
 

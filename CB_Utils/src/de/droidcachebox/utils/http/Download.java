@@ -74,7 +74,7 @@ public class Download {
                     }
                 } else {
                     if (testCancel != null && testCancel.checkCanceled())
-                        Log.info(sClass, TestCancel.canceled);
+                        Log.debug(sClass, TestCancel.canceled);
                     else
                         Log.err(sClass, remote + " to " + local, ex);
                     errorOrCanceled = true;

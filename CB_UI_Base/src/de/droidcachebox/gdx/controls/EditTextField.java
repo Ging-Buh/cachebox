@@ -882,7 +882,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
                     if (selectionMarkerType == SelectionMarker.Type.Center) {
                         setCursorLine(clickedLine, false);
                     }
-                    // Log.info(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
+                    // Log.debug(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
                     return result;
                 }
             }
@@ -895,7 +895,7 @@ public class EditTextField extends CB_View_Base implements ICopyPaste {
             if (selectionMarkerType == SelectionMarker.Type.Center) {
                 setCursorLine(clickedLine, false);
             }
-            //Log.info(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
+            //Log.debug(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
             return result;
 
         }

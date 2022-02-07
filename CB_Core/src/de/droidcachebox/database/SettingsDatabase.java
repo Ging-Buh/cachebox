@@ -50,6 +50,7 @@ public class SettingsDatabase extends Database_Core {
         if (sql != null) sql.close();
         sql = null;
         settingsDatabase = null;
+        isOpen = false;
     }
 
 }

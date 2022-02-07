@@ -2,6 +2,7 @@ package de.droidcachebox.gdx.controls;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -71,7 +72,7 @@ public class SelectionMarker extends CB_View_Base {
     public boolean onTouchDown(int x, int y, int pointer, int button) {
         if (pointer == 0) {
             touchDownPos = new Point(x, y);
-            // Log.info(log, "touchdown at " + x + "/" + y);
+            // Log.debug(log, "touchdown at " + x + "/" + y);
         }
         return true;
     }

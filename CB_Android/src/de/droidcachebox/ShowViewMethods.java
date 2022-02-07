@@ -203,7 +203,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
     @Override
     public void showView(final ViewID viewID, final int left, final int top, final int right, final int bottom) {
         mainActivity.runOnUiThread(() -> {
-            Log.info(sClass, "Show View with ID = " + viewID.getID());
+            Log.debug(sClass, "Show View with ID = " + viewID.getID());
 
             // set Content size
 
@@ -258,7 +258,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             currentView.onHide();
 
             if (ID.getType() == ViewID.UI_Type.OpenGl) {
-                Log.info(sClass, "showView OpenGl onPause");
+                Log.debug(sClass, "showView OpenGl onPause");
                 mainMain.pause();
             }
 
@@ -300,7 +300,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
     }
 
     private void ShowGLView() {
-        Log.info(sClass, "ShowViewGL " + layoutGlContent.getMeasuredWidth() + "/" + layoutGlContent.getMeasuredHeight());
+        Log.debug(sClass, "ShowViewGL " + layoutGlContent.getMeasuredWidth() + "/" + layoutGlContent.getMeasuredHeight());
 
         initializeGDXAndroidApplication();
 
@@ -350,7 +350,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
     public void hideView(final ViewID viewID) {
 
         mainActivity.runOnUiThread(() -> {
-            Log.info(sClass, "Hide View with ID = " + viewID.getID());
+            Log.debug(sClass, "Hide View with ID = " + viewID.getID());
 
             if (!(currentView == null) && viewID == aktViewId) {
                 currentView.onHide();
@@ -388,7 +388,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             if (cacheNameView != null)
                 cacheNameView.setVisibility(View.INVISIBLE);
             handleRunOverLockScreenConfig();
-            // Log.info(sClass, "Show AndroidView");
+            // Log.debug(sClass, "Show AndroidView");
         });
     }
 
@@ -442,7 +442,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
         lastTop = top;
         lastBottom = bottom;
         mainActivity.runOnUiThread(() -> {
-            Log.info(sClass, "Set Android Content Sizeleft/top/right/bottom :" + left + "/" + top + "/" + right + "/" + bottom);
+            Log.debug(sClass, "Set Android Content Sizeleft/top/right/bottom :" + left + "/" + top + "/" + right + "/" + bottom);
             if (currentView != null) {
                 RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) layoutContent.getLayoutParams();
                 paramsLeft.setMargins(left, top, right, bottom);
@@ -454,7 +454,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
 
     private void initializeGDXAndroidApplication() {
         try {
-            Log.info(sClass, "initialize GDXAndroidApplication (gdxView = graphics.getView()");
+            Log.debug(sClass, "initialize GDXAndroidApplication (gdxView = graphics.getView()");
             gdxView = androidApplication.initializeForView(GL.that, gdxConfig);
             int GlSurfaceType = -1;
             if (gdxView instanceof GLSurfaceView20)
@@ -583,7 +583,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
                             intent = null;
                         } else {
                             // from Build.VERSION_CODES.R onwards the Activity may exist even, if not visible
-                            Log.info(sClass, "Navigation: No visible App for " + action + " , " + data);
+                            Log.debug(sClass, "Navigation: No visible App for " + action + " , " + data);
                         }
                     }
                 }
@@ -685,7 +685,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             ActivityCompat.requestPermissions(mainActivity, takePhotoPermissions, Main.Request_takePhoto);
             return;
         }
-        Log.info(sClass, "takePhoto start " + GlobalCore.getSelectedCache());
+        Log.debug(sClass, "takePhoto start " + GlobalCore.getSelectedCache());
         try {
             // define the file-name to save photo taken by Camera activity
             String directory = Settings.UserImageFolder.getValue();
@@ -722,7 +722,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             } else {
                 uri = Uri.fromFile(new java.io.File(tempMediaPathAndName));
             }
-            Log.info(sClass, uri.toString());
+            Log.debug(sClass, uri.toString());
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
@@ -733,7 +733,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
                         if (requestCode == REQUEST_CAPTURE_IMAGE) {
                             if (resultCode == Activity.RESULT_OK) {
                                 GL.that.runIfInitial(() -> {
-                                    Log.info(sClass, "Photo taken");
+                                    Log.debug(sClass, "Photo taken");
                                     try {
                                         // move the photo from temp to UserImageFolder
                                         String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
@@ -761,7 +761,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
                                         if (lastLocation == null) {
                                             lastLocation = Locator.getInstance().getLocation(CBLocation.ProviderType.any);
                                             if (lastLocation == null) {
-                                                Log.info(sClass, "No (GPS)-Location for Trackrecording.");
+                                                Log.debug(sClass, "No (GPS)-Location for Trackrecording.");
                                                 return;
                                             }
                                         }
@@ -800,7 +800,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
         }
 
         try {
-            Log.info(sClass, "recVideo start " + GlobalCore.getSelectedCache());
+            Log.debug(sClass, "recVideo start " + GlobalCore.getSelectedCache());
             // define the file-name to save video taken by Camera activity
             String directory = Settings.UserImageFolder.getValue();
             if (!FileIO.createDirectory(directory)) {
@@ -824,7 +824,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             ContentValues values = new ContentValues();
             values.put(MediaStore.Video.Media.TITLE, "");
             videoUri = mainActivity.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
-            // Log.info(uri.toString());
+            // Log.debug(uri.toString());
             final Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
@@ -837,7 +837,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
                         if (requestCode == REQUEST_CAPTURE_VIDEO) {
                             if (resultCode == Activity.RESULT_OK) {
                                 GL.that.runIfInitial(() -> {
-                                    Log.info(sClass, "Video recorded.");
+                                    Log.debug(sClass, "Video recorded.");
                                     String ext;
                                     try {
                                         // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
@@ -864,7 +864,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
                                             if (!source.renameTo(destination)) {
                                                 Log.err(sClass, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
                                             } else {
-                                                Log.info(sClass, "Video saved at " + destinationName);
+                                                Log.debug(sClass, "Video saved at " + destinationName);
                                                 // track annotation
                                                 String TrackFolder = Settings.TrackFolder.getValue();
                                                 String relativPath = FileIO.getRelativePath(Settings.UserImageFolder.getValue(), TrackFolder, "/");

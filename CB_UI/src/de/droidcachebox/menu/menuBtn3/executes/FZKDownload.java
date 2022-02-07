@@ -577,7 +577,7 @@ public class FZKDownload extends ActivityBase {
                     if (target.endsWith(".zip")) {
                         if (mapInfo.size == -1)
                             progressBar.setValues(100, "Unzip " + FileIO.getFileName(target) + " start.");
-                        Log.info(sClass, "Unzip " + target + " start.");
+                        Log.debug(sClass, "Unzip " + target + " start.");
                         try {
                             UnZip.extractHere(target);
                             if (mapInfo.size == -1)
@@ -587,14 +587,14 @@ public class FZKDownload extends ActivityBase {
                             if (mapInfo.size == -1)
                                 progressBar.setValues(100, "Unzip " + FileIO.getFileName(target) + " error.");
                         }
-                        Log.info(sClass, "Unzip " + target + " end.");
+                        Log.debug(sClass, "Unzip " + target + " end.");
                     }
                 }
                 // delete downloaded file
                 if (target.endsWith(".zip")) {
                     try {
                         FileFactory.createFile(target).delete();
-                        Log.info(sClass, "Deleted " + target);
+                        Log.debug(sClass, "Deleted " + target);
                     } catch (IOException e) {
                         progressBar.setValues(100, FileIO.getFileName(target) + "not deleted.");
                         Log.err(sClass, target, e);
@@ -604,7 +604,7 @@ public class FZKDownload extends ActivityBase {
                 lastProgress = canceled.get() ? 0 : 100;
                 progressBar.setValues(lastProgress, lastProgress + " %");
                 downloadIsRunning.set(false);
-                Log.info(sClass, "Download " + target + (canceled.get() ? " canceled" : " ready"));
+                Log.debug(sClass, "Download " + target + (canceled.get() ? " canceled" : " ready"));
             }).start();
 
         }

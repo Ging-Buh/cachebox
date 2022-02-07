@@ -131,8 +131,7 @@ public class SimulatorMain {
         Platform.init(new PlatformMethods() {
 
             @Override
-            public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
-                return null;
+            public void readPlatformSetting(SettingBase<?> setting) {
             }
 
             @Override

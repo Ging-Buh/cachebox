@@ -256,7 +256,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
     }
 
     @Override
-    public SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
+    public void readPlatformSetting(SettingBase<?> setting) {
         if (androidSetting == null)
             androidSetting = mainActivity.getSharedPreferences(Global.PreferencesNAME, 0);
         if (setting instanceof SettingString) {
@@ -270,7 +270,6 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             ((SettingInt) setting).setValue(value);
         }
         setting.clearDirty();
-        return setting;
     }
 
     @Override
@@ -330,7 +329,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
     @Override
     public void switchToGpsMeasure() {
         try {
-            Log.info(sClass, "switchToGpsMeasure()");
+            Log.debug(sClass, "switchToGpsMeasure()");
             int updateTime = Settings.gpsUpdateTime.getValue();
             getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime, 0, this);
         } catch (SecurityException ex) {
@@ -340,7 +339,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
 
     @Override
     public void switchToGpsDefault() {
-        Log.info(sClass, "switchtoGpsDefault()");
+        Log.debug(sClass, "switchtoGpsDefault()");
         int updateTime = Settings.gpsUpdateTime.getValue();
         try {
             getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime, 1, this);
@@ -385,7 +384,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                 intent.setPackage(defaultBrowserPackageName);
             }
             if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
-                Log.info(sClass, "Start activity for " + uri.toString());
+                Log.debug(sClass, "Start activity for " + uri.toString());
             } else {
                 Log.err(sClass, "Activity for " + url + " not visible. (" + defaultBrowserPackageName + "). Try startActivity(intent) anyway.");
                 // Toast.makeText(mainActivity, Translation.get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
@@ -416,7 +415,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             // speichere selektierten Cache, da nicht alles über die
             // SelectedCacheEventList läuft
             Settings.lastSelectedCache.setValue(GlobalCore.getSelectedCache().getGeoCacheCode());
-            Log.info(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
+            Log.debug(sClass, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGeoCacheCode());
         }
         MapTileLoader.getInstance().stopQueueProzessors();
         Settings.getInstance().acceptChanges();
@@ -433,7 +432,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             if (ViewManager.that.isInitialized()) {
                 String externalRequestGCCode = extras.getString("GcCode");
                 if (externalRequestGCCode != null) {
-                    Log.info(sClass, "importCacheByGCCode");
+                    Log.debug(sClass, "importCacheByGCCode");
                     mainActivity.getIntent().removeExtra("GcCode");
                     importCacheByGCCode(externalRequestGCCode);
                 }
@@ -446,37 +445,37 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                         boolean result = sourceFile.renameTo(destinationFile);
                         String sResult = result ? " ok!" : " no success!";
                         if (result) {
-                            Log.info(sClass, "Move map-file " + destinationFile.getPath() + sResult);
+                            Log.debug(sClass, "Move map-file " + destinationFile.getPath() + sResult);
                         } else {
                             Log.err(sClass, "Move map-file " + destinationFile.getPath() + sResult);
                         }
                     } else {
-                        Log.info(sClass, "importGPXFile (*.gpx or *.zip)");
+                        Log.debug(sClass, "importGPXFile (*.gpx or *.zip)");
                         importGPXFile(externalRequestGpxPath);
                     }
                 }
                 String externalRequestGuid = extras.getString("Guid");
                 if (externalRequestGuid != null) {
-                    Log.info(sClass, "importCacheByGuid");
+                    Log.debug(sClass, "importCacheByGuid");
                     mainActivity.getIntent().removeExtra("Guid");
                     importCacheByGuid();
                 }
                 String externalRequestLatLon = extras.getString("LatLon");
                 if (externalRequestLatLon != null) {
-                    Log.info(sClass, "positionLatLon");
+                    Log.debug(sClass, "positionLatLon");
                     mainActivity.getIntent().removeExtra("LatLon");
                     positionLatLon(externalRequestLatLon);
                 }
                 String externalRequestMapDownloadPath = extras.getString("MapDownloadPath");
                 if (externalRequestMapDownloadPath != null) {
-                    Log.info(sClass, "MapDownload");
+                    Log.debug(sClass, "MapDownload");
                     mainActivity.getIntent().removeExtra("MapDownloadPath");
                     FZKDownload fzkDownload = new FZKDownload();
                     fzkDownload.showImportByUrl(externalRequestMapDownloadPath);
                 }
                 String externalRequestName = extras.getString("Name");
                 if (externalRequestName != null) {
-                    Log.info(sClass, "importCacheByName");
+                    Log.debug(sClass, "importCacheByName");
                     mainActivity.getIntent().removeExtra("Name");
                     importCacheByName();
                 }
@@ -651,7 +650,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
         try {
             s = externalRequestLatLon.split(",");
             Coordinate coordinate = new Coordinate(Double.parseDouble(s[0]), Double.parseDouble(s[1]));
-            Log.info(sClass, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
+            Log.debug(sClass, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
             if (coordinate.isValid()) {
                 Action.ShowMap.action.execute();
                 ((ShowMap) Action.ShowMap.action).normalMapView.setBtnMapStateToFree(); // btn
@@ -686,7 +685,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
         TimerTask gpxImportTask = new TimerTask() {
             @Override
             public void run() {
-                Log.info(sClass, "ImportGPXFile");
+                Log.debug(sClass, "ImportGPXFile");
                 mainActivity.runOnUiThread(() -> new CancelWaitDialog(Translation.get("ImportGPX"), new WorkAnimation(), new RunAndReady() {
                     @Override
                     public void ready() {
@@ -696,13 +695,13 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
 
                         long ImportZeit = new Date().getTime() - ImportStart.getTime();
                         String msg = "Import " + GPXFileImporter.CacheCount + "Caches\n" + GPXFileImporter.LogCount + "Logs\n in " + ImportZeit;
-                        Log.info(sClass, msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
+                        Log.debug(sClass, msg.replace("\n", "\n\r") + " from " + externalRequestGpxPath);
                         GL.that.toast(msg);
                     }
 
                     @Override
                     public void run() {
-                        Log.info(sClass, "Import GPXFile from " + externalRequestGpxPath + " started");
+                        Log.debug(sClass, "Import GPXFile from " + externalRequestGpxPath + " started");
 
                         CBDB.getInstance().beginTransaction();
                         try {
@@ -743,7 +742,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
         }
         askForLocationPermission = false;
         if (locationManager == null || forceInitialization) {
-            Log.info(sClass, "Initialise  location manager");
+            Log.debug(sClass, "Initialise  location manager");
 
             // Get the (gps) location manager
             locationManager = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
@@ -814,7 +813,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             locationServiceIntent = new Intent(androidApplication, CBForeground.class);
             androidApplication.startForegroundService(locationServiceIntent);
         } else {
-            Log.info(sClass, "FOREGROUND_SERVICE requires SDK_INT >= 26");
+            Log.debug(sClass, "FOREGROUND_SERVICE requires SDK_INT >= 26");
         }
     }
 

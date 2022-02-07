@@ -27,28 +27,29 @@ import de.droidcachebox.utils.log.Log;
 
 public class CBDB extends Database_Core {
     private static final String sClass = "CBDB";
-    private static CBDB cbdb;
-    public final CacheList cacheList;
+    private static CBDB instance;
+    public final static CacheList cacheList = new CacheList();
 
     private CBDB() {
         super();
         latestDatabaseChange = DatabaseVersions.CachesDBLatestVersion;
-        cacheList = new CacheList();
         sql = Platform.createSQLInstance();
-        cbdb = this;
+        instance = this;
     }
 
     public static CBDB getInstance() {
-        if (cbdb == null) {
-            cbdb = new CBDB();
+        if (instance == null) {
+            Log.info(sClass, "creator CBDB");
+            instance = new CBDB();
         }
-        return cbdb;
+        return instance;
     }
 
     @Override
-    public void startUp(String databasePath) {
+    public void startUp(String dbPathAndName) {
         synchronized (cacheList) {
-            super.startUp(databasePath);
+            super.startUp(dbPathAndName);
+            Log.info(sClass, "startUp " + dbPathAndName);
             cacheList.clear();
             DatabaseId = readConfigLong("DatabaseId");
             if (DatabaseId <= 0) {
@@ -257,10 +258,12 @@ public class CBDB extends Database_Core {
 
     @Override
     public void close() {
+        Log.info(sClass, "closing " + databasePath);
         databasePath = "";
         if (sql != null) sql.close();
         sql = null;
-        cbdb = null;
+        instance = null;
+        isOpen = false;
     }
 
     private long convertAttribute(long att) {
@@ -296,6 +299,7 @@ public class CBDB extends Database_Core {
     }
 
     public int getCacheCountInDB() {
+        Log.info(sClass, "getCacheCountInDB");
         CoreCursor reader = null;
         int count = 0;
         try {

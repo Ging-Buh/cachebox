@@ -123,7 +123,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
     @Override
     public void renderContinuous() {
-        // .Log.info(log, "Set: renderContinous");
+        // .Log.debug(log, "Set: renderContinous");
         switch (currentSurfaceType) {
             case GLSURFACE_VIEW20:
                 ((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
@@ -146,7 +146,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
         int mesuredWidth = MeasureSpec.getSize(widthMeasureSpec);
         int mesuredHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-        Log.info("CACHEBOX", "With/Height " + mesuredWidth + " / " + mesuredHeight);
+        Log.debug("CACHEBOX", "With/Height " + mesuredWidth + " / " + mesuredHeight);
 
         setMeasuredDimension(mesuredWidth, mesuredHeight);
 

@@ -206,7 +206,7 @@ public class MapsForgeLayer extends Layer {
 
             try {
                 for (int i = 0; i < PROCESSOR_COUNT; i++) {
-                    // Log.info(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
+                    // Log.debug(log, "multiMapDataStores[" + i + "].addMapDataStore: " + getName() + ": " + mapFile.getMapFileInfo().comment);
                     multiMapDataStores[i] = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE); //was  multiMapDataStores[i].clearMapDataStore();
                     multiMapDataStores[i].addMapDataStore(mapFile, false, false);
                     for (MapsForgeLayer mapsforgeLayer : additionalMapsForgeLayers) {
@@ -216,7 +216,7 @@ public class MapsForgeLayer extends Layer {
                     databaseRenderers[i] = new DatabaseRenderer(multiMapDataStores[i], getMapsForgeGraphicFactory(), firstLevelTileCache, null, true, true, null);
                 }
                 String additional = mapFile.getMapFileInfo().comment == null ? "" : " : " + mapFile.getMapFileInfo().comment;
-                Log.info(sClass, "prepareLayer " + getName() + additional);
+                Log.debug(sClass, "prepareLayer " + getName() + additional);
             } catch (Exception e) {
                 Log.err(sClass, "ERROR with Open MapsForge Map: " + getName(), e);
             }
@@ -257,7 +257,7 @@ public class MapsForgeLayer extends Layer {
         }
         // create bitmap from tile-definition
         try {
-            // Log.info(log, "MF step 1: " + desc);
+            // Log.debug(log, "MF step 1: " + desc);
             Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
             mDataStoreNumber = (mDataStoreNumber + 1) % PROCESSOR_COUNT;
             RendererJob rendererJob = new RendererJob(tile, multiMapDataStores[mDataStoreNumber], renderThemeFuture, displayModel, textScale, false, false);

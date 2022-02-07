@@ -265,7 +265,7 @@ public class TrackList {
                 reducedPoints = track.getTrackPoints();
             } else {
                 reducedPoints = PolylineReduction.polylineReduction(track.getTrackPoints(), tolerance);
-                // Log.info(log, "Track: " + track.FileName + " has " + track.Points.size() + ". reduced to " + reducedPoints.size() + " at Zoom = " + zoom);
+                // Log.debug(log, "Track: " + track.FileName + " has " + track.Points.size() + ". reduced to " + reducedPoints.size() + " at Zoom = " + zoom);
                 if (reducedPoints.size() == 2) {
                     reducedPoints = track.getTrackPoints();
                 }

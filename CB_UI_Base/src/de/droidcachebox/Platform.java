@@ -88,9 +88,8 @@ public class Platform {
         return (m == null);
     }
 
-    public static SettingBase<?> readPlatformSetting(SettingBase<?> setting) {
-        setting = m.readPlatformSetting(setting);
-        return setting;
+    public static void readPlatformSetting(SettingBase<?> setting) {
+        m.readPlatformSetting(setting);
     }
 
     public static <T> void writePlatformSetting(SettingBase<T> setting) {
@@ -237,7 +236,7 @@ public class Platform {
      * these methods need platform specific implementations
      */
     public interface PlatformMethods {
-        SettingBase<?> readPlatformSetting(SettingBase<?> setting);
+        void readPlatformSetting(SettingBase<?> setting);
 
         void writePlatformSetting(SettingBase<?> setting);
 

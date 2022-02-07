@@ -67,14 +67,14 @@ public class MapTileLoader {
         isWorking.set(false);
         orders = new Array<>(true, mapTiles.getCapacity());
         PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
-        Log.info(sClass, "Number of processors: " + PROCESSOR_COUNT);
+        Log.debug(sClass, "Number of processors: " + PROCESSOR_COUNT);
         queueProcessors = new CopyOnWriteArrayList<>();
         queueProcessorsAreStarted = false;
         byDistanceFromCenter = (o1, o2) -> Integer.compare((Integer) o1.getData(), (Integer) o2.getData());
 
         queueProcessorAliveCheck = new Thread(() -> {
             do {
-                // Log.info(log, "queueProcessors alive checking");
+                // Log.debug(log, "queueProcessors alive checking");
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException ignored) {
@@ -84,12 +84,12 @@ public class MapTileLoader {
                     if (!threadToCheck.isAlive()) {
                         // is down (?Exception)
                         abortAndNew = true;
-                        Log.info(sClass, "thread is down.");
+                        Log.debug(sClass, "thread is down.");
                     }
                     if ((System.currentTimeMillis() - threadToCheck.startTime > 60000) && threadToCheck.isWorking) {
                         // is hanging (loading maptile for more than one minute) loading maptile
                         abortAndNew = true;
-                        Log.info(sClass, "thread is hanging.");
+                        Log.debug(sClass, "thread is hanging.");
                     }
                     if (abortAndNew) {
                         try {
@@ -178,7 +178,7 @@ public class MapTileLoader {
             // Log.debug(log, "Num wanted: " + wantedTiles.size);
             for (Descriptor descriptor : wantedTiles) {
                 if (finishYourself.get()) {
-                    Log.info(sClass, "MapTileLoader finishMyself during tile ordering");
+                    Log.debug(sClass, "MapTileLoader finishMyself during tile ordering");
                     return;
                 }
                 if (!loadedTiles.contains(descriptor.getHashCode(), false) && !mapTilesInGeneration.contains(descriptor.getHashCode(), false)) {
@@ -188,7 +188,7 @@ public class MapTileLoader {
                     Log.trace(sClass, "Descriptor in Generation : " + !mapTilesInGeneration.contains(descriptor.getHashCode(), false));
                 }
                 if (finishYourself.get()) {
-                    Log.info(sClass, "MapTileLoader finishMyself after mapTiles ordered");
+                    Log.debug(sClass, "MapTileLoader finishMyself after mapTiles ordered");
                     return;
                 }
                 if (mapTiles.getCurrentOverlayLayer() != null) {

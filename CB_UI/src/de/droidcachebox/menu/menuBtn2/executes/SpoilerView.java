@@ -164,7 +164,7 @@ public class SpoilerView extends CB_View_Base {
                         overviewItems.add(overviewItem);
                     }
                 }
-                // Log.info(log, "Images loaded");
+                // Log.debug(log, "Images loaded");
                 gallery.setAdapter(new GalaryImageAdapter());
                 galleryOverwiew.setAdapter(new OverviewImageAdapter());
 
@@ -181,7 +181,7 @@ public class SpoilerView extends CB_View_Base {
                 galleryOverwiew.reloadItems();
             }
         }
-        // Log.info(log, "End onShow");
+        // Log.debug(log, "End onShow");
     }
 
     public void onHide() {

@@ -32,9 +32,7 @@ public class AndroidCursor extends CoreCursor {
 
     @Override
     public String getString(int columnIndex) {
-        String tmp = cursor.getString(columnIndex);
-        if (tmp == null) tmp = "";
-        return tmp;
+        return cursor.getString(columnIndex);
     }
 
     @Override

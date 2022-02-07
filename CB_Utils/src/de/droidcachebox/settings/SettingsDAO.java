@@ -11,7 +11,7 @@ public abstract class SettingsDAO {
             database.writeConfigString(setting.name, dbString);
     }
 
-    public SettingBase<?> readSetting(Database_Core db, SettingBase<?> setting) {
+    public void readSettingOrDefault(Database_Core db, SettingBase<?> setting) {
         try {
             String dbString = null;
 
@@ -42,11 +42,9 @@ public abstract class SettingsDAO {
         } catch (Exception ex) {
             setting.loadDefault();
         }
-
-        return setting;
     }
 
     public abstract void writePlatformSetting(SettingBase<?> setting);
 
-    public abstract SettingBase<?> readPlatformSetting(SettingBase<?> setting);
+    public abstract void readPlatformSetting(SettingBase<?> setting);
 }

@@ -51,12 +51,12 @@ public class UpdateCachesState {
                     isCanceled.set(false);
 
                     ArrayList<Cache> chkList = new ArrayList<>();
-                    synchronized (CBDB.getInstance().cacheList) {
-                        if (CBDB.getInstance().cacheList == null || CBDB.getInstance().cacheList.size() == 0)
+                    synchronized (CBDB.cacheList) {
+                        if (CBDB.cacheList == null || CBDB.cacheList.size() == 0)
                             return;
                         changedCount = 0;
-                        for (int i = 0, n = CBDB.getInstance().cacheList.size(); i < n; i++) {
-                            chkList.add(CBDB.getInstance().cacheList.get(i));
+                        for (int i = 0, n = CBDB.cacheList.size(); i < n; i++) {
+                            chkList.add(CBDB.cacheList.get(i));
                         }
                     }
                     float progressIncrement = 100.0f / ((float) chkList.size() / blockSize); // 100% divided by number of blocks (repeats)
@@ -98,13 +98,13 @@ public class UpdateCachesState {
                     String sCanceled = isCanceled.get() ? Translation.get("isCanceld") + br : "";
                     if (result != -1) {
                         // Reload result from DB
-                        synchronized (CBDB.getInstance().cacheList) {
+                        synchronized (CBDB.cacheList) {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
                             cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         }
                         CacheListChangedListeners.getInstance().fire();
-                        synchronized (CBDB.getInstance().cacheList) {
-                            new ButtonDialog(sCanceled + Translation.get("CachesUpdated") + " " + changedCount + "/" + CBDB.getInstance().cacheList.size(),
+                        synchronized (CBDB.cacheList) {
+                            new ButtonDialog(sCanceled + Translation.get("CachesUpdated") + " " + changedCount + "/" + CBDB.cacheList.size(),
                                     Translation.get("chkState"), MsgBoxButton.OK, MsgBoxIcon.None).show();
                         }
 

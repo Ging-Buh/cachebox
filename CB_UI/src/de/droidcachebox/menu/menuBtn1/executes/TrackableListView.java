@@ -215,9 +215,9 @@ public class TrackableListView extends V_ListView {
 
     private void updateDatabase(Trackable trackable) {
         try {
-            Log.info(sClass, "Write Trackable createArgs");
+            Log.debug(sClass, "Write Trackable createArgs");
             Database_Core.Parameters args = createArgs(trackable);
-            Log.info(sClass, "Write Trackable update");
+            Log.debug(sClass, "Write Trackable update");
             DraftsDatabase.getInstance().update("Trackable", args, "GcCode='" + trackable.getTbCode() + "'", null);
         } catch (Exception exc) {
             Log.err(sClass, "Update Trackable error", exc);

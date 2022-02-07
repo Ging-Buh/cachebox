@@ -55,7 +55,7 @@ public class GcApiLogin {
                 }
 
                 try {
-                    Log.info("CB_UI GCApiLogin", "Show WebSite " + GC_AuthUrl);
+                    Log.debug("CB_UI GCApiLogin", "Show WebSite " + GC_AuthUrl);
                     callOAuthPage(GC_AuthUrl);
                 } catch (Exception e) {
                     Log.err(sClass, e.getLocalizedMessage());

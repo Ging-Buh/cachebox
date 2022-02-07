@@ -92,7 +92,7 @@ public class TrackListView extends V_ListView {
 
         @Override
         public ListViewItemBase getView(int viewPosition) {
-            Log.info(log, "get track item number " + viewPosition + " (" + (TrackList.getInstance().currentRoute != null ? "with " : "without ") + "tracking." + ")");
+            Log.debug(log, "get track item number " + viewPosition + " (" + (TrackList.getInstance().currentRoute != null ? "with " : "without ") + "tracking." + ")");
             int tracksIndex = viewPosition;
             if (TrackList.getInstance().currentRoute != null) {
                 if (viewPosition == 0) {
@@ -323,7 +323,7 @@ public class TrackListView extends V_ListView {
                                 saveRoute(f, track);
                                 if (f.exists()) {
                                     track.setFileName(f.getAbsolutePath());
-                                    Log.info(log, f.getAbsolutePath() + " saved.");
+                                    Log.debug(log, f.getAbsolutePath() + " saved.");
                                 } else {
                                     Log.err(log, "Error saving " + abstractFile + "/" + track.getName() + extension);
                                 }

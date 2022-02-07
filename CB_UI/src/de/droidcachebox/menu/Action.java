@@ -35,6 +35,7 @@ import de.droidcachebox.menu.menuBtn4.ShowDrafts;
 import de.droidcachebox.menu.menuBtn4.ShowSolver1;
 import de.droidcachebox.menu.menuBtn4.ShowSolver2;
 import de.droidcachebox.menu.menuBtn4.UploadDrafts;
+import de.droidcachebox.menu.menuBtn4.UploadLogs;
 import de.droidcachebox.menu.menuBtn5.SwitchDayNight;
 import de.droidcachebox.menu.menuBtn5.SwitchTorch;
 import de.droidcachebox.menu.quickBtns.AddWayPoint;
@@ -79,6 +80,7 @@ public enum Action {
     SwitchTorch(new SwitchTorch(), "torch"), // 25
     CreateRoute(new CreateRoute(), "generateRoute"),
     RememberGeoCache(new RememberGeoCache(), "rememberGeoCacheTitle"),
+    UploadLogs(new UploadLogs(), "UploadLogs"), // 24
     ;
 
     public AbstractAction action;

@@ -53,16 +53,23 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
         if (Energy.isDisplayOff())
             return;
 
-        synchronized (CBDB.getInstance().cacheList) {
+        if (threadCall != null) {
+            if (threadCall.getState() != Thread.State.TERMINATED)
+                return;
+            else
+                threadCall = null;
+        }
+
+        synchronized (CBDB.cacheList) {
 
             // remove Parking Cache
-            Cache cache = CBDB.getInstance().cacheList.getCacheByGcCodeFromCacheList("CBPark");
+            Cache cache = CBDB.cacheList.getCacheByGcCodeFromCacheList("CBPark");
             if (cache != null)
-                CBDB.getInstance().cacheList.remove(cache);
+                CBDB.cacheList.remove(cache);
             // add Parking Cache from saved Config (ParkingLatitude, ParkingLongitude)
             if (ParkingLatitude.getValue() != 0) {
                 cache = new Cache(ParkingLatitude.getValue(), ParkingLongitude.getValue(), "My Parking area", GeoCacheType.MyParking, "CBPark");
-                CBDB.getInstance().cacheList.add(0, cache);
+                CBDB.cacheList.add(0, cache);
             }
 
             synchronized (LiveMapQue.getInstance().getAllCacheLists()) {
@@ -70,16 +77,16 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
                     for (Cache geoCache : geoCacheList) {
                         if (geoCache != null) {
                             if (FilterInstances.isLastFilterSet()) {
-                                if (!CBDB.getInstance().cacheList.contains(geoCache)) {
+                                if (!CBDB.cacheList.contains(geoCache)) {
                                     if (FilterInstances.getLastFilter().passed(geoCache)) {
                                         geoCache.setLive(true);
-                                        CBDB.getInstance().cacheList.add(geoCache);
+                                        CBDB.cacheList.add(geoCache);
                                     }
                                 }
                             } else {
-                                if (!CBDB.getInstance().cacheList.contains(geoCache)) {
+                                if (!CBDB.cacheList.contains(geoCache)) {
                                     geoCache.setLive(true);
-                                    CBDB.getInstance().cacheList.add(geoCache);
+                                    CBDB.cacheList.add(geoCache);
                                 }
                             }
                         }
@@ -88,22 +95,14 @@ public class CacheListChangedListeners extends CopyOnWriteArrayList<CacheListCha
             }
         }
 
-        if (threadCall != null) {
-            if (threadCall.getState() != Thread.State.TERMINATED)
-                return;
-            else
-                threadCall = null;
-        }
-
         threadCall = new Thread(() -> {
             for (CacheListChangedListener listener : this) {
                 if (listener == null)
                     continue;
-                Log.debug("CacheListChanged() for ", listener.toString());
+                Log.info("handle changed list of geocaches in ", listener.toString());
                 listener.cacheListChanged();
             }
         });
-
         threadCall.start();
     }
 

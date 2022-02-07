@@ -113,7 +113,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
                 for (int i = 0, n = SettingChangedListeners.size(); i < n; i++) {
                     IChanged listener = SettingChangedListeners.get(i);
                     listener.handleChange();
-                    // de.droidcachebox.utils.log.Log.info("Setting ", "Setting " + name + " changed");
+                    // de.droidcachebox.utils.log.Log.debug("Setting ", "Setting " + name + " changed");
                 }
             });
             th.start();

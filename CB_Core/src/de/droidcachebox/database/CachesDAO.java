@@ -85,7 +85,9 @@ public class CachesDAO {
     }
 
     public void readCacheList(String sqlQualification, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
-        readCacheList(CBDB.getInstance().cacheList, sqlQualification, withDescription, fullDetails, loadAllWaypoints);
+        synchronized (CBDB.cacheList) {
+            readCacheList(CBDB.cacheList, sqlQualification, withDescription, fullDetails, loadAllWaypoints);
+        }
     }
 
     public void readCacheList(CacheList cacheList, String sqlQualification, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
@@ -830,7 +832,7 @@ public class CachesDAO {
         }
 
         if (oldCache == null) {
-            CBDB.getInstance().cacheList.add(cache);
+            CBDB.cacheList.add(cache);
             // writeToDatabase(cache);
         } else {
             // 2012-11-17: do not remove old instance from cacheList because of problems with cacheList and MapView
