@@ -78,7 +78,7 @@ public class Trackable implements Comparable<Trackable> {
             description = reader.getString("Description").trim();
             iconUrl = reader.getString("IconUrl").trim();
             imageUrl = reader.getString("ImageUrl").trim();
-            name = reader.getString("Name").trim();
+            name = reader.getString("name").trim();
             ownerName = reader.getString("OwnerName").trim();
             url = reader.getString("Url").trim();
             typeName = reader.getString("TypeName").trim();
