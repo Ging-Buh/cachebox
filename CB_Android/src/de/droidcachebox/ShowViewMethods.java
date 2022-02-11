@@ -982,25 +982,26 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
     }
 
     private boolean sendMotionEvent(final MotionEvent event) {
-        int action = event.getAction() & MotionEvent.ACTION_MASK;
-        final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
-        try {
-            switch (action & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_POINTER_DOWN:
-                case MotionEvent.ACTION_DOWN:
-                    GL_Input.that.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    GL_Input.that.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex));
-                    break;
-                case MotionEvent.ACTION_POINTER_UP:
-                case MotionEvent.ACTION_UP:
-                    GL_Input.that.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
-                    break;
+        if (event != null) {
+            int action = event.getAction() & MotionEvent.ACTION_MASK;
+            final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
+            try {
+                switch (action & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                    case MotionEvent.ACTION_DOWN:
+                        GL_Input.that.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        GL_Input.that.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex));
+                        break;
+                    case MotionEvent.ACTION_POINTER_UP:
+                    case MotionEvent.ACTION_UP:
+                        GL_Input.that.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
+                        break;
+                }
+            } catch (Exception e) {
+                Log.err(sClass, "sendMotionEvent", e);
             }
-        } catch (Exception e) {
-            Log.err(sClass, "sendMotionEvent", e);
-            return true;
         }
         return true;
     }
