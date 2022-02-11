@@ -17,7 +17,6 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
     private static final long serialVersionUID = -969846843815877942L;
     private static SettingsList that;
     private boolean isLoaded = false;
-    private Database_Core dataDB;
 
     public SettingsList() {
         that = this;
@@ -65,6 +64,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
         getSettingsDB().beginTransaction();
         SettingsDAO dao = createSettingsDAO();
         // if used from Splash, DataDB is not possible = Data == null
+        Database_Core dataDB = getDataDB();
 
         boolean needRestart = false;
         String settingName = "";
@@ -74,9 +74,6 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
                     settingName = setting.name;
 
                     if (Local == setting.getStoreType()) {
-                        if (dataDB == null) {
-                            dataDB = getDataDB();
-                        }
                         if (dataDB != null) {
                             if (dataDB.isOpen()) {
                                 // there are only a few settings that go into CBDB

@@ -299,22 +299,22 @@ public class CBDB extends Database_Core {
     }
 
     public int getCacheCountInDB() {
-        Log.info(sClass, "getCacheCountInDB");
-        CoreCursor reader = null;
-        int count = 0;
         try {
-            reader = rawQuery("select count(*) from caches", null);
+            Log.info(sClass, "getCacheCountInDB");
+            int count = 0;
+            CoreCursor reader = rawQuery("select count(*) from caches", null);
             if (reader != null) {
-                reader.moveToFirst();
-                count = reader.getInt(0);
+                if (reader.getCount() > 0) {
+                    reader.moveToFirst();
+                    count = reader.getInt(0);
+                }
+                reader.close();
+                return count;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.err(sClass, "getCacheCountInDB", e);
         }
-        if (reader != null)
-            reader.close();
-
-        return count;
+        return 0;
     }
 
 }
