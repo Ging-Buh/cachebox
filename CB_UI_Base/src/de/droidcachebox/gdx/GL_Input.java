@@ -31,8 +31,8 @@ public class GL_Input implements InputProcessor {
     private boolean isTouchDown;
     private boolean touchDraggedActive;
     private Point touchDraggedCorrect = new Point(0, 0);
-    private SortedMap<Integer, TouchDownPointer> touchDownPos = Collections.synchronizedSortedMap((new TreeMap<>()));
-    private long mLongClickTime;
+    private final SortedMap<Integer, TouchDownPointer> touchDownPos = Collections.synchronizedSortedMap((new TreeMap<>()));
+    private final long mLongClickTime;
     private Timer longClickTimer;
     private long lastClickTime = 0;
     private Point lastClickPoint = null;
@@ -121,11 +121,8 @@ public class GL_Input implements InputProcessor {
             }
             return true;
         }
-        if (GL.that.getFocusedEditTextField() != null) {
-            // return GL.that.getFocusedEditTextField().keyUp(value);
-            return true;
-        }
-        return false;
+        // return GL.that.getFocusedEditTextField().keyUp(value);
+        return GL.that.getFocusedEditTextField() != null;
     }
 
     @Override
@@ -424,7 +421,6 @@ public class GL_Input implements InputProcessor {
         private boolean fertig;
         private int diffX;
         private int diffY;
-        private long diffTs;
         private long startTs;
         private long endTs;
         private int lastX = 0;
@@ -475,16 +471,12 @@ public class GL_Input implements InputProcessor {
             }
             diffX = x[anzPointsUsed - 1] - aktX;
             diffY = aktY - y[anzPointsUsed - 1];
-            diffTs = aktTs - ts[anzPointsUsed - 1];
+            long diffTs = aktTs - ts[anzPointsUsed - 1];
 
             if (diffTs > 0) {
                 diffX = (int) ((float) diffX / FRAME_RATE_ACTION * diffTs);
                 diffY = (int) ((float) diffY / FRAME_RATE_ACTION * diffTs);
             }
-            // if (TOUCH_DEBUG)
-            // Log.debug(log, "diffx = " + diffX + " - diffy = " + diffY);
-
-            // debugString = x[2] + " - " + x[1] + " - " + x[0];
         }
 
         public boolean getStarted() {
@@ -501,11 +493,8 @@ public class GL_Input implements InputProcessor {
             startTs = System.currentTimeMillis();
             int abstand = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
 
-            endTs = startTs + 1000 + abstand * 15 / anzPointsUsed;
-            // if (endTs > startTs + 6000) endTs = startTs + 6000; // max. Zeit festlegen
+            endTs = startTs + 1000 + abstand * 15L / anzPointsUsed;
             if (TOUCH_DEBUG)
-                // Log.debug(log, "endTs - startTs: " + String.valueOf(endTs - startTs));
-                // endTs = startTs + 5000;
                 started = true;
         }
 
@@ -517,8 +506,6 @@ public class GL_Input implements InputProcessor {
             float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
             // Log.debug(log, "Faktor: " + faktor);
             faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
-            // faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
-            // Log.debug(log, "Faktor2: " + faktor);
             if (faktor >= 1) {
                 fertig = true;
                 faktor = 1;
