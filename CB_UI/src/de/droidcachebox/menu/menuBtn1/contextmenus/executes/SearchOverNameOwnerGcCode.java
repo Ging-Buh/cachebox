@@ -354,7 +354,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
             // }
 
             if (!threadCanceld) {
-                CacheListChangedListeners.getInstance().fire();
+                CacheListChangedListeners.getInstance().fire(sClass);
                 cancelImport();
                 finish();
             } else {

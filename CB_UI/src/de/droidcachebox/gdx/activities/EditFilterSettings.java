@@ -290,8 +290,8 @@ public class EditFilterSettings extends ActivityBase {
                         String sqlWhere = filterProperties.getSqlWhere(Settings.GcLogin.getValue());
                         new CachesDAO().readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                         GlobalCore.checkSelectedCacheValid();
+                        CacheListChangedListeners.getInstance().fire(sClass);
                     }
-                    CacheListChangedListeners.getInstance().fire();
                 } catch (Exception ex) {
                     Log.err(sClass, "applyFilter", ex);
                 }

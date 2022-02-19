@@ -38,7 +38,7 @@ import de.droidcachebox.menu.menuBtn3.ShowMap;
 import de.droidcachebox.translation.Translation;
 
 public class EditCache extends ActivityBase implements KeyboardFocusChangedEventList.KeyboardFocusChangedEvent {
-    // Allgemein
+    private static final String sClass = "EditCache";
     private final GeoCacheType[] geoCacheTypNumbers = GeoCacheType.caches();
     private final GeoCacheSize[] geoCacheSizeNumbers = new GeoCacheSize[]{GeoCacheSize.other, // 0
             GeoCacheSize.micro, // 1
@@ -260,12 +260,12 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             cache.setLongDescription(cacheDescription.getText());
             if (update) {
                 cachesDAO.updateDatabase(cache);
-                CacheListChangedListeners.getInstance().fire();
+                CacheListChangedListeners.getInstance().fire(sClass + " updateDatabase");
             } else {
                 CBDB.cacheList.add(cache);
                 cachesDAO.writeToDatabase(cache);
                 GlobalCore.setSelectedCache(cache);
-                CacheListChangedListeners.getInstance().fire();
+                CacheListChangedListeners.getInstance().fire(sClass + " writeToDatabase");
                 ((ShowGeoCaches) Action.ShowGeoCaches.action).setSelectedCacheVisible();
             }
 

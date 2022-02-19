@@ -515,7 +515,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             }
 
             if (!threadCanceled) {
-                CacheListChangedListeners.getInstance().fire();
+                CacheListChangedListeners.getInstance().fire(sClass);
                 if (dis != null) {
                     removeChildDirect(dis);
                     dis.dispose();

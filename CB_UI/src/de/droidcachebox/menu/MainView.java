@@ -339,7 +339,7 @@ public class MainView extends MainViewBase {
             cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
         }
 
-        CacheListChangedListeners.getInstance().fire();
+        CacheListChangedListeners.getInstance().fire(sClass);
 
         DraftsDatabase.getInstance().startUp(GlobalCore.workPath + "/User/FieldNotes.db3");
 

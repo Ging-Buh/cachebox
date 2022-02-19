@@ -709,6 +709,6 @@ public class Import_GSAK extends ActivityBase {
     @Override
     public void finish() {
         super.finish();
-        CacheListChangedListeners.getInstance().fire();
+        CacheListChangedListeners.getInstance().fire(sClass);
     }
 }

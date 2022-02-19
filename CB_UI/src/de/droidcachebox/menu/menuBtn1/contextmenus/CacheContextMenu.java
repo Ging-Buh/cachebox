@@ -159,7 +159,7 @@ public class CacheContextMenu {
                             String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
                             cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
                             GlobalCore.setSelectedCache(CBDB.cacheList.getCacheByGcCodeFromCacheList(GCCode));
-                            CacheListChangedListeners.getInstance().fire();
+                            CacheListChangedListeners.getInstance().fire("reloadSelectedCache");
                         }
 
                         ((ShowSpoiler) ShowSpoiler.action).importSpoiler(false,
@@ -195,28 +195,6 @@ public class CacheContextMenu {
         }
     }
 
-    private void deleteSelectedCache() {
-        ArrayList<String> GcCodeList = new ArrayList<>();
-        GcCodeList.add(GlobalCore.getSelectedCache().getGeoCacheCode());
-        new CachesDAO().delCacheImages(GcCodeList, Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
-
-        for (int i = 0, n = GlobalCore.getSelectedCache().getWayPoints().size(); i < n; i++) {
-            Waypoint wp = GlobalCore.getSelectedCache().getWayPoints().get(i);
-            WaypointDAO.getInstance().deleteFromDatabase(wp);
-        }
-
-        CBDB.getInstance().delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGeoCacheCode() + "'", null);
-
-        // ClearOrphanedLogs(); // do it when you have more time
-        LogsTableDAO.getInstance().deleteLogs(GlobalCore.getSelectedCache().generatedId);
-        EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
-
-        GlobalCore.setSelectedCache(null);
-        CacheListChangedListeners.getInstance().fire();
-        ((ShowGeoCaches) Action.ShowGeoCaches.action).setSelectedCacheVisible();
-
-    }
-
     private void toggleShortClick() {
         ButtonDialog bd = new ButtonDialog(Translation.get("CacheContextMenuShortClickToggleQuestion"), Translation.get("CacheContextMenuShortClickToggleTitle"), MsgBoxButton.YesNo, MsgBoxIcon.Question);
         bd.setButtonClickHandler((btnNumber, data) -> {
@@ -238,17 +216,29 @@ public class CacheContextMenu {
         CBDB.cacheList.getCacheByIdFromCacheList(GlobalCore.getSelectedCache().generatedId).setFavorite(GlobalCore.getSelectedCache().isFavorite());
         // Update View
         ((ShowDescription) ShowDescription.action).updateDescriptionView(true);
-        CacheListChangedListeners.getInstance().fire();
+        CacheListChangedListeners.getInstance().fire("toggleAsFavorite");
     }
 
     private void deleteGeoCache() {
         ButtonDialog bd = new ButtonDialog(Translation.get("sure"), Translation.get("question"), MsgBoxButton.OKCancel, MsgBoxIcon.Question);
         bd.setButtonClickHandler((which, data) -> {
             if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
-                deleteSelectedCache();
-                Log.debug(sClass, "deleteSelectedCache");
+                ArrayList<String> GcCodeList = new ArrayList<>();
+                GcCodeList.add(GlobalCore.getSelectedCache().getGeoCacheCode());
+                new CachesDAO().delCacheImages(GcCodeList, Settings.SpoilerFolder.getValue(), Settings.SpoilerFolderLocal.getValue(), Settings.DescriptionImageFolder.getValue(), Settings.DescriptionImageFolderLocal.getValue());
+
+                for (int i = 0, n = GlobalCore.getSelectedCache().getWayPoints().size(); i < n; i++) {
+                    Waypoint wp = GlobalCore.getSelectedCache().getWayPoints().get(i);
+                    WaypointDAO.getInstance().deleteFromDatabase(wp);
+                }
+
+                CBDB.getInstance().delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGeoCacheCode() + "'", null);
+
+                // ClearOrphanedLogs(); // do it when you have more time
+                LogsTableDAO.getInstance().deleteLogs(GlobalCore.getSelectedCache().generatedId);
+                EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
+                ((ShowGeoCaches) Action.ShowGeoCaches.action).setSelectedCacheVisible();
                 GlobalCore.setSelectedWaypoint(null, null, true);
-                Log.debug(sClass, "GlobalCore.setSelectedWaypoint");
             }
             return true;
         });

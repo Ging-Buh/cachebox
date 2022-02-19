@@ -31,7 +31,6 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.core.API_ErrorEventHandlerList;
-import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.CoreData;
 import de.droidcachebox.core.GroundspeakAPI;
 import de.droidcachebox.database.CBDB;
@@ -315,13 +314,11 @@ public class GlobalCore implements SolverCacheInterface {
     @Override
     public void globalCoreSetSelectedCache(Cache cache) {
         setSelectedCache(cache);
-        CacheListChangedListeners.getInstance().fire();
     }
 
     @Override
     public void globalCoreSetSelectedWaypoint(Cache cache, Waypoint waypoint) {
         setSelectedWaypoint(cache, waypoint);
-        CacheListChangedListeners.getInstance().fire();
     }
 
     @Override

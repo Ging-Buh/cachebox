@@ -39,7 +39,6 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.GlobalCore;
-import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.GroundspeakAPI.PQ;
 import de.droidcachebox.database.CBDB;
@@ -975,7 +974,6 @@ public class Import extends ActivityBase {
             importAnimation = null;
         }
 
-        CacheListChangedListeners.getInstance().fire();
         EditFilterSettings.applyFilter(FilterInstances.getLastFilter());
     }
 

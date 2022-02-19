@@ -73,7 +73,7 @@ public class LiveMapQue {
             boolean cancel = descriptorStack.isEmpty();
             if (cancel) {
                 new Thread(() -> {
-                    CacheListChangedListeners.getInstance().fire();
+                    CacheListChangedListeners.getInstance().fire(sClass + " cancelLoop");
                 }).start();
                 Log.debug(sClass, "cancel loop thread");
             }
@@ -144,9 +144,7 @@ public class LiveMapQue {
                             }).start();
                         }
                         if (cacheListLive.getNoOfGeoCachesForDescriptor(descriptor) > 0 || geoCachesToRemove.size > 0) {
-                            new Thread(() -> {
-                                CacheListChangedListeners.getInstance().fire();
-                            }).start();
+                            CacheListChangedListeners.getInstance().fire(sClass + "loop");
                         }
                     }
                     downloadIsActive.set(false);

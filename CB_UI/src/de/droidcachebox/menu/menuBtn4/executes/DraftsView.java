@@ -168,7 +168,7 @@ public class DraftsView extends V_ListView {
 
             notifyDataSetChanged();
 
-            CacheListChangedListeners.getInstance().fire();
+            CacheListChangedListeners.getInstance().fire(sClass + " afterEdit");
             CacheSelectionChangedListeners.getInstance().fire(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
         }
     }
@@ -350,7 +350,7 @@ public class DraftsView extends V_ListView {
         createGeoCacheVisits();
         notifyDataSetChanged(); // perhaps only when visible
         // for status change, for icons in map
-        CacheListChangedListeners.getInstance().fire();
+        CacheListChangedListeners.getInstance().fire(sClass + " afterAddDraft");
         CacheSelectionChangedListeners.getInstance().fire(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
         new QuickDraftFeedbackPopUp(found).show(PopUpBase.SHOW_TIME_SHORT);
         Platform.vibrate();

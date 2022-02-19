@@ -390,7 +390,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                         Cache selCache = CBDB.cacheList.getCacheByGcCodeFromCacheList(GCCode);
                         GlobalCore.setSelectedCache(selCache);
                         infoBubble.setCache(selCache, null, true);
-                        CacheListChangedListeners.getInstance().fire();
+                        CacheListChangedListeners.getInstance().fire(sClass);
                     }
 
                     @Override

@@ -50,7 +50,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.droidcachebox.activities.CBForeground;
 import de.droidcachebox.activities.GcApiLogin;
-import de.droidcachebox.core.CacheListChangedListeners;
 import de.droidcachebox.core.FilterInstances;
 import de.droidcachebox.core.FilterProperties;
 import de.droidcachebox.database.CBDB;
@@ -689,7 +688,6 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                 mainActivity.runOnUiThread(() -> new CancelWaitDialog(Translation.get("ImportGPX"), new WorkAnimation(), new RunAndReady() {
                     @Override
                     public void ready() {
-                        CacheListChangedListeners.getInstance().fire();
                         FilterProperties props = FilterInstances.getLastFilter();
                         EditFilterSettings.applyFilter(props);
 

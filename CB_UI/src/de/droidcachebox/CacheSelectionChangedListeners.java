@@ -32,27 +32,25 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
         }
 
         if (selectChangeThread != null) {
-            while (selectChangeThread.getState() != Thread.State.TERMINATED){
-                try {
-                    Log.debug("Cache changed event", "still running. Won't change to cache!");
-                    wait(1000);
-                } catch (Exception ignored) {
-                }
-                return; // else return from fire event (sometimes endless loop, after cache deletion. todo check why)
+            try {
+                Log.debug("Cache changed event", "still running. Won't change to cache!");
+                wait(1000);
+            } catch (Exception ignored) {
             }
+            return;
         }
 
         selectChangeThread = new Thread(() -> {
             for (CacheSelectionChangedListener listener : this) {
                 try {
-                    Log.debug("'Selected Cache change' by ", listener.toString());
+                    Log.debug("'Do selected Cache change' by ", listener.toString());
                     listener.handleCacheSelectionChanged(selectedCache, waypoint);
-                    Log.debug("'Selected Cache changed' done. ", listener.toString());
                 } catch (Exception ex) {
-                    Log.err(listener.toString(), selectedCache == null ? "Geocache = null" : ex.toString());
+                    Log.err(listener.toString(), selectedCache == null ? "Geocache = null" : ex.toString(), ex);
                 }
             }
             Log.debug("CacheSelectionChangedListeners", "handle Cache changed for all listeners called.");
+            selectChangeThread = null;
         });
         selectChangeThread.start();
 
