@@ -5,6 +5,12 @@
 • Streichungen = -
 • Offen = •
 
+Version 3748 vom 19. Februar 2022
+* Fix TB Name (wurde ev. nicht gezeigt)
+~ Search Dialog wird nicht ausgebelendet bei Wechsel zur Karte,...
+* gpx-Import: solver + notes werden importiert
+* Nach dem Löschen von Geocaches konnte es zu einem Programmabbruch kommen
+
 Version 3717 vom 6. Januar 2022
 * Fortschrittsanzeige u.a. beim Download von FZK-Karten
 * Mapsforge Karte hinzufügen

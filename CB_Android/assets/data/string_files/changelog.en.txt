@@ -5,6 +5,12 @@
 • Deletions = -
 • Unsolved = •
 
+Version 3748 of February 19, 2022
+* Fix TB name (possibly not shown)
+~ Search popup not removed (between Cachelist + map-view)
+* Gpx-import for solver + notes
+* Crash after delete
+
 Version 3717 dated January 6, 2022
 * make fzk maps download progress visible again
 * corect a bug in mapsforge additional layer
