@@ -99,7 +99,7 @@ public abstract class Database_Core {
 
 
     public void startUp(String databasePath) {
-        // Log.info(sClass, "DB Startup : " + databasePath);
+        Log.info(sClass, "DB Startup : " + databasePath);
 
         this.databasePath = databasePath;
 

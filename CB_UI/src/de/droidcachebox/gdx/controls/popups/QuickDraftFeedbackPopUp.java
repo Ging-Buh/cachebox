@@ -18,6 +18,7 @@ public class QuickDraftFeedbackPopUp extends PopUpBase {
 
     /**
      * lets the corresponding image expand and shrink after a delay for a period
+     *
      * @param found if or not
      */
     public QuickDraftFeedbackPopUp(boolean found) {
@@ -32,10 +33,6 @@ public class QuickDraftFeedbackPopUp extends PopUpBase {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                if (isDisposed) {
-                    GL.that.renderOnce();
-                    return;
-                }
                 if (tooSmall) {
                     if (counter < -5) {
                         tooSmall = false;
@@ -57,10 +54,16 @@ public class QuickDraftFeedbackPopUp extends PopUpBase {
     }
 
     @Override
+    public void dispose() {
+        // do not remove: the timerTask must come to an end
+    }
+
+    @Override
     public void onShow() {
         try {
             new Timer().schedule(timerTask, 40, 40);
         } catch (Exception ignored) {
         }
     }
+
 }

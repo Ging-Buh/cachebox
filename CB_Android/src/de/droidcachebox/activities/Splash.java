@@ -604,10 +604,10 @@ public class Splash extends Activity {
         if (SettingsDatabase.getInstance().isDatabaseNew()) {
             Settings.getInstance().loadAllDefaultValues();
             Settings.getInstance().writeToDatabases();
-            Log.debug(sClass, "Default Settings written to new configDB.");
+            Log.info(sClass, "Write defaults to Config.db3");
         } else {
             Settings.getInstance().readFromDB();
-            Log.debug(sClass, "All settings read");
+            Log.info(sClass, "Read settings from Config.db3");
         }
         Settings.AktLogLevel.addSettingChangedListener(() -> CB_SLF4J.getInstance(workPath).setLogLevel((LogLevel) Settings.AktLogLevel.getEnumValue()));
 

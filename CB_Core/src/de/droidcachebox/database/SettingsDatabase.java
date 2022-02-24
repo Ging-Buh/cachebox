@@ -46,6 +46,7 @@ public class SettingsDatabase extends Database_Core {
 
     @Override
     public void close() {
+        Log.info(sClass, "closing " + databasePath);
         databasePath = "";
         if (sql != null) sql.close();
         sql = null;

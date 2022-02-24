@@ -72,6 +72,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
             for (SettingBase<?> setting : this) {
                 if (setting.isDirty()) {
                     settingName = setting.name;
+                    Log.info(sClass, "Store " + settingName);
 
                     if (Local == setting.getStoreType()) {
                         if (dataDB != null) {
