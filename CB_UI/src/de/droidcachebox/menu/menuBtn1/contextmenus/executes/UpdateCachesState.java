@@ -41,6 +41,9 @@ public class UpdateCachesState {
     public void execute() {
         Log.debug("ImportMenuTitle", "chkAPiLogInWithWaitDialog");
         GlobalCore.chkAPiLogInWithWaitDialog(isAccessTokenInvalid -> {
+            if (isAccessTokenInvalid) {
+                return;
+            }
             Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
             progressDialog = new ProgressDialog(Translation.get("chkState"), new DownloadAnimation(), new RunAndReady() {
                 final static int blockSize = 50; // API 1.0 has a limit of 50, handled in GroundSpeakAPI but want to write to DB after BlockSize fetched
@@ -52,7 +55,7 @@ public class UpdateCachesState {
 
                     ArrayList<Cache> chkList = new ArrayList<>();
                     synchronized (CBDB.cacheList) {
-                        if (CBDB.cacheList == null || CBDB.cacheList.size() == 0)
+                        if (CBDB.cacheList.size() == 0)
                             return;
                         changedCount = 0;
                         for (int i = 0, n = CBDB.cacheList.size(); i < n; i++) {
@@ -117,10 +120,7 @@ public class UpdateCachesState {
                 }
 
             });
-
-            if (!isAccessTokenInvalid) {
-                GL.that.postAsync(progressDialog::show);
-            }
+            GL.that.postAsync(progressDialog::show);
         });
     }
 }

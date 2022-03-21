@@ -102,14 +102,14 @@ public class CacheInfo extends CB_View_Base {
         super(size, Name);
         setCache(value);
         cacheIsInitial = false;
-        initialMesure();
+        initialMeasure();
     }
 
     public CacheInfo(CB_RectF rec, String Name, Cache value) {
         super(rec, Name);
         setCache(value);
         cacheIsInitial = false;
-        initialMesure();
+        initialMeasure();
     }
 
     /*
@@ -160,7 +160,7 @@ public class CacheInfo extends CB_View_Base {
         return "";
     }
 
-    void initialMesure() {
+    void initialMeasure() {
         mScaleFactor = getWidth() / UiSizes.getInstance().getCacheListItemRec().getWidth();
         mIconSize = Fonts.measureForSmallFont("T").height * 3.5f * mScaleFactor;
         mMargin = 3 * mScaleFactor;

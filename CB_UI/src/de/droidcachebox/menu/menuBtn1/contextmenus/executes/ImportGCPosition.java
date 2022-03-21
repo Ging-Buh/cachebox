@@ -504,7 +504,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                         if (geoCacheRelateds.size() > 0) {
                             try {
                                 new CachesDAO().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
-                            } catch (InterruptedException e) {
+                            } catch (Exception e) {
                                 Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
                             }
                         }

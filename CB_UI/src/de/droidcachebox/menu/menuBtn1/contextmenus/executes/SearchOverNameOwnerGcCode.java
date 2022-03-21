@@ -334,7 +334,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                                 try {
                                     importAnimation.setAnimationType(AnimationType.Work);
                                     new CachesDAO().writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
-                                } catch (InterruptedException e) {
+                                } catch (Exception e) {
                                     Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", e);
                                 }
                             }
@@ -396,8 +396,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     }
 
     private void textBox_TextChanged() {
-        boolean isText = editTextField.getText().length() != 0;
-        btnImport.setEnable(isText);
+        btnImport.setEnable(editTextField.getText().length() != 0);
     }
 
     @Override

@@ -351,46 +351,51 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
                 new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), new RunAndReady() {
                     @Override
                     public void ready() {
-                        ((ShowSpoiler) ShowSpoiler.action).importSpoiler(false, isCanceled1 -> {
-                            // do after import
-                            if (!isCanceled1) {
-                                if (GlobalCore.isSetSelectedCache()) {
-                                    GlobalCore.getSelectedCache().loadSpoilerRessources();
+                        if (!isCanceled.get()) {
+                            ((ShowSpoiler) ShowSpoiler.action).importSpoiler(false, isCanceled1 -> {
+                                // do after import
+                                if (!isCanceled1) {
+                                    if (GlobalCore.isSetSelectedCache()) {
+                                        GlobalCore.getSelectedCache().loadSpoilerRessources();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
 
                     @Override
                     public void run() {
                         CachesDAO cachesDAO = new CachesDAO();
                         Cache bubblesCache = infoBubble.getCache();
-                        if (bubblesCache.getGeoCacheDetail() == null)
+                        if (bubblesCache.mustLoadDetail())
                             cachesDAO.loadDetail(bubblesCache);
                         String GCCode = bubblesCache.getGeoCacheCode();
                         ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = GroundspeakAPI.updateGeoCache(bubblesCache);
                         if (geoCacheRelateds.size() > 0) {
-                            try {
-                                cachesDAO.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
-                            } catch (InterruptedException ex) {
-                                Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
-                            }
-                        } else {
-                            if (GroundspeakAPI.APIError != OK) {
+                            if (GroundspeakAPI.APIError == OK) {
+                                try {
+                                    cachesDAO.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
+                                } catch (Exception ex) {
+                                    Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB " + bubblesCache.getGeoCacheCode(), ex);
+                                }
+                            } else {
                                 new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("ReloadCacheAPI"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
                             }
-                        }
 
-                        // Reload result from DB
-                        synchronized (CBDB.cacheList) {
-                            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
-                            cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
-                        }
+                            // Reload result from DB
+                            synchronized (CBDB.cacheList) {
+                                String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
+                                cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                            }
 
-                        Cache selCache = CBDB.cacheList.getCacheByGcCodeFromCacheList(GCCode);
-                        GlobalCore.setSelectedCache(selCache);
-                        infoBubble.setCache(selCache, null, true);
-                        CacheListChangedListeners.getInstance().fire(sClass);
+                            Cache selCache = CBDB.cacheList.getCacheByGcCodeFromCacheList(GCCode);
+                            GlobalCore.setSelectedCache(selCache);
+                            infoBubble.setCache(selCache, null, true);
+                            CacheListChangedListeners.getInstance().fire(sClass);
+                        }
+                        else {
+                            isCanceled.set(true);
+                        }
                     }
 
                     @Override

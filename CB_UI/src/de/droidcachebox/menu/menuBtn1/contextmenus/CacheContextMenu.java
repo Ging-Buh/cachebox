@@ -150,7 +150,7 @@ public class CacheContextMenu {
                     if (geoCacheRelateds.size() > 0) {
                         try {
                             cachesDAO.writeCachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
-                        } catch (InterruptedException ex) {
+                        } catch (Exception ex) {
                             Log.err(sClass, "WriteIntoDB.writeCachesAndLogsAndImagesIntoDB", ex);
                         }
 

@@ -465,7 +465,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
 
     @Override
     public void onDestroy() {
-        Log.debug(sClass, "=> onDestroy AndroidApplication");
+        Log.info(sClass, "=> onDestroy AndroidApplication");
         try {
             Platform.addToMediaScannerList(Settings.DraftsGarminPath.getValue());
             Platform.addToMediaScannerList(CB_SLF4J.logfile);
@@ -504,7 +504,8 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
                     if (androidUIBaseMethods != null) androidUIBaseMethods.removeFromGPS();
                     CacheSelectionChangedListeners.getInstance().clear();
                     CacheListChangedListeners.getInstance().clear();
-                    showViewListener.onDestroyWithFinishing();
+                    if (showViewListener != null)
+                        showViewListener.onDestroyWithFinishing();
 
                     Settings.getInstance().acceptChanges(); // same as Config.settings.writeToDatabases();
 
@@ -587,8 +588,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
             float distance;
             if (waypoint != null) {
                 distance = waypoint.recalculateAndGetDistance();
-            }
-            else {
+            } else {
                 distance = cache.recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
             }
             if (distance > Settings.SoundApproachDistance.getValue()) {

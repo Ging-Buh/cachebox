@@ -664,7 +664,7 @@ public class CachesDAO {
         return getStringValue(cache.generatedId, "ShortDescription");
     }
 
-    public void writeCachesAndLogsAndImagesIntoDB(ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds, GpxFilename forCategory) throws InterruptedException {
+    public void writeCachesAndLogsAndImagesIntoDB(ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds, GpxFilename forCategory) {
         AtomicBoolean isCanceled = new AtomicBoolean(false); // todo implement
 
         CBDB.getInstance().beginTransaction();
@@ -680,11 +680,8 @@ public class CachesDAO {
 
     }
 
-    public void writeCacheAndLogsAndImagesIntoDB(GroundspeakAPI.GeoCacheRelated geoCacheRelated, GpxFilename forCategory, boolean keepOldCacheValues) throws InterruptedException {
+    public void writeCacheAndLogsAndImagesIntoDB(GroundspeakAPI.GeoCacheRelated geoCacheRelated, GpxFilename forCategory, boolean keepOldCacheValues) {
         ImageDAO imageDAO = new ImageDAO();
-
-        // perhaps react to thread cancel
-        Thread.sleep(2);
 
         Cache cache = geoCacheRelated.cache;
         Cache oldCache = null;

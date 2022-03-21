@@ -15,7 +15,9 @@ public class SettingsDatabase extends Database_Core {
     }
 
     public static SettingsDatabase getInstance() {
-        if (settingsDatabase == null) settingsDatabase = new SettingsDatabase();
+        if (settingsDatabase == null) {
+            settingsDatabase = new SettingsDatabase();
+        }
         return settingsDatabase;
     }
 

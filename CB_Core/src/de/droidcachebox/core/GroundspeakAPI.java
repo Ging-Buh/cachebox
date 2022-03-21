@@ -1041,6 +1041,7 @@ public class GroundspeakAPI {
                 active = true;
                 me = fetchUserInfos("me");
                 if (me.memberShipType == MemberShipType.Unknown) {
+                    // todo handle me.username == "opted-out user"
                     me.findCount = -1;
                     // we need a new AccessToken
                     API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);

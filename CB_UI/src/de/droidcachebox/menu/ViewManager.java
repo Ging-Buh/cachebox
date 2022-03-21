@@ -194,7 +194,6 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
             @Override
             public void NoAPI_Key() {
-
                 Timer t = new Timer();
                 TimerTask tt = new TimerTask() {
 

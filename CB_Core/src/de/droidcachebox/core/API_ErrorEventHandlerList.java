@@ -22,7 +22,7 @@ import java.util.TimerTask;
 public class API_ErrorEventHandlerList {
     private static final long MIN_CALL_TIME = 5000;
 
-    private static ArrayList<API_ErrorEventHandler> list = new ArrayList<>();
+    private static final ArrayList<API_ErrorEventHandler> list = new ArrayList<>();
     private static Thread threadCall;
     private static long lastCall;
 
@@ -39,30 +39,23 @@ public class API_ErrorEventHandlerList {
         lastCall = System.currentTimeMillis();
 
         if (threadCall == null)
-            threadCall = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    synchronized (list) {
-                        synchronized (list) {
-                            for (API_ErrorEventHandler handler : list) {
-                                switch (type) {
-                                    case EXPIRED:
-                                        handler.ExpiredAPI_Key();
-                                        break;
-                                    case INVALID:
-                                        handler.InvalidAPI_Key();
-                                        break;
-                                    case NO:
-                                        handler.NoAPI_Key();
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
+            threadCall = new Thread(() -> {
+                synchronized (list) {
+                    for (API_ErrorEventHandler handler : list) {
+                        switch (type) {
+                            case EXPIRED:
+                                handler.ExpiredAPI_Key();
+                                break;
+                            case INVALID:
+                                handler.InvalidAPI_Key();
+                                break;
+                            case NO:
+                                handler.NoAPI_Key();
+                                break;
+                            default:
+                                break;
                         }
                     }
-
                 }
             });
 

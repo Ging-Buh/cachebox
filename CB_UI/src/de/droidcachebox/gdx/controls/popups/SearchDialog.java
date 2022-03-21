@@ -348,7 +348,7 @@ public class SearchDialog extends PopUpBase {
                 }
             }
         } else {
-            searchAPI();
+            GL.that.postAsync(this::searchAPI);
         }
 
     }

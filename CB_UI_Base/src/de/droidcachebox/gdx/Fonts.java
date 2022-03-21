@@ -147,7 +147,7 @@ public class Fonts {
         try {
             bounds = measureSmallCache.setText(txt, 0, 0);
         } catch (Exception ex) {
-            bounds = measureSmallCache.setText("Text", 0, 0);
+            bounds = new GlyphLayout();
         }
         bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
         return bounds;
