@@ -41,7 +41,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     private final ScrollBox scrollBox;
     private final IReturnListener mReturnListener;
     private float virtualHeight = 0;
-    private CoordinateButton bCoord;
+    private CoordinateButton coordinateButton;
     private Spinner sType;
     private CB_CheckBox cbStartPoint;
     private float cbStartPointWidth;
@@ -108,21 +108,21 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
                 coordinate = GlobalCore.getSelectedCache().getCoordinate();
             }
         }
-        bCoord = new CoordinateButton(rec, "CoordButton", coordinate, null);
+        coordinateButton = new CoordinateButton(rec, "CoordButton", coordinate, null);
 
-        bCoord.setCoordinateChangedListener(coord -> EditWaypoint.this.show());
+        coordinateButton.setCoordinateChangedListener(coord -> EditWaypoint.this.show());
 
-        scrollBox.addChild(bCoord);
+        scrollBox.addChild(coordinateButton);
     }
 
     private void iniLabelTyp() {
         cbStartPointWidth = UiSizes.getInstance().getButtonHeight() * 1.5f;
-        tvTyp = new CB_Label(this.name + " tvTyp", leftBorder + margin, bCoord.getY() - margin - measuredLabelHeight, innerWidth - margin - cbStartPointWidth, measuredLabelHeight);
+        tvTyp = new CB_Label(this.name + " tvTyp", leftBorder + margin, coordinateButton.getY() - margin - measuredLabelHeight, innerWidth - margin - cbStartPointWidth, measuredLabelHeight);
         tvTyp.setFont(Fonts.getBubbleNormal());
         tvTyp.setText(Translation.get("WayPointType"));
         scrollBox.addChild(tvTyp);
 
-        tvStartPoint = new CB_Label(this.name + " tvStartPoint", tvTyp.getMaxX() + margin, bCoord.getY() - margin - measuredLabelHeight, cbStartPointWidth, measuredLabelHeight);
+        tvStartPoint = new CB_Label(this.name + " tvStartPoint", tvTyp.getMaxX() + margin, coordinateButton.getY() - margin - measuredLabelHeight, cbStartPointWidth, measuredLabelHeight);
         tvStartPoint.setFont(Fonts.getBubbleNormal()).setHAlignment(HAlignment.CENTER);
         tvStartPoint.setText(Translation.get("start"));
         tvStartPoint.setVisible(false);
@@ -329,7 +329,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
         bOK.setClickHandler((v, x, y, pointer, button) -> {
             if (mReturnListener != null) {
-                waypoint.setCoordinate(bCoord.getCoordinate());
+                waypoint.setCoordinate(coordinateButton.getCoordinate());
                 waypoint.setTitle(etTitle.getText());
                 waypoint.setDescription(etDescription.getText());
                 waypoint.setClue(etClue.getText());
@@ -378,7 +378,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
         virtualHeight = 0;
         virtualHeight += tvCacheName.getHeight();
-        virtualHeight += bCoord.getHeight();
+        virtualHeight += coordinateButton.getHeight();
         virtualHeight += tvTyp.getHeight();
         virtualHeight += sType.getHeight();
         virtualHeight += tvTitle.getHeight();
@@ -397,8 +397,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         scrollBox.setVirtualHeight(virtualHeight);
 
         tvCacheName.setY(virtualHeight - tvCacheName.getHeight() - margin);
-        bCoord.setY(tvCacheName.getY() - bCoord.getHeight() - margin);
-        tvTyp.setY(bCoord.getY() - tvTyp.getHeight() - margin);
+        coordinateButton.setY(tvCacheName.getY() - coordinateButton.getHeight() - margin);
+        tvTyp.setY(coordinateButton.getY() - tvTyp.getHeight() - margin);
         tvStartPoint.setY(tvTyp.getY());
         sType.setY(tvTyp.getY() - sType.getHeight() - margin);
         cbStartPoint.setY(sType.getY());
@@ -414,7 +414,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     public void onShow() {
         // direct switch to input of coords (editCoord), if this is the first show
         if (firstShow && showCoordinateDialog)
-            bCoord.performClick();
+            coordinateButton.performClick();
         firstShow = false;
         KeyboardFocusChangedEventList.add(this);
     }

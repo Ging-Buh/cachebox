@@ -215,7 +215,6 @@ public class WayPointsView extends V_ListView implements CacheSelectionChangedLi
             if ((coordinate == null) || (!coordinate.isValid()))
                 coordinate = GlobalCore.getSelectedCache().getCoordinate();
             Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "", coordinate.getLatitude(), coordinate.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
-
             editWP(newWP, true);
         } catch (Exception ex) {
             Log.err(sClass, "addWP", ex);
@@ -234,52 +233,51 @@ public class WayPointsView extends V_ListView implements CacheSelectionChangedLi
     }
 
     private void editWP(Waypoint wp, boolean showCoordinateDialog) {
-        try {
+        EditWaypoint.IReturnListener afterEdit = waypoint -> {
+            if (waypoint != null) {
+                if (createNewWaypoint) {
 
-            EditWaypoint EdWp = new EditWaypoint(wp, waypoint -> {
-                if (waypoint != null) {
-                    if (createNewWaypoint) {
-
-                        GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
-                        wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                        setAdapter(wayPointListViewAdapter);
-                        currentWaypoint = waypoint;
-                        GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
-                        if (waypoint.isStartWaypoint) {
-                            // ensure there is only one start point
-                            WaypointDAO.getInstance().resetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
-                        }
-                        WaypointDAO.getInstance().writeToDatabase(waypoint);
-
-                        currentCache = null;
-                        currentWaypoint = null;
-
-                        handleCacheSelectionChanged(GlobalCore.getSelectedCache(), waypoint);
-
-                    } else {
-                        currentWaypoint.setTitle(waypoint.getTitle());
-                        currentWaypoint.waypointType = waypoint.waypointType;
-                        currentWaypoint.setCoordinate(waypoint.getCoordinate());
-                        currentWaypoint.setDescription(waypoint.getDescription());
-                        currentWaypoint.isStartWaypoint = waypoint.isStartWaypoint;
-                        currentWaypoint.setClue(waypoint.getClue());
-
-                        // set waypoint as UserWaypoint, because waypoint is changed by user
-                        currentWaypoint.isUserWaypoint = true;
-
-                        if (waypoint.isStartWaypoint) {
-                            // ensure there is only one start point
-                            WaypointDAO.getInstance().resetStartWaypoint(GlobalCore.getSelectedCache(), currentWaypoint);
-                        }
-                        WaypointDAO.getInstance().updateDatabase(currentWaypoint);
-
-                        wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                        setAdapter(wayPointListViewAdapter);
+                    GlobalCore.getSelectedCache().getWayPoints().add(waypoint);
+                    wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
+                    WayPointsView.this.setAdapter(wayPointListViewAdapter);
+                    currentWaypoint = waypoint;
+                    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
+                    if (waypoint.isStartWaypoint) {
+                        // ensure there is only one start point
+                        WaypointDAO.getInstance().resetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
                     }
-                }
-            }, showCoordinateDialog, false);
-            EdWp.show();
+                    WaypointDAO.getInstance().writeToDatabase(waypoint);
 
+                    currentCache = null;
+                    currentWaypoint = null;
+
+                    WayPointsView.this.handleCacheSelectionChanged(GlobalCore.getSelectedCache(), waypoint);
+
+                } else {
+                    currentWaypoint.setTitle(waypoint.getTitle());
+                    currentWaypoint.waypointType = waypoint.waypointType;
+                    currentWaypoint.setCoordinate(waypoint.getCoordinate());
+                    currentWaypoint.setDescription(waypoint.getDescription());
+                    currentWaypoint.isStartWaypoint = waypoint.isStartWaypoint;
+                    currentWaypoint.setClue(waypoint.getClue());
+
+                    // set waypoint as UserWaypoint, because waypoint is changed by user
+                    currentWaypoint.isUserWaypoint = true;
+
+                    if (waypoint.isStartWaypoint) {
+                        // ensure there is only one start point
+                        WaypointDAO.getInstance().resetStartWaypoint(GlobalCore.getSelectedCache(), currentWaypoint);
+                    }
+                    WaypointDAO.getInstance().updateDatabase(currentWaypoint);
+
+                    wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
+                    WayPointsView.this.setAdapter(wayPointListViewAdapter);
+                }
+            }
+        };
+
+        try {
+            new EditWaypoint(wp, afterEdit, showCoordinateDialog, false).show();
         } catch (Exception ex) {
             Log.err(sClass, "editWP(Waypoint wp, boolean showCoordinateDialog)", ex);
         }

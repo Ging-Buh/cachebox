@@ -19,8 +19,8 @@ import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.translation.Translation;
 
 public class CoordinateButton extends CB_Button implements ICopyPaste {
-    protected Coordinate mActCoord;
-    protected String mwpName;
+    protected Coordinate currentCoordinate;
+    protected String coordinateButtonText;
     protected CopyPastePopUp popUp;
     protected Clipboard clipboard;
     OnClickListener longCLick = (v, x, y, pointer, button) -> {
@@ -30,7 +30,6 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
     private EditCoord edCo;
     private ICoordinateChangedListener mCoordinateChangedListener;
     OnClickListener click = new OnClickListener() {
-
         @Override
         public boolean onClick(GL_View_Base view, int x, int y, int pointer, int button) {
             if (edCo == null)
@@ -40,12 +39,12 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
         }
     };
 
-    public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate, String wpName) {
+    public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate, String coordinateButtonText) {
         super(rec, name);
         if (coordinate == null)
             coordinate = new Coordinate(0, 0);
-        mActCoord = coordinate;
-        mwpName = wpName;
+        currentCoordinate = coordinate;
+        this.coordinateButtonText = coordinateButtonText;
         setText();
         this.setClickHandler(click);
         this.setLongClickHandler(longCLick);
@@ -54,7 +53,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
 
     public CoordinateButton(String name) {
         super(name);
-        mActCoord = new CoordinateGPS(0, 0);
+        currentCoordinate = new CoordinateGPS(0, 0);
         this.setClickHandler(click);
         this.setLongClickHandler(longCLick);
         clipboard = Platform.getClipboard();
@@ -65,9 +64,9 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
     }
 
     private void setText() {
-        if (mwpName == null) mwpName = "";
-        if (mwpName.length() == 0) mwpName = mActCoord.formatCoordinate();
-        setText(mwpName);
+        if (coordinateButtonText == null) coordinateButtonText = "";
+        coordinateButtonText = currentCoordinate.formatCoordinate();
+        setText(coordinateButtonText);
     }
 
     @Override
@@ -81,12 +80,11 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
 
     private void initialEdCo() {
 
-        edCo = new EditCoord("EditCoord", mActCoord, new ReturnListener() {
-
+        edCo = new EditCoord("EditCoord", currentCoordinate, new ReturnListener() {
             @Override
             public void returnCoordinate(Coordinate coordinate) {
                 if (coordinate != null && coordinate.isValid()) {
-                    mActCoord = coordinate;
+                    currentCoordinate = coordinate;
                     if (mCoordinateChangedListener != null)
                         mCoordinateChangedListener.coordinateChanged(coordinate);
                     setText();
@@ -99,13 +97,13 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
     }
 
     public Coordinate getCoordinate() {
-        return mActCoord;
+        return currentCoordinate;
     }
 
     public void setCoordinate(Coordinate pos) {
-        mActCoord = pos;
-        if (mActCoord == null)
-            mActCoord = new CoordinateGPS(0, 0);
+        currentCoordinate = pos;
+        if (currentCoordinate == null)
+            currentCoordinate = new CoordinateGPS(0, 0);
         setText();
     }
 
@@ -157,7 +155,7 @@ public class CoordinateButton extends CB_Button implements ICopyPaste {
 
             if (coord != null) {
                 if (coord != null && coord.isValid()) {
-                    mActCoord = coord;
+                    currentCoordinate = coord;
                     if (mCoordinateChangedListener != null)
                         mCoordinateChangedListener.coordinateChanged(coord);
                     setText();

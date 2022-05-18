@@ -367,6 +367,7 @@ public class SearchDialog extends PopUpBase {
                     @Override
                     public void ready() {
                         if (!isPremiumMember()) {
+                            // the CancelWaitDialog is closed at this point, so the ButtonDialog can appear
                             ButtonDialog bd = new ButtonDialog(Translation.get("GC_basic"), Translation.get("GC_title"), MsgBoxButton.OKCancel, MsgBoxIcon.Powerd_by_GC_Live);
                             bd.setButtonClickHandler((which, data) -> {
                                 if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
