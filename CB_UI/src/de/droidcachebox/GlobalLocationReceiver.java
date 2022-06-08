@@ -109,9 +109,9 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
                         synchronized (CBDB.cacheList) {
                             CacheWithWP ret = CBDB.cacheList.resort(Locator.getInstance().getValidPosition(null));
                             if (ret != null && ret.getCache() != null) {
-                                GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-                                GlobalCore.setNearestCache(ret.getCache());
+                                // GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
                                 initialResortAfterFirstFixCompleted = true;
+                                // GlobalCore.setNearestCache(ret.getCache());
                             }
                         }
                     }

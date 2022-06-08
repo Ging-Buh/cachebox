@@ -51,6 +51,7 @@ import de.droidcachebox.gdx.GL_Input;
 import de.droidcachebox.gdx.ViewConst;
 import de.droidcachebox.gdx.ViewID;
 import de.droidcachebox.locator.CBLocation;
+import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.Formatter;
 import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.Action;
@@ -73,21 +74,22 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
     private static boolean isVoiceRecordingStarted = false;
     private static CBLocation recordingStartCoordinate;
     private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<>();
-    private int lastLeft, lastTop, lastRight, lastBottom;
     private final AndroidApplication androidApplication;
     private final Activity mainActivity;
     private final Main mainMain;
     private final AndroidApplicationConfiguration gdxConfig;
     private final FrameLayout layoutContent;
+    private final CacheNameView cacheNameView;
+    private final FrameLayout layoutGlContent;
+    private final LayoutInflater inflater;
+    private final View.OnTouchListener onTouchListener;
+    private int lastLeft, lastTop, lastRight, lastBottom;
     private DownSlider downSlider;
     private ViewOptionsMenu currentView;
     private ViewID aktViewId;
     private ViewOptionsMenu aktTabView;
     private ViewID aktTabViewId;
-    private final CacheNameView cacheNameView;
     private DescriptionView descriptionView;
-    private final FrameLayout layoutGlContent;
-    private final LayoutInflater inflater;
     private View gdxView;
     private Uri videoUri;
     private AndroidEventListener handlingRecordedVideo, handlingTakePhoto;
@@ -96,7 +98,6 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
     private String tempMediaPath;
     private MicrophoneView microphoneView;
     private ExtAudioRecorder extAudioRecorder;
-    private final View.OnTouchListener onTouchListener;
 
     ShowViewMethods(Main main) {
         androidApplication = main;
@@ -752,7 +753,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
                                         // for the photo to show within spoilers
                                         if (GlobalCore.isSetSelectedCache()) {
                                             GlobalCore.getSelectedCache().loadSpoilerRessources();
-                                            ((ShowSpoiler)Action.ShowSpoiler.action).forceReloadSpoiler();
+                                            ((ShowSpoiler) Action.ShowSpoiler.action).forceReloadSpoiler();
                                         }
 
                                         ViewManager.that.reloadSprites(false);
@@ -918,19 +919,24 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
 
             Cache cache = GlobalCore.getSelectedCache();
             String text = cache.getGeoCacheCode() + " - " + cache.getGeoCacheName() + ("\n" + "https://coord.info/" + cache.getGeoCacheCode());
+            Coordinate coordinate;
             if (cache.hasCorrectedCoordinatesOrHasCorrectedFinal()) {
                 text = text + ("\n\n" + "Location (corrected)");
                 if (cache.hasCorrectedCoordinates()) {
-                    text = text + ("\n" + Formatter.FormatCoordinate(cache.getCoordinate(), ""));
+                    coordinate = cache.getCoordinate();
+                    text = text + ("\n" + Formatter.FormatCoordinate(coordinate, ""));
                 } else {
-                    text = text + ("\n" + Formatter.FormatCoordinate(cache.getCorrectedFinal().getCoordinate(), ""));
+                    coordinate = cache.getCorrectedFinal().getCoordinate();
+                    text = text + ("\n" + Formatter.FormatCoordinate(coordinate, ""));
                 }
             } else {
                 text = text + ("\n\n" + "Location");
-                text = text + ("\n" + Formatter.FormatCoordinate(cache.getCoordinate(), ""));
+                coordinate = cache.getCoordinate();
+                text = text + ("\n" + Formatter.FormatCoordinate(coordinate, ""));
             }
+            text = text + "\n\n" + "geo:" + coordinate.getLatitude() + "," + coordinate.getLongitude();
             if (Platform.getClipboard() != null)
-                text = text + ("\n" + Platform.getClipboard().getContents());
+                text = text + ("\n\n" + Platform.getClipboard().getContents());
             text = text + ("\n" + smiley + "AndroidCacheBox");
             shareIntent.putExtra(Intent.EXTRA_TEXT, text);
             mainActivity.startActivity(Intent.createChooser(shareIntent, Translation.get("ShareWith")));

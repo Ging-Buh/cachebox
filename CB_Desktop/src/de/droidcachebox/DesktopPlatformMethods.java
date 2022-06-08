@@ -121,7 +121,7 @@ public class DesktopPlatformMethods implements Platform.PlatformMethods {
         }
 
         try {
-            java.net.URI uri = null;
+            java.net.URI uri;
             if (url.startsWith("file://")) {
                 File f = new File(url.replace("file://", ""));
                 uri = f.toURI();
@@ -178,7 +178,7 @@ public class DesktopPlatformMethods implements Platform.PlatformMethods {
     @Override
     public String removeHtmlEntyties(String text) {
         // todo Jsoup.parse(s).text();
-        return text.replaceAll("\\<[^>]*>", "");
+        return text.replaceAll("<[^>]*>", "");
     }
 
     @Override
