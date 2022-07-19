@@ -59,3 +59,8 @@ task copyAssets(type: Copy) {
 tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn copyAssets
 }
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}

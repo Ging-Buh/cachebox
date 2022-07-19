@@ -108,9 +108,9 @@ public class DescriptionImageGrabber {
     }
 
     /**
-     * @param GcCode
-     * @param _uri
-     * @return
+     * @param GcCode ?
+     * @param _uri ?
+     * @return ?
      */
     public static String buildDescriptionImageFilename(String GcCode, URI _uri) {
         // in der DB stehts ohne large. der Dateiname wurde aber mit large gebildet. Ev auch nur ein Handy / PC Problem.
@@ -191,7 +191,13 @@ public class DescriptionImageGrabber {
                 String src = img.text.substring(srcStart + 1, srcEnd);
                 try {
                     URI imgUri = URI.create(/* baseUri, */src);
-                    String localFile = buildDescriptionImageFilename(Cache.getGeoCacheCode(), imgUri);
+                    String localFile;
+                    if (imgUri.getScheme().equalsIgnoreCase("file")) {
+                        localFile = imgUri.getPath();
+                    }
+                    else {
+                        localFile = buildDescriptionImageFilename(Cache.getGeoCacheCode(), imgUri);
+                    }
 
                     if (FileIO.fileExistsNotEmpty(localFile)) {
                         int idx = 0;

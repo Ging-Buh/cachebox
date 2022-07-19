@@ -10,3 +10,5 @@ dependencies {
     // https://mvnrepository.com/artifact/net.sf.kxml/kxml2
     implementation group: 'net.sf.kxml', name: 'kxml2', version: '2.3.0'
 }
+
+java.targetCompatibility = JavaVersion.VERSION_1_8

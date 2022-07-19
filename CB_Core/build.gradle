@@ -1,6 +1,5 @@
 apply plugin: 'java-library'
 
-sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = ["src/"]
@@ -30,4 +29,9 @@ dependencies {
     implementation fileTree(dir: '../libs', include: ['mina-core-2.0.4.jar'])
     implementation group: 'commons-httpclient', name: 'commons-httpclient', version: '20020423'
 
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
