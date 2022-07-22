@@ -227,6 +227,7 @@ public class DescriptionImageGrabber {
 
                     }
                 } catch (Exception exc) {
+                    Log.err(sClass, "for " + src, exc);
                     /*
                      * #if DEBUG Global.AddLog( "DescriptionImageGrabber.resolveImages: failed to resolve relative uri. Base '" + baseUri +
                      * "', relative '" + src + "': " + exc.ToString()); #endif
