@@ -190,7 +190,7 @@ public class DescriptionImageGrabber {
             if (srcIdx != -1 && srcStart != -1 && srcEnd != -1) {
                 String src = img.text.substring(srcStart + 1, srcEnd);
                 try {
-                    URI imgUri = URI.create(/* baseUri, */src);
+                    URI imgUri = URI.create(/* baseUri, */src.replace("\n",""));
                     String localFile;
                     if (imgUri.getScheme().equalsIgnoreCase("file")) {
                         localFile = imgUri.getPath();
