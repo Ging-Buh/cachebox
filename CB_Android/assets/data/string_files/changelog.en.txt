@@ -5,36 +5,11 @@
 • Deletions = -
 • Unsolved = •
 
-Version 3748 of February 19, 2022
-* Fix TB name (possibly not shown)
-~ Search popup not removed (between Cachelist + map-view)
-* Gpx-import for solver + notes
-* Crash after delete
-
-Version 3717 dated January 6, 2022
-* make fzk maps download progress visible again
-* corect a bug in mapsforge additional layer
-* make cancel work again for some activities
-
-Version 3698 dated December 2, 2021
-~ Revision of the settings menu
-+ In the map menu: Under "Other", a Mapsforge map file for the map display can be selected from any directory. (Authorization / selection via the Android filepicker)
-• Calling the Android Filepicker on OnePlus devices may fail. Create the directory de.droidcachebox under /Android/media and store the map files thereunder.
-* Downloading the rendering themes files: An attempt was made to delete a non-empty directory in the internal unzip, which prevented an update.
-~ Download the OpenAndroMaps themes: source adapted
-~ Extension of the internal file manager for deleting and creating files and directories (with file API, "+" and long-click).
-* Logs load after changing database
-
-Version 3682 from November 2, 2021
-* Correct saving of own logs.
-~ In the internal file manager: There is a "Home" button for direct access to the working directory. The "/" button is omitted.
-
-Version 3674 from October 3, 2021
-* The query "Switch on GPS" takes the corresponding setting into account again
-* Treat "Placed by" can be zero in DB.
-* Treat NPE for missing characters in the font
-~ extended check on the use of the working directory
-
-Version 3671 from September 29, 2021
-+ There has been a new version in the Playstore for more than a year.
-+ It is time to implement the changes for Android 11 prescribed by Google.
+Version 3756 of August 27, 2022:
+* ignore newlines in URI.create
+* add an error message to resolveImages
+* show custom images
+~ prevent selection of nearest cache at first satellite fix.
++ add a geo: output to share text.
+* update coordinate button after edit
+* correct search online (do async)
