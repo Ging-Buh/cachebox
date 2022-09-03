@@ -625,7 +625,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
 
                 String cacheName;
                 if (GlobalCore.isSetSelectedCache()) {
-                    String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheName());
+                    String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheNameAsAscii());
                     cacheName = validName.substring(0, Math.min(validName.length(), 32));
                 } else {
                     cacheName = "Voice";
@@ -699,7 +699,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             }
             String cacheName;
             if (GlobalCore.isSetSelectedCache()) {
-                String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheName());
+                String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheNameAsAscii());
                 cacheName = validName.substring(0, Math.min(validName.length(), 32));
             } else {
                 cacheName = "Image";
@@ -814,7 +814,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             mediaFileNameWithoutExtension = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.US).format(new Date());
             String cacheName;
             if (GlobalCore.isSetSelectedCache()) {
-                String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheName());
+                String validName = FileIO.removeInvalidFatChars(GlobalCore.getSelectedCache().getGeoCacheCode() + "-" + GlobalCore.getSelectedCache().getGeoCacheNameAsAscii());
                 cacheName = validName.substring(0, Math.min(validName.length(), 32));
             } else {
                 cacheName = "Video";

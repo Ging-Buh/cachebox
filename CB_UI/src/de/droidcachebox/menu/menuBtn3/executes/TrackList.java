@@ -69,7 +69,7 @@ import de.droidcachebox.utils.log.Log;
  */
 public class TrackList {
     private final static String log = "TrackList";
-    private static TrackList trackList;
+    private static TrackList instance;
     private final ArrayList<Track> tracks;
     // for rendering
     private final ArrayList<DrawTrack> tracksToDraw;
@@ -88,8 +88,8 @@ public class TrackList {
     }
 
     public static TrackList getInstance() {
-        if (trackList == null) trackList = new TrackList();
-        return trackList;
+        if (instance == null) instance = new TrackList();
+        return instance;
     }
 
     public int getNumberOfTracks() {

@@ -38,7 +38,7 @@ import de.droidcachebox.utils.log.Log;
  * @author Longri
  */
 public class Fonts {
-    public static final String DEFAULT_CHARACTER = getCyrilCharSet();
+    public static final String DEFAULT_CHARACTERS = getCyrilCharSet();
     private static final String sClass = "Fonts";
     private static BitmapFont compass;
     private static BitmapFont big;
@@ -56,7 +56,12 @@ public class Fonts {
         for (int i = 0x0400; i <= 0x04ff; i++) {
             cyril[i - 0x0400] = (char) i;
         }
-        return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + "—–" + "•ŐőŰű√€†„”“’‘☺čěřšťůž…";
+        numberOfCharacters = 0x1F5FF - 0x1F300 + 1;
+        char[] smileys = new char[numberOfCharacters];
+        for (int i = 0x1F300; i <= 0x1F5FF; i++) {
+            smileys[i - 0x1F300] = (char) i;
+        }
+        return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + String.copyValueOf(smileys) + "—–•ŐőŰű√€†„”“’‘☺čěřšťůž…";
     }
 
     /**
@@ -213,7 +218,7 @@ public class Fonts {
             Log.debug(sClass, "generate font for scale " + scale);
             FreeTypeFontParameter parameter = new FreeTypeFontParameter();
             parameter.size = scale;
-            parameter.characters = DEFAULT_CHARACTER;
+            parameter.characters = DEFAULT_CHARACTERS;
             BitmapFont ret = generator.generateFont(parameter);
             TextureRegion region = ret.getRegion();
             Texture tex = region.getTexture();

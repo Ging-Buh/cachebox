@@ -22,10 +22,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import de.droidcachebox.gdx.Fonts;
-import de.droidcachebox.utils.FileFactory;
 
 import java.util.HashMap;
+
+import de.droidcachebox.gdx.Fonts;
+import de.droidcachebox.utils.FileFactory;
 
 /**
  * GL_FontFamily => DEFAULT(DroidSans), MONOSPACE, SANS_SERIF, SERIF;<br>
@@ -401,7 +402,7 @@ class GL_Fonts {
 
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = textSize;
-        parameter.characters = Fonts.DEFAULT_CHARACTER;
+        parameter.characters = Fonts.DEFAULT_CHARACTERS;
         BitmapFont ret = generator.generateFont(parameter);
 
         TextureRegion region = ret.getRegion();

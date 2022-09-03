@@ -189,7 +189,7 @@ public class TrackListView extends V_ListView {
                 double longitude = trackpoint.x;
                 ShowMap.action.execute();
                 ((ShowMap) ShowMap.action).normalMapView.setBtnMapStateToFree(); // btn
-                // ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
+                // ((ShowMap) ShowMap.action).normalMapView.setMapState(MapViewBase.MapState.FREE);
                 ((ShowMap) ShowMap.action).normalMapView.setCenter(new CoordinateGPS(latitude, longitude));
             }
         }

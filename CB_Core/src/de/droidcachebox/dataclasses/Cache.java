@@ -449,6 +449,12 @@ public class Cache implements Comparable<Cache>, Serializable {
         return new String(geoCacheName, UTF_8);
     }
 
+    public String getGeoCacheNameAsAscii() {
+        if (geoCacheName == null)
+            return EMPTY_STRING;
+        return new String(geoCacheName, US_ASCII);
+    }
+
     public void setGeoCacheName(String geoCacheName) {
         if (geoCacheName == null) {
             this.geoCacheName = null;

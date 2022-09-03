@@ -2,6 +2,7 @@ package de.droidcachebox.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -213,10 +214,8 @@ public class FileIO {
     }
 
     public static String removeInvalidFatChars(String str) {
-        String[] invalidChars = new String[]{":", "\\", "/", "<", ">", "?", "*", "|", "\"", ";", "#"};
-
-        for (int i = 0; i < invalidChars.length; i++)
-            str = str.replace(invalidChars[i], "");
+        String[] invalidChars = new String[]{":", "\\", "/", "<", ">", "?", "*", "|", "\"", ";", "#", "�"};
+        for (String invalidChar : invalidChars) str = str.replace(invalidChar, "");
 
         return str;
     }
@@ -224,9 +223,9 @@ public class FileIO {
     /**
      * Gibt eine ArrayList<File> zurück, die alle Files mit der Endung gpx enthält.
      *
-     * @param directory
-     * @param abstractFiles
-     * @return
+     * @param directory ?
+     * @param abstractFiles ?
+     * @return ?
      */
     public static ArrayList<AbstractFile> recursiveDirectoryReader(AbstractFile directory, ArrayList<AbstractFile> abstractFiles) {
         return recursiveDirectoryReader(directory, abstractFiles, "gpx", false);
@@ -235,25 +234,19 @@ public class FileIO {
     /**
      * Gibt eine ArrayList<File> zurück, die alle Files mit der angegebenen Endung haben.
      *
-     * @param directory
-     * @param abstractFiles
-     * @return
+     * @param directory ?
+     * @param abstractFiles ?
+     * @return ?
      */
     public static ArrayList<AbstractFile> recursiveDirectoryReader(AbstractFile directory, ArrayList<AbstractFile> abstractFiles, final String Endung, boolean exludeHides) {
 
         AbstractFile[] filelist = directory.listFiles((dir, filename) -> filename.contains("." + Endung));
 
         if (filelist != null) {
-            for (AbstractFile localAbstractFile : filelist)
-                abstractFiles.add(localAbstractFile);
+            Collections.addAll(abstractFiles, filelist);
         }
 
-        AbstractFile[] directories = directory.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(AbstractFile dir, String filename) {
-                return dir.isDirectory();
-            }
-        });
+        AbstractFile[] directories = directory.listFiles((dir, filename) -> dir.isDirectory());
         if (directories != null) {
             for (AbstractFile recursiveDir : directories) {
                 if (recursiveDir.isDirectory()) {

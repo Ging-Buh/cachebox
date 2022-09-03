@@ -300,7 +300,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             aktCache = cache;
             NonLocalImages.clear();
             NonLocalImagesUrl.clear();
-            String html = cachesDAO.getShortDescription(cache) + cachesDAO.getDescription(cache);
+            String html = "<style> img {max-width: 100%; height: auto;} </style>" + cachesDAO.getShortDescription(cache) + cachesDAO.getDescription(cache);
             // cache.getApiStatus() == Cache.IS_FULL
             if (html.length() > 0) {
                 html = DescriptionImageGrabber.resolveImages(cache, html, false, NonLocalImages, NonLocalImagesUrl);
