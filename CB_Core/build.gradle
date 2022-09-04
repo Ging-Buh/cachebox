@@ -15,7 +15,7 @@ dependencies {
 
 
     // https://mvnrepository.com/artifact/org.json/json
-    implementation 'org.json:json:20211205'
+    implementation 'org.json:json:20220320'
 
 
     //libgdx
