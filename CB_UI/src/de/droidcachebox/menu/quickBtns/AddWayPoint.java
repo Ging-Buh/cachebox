@@ -29,8 +29,8 @@ public class AddWayPoint extends AbstractAction {
     public void execute() {
         // wenn MapView sichtbar und im Modus Free, dann nehme Koordinaten vom Mittelpunkt der Karte
         // ansonsten mit den aktuellen Koordinaten!
-        if (((ShowMap) ShowMap.action).normalMapView.isVisible()) {
-            ((ShowMap) ShowMap.action).normalMapView.createWaypointAtCenter();
+        if (((ShowMap) ShowMap.action).getNormalMapView().isVisible()) {
+            ((ShowMap) ShowMap.action).getNormalMapView().createWaypointAtCenter();
             return;
         }
         ((de.droidcachebox.menu.menuBtn2.ShowWayPoints) ShowWayPoints.action).addWayPoint();

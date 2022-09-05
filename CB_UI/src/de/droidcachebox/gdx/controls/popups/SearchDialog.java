@@ -460,8 +460,8 @@ public class SearchDialog extends PopUpBase {
             public void run() {
 
                 Coordinate searchCoordinate;
-                if (((ShowMap) ShowMap.action).normalMapView.isVisible()) {
-                    searchCoordinate = ((ShowMap) ShowMap.action).normalMapView.center;
+                if (((ShowMap) ShowMap.action).getNormalMapView().isVisible()) {
+                    searchCoordinate = ((ShowMap) ShowMap.action).getNormalMapView().center;
                 } else {
                     searchCoordinate = Locator.getInstance().getMyPosition();
                 }

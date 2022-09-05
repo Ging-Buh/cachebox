@@ -286,7 +286,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
         });
 
         tglBtnMap.setClickHandler((v, x, y, pointer, button) -> {
-            actSearchPos = ((ShowMap) ShowMap.action).normalMapView.center;
+            actSearchPos = ((ShowMap) ShowMap.action).getNormalMapView().center;
             setToggleBtnState(1);
             return true;
         });
@@ -324,8 +324,8 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
             return true;
         });
 
-        if (((ShowMap) ShowMap.action).normalMapView.isVisible()) {
-            actSearchPos = ((ShowMap) ShowMap.action).normalMapView.center;
+        if (((ShowMap) ShowMap.action).getNormalMapView().isVisible()) {
+            actSearchPos = ((ShowMap) ShowMap.action).getNormalMapView().center;
             searchState = 1;
         } else {
             actSearchPos = Locator.getInstance().getMyPosition();
@@ -525,7 +525,7 @@ public class ImportGCPosition extends ActivityBase implements KeyboardFocusChang
                 finish();
             } else {
                 // Notify Map
-                ((ShowMap) ShowMap.action).normalMapView.setNewSettings(INITIAL_WP_LIST);
+                ((ShowMap) ShowMap.action).getNormalMapView().setNewSettings(INITIAL_WP_LIST);
                 if (dis != null) {
                     ImportGCPosition.this.removeChildDirect(dis);
                     dis.dispose();

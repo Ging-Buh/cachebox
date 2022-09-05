@@ -338,7 +338,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
             }
 
             // Änderungen auch an die MapView melden
-            ((ShowMap) ShowMap.action).normalMapView.setNewSettings(INITIAL_WP_LIST);
+            ((ShowMap) ShowMap.action).getNormalMapView().setNewSettings(INITIAL_WP_LIST);
 
             finish();
 

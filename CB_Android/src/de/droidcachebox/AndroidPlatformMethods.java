@@ -652,9 +652,9 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             Log.debug(sClass, "" + externalRequestLatLon + " " + s[0] + " , " + s[1] + "\n" + coordinate);
             if (coordinate.isValid()) {
                 Action.ShowMap.action.execute();
-                ((ShowMap) Action.ShowMap.action).normalMapView.setBtnMapStateToFree(); // btn
+                ((ShowMap) Action.ShowMap.action).getNormalMapView().setBtnMapStateToFree(); // btn
                 // ShowMap.getInstance().normalMapView.setMapState(MapViewBase.MapState.FREE);
-                ((ShowMap) Action.ShowMap.action).normalMapView.setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
+                ((ShowMap) Action.ShowMap.action).getNormalMapView().setCenter(new CoordinateGPS(coordinate.latitude, coordinate.longitude));
             }
         } catch (Exception ignored) {
         }

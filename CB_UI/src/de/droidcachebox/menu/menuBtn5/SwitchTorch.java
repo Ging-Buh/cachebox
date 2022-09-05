@@ -44,6 +44,6 @@ public class SwitchTorch extends AbstractAction {
 
     @Override
     public void execute() {
-        Platform.switchTorch();
+        if (Platform.isTorchAvailable()) Platform.switchTorch();
     }
 }

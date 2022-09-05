@@ -301,8 +301,8 @@ public class FZKDownload extends ActivityBase {
         XMLParser<Map<String, String>> parser = new XMLParser<>(createFZKRules().toArray(new IRule[0]));
         parser.parse(new ByteArrayInputStream(repository_freizeitkarte_android.getBytes()), new HashMap<>());
 
-        if (((ShowMap) ShowMap.action).normalMapView.center.isValid()) {
-            MapComparator mapComparator = new MapComparator(((ShowMap) ShowMap.action).normalMapView.center);
+        if (((ShowMap) ShowMap.action).getNormalMapView().center.isValid()) {
+            MapComparator mapComparator = new MapComparator(((ShowMap) ShowMap.action).getNormalMapView().center);
             mapInfos.sort(mapComparator);
         }
 

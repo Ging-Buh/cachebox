@@ -73,7 +73,7 @@ public class LiveButton extends ImageButton {
     public boolean click(int x, int y, int pointer, int button) {
         setActivated(!isActivated);
         if (isActivated) {
-            LiveMapQue.getInstance().quePosition(((ShowMap) ShowMap.action).normalMapView.center);
+            LiveMapQue.getInstance().quePosition(((ShowMap) ShowMap.action).getNormalMapView().center);
         } else {
             LiveMapQue.getInstance().clearDescriptorStack();
         }

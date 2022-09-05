@@ -67,13 +67,6 @@ public class Sprites {
     public static Sprite ambilwarna_hue = null;
     public static Sprite ambilwarna_cursor = null;
     public static Sprite ambilwarna_target = null;
-    public static ButtonSprites CacheList;
-    public static ButtonSprites CacheListFilter;
-    public static ButtonSprites Cache;
-    public static ButtonSprites Nav;
-    public static ButtonSprites Tool;
-    public static ButtonSprites Misc;
-    public static ButtonSprites QuickButton;
     public static ArrayList<Sprite> LogIcons;
     public static Drawable activityBackground;
     public static Drawable activityBorderMask;
@@ -353,13 +346,13 @@ public class Sprites {
         if (Compass == null)
             Compass = new ArrayList<>();
         Compass.clear();
-        Compass.add(new SpriteDrawable(getSprite("compass-frame")));
-        Compass.add(new SpriteDrawable(getSprite("compass-scale")));
-        Compass.add(new SpriteDrawable(getSprite("compass-frame-small")));
-        Compass.add(new SpriteDrawable(getSprite("compass-scale-small")));
-        Compass.add(new SpriteDrawable(getSprite("compass_arrow")));
-        Compass.add(new SpriteDrawable(getSprite("sonne")));
-        Compass.add(new SpriteDrawable(getSprite("mond")));
+        Compass.add(getSpriteDrawable("compass-frame"));
+        Compass.add(getSpriteDrawable("compass-scale"));
+        Compass.add(getSpriteDrawable("compass-frame-small"));
+        Compass.add(getSpriteDrawable("compass-scale-small"));
+        Compass.add(getSpriteDrawable("compass_arrow"));
+        Compass.add(getSpriteDrawable("sonne"));
+        Compass.add(getSpriteDrawable("mond"));
 
         if (Arrows == null)
             Arrows = new ArrayList<>();
@@ -501,8 +494,6 @@ public class Sprites {
         int patchMS5 = (int) Math.max((MS5.getWidth() / 10), 1);
         MapScale[2] = new NinePatchDrawable(new NinePatch(MS5, patchMS5, patchMS5, 0, 0));
 
-        loadButtonSprites();
-
         createDrawables();
 
         loaded = true;
@@ -515,8 +506,8 @@ public class Sprites {
         activityBackground = new NinePatchDrawable(new NinePatch(Sprites.getSprite("activity-back"), patch, patch, patch, patch));
         activityBorderMask = new NinePatchDrawable(new NinePatch(Sprites.getSprite("activity-border"), patch, patch, patch, patch));
         ListBack = new ColorDrawable(CB_Skin.getInstance().getThemedColor("background"));
-        buttonBack = new SpriteDrawable(getSprite("button-list-back"));
-        aboutback = new SpriteDrawable(getSprite("splash-back"));
+        buttonBack = getSpriteDrawable("button-list-back");
+        aboutback = getSpriteDrawable("splash-back");
         infoBack = new NinePatchDrawable(new NinePatch(getSprite("InfoPanelBack"), patch, patch, patch, patch));
         progressBack = new NinePatchDrawable(new NinePatch(ToggleBtn.get(0), patch, patch, patch, patch));
         progressFill = new NinePatchDrawable(new NinePatch(Sprites.progress, patch - 1, patch - 1, patch - 1, patch - 1));
@@ -525,38 +516,38 @@ public class Sprites {
         btnPressed = new NinePatchDrawable(new NinePatch(Sprites.getSprite("btn-pressed"), patch, patch, patch, patch));
         btnDisabled = new NinePatchDrawable(new NinePatch(Sprites.getSprite("btn-disabled"), patch, patch, patch, patch));
 
-        sliderPushed = new SpriteDrawable(getSprite("scrollbarPushedSlider"));
+        sliderPushed = getSpriteDrawable("scrollbarPushedSlider");
 
         Sprite tmpSlider = getSprite("scrollbarSlider");
         int sliderPatch = (int) (tmpSlider.getWidth() / 4);
         slider = new NinePatchDrawable(new NinePatch(tmpSlider, sliderPatch, sliderPatch, sliderPatch, sliderPatch));
 
-        chkOn = new SpriteDrawable(getSprite("check-on"));
-        chkOff = new SpriteDrawable(getSprite("check-off"));
-        chkOnDisabled = new SpriteDrawable(getSprite("check-disable"));
-        chkOffDisabled = new SpriteDrawable(getSprite("check-off"));
+        chkOn = getSpriteDrawable("check-on");
+        chkOff = getSpriteDrawable("check-off");
+        chkOnDisabled = getSpriteDrawable("check-disable");
+        chkOffDisabled = getSpriteDrawable("check-off");
 
-        radioOn = new SpriteDrawable(getSprite("RadioButtonSet"));
-        radioBack = new SpriteDrawable(getSprite("RadioButtonBack"));
+        radioOn = getSpriteDrawable("RadioButtonSet");
+        radioBack = getSpriteDrawable("RadioButtonBack");
 
         textFieldBackground = new NinePatchDrawable(new NinePatch(Sprites.getSprite("text-field-back"), patch, patch, patch, patch));
         textFieldBackgroundFocus = new NinePatchDrawable(new NinePatch(Sprites.getSprite("text-field-back-focus"), patch, patch, patch, patch));
 
-        selection = new SpriteDrawable(getSprite("Selection"));
-        selection_set = new SpriteDrawable(getSprite("Selection-set"));
-        selection_left = new SpriteDrawable(getSprite("Selection-Left"));
-        selection_right = new SpriteDrawable(getSprite("Selection-Right"));
-        logo = new SpriteDrawable(getSprite("cachebox-logo"));
+        selection = getSpriteDrawable("Selection");
+        selection_set = getSpriteDrawable("Selection-set");
+        selection_left = getSpriteDrawable("Selection-Left");
+        selection_right = getSpriteDrawable("Selection-Right");
+        logo = getSpriteDrawable("cachebox-logo");
 
-        copy = new SpriteDrawable(getSprite("tf-copy"));
-        paste = new SpriteDrawable(getSprite("tf-paste"));
-        cut = new SpriteDrawable(getSprite("tf-cut"));
+        copy = getSpriteDrawable("tf-copy");
+        paste = getSpriteDrawable("tf-paste");
+        cut = getSpriteDrawable("tf-cut");
 
         bar = new NinePatchDrawable(getThemedPatch("bar"));
         barSmall = new NinePatchDrawable(getThemedPatch("bar-small"));
 
-        bar_0 = new SpriteDrawable(getSprite("bar-0"));
-        barSmall_0 = new SpriteDrawable(getSprite("bar-small-0"));
+        bar_0 = getSpriteDrawable("bar-0");
+        barSmall_0 = getSpriteDrawable("bar-small-0");
 
         textFieldCursor = new NinePatchDrawable(new NinePatch(Sprites.getSprite("selection-input-icon"), 1, 1, 2, 2));
 
@@ -567,16 +558,6 @@ public class Sprites {
 
     public static SpriteDrawable getSpriteDrawable(String name) {
         return new SpriteDrawable(getSprite(name));
-    }
-
-    protected static void loadButtonSprites() {
-        CacheList = new ButtonSprites(getSprite("db"), getSprite("db-pressed"), null, getSprite("db-pressed"));
-        CacheListFilter = new ButtonSprites(getSprite("db-filter-active"), getSprite("db-pressed-filter-active"), null, getSprite("db-pressed-filter-active"));
-        Cache = new ButtonSprites(getSprite("cache"), getSprite("cache-pressed"), null, getSprite("cache-pressed"));
-        Nav = new ButtonSprites(getSprite("Nav"), getSprite("Nav-pressed"), null, getSprite("Nav-pressed"));
-        Tool = new ButtonSprites(getSprite("tool"), getSprite("tool-pressed"), null, getSprite("tool-pressed"));
-        Misc = new ButtonSprites(getSprite("misc"), getSprite("misc-pressed"), null, getSprite("misc-pressed"));
-        QuickButton = new ButtonSprites(getSprite("button"), getSprite("btn-pressed"), null, getSprite("btn-pressed"));
     }
 
     /**
@@ -590,24 +571,6 @@ public class Sprites {
         LiveBtn = null;
         ZoomBtn = null;
         ZoomValueBack = null;
-
-        if (CacheList != null)
-            CacheList.dispose();
-        if (Cache != null)
-            Cache.dispose();
-        if (Nav != null)
-            Nav.dispose();
-        if (Tool != null)
-            Tool.dispose();
-        if (Misc != null)
-            Misc.dispose();
-
-        CacheList = null;
-        Cache = null;
-        Nav = null;
-        Tool = null;
-        Misc = null;
-        QuickButton = null;
 
         if (atlasDefault != null) {
             atlasDefault.dispose();

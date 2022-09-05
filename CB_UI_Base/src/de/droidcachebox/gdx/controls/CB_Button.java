@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import de.droidcachebox.gdx.ButtonSprites;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -86,13 +85,11 @@ public class CB_Button extends CB_View_Base {
         this.setClickHandler(onClick);
     }
 
-    public void setButtonSprites(ButtonSprites sprites) {
-        if (sprites != null) {
-            drawableNormal = sprites.getNormal();
-            drawablePressed = sprites.getPressed();
-            drawableDisabled = sprites.getDisabled();
-            drawableFocused = sprites.getFocus();
-        }
+    public void setDrawables(Drawable drawableNormal, Drawable drawablePressed, Drawable drawableDisabled, Drawable drawableFocused) {
+        this.drawableNormal = drawableNormal;
+        this.drawablePressed = drawablePressed;
+        this.drawableDisabled = drawableDisabled;
+        this.drawableFocused = drawableFocused;
     }
 
     public void setFont(BitmapFont font) {

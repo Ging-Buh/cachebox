@@ -53,7 +53,7 @@ public class QuickButtonItem extends ListViewItemBase {
         mButtonIcon.setClickable(false);
 
         mButton = new CB_Button(rec, "QuickListItemButton");
-        mButton.setButtonSprites(Sprites.QuickButton);
+        mButton.setDrawables(new SpriteDrawable(Sprites.getSprite("button")), new SpriteDrawable(Sprites.getSprite("btn-pressed")), null, new SpriteDrawable(Sprites.getSprite("btn-pressed")));
         mButton.setDraggable();
         this.addChild(mButton);
         this.addChild(mButtonIcon);

@@ -128,6 +128,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
     private int lastCompassMapZoom = -1;
     private MapInfoPanel mapInfoPanel;
     private PolygonDrawable directLine;
+    public long delay = 2000; // 2 seconds for TrackListView
 
     public MapView(CB_RectF cb_RectF, MapMode mapMode) {
         super(cb_RectF, mapMode.name());
@@ -1139,7 +1140,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         // Log.debug(sClass, "onShow");
         super.onShow();
         CacheSelectionChangedListeners.getInstance().addListener(this);
-        isNorthOriented = mapMode == MapMode.Normal ? Settings.isMapNorthOriented.getValue() : false;
+        isNorthOriented = mapMode == MapMode.Normal && Settings.isMapNorthOriented.getValue();
         setSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWayPoint());
     }
 

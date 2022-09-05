@@ -204,7 +204,7 @@ public class ManageSettings extends ActivityBase implements LanguageChanged.even
             // Notify QuickButtonList
             QuickButtonList.that.notifyDataSetChanged();
 
-            ((ShowMap) ShowMap.action).normalMapView.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
+            ((ShowMap) ShowMap.action).getNormalMapView().setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
             finish();
             return true;

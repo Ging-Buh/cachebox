@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 import de.droidcachebox.AbstractAction;
 import de.droidcachebox.AbstractShowAction;
-import de.droidcachebox.gdx.ButtonSprites;
 import de.droidcachebox.gdx.CB_View_Base;
 import de.droidcachebox.gdx.Fonts;
 import de.droidcachebox.gdx.GL;
@@ -52,11 +51,11 @@ public class GestureButton extends CB_Button {
     private static Sprite mContextMenuSprite;
     private static Sprite mFilteredContextMenuSprite;
     private final ArrayList<CB_ActionButton> cb_actionButtons;
+    private final boolean useDescriptiveCB_Buttons;
+    private final boolean rememberLastAction;
     private AbstractShowAction aktActionView = null;
     private GestureHelp help;
     private Point downPos = null;
-    private final boolean useDescriptiveCB_Buttons;
-    private final boolean rememberLastAction;
     private Image mButtonImage;
     private final OnClickListener onClickListener = new OnClickListener() {
         @Override
@@ -188,29 +187,13 @@ public class GestureButton extends CB_Button {
     private boolean GestureIsOn = true;
     private boolean isDragged = false;
 
-    public GestureButton(CB_RectF rec, boolean rememberLastAction, String Name) {
+    public GestureButton(CB_RectF rec, boolean rememberLastAction, String Name, boolean useDescriptiveCB_Buttons) {
         super(rec, Name);
-        useDescriptiveCB_Buttons = true;
+        this.useDescriptiveCB_Buttons = useDescriptiveCB_Buttons;
         this.rememberLastAction = rememberLastAction;
         cb_actionButtons = new ArrayList<>();
         setClickHandler(onClickListener);
         // setOnLongClickListener(longClickListener);
-        drawableNormal = new SpriteDrawable(getSprite("button"));
-        drawablePressed = new SpriteDrawable(getSprite("btn-pressed"));
-        drawableDisabled = null;
-        drawableFocused = new SpriteDrawable(getSprite("btn-pressed"));
-        isFiltered = false;
-        vAlignment = CB_Label.VAlignment.BOTTOM;
-    }
-
-    public GestureButton(CB_RectF rec, boolean rememberLastAction, String Name, ButtonSprites sprites) {
-        super(rec, Name);
-        useDescriptiveCB_Buttons = false;
-        this.rememberLastAction = rememberLastAction;
-        cb_actionButtons = new ArrayList<>();
-        setClickHandler(onClickListener);
-        // setOnLongClickListener(longClickListener);
-        setButtonSprites(sprites);
         isFiltered = false;
         vAlignment = CB_Label.VAlignment.BOTTOM;
     }
@@ -218,6 +201,13 @@ public class GestureButton extends CB_Button {
     public static void refreshContextMenuSprite() {
         mContextMenuSprite = null;
         mFilteredContextMenuSprite = null;
+    }
+
+    public void setSpriteDrawables(String normal, String pressed, String focused) {
+        this.drawableNormal = new SpriteDrawable(getSprite(normal));
+        this.drawablePressed = new SpriteDrawable(getSprite(pressed));
+        this.drawableFocused = new SpriteDrawable(getSprite(focused));
+        this.drawableDisabled = null;
     }
 
     private void setButton(Sprite icon, String name) {

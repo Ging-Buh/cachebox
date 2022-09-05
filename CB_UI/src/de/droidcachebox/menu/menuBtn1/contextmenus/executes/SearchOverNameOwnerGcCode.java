@@ -286,8 +286,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                             String searchPattern = editTextField.getText().trim();
 
                             Coordinate searchCoord;
-                            if (((ShowMap) ShowMap.action).normalMapView.isVisible()) {
-                                searchCoord = ((ShowMap) ShowMap.action).normalMapView.center;
+                            if (((ShowMap) ShowMap.action).getNormalMapView().isVisible()) {
+                                searchCoord = ((ShowMap) ShowMap.action).getNormalMapView().center;
                             } else {
                                 searchCoord = Locator.getInstance().getMyPosition();
                             }
@@ -360,7 +360,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
             } else {
 
                 // Notify Map
-                ((ShowMap) ShowMap.action).normalMapView.setNewSettings(INITIAL_WP_LIST);
+                ((ShowMap) ShowMap.action).getNormalMapView().setNewSettings(INITIAL_WP_LIST);
 
                 btnImport.enable();
             }

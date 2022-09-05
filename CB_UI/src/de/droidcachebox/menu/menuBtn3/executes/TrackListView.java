@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
@@ -184,13 +186,21 @@ public class TrackListView extends V_ListView {
 
         private void positionLatLon() {
             if (track.getTrackPoints().size() > 0) {
-                TrackPoint trackpoint = track.getTrackPoints().get(0);
-                double latitude = trackpoint.y;
-                double longitude = trackpoint.x;
                 ShowMap.action.execute();
-                ((ShowMap) ShowMap.action).normalMapView.setBtnMapStateToFree(); // btn
-                // ((ShowMap) ShowMap.action).normalMapView.setMapState(MapViewBase.MapState.FREE);
-                ((ShowMap) ShowMap.action).normalMapView.setCenter(new CoordinateGPS(latitude, longitude));
+                // delay: for setCenter to work (if map never shown before) wait some time
+                // delay can't be local (for reset) cause TrackListView is created each time
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        TrackPoint trackpoint = track.getTrackPoints().get(0);
+                        double latitude = trackpoint.y;
+                        double longitude = trackpoint.x;
+                        ((ShowMap) ShowMap.action).getNormalMapView().setBtnMapStateToFree(); // btn
+                        // ((ShowMap) ShowMap.action).normalMapView.setMapState(MapViewBase.MapState.FREE);
+                        ((ShowMap) ShowMap.action).getNormalMapView().setCenter(new CoordinateGPS(latitude, longitude));
+                    }
+                }, ((ShowMap) ShowMap.action).getNormalMapView().delay);
+                ((ShowMap) ShowMap.action).getNormalMapView().delay = 0;
             }
         }
 

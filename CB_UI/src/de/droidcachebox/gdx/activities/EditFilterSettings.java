@@ -262,7 +262,7 @@ public class EditFilterSettings extends ActivityBase {
             @Override
             public void ready() {
                 ViewManager.that.filterSetChanged();
-                ((ShowMap) ShowMap.action).normalMapView.setNewSettings(INITIAL_WP_LIST);
+                ((ShowMap) ShowMap.action).getNormalMapView().setNewSettings(INITIAL_WP_LIST);
 
                 // Save selected filter (new JSON Format)
                 // wont save History

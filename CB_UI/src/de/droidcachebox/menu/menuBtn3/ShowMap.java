@@ -100,7 +100,7 @@ public class ShowMap extends AbstractShowAction {
     private static final String sClass = "ShowMap";
     private static Router router;
     private final Array<FZKThemesInfo> fzkThemesInfoList = new Array<>();
-    public MapView normalMapView;
+    private final MapView normalMapView;
     private HashMap<String, String> RenderThemes;
     private String themesPath;
     private ThemeIsFor whichCase;
@@ -113,6 +113,10 @@ public class ShowMap extends AbstractShowAction {
         super("Map");
         normalMapView = new MapView(ViewManager.leftTab.getContentRec(), MapMode.Normal);
         normalMapView.setZoom(Settings.lastZoomLevel.getValue());
+    }
+
+    public MapView getNormalMapView() {
+        return normalMapView;
     }
 
     public static void setRouter(Router _router) {
@@ -138,9 +142,7 @@ public class ShowMap extends AbstractShowAction {
     }
 
     @Override
-    public void viewIsHiding() {
-
-    }
+    public void viewIsHiding() {}
 
     @Override
     public Sprite getIcon() {
@@ -321,21 +323,21 @@ public class ShowMap extends AbstractShowAction {
     }
 
     private void showMapViewLayerMenu() {
-        OptionMenu menuMapElements = new OptionMenu("MapViewLayerMenuTitle");
-        menuMapElements.addCheckableMenuItem("ShowLiveMap", !Settings.disableLiveMap.getValue(), () -> toggleSetting(Settings.disableLiveMap));
-        menuMapElements.addCheckableMenuItem("ShowAtOriginalPosition", Settings.showAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Settings.showAtOriginalPosition));
-        menuMapElements.addCheckableMenuItem("HideFinds", Settings.hideMyFinds.getValue(), () -> toggleSettingWithReload(Settings.hideMyFinds));
-        menuMapElements.addCheckableMenuItem("MapShowInfoBar", Settings.showInfo.getValue(), () -> toggleSetting(Settings.showInfo));
-        menuMapElements.addCheckableMenuItem("ShowAllWaypoints", Settings.showAllWaypoints.getValue(), () -> toggleSetting(Settings.showAllWaypoints));
-        menuMapElements.addCheckableMenuItem("ShowRatings", Settings.showRating.getValue(), () -> toggleSetting(Settings.showRating));
-        menuMapElements.addCheckableMenuItem("ShowDT", Settings.showDifficultyTerrain.getValue(), () -> toggleSetting(Settings.showDifficultyTerrain));
-        menuMapElements.addCheckableMenuItem("ShowTitle", Settings.showTitles.getValue(), () -> toggleSetting(Settings.showTitles));
-        menuMapElements.addCheckableMenuItem("ShowDirectLine", Settings.showDirectLine.getValue(), () -> toggleSetting(Settings.showDirectLine));
-        menuMapElements.addCheckableMenuItem("MenuTextShowAccuracyCircle", Settings.showAccuracyCircle.getValue(), () -> toggleSetting(Settings.showAccuracyCircle));
-        menuMapElements.addCheckableMenuItem("ShowCenterCross", Settings.showMapCenterCross.getValue(), () -> toggleSetting(Settings.showMapCenterCross));
-        menuMapElements.addCheckableMenuItem("ShowDistanceToCenter", Settings.showDistanceToCenter.getValue(), () -> toggleSetting(Settings.showDistanceToCenter));
-        menuMapElements.addCheckableMenuItem("ShowDistanceCircle", Settings.showDistanceCircle.getValue(), () -> toggleSetting(Settings.showDistanceCircle));
-        menuMapElements.show();
+        OptionMenu mapElements = new OptionMenu("MapViewLayerMenuTitle");
+        mapElements.addCheckableMenuItem("ShowLiveMap", !Settings.disableLiveMap.getValue(), () -> toggleSetting(Settings.disableLiveMap));
+        mapElements.addCheckableMenuItem("ShowAtOriginalPosition", Settings.showAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Settings.showAtOriginalPosition));
+        mapElements.addCheckableMenuItem("HideFinds", Settings.hideMyFinds.getValue(), () -> toggleSettingWithReload(Settings.hideMyFinds));
+        mapElements.addCheckableMenuItem("MapShowInfoBar", Settings.showInfo.getValue(), () -> toggleSetting(Settings.showInfo));
+        mapElements.addCheckableMenuItem("ShowAllWaypoints", Settings.showAllWaypoints.getValue(), () -> toggleSetting(Settings.showAllWaypoints));
+        mapElements.addCheckableMenuItem("ShowRatings", Settings.showRating.getValue(), () -> toggleSetting(Settings.showRating));
+        mapElements.addCheckableMenuItem("ShowDT", Settings.showDifficultyTerrain.getValue(), () -> toggleSetting(Settings.showDifficultyTerrain));
+        mapElements.addCheckableMenuItem("ShowTitle", Settings.showTitles.getValue(), () -> toggleSetting(Settings.showTitles));
+        mapElements.addCheckableMenuItem("ShowDirectLine", Settings.showDirectLine.getValue(), () -> toggleSetting(Settings.showDirectLine));
+        mapElements.addCheckableMenuItem("MenuTextShowAccuracyCircle", Settings.showAccuracyCircle.getValue(), () -> toggleSetting(Settings.showAccuracyCircle));
+        mapElements.addCheckableMenuItem("ShowCenterCross", Settings.showMapCenterCross.getValue(), () -> toggleSetting(Settings.showMapCenterCross));
+        mapElements.addCheckableMenuItem("ShowDistanceToCenter", Settings.showDistanceToCenter.getValue(), () -> toggleSetting(Settings.showDistanceToCenter));
+        mapElements.addCheckableMenuItem("ShowDistanceCircle", Settings.showDistanceCircle.getValue(), () -> toggleSetting(Settings.showDistanceCircle));
+        mapElements.show();
     }
 
     private void toggleSetting(SettingBool setting) {

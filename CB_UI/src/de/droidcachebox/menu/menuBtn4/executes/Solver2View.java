@@ -315,7 +315,7 @@ public class Solver2View extends V_ListView implements CacheSelectionChangedList
         CoordinateGPS result = getSelectedCoordinateResult();
         if (result != null) {
             // Set Map Center
-            ((ShowMap) ShowMap.action).normalMapView.setCenter(result);
+            ((ShowMap) ShowMap.action).getNormalMapView().setCenter(result);
             ShowMap.action.execute();
         }
     }

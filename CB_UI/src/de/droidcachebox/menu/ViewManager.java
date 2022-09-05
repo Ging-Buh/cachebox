@@ -40,6 +40,8 @@ import static de.droidcachebox.menu.Action.TakePicture;
 import static de.droidcachebox.settings.Config_Core.br;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -117,6 +119,8 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
     private GestureButton mainBtn3; // default: show map on phone ( and show Compass on Tablet )
     private GestureButton mainBtn4; // default: show ToolsMenu or Drafts or Drafts Context menu (depends on config)
     private GestureButton mainBtn5; // default: show About View
+    private Drawable sdNormal, sdPressed, sdFocused, sdDisabled;
+    private Drawable sdfNormal, sdfPressed, sdfFocused, sdfDisabled;
 
     private boolean isInitial = false;
 
@@ -145,7 +149,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         Settings.showAllWaypoints.addSettingChangedListener(() -> {
             reloadCacheList();
             // must reload MapViewCacheList: do this over MapView.INITIAL_WP_LIST
-            ((ShowMap) ShowMap.action).normalMapView.setNewSettings(INITIAL_WP_LIST);
+            ((ShowMap) ShowMap.action).getNormalMapView().setNewSettings(INITIAL_WP_LIST);
         });
 
         API_ErrorEventHandlerList.addHandler(new API_ErrorEventHandler() {
@@ -263,18 +267,27 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
         CB_RectF rec = new CB_RectF(0, 0, GL_UISizes.uiLeft.getWidth(), getHeight() - UiSizes.getInstance().getInfoSliderHeight());
         leftTab = new CB_TabView(rec, "leftTab");
 
+        mainBtn1 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "CacheList", Settings.useDescriptiveCB_Buttons.getValue());
+        mainBtn2 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Cache", Settings.useDescriptiveCB_Buttons.getValue());
+        mainBtn3 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Nav", Settings.useDescriptiveCB_Buttons.getValue());
+        mainBtn4 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Tool", Settings.useDescriptiveCB_Buttons.getValue());
+        mainBtn5 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Misc", Settings.useDescriptiveCB_Buttons.getValue());
         if (Settings.useDescriptiveCB_Buttons.getValue()) {
-            mainBtn1 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "CacheList");
-            mainBtn2 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Cache");
-            mainBtn3 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Nav");
-            mainBtn4 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Tool");
-            mainBtn5 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Misc");
+            mainBtn1.setSpriteDrawables("button", "btn-pressed", "btn-pressed");
+            mainBtn2.setSpriteDrawables("button", "btn-pressed", "btn-pressed");
+            mainBtn3.setSpriteDrawables("button", "btn-pressed", "btn-pressed");
+            mainBtn4.setSpriteDrawables("button", "btn-pressed", "btn-pressed");
+            mainBtn5.setSpriteDrawables("button", "btn-pressed", "btn-pressed");
         } else {
-            mainBtn1 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "CacheList", Sprites.CacheList);
-            mainBtn2 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Cache", Sprites.Cache);
-            mainBtn3 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Nav", Sprites.Nav);
-            mainBtn4 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Tool", Sprites.Tool);
-            mainBtn5 = new GestureButton(mainButtonSize, Settings.rememberLastAction.getValue(), "Misc", Sprites.Misc);
+            sdNormal = new SpriteDrawable(Sprites.getSprite("db"));
+            sdPressed = new SpriteDrawable(Sprites.getSprite("db-pressed"));
+            sdDisabled = null;
+            sdFocused = new SpriteDrawable(Sprites.getSprite("db-pressed"));
+            mainBtn1.setDrawables(sdNormal, sdPressed, sdDisabled, sdFocused);
+            mainBtn2.setSpriteDrawables("cache", "cache-pressed", "cache-pressed");
+            mainBtn3.setSpriteDrawables("Nav", "Nav-pressed", "Nav-pressed");
+            mainBtn4.setSpriteDrawables("tool", "tool-pressed", "tool-pressed");
+            mainBtn5.setSpriteDrawables("misc", "misc-pressed", "misc-pressed");
         }
 
         leftTab.addMainButton(mainBtn1);
@@ -372,7 +385,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             GL.that.onStop();
             Sprites.loadSprites(true);
 
-            ((ShowMap) ShowMap.action).normalMapView.handleInvalidateTexture();
+            ((ShowMap) ShowMap.action).getNormalMapView().handleInvalidateTexture();
 
             GL.that.onStart();
 
@@ -421,9 +434,15 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
 
         if (!Settings.useDescriptiveCB_Buttons.getValue()) {
             if (isFiltered) {
-                mainBtn1.setButtonSprites(Sprites.CacheListFilter);
+                if (sdfNormal == null) {
+                    sdfNormal = new SpriteDrawable(Sprites.getSprite("db-filter-active"));
+                    sdfPressed = new SpriteDrawable(Sprites.getSprite("db-pressed-filter-active"));
+                    sdfDisabled = null;
+                    sdfFocused = new SpriteDrawable(Sprites.getSprite("db-pressed-filter-active"));
+                }
+                mainBtn1.setDrawables(sdfNormal, sdfPressed, sdfDisabled, sdfFocused);
             } else {
-                mainBtn1.setButtonSprites(Sprites.CacheList);
+                mainBtn1.setDrawables(sdNormal, sdPressed, sdDisabled, sdFocused);
             }
         }
         String name;
@@ -467,7 +486,7 @@ public class ViewManager extends MainViewBase implements PositionChangedEvent {
             if (Settings.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Settings.SoundApproachDistance.getValue())) {
                 if (((de.droidcachebox.menu.menuBtn3.ShowCompass) ShowCompass.action).getView() != null)
                     return;// don't show if showing compass
-                if (((ShowMap) ShowMap.action).normalMapView.isVisible() && ((ShowMap) ShowMap.action).normalMapView.isCarMode())
+                if (((ShowMap) ShowMap.action).getNormalMapView().isVisible() && ((ShowMap) ShowMap.action).getNormalMapView().isCarMode())
                     return; // don't show on visible map at carMode
                 ShowCompass.action.execute();
                 GlobalCore.switchToCompassCompleted = true;
