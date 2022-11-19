@@ -109,17 +109,17 @@ public class Drafts extends Array<Draft> {
             }
 
             try {
-                CoreCursor reader = DraftsDatabase.getInstance().rawQuery(sql, null);
-                if (reader != null) {
-                    reader.moveToFirst();
-                    while (!reader.isAfterLast()) {
-                        Draft fne = new Draft(reader);
+                CoreCursor c = DraftsDatabase.getInstance().rawQuery(sql, null);
+                if (c != null) {
+                    c.moveToFirst();
+                    while (!c.isAfterLast()) {
+                        Draft fne = new Draft(c);
                         if (!contains(fne, false)) {
                             add(fne);
                         }
-                        reader.moveToNext();
+                        c.moveToNext();
                     }
-                    reader.close();
+                    c.close();
                 }
             } catch (Exception exc) {
                 Log.err(sClass, "Drafts", "loadDrafts", exc);

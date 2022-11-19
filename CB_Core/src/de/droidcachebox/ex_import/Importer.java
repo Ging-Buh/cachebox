@@ -199,56 +199,57 @@ public class Importer {
         String sql = "select Id, Description, Name, GcCode, Url, ImagesUpdated, DescriptionImagesUpdated from Caches";
         if (where.length() > 0)
             sql = sql + (" where " + where);
-        CoreCursor reader = CBDB.getInstance().rawQuery(sql, null);
-        int importCount = 0;
-        int numberOfGeoCaches = reader.getCount();
-        importProgress.setStepFinalValue("importImages", numberOfGeoCaches);
-        if (numberOfGeoCaches > 0) {
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                if (testCancel != null && testCancel.checkCanceled()) break;
-                importCount++;
-                try {
-                    long id = reader.getLong(0);
-                    String gcCode = reader.getString(3);
+        CoreCursor c = CBDB.getInstance().rawQuery(sql, null);
+        if (c != null) {
+            int importCount = 0;
+            int numberOfGeoCaches = c.getCount();
+            importProgress.setStepFinalValue("importImages", numberOfGeoCaches);
+            if (numberOfGeoCaches > 0) {
+                c.moveToFirst();
+                while (!c.isAfterLast()) {
+                    if (testCancel != null && testCancel.checkCanceled()) break;
+                    importCount++;
+                    try {
+                        long id = c.getLong(0);
+                        String gcCode = c.getString(3);
 
-                    if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) {
-                        importProgress.incrementStep("importImages", "Importing Images for " + gcCode + " (" + importCount + " / " + numberOfGeoCaches + ")");
+                        if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) {
+                            importProgress.incrementStep("importImages", "Importing Images for " + gcCode + " (" + importCount + " / " + numberOfGeoCaches + ")");
 
-                        String description = reader.getString(1);
-                        String uri = reader.getString(4);
+                            String description = c.getString(1);
+                            String uri = c.getString(4);
 
-                        boolean descriptionImagesUpdated;
-                        if (!importImages) {
-                            // do not import Description Images
-                            descriptionImagesUpdated = true;
-                        } else {
-                            if (!reader.isNull(6)) {
-                                descriptionImagesUpdated = reader.getInt(6) != 0;
-                            } else descriptionImagesUpdated = false;
+                            boolean descriptionImagesUpdated;
+                            if (!importImages) {
+                                // do not import Description Images
+                                descriptionImagesUpdated = true;
+                            } else {
+                                if (!c.isNull(6)) {
+                                    descriptionImagesUpdated = c.getInt(6) != 0;
+                                } else descriptionImagesUpdated = false;
+                            }
+                            boolean additionalImagesUpdated;
+                            if (!importSpoiler) {
+                                // do not import Spoiler Images
+                                additionalImagesUpdated = true;
+                            } else {
+                                if (!c.isNull(5)) {
+                                    additionalImagesUpdated = c.getInt(5) != 0;
+                                } else additionalImagesUpdated = false;
+                            }
+
+                            if (DescriptionImageGrabber.grabImagesSelectedByCache(importProgress, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, description, uri, false) < 0) {
+                                break;
+                            }
                         }
-                        boolean additionalImagesUpdated;
-                        if (!importSpoiler) {
-                            // do not import Spoiler Images
-                            additionalImagesUpdated = true;
-                        } else {
-                            if (!reader.isNull(5)) {
-                                additionalImagesUpdated = reader.getInt(5) != 0;
-                            } else additionalImagesUpdated = false;
-                        }
-
-                        if (DescriptionImageGrabber.grabImagesSelectedByCache(importProgress, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, description, uri, false) < 0) {
-                            break;
-                        }
+                    } catch (Exception e) {
+                        Log.err(sClass, "importImages", e);
                     }
-                } catch (Exception e) {
-                    Log.err(sClass, "importImages", e);
+                    c.moveToNext();
                 }
-                reader.moveToNext();
             }
+            c.close();
         }
-
-        reader.close();
     }
 
     private AbstractFile[] getFilesToLoad(String directoryPath) {

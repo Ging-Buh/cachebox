@@ -44,16 +44,16 @@ public class LogsTableDAO {
         if (cache.getGeoCacheCode().equals(lastGeoCache)) return cacheLogs;
         cacheLogs.clear();
         lastGeoCache = cache.getGeoCacheCode();
-        CoreCursor reader = CBDB.getInstance().rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@CacheId order by Timestamp desc", new String[]{Long.toString(cache.generatedId)});
-        if (reader != null) {
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                LogEntry logEntry = getLogEntry(reader);
+        CoreCursor c = CBDB.getInstance().rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@CacheId order by Timestamp desc", new String[]{Long.toString(cache.generatedId)});
+        if (c != null) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                LogEntry logEntry = getLogEntry(c);
                 if (logEntry != null)
                     cacheLogs.add(logEntry);
-                reader.moveToNext();
+                c.moveToNext();
             }
-            reader.close();
+            c.close();
         } else {
             lastGeoCache = "";
         }
@@ -150,15 +150,17 @@ public class LogsTableDAO {
         {
             try {
                 String command = "SELECT CacheId FROM logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > " + minToKeep;
-                CoreCursor reader = CBDB.getInstance().rawQuery(command, null);
-                reader.moveToFirst();
-                while (!reader.isAfterLast()) {
-                    long tmp = reader.getLong(0);
-                    if (!oldLogCaches.contains(tmp))
-                        oldLogCaches.add(reader.getLong(0));
-                    reader.moveToNext();
+                CoreCursor c = CBDB.getInstance().rawQuery(command, null);
+                if (c != null) {
+                    c.moveToFirst();
+                    while (!c.isAfterLast()) {
+                        long tmp = c.getLong(0);
+                        if (!oldLogCaches.contains(tmp))
+                            oldLogCaches.add(c.getLong(0));
+                        c.moveToNext();
+                    }
+                    c.close();
                 }
-                reader.close();
             } catch (Exception ex) {
                 Log.err(sClass, "deleteOldLogs", ex);
             }
@@ -174,14 +176,17 @@ public class LogsTableDAO {
                     ArrayList<Long> minLogIds = new ArrayList<>();
                     String command = "select id from logs where CacheId = " + oldLogCache + " order by Timestamp desc";
                     int count = 0;
-                    CoreCursor reader = CBDB.getInstance().rawQuery(command, null);
-                    reader.moveToFirst();
-                    while (!reader.isAfterLast()) {
-                        if (count == minToKeep)
-                            break;
-                        minLogIds.add(reader.getLong(0));
-                        reader.moveToNext();
-                        count++;
+                    CoreCursor c = CBDB.getInstance().rawQuery(command, null);
+                    if (c != null) {
+                        c.moveToFirst();
+                        while (!c.isAfterLast()) {
+                            if (count == minToKeep)
+                                break;
+                            minLogIds.add(c.getLong(0));
+                            c.moveToNext();
+                            count++;
+                        }
+                        c.close();
                     }
                     StringBuilder sb = new StringBuilder();
                     for (long id : minLogIds)

@@ -42,22 +42,21 @@ public class GpxFilenameDAO {
     public void GPXFilenameUpdateCacheCount() {
         // welche GPXFilenamen sind in der DB erfasst
 
-        CoreCursor reader = CBDB.getInstance().rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
+        CoreCursor c = CBDB.getInstance().rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
+        if (c != null) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                Integer GPXFilename_ID = c.getInt(0);
+                Integer CacheCount = c.getInt(1);
 
-        reader.moveToFirst();
-        while (!reader.isAfterLast()) {
-            Integer GPXFilename_ID = reader.getInt(0);
-            Integer CacheCount = reader.getInt(1);
+                Parameters args = new Parameters();
+                args.put("CacheCount", CacheCount);
 
-            Parameters args = new Parameters();
-            args.put("CacheCount", CacheCount);
-
-            CBDB.getInstance().update("GPXFilenames", args, "ID=?", new String[]{String.valueOf(GPXFilename_ID)});
-            reader.moveToNext();
+                CBDB.getInstance().update("GPXFilenames", args, "ID=?", new String[]{String.valueOf(GPXFilename_ID)});
+                c.moveToNext();
+            }
+            c.close();
         }
-
-        reader.close();
-
         CBDB.getInstance().delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
         CBDB.getInstance().delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
     }

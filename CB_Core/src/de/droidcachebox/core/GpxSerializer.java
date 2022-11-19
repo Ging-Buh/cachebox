@@ -187,6 +187,7 @@ public class GpxSerializer {
      * Cancel the Export
      */
     public void cancel() {
+        Log.debug(sClass, "Do cancel gpx export.");
         cancel = true;
     }
 
@@ -241,11 +242,10 @@ public class GpxSerializer {
             if (cancel)
                 break;
             Cache cache = cacheList.get(i);
-
+            if (cache == null) {
+                continue;
+            }
             try {
-                if (cache == null) {
-                    continue;
-                }
                 final Coordinate coords = cache.getCoordinate();
                 if (coords == null) {
                     // Export would be invalid without coordinates.
@@ -360,7 +360,7 @@ public class GpxSerializer {
                     progressListener.publishProgress(countExported, Translation.get("writeCache", cache.getGeoCacheCode()));
                 }
             } catch (Exception ex) {
-                Log.err(sClass, "write waypoints for " + cache.getGeoCacheCode(), ex);
+                Log.err(sClass, "while export of " + cache.getGeoCacheCode(), ex);
             }
         }
     }

@@ -192,7 +192,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             aktTabView.onHide();
     }
 
-    public int getAktViewId() {
+    public int getCurrentViewId() {
         if (currentView != null)
             return currentView.getMenuId();
         else

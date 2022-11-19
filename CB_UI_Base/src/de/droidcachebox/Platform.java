@@ -227,7 +227,7 @@ public class Platform {
 
         void dayNightSwitched();
 
-        int getAktViewId();
+        int getCurrentViewId();
 
         void requestLayout();
     }

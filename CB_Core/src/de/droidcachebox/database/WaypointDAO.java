@@ -222,21 +222,21 @@ public class WaypointDAO {
         CB_List<Waypoint> wpList = new CB_List<>();
         long aktCacheID = -1;
 
-        CoreCursor reader = CBDB.getInstance().rawQuery((getFull ? SQL_WP_FULL : SQL_WP) + "  where CacheId = ?", new String[]{String.valueOf(geoCacheID)});
-        if (reader != null) {
-            if (reader.getCount() > 0) {
-                reader.moveToFirst();
-                while (!reader.isAfterLast()) {
-                    Waypoint wp = getWaypoint(reader, getFull);
+        CoreCursor c = CBDB.getInstance().rawQuery((getFull ? SQL_WP_FULL : SQL_WP) + "  where CacheId = ?", new String[]{String.valueOf(geoCacheID)});
+        if (c != null) {
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                while (!c.isAfterLast()) {
+                    Waypoint wp = getWaypoint(c, getFull);
                     if (wp.geoCacheId != aktCacheID) {
                         aktCacheID = wp.geoCacheId;
                         wpList = new CB_List<>();
                     }
                     wpList.add(wp);
-                    reader.moveToNext();
+                    c.moveToNext();
                 }
             }
-            reader.close();
+            c.close();
         }
         return wpList;
     }

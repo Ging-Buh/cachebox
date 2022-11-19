@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 import de.droidcachebox.database.CBDB;
 import de.droidcachebox.database.CoreCursor;
-import de.droidcachebox.utils.log.Log;
 
 public class ExportList extends ArrayList<ExportEntry> {
     private static final String sClass = "ExportList";
@@ -33,22 +32,18 @@ public class ExportList extends ArrayList<ExportEntry> {
         clear();
         String sql = "select Replication.Id, Replication.ChangeType, Replication.CacheId, Replication.WpGcCode, Replication.SolverCheckSum, Replication.NotesCheckSum, Replication.WpCoordCheckSum, Caches.Name from Replication INNER JOIN Caches ON Replication.CacheId = Caches.Id";
 
-        CoreCursor reader = null;
-        try {
-            reader = CBDB.getInstance().rawQuery(sql, null);
-        } catch (Exception exc) {
-            Log.err(sClass, "ExportList", "LoadExportList", exc);
-        }
-        reader.moveToFirst();
-        while (!reader.isAfterLast()) {
-            ExportEntry ee = new ExportEntry(reader);
-            if (!this.contains(ee)) {
-                this.add(ee);
+        CoreCursor c = CBDB.getInstance().rawQuery(sql, null);
+        if (c != null) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                ExportEntry ee = new ExportEntry(c);
+                if (!this.contains(ee)) {
+                    this.add(ee);
+                }
+
+                c.moveToNext();
             }
-
-            reader.moveToNext();
+            c.close();
         }
-        reader.close();
-
     }
 }

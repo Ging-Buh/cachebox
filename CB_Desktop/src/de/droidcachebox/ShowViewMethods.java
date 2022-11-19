@@ -35,7 +35,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
     }
 
     @Override
-    public int getAktViewId() {
+    public int getCurrentViewId() {
         return 0;
     }
 

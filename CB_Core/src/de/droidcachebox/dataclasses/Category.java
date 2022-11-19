@@ -46,12 +46,14 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
 
         long GPXFilename_ID = 0;
 
-        CoreCursor reader = CBDB.getInstance().rawQuery("Select max(ID) from GpxFilenames", null);
-        reader.moveToFirst();
-        if (!reader.isAfterLast()) {
-            GPXFilename_ID = reader.getLong(0);
+        CoreCursor c = CBDB.getInstance().rawQuery("Select max(ID) from GpxFilenames", null);
+        if (c != null) {
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                GPXFilename_ID = c.getLong(0);
+            }
+            c.close();
         }
-        reader.close();
         GpxFilename result = new GpxFilename(GPXFilename_ID, fileName, categoryId);
         this.add(result);
         return result;
@@ -71,13 +73,14 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
         }
 
         long GPXFilename_ID = 0;
-
-        CoreCursor reader = CBDB.getInstance().rawQuery("Select max(ID) from GpxFilenames", null);
-        reader.moveToFirst();
-        if (!reader.isAfterLast()) {
-            GPXFilename_ID = reader.getLong(0);
+        CoreCursor c = CBDB.getInstance().rawQuery("Select max(ID) from GpxFilenames", null);
+        if (c != null) {
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                GPXFilename_ID = c.getLong(0);
+            }
+            c.close();
         }
-        reader.close();
         GpxFilename result = new GpxFilename(GPXFilename_ID, fileName, this.categoryId);
         this.add(result);
         return result;

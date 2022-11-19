@@ -46,6 +46,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
+
         </activity>
 
         <activity
@@ -107,6 +108,7 @@
 
                 <data android:scheme="http" />
                 <data android:scheme="https" />
+
                 <data android:host="*mapsforge.org" />
                 <data android:host="*hs-esslingen.de" />
                 <data android:pathPattern=".*\\.map" />
@@ -131,8 +133,23 @@
                 <data android:scheme="file" />
                 <data android:scheme="content" />
                 <data android:pathPattern=".*\\.map" />
+                <!-- if path has more dots: http://stackoverflow.com/q/3400072/44089 -->
+                <data android:pathPattern=".*\\..*\\.map" />
+                <data android:pathPattern=".*\\..*\\..*\\.map" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.map" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.map" />
                 <data android:pathPattern=".*\\.gpx" />
+                <!-- if path has more dots: http://stackoverflow.com/q/3400072/44089 -->
+                <data android:pathPattern=".*\\..*\\.gpx" />
+                <data android:pathPattern=".*\\..*\\..*\\.gpx" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.gpx" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.gpx" />
                 <data android:pathPattern=".*\\.zip" />
+                <!-- if path has more dots: http://stackoverflow.com/q/3400072/44089 -->
+                <data android:pathPattern=".*\\..*\\.zip" />
+                <data android:pathPattern=".*\\..*\\..*\\.zip" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.zip" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.zip" />
             </intent-filter>
 
         </activity>

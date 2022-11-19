@@ -574,7 +574,7 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         Log.debug(sClass, "=> onPrepareOptionsMenu");
-        int menuId = showViewListener.getAktViewId();
+        int menuId = showViewListener.getCurrentViewId();
         if (menuId != 0) {
             menu.clear();
             getMenuInflater().inflate(menuId, menu);

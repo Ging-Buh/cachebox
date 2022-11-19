@@ -97,19 +97,19 @@ public class CoordinateEntity extends Entity {
         WaypointDAO waypointDAO = WaypointDAO.getInstance();
         Waypoint dbWaypoint;
         // Suchen, ob dieser Waypoint bereits vorhanden ist.
-        CoreCursor reader = CBDB.getInstance().rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
-        if (reader == null) {
+        CoreCursor c = CBDB.getInstance().rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
+        if (c == null) {
             return Translation.get("CacheOrWaypointNotFound", gcCode);
         } else {
             try {
-                if (reader.getCount() > 0) {
-                    reader.moveToFirst();
-                    dbWaypoint = waypointDAO.getWaypoint(reader, true);
+                if (c.getCount() > 0) {
+                    c.moveToFirst();
+                    dbWaypoint = waypointDAO.getWaypoint(c, true);
                 } else {
                     return Translation.get("CacheOrWaypointNotFound", gcCode);
                 }
             } finally {
-                reader.close();
+                c.close();
             }
         }
         try {

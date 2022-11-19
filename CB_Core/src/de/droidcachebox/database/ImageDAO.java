@@ -53,17 +53,18 @@ public class ImageDAO {
      */
     public ArrayList<ImageEntry> getImagesForCache(String GcCode) {
         ArrayList<ImageEntry> images = new ArrayList<>();
-
-        CoreCursor reader = CBDB.getInstance().rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=?", new String[]{GcCode});
-        if (reader.getCount() > 0) {
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                ImageEntry image = new ImageEntry(reader);
-                images.add(image);
-                reader.moveToNext();
+        CoreCursor c = CBDB.getInstance().rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=?", new String[]{GcCode});
+        if (c != null) {
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                while (!c.isAfterLast()) {
+                    ImageEntry image = new ImageEntry(c);
+                    images.add(image);
+                    c.moveToNext();
+                }
             }
+            c.close();
         }
-        reader.close();
         return images;
     }
 

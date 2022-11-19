@@ -596,6 +596,7 @@ public class CachesDAO {
                 c.moveToFirst();
                 resultString = c.getString(0);
                 if (resultString == null) resultString = "";
+                c.close();
             }
         }
         return resultString;

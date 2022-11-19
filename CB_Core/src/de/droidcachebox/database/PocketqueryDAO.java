@@ -50,12 +50,12 @@ public class PocketqueryDAO {
      * @return
      */
     public Date getLastGeneratedDate(String pqName) {
-        CoreCursor reader = CBDB.getInstance().rawQuery("select max(CreationTimeOfPQ) from PocketQueries where PQName=@PQName", new String[]{pqName});
-        if (reader != null) {
+        CoreCursor c = CBDB.getInstance().rawQuery("select max(CreationTimeOfPQ) from PocketQueries where PQName=@PQName", new String[]{pqName});
+        if (c != null) {
             try {
-                if (reader.getCount() > 0) {
-                    reader.moveToFirst();
-                    String sDate = reader.getString(0);
+                if (c.getCount() > 0) {
+                    c.moveToFirst();
+                    String sDate = c.getString(0);
                     if (sDate == null) {
                         return null;
                     }
@@ -69,7 +69,7 @@ public class PocketqueryDAO {
             } catch (Exception ex) {
                 return new Date(0);
             } finally {
-                reader.close();
+                c.close();
             }
         }
         return null;

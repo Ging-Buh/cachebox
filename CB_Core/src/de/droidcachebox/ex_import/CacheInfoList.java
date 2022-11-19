@@ -48,76 +48,75 @@ public class CacheInfoList {
      */
     public static void indexDB() {
         mCacheInfoList = new HashMap<>();
+        CoreCursor c = CBDB.getInstance().rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
+        if (c != null) {
+            c.moveToFirst();
 
-        CoreCursor reader = CBDB.getInstance().rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
+            while (!c.isAfterLast()) {
+                CacheInfo cacheInfo = new CacheInfo();
 
-        reader.moveToFirst();
+                cacheInfo.id = c.getLong(1);
 
-        while (!reader.isAfterLast()) {
-            CacheInfo cacheInfo = new CacheInfo();
+                if (c.isNull(2)) {
+                    cacheInfo.ListingCheckSum = 0;
+                } else {
+                    cacheInfo.ListingCheckSum = c.getInt(2);
+                }
 
-            cacheInfo.id = reader.getLong(1);
+                if (c.isNull(3)) {
+                    cacheInfo.ImagesUpdated = false;
+                } else {
+                    cacheInfo.ImagesUpdated = c.getInt(3) != 0;
+                }
 
-            if (reader.isNull(2)) {
-                cacheInfo.ListingCheckSum = 0;
-            } else {
-                cacheInfo.ListingCheckSum = reader.getInt(2);
+                if (c.isNull(4)) {
+                    cacheInfo.DescriptionImagesUpdated = false;
+                } else {
+                    cacheInfo.DescriptionImagesUpdated = c.getInt(4) != 0;
+                }
+
+                if (c.isNull(5)) {
+                    cacheInfo.ListingChanged = false;
+                } else {
+                    cacheInfo.ListingChanged = c.getInt(5) != 0;
+                }
+
+                if (c.isNull(6)) {
+                    cacheInfo.Found = false;
+                } else {
+                    cacheInfo.Found = c.getInt(6) != 0;
+                }
+
+                if (c.isNull(7)) {
+                    cacheInfo.CorrectedCoordinates = false;
+                } else {
+                    cacheInfo.CorrectedCoordinates = c.getInt(7) != 0;
+                }
+
+                if (c.isNull(8)) {
+                    cacheInfo.Latitude = 361;
+                } else {
+                    cacheInfo.Latitude = c.getDouble(8);
+                }
+                if (c.isNull(9)) {
+                    cacheInfo.Longitude = 361;
+                } else {
+                    cacheInfo.Longitude = c.getDouble(9);
+                }
+
+                cacheInfo.GpxFilename_Id = c.getInt(10);
+
+                if (c.isNull(11)) {
+                    cacheInfo.favorite = false;
+                } else {
+                    cacheInfo.favorite = c.getInt(11) != 0;
+                }
+
+                mCacheInfoList.put(c.getString(0), cacheInfo);
+                c.moveToNext();
             }
-
-            if (reader.isNull(3)) {
-                cacheInfo.ImagesUpdated = false;
-            } else {
-                cacheInfo.ImagesUpdated = reader.getInt(3) != 0;
-            }
-
-            if (reader.isNull(4)) {
-                cacheInfo.DescriptionImagesUpdated = false;
-            } else {
-                cacheInfo.DescriptionImagesUpdated = reader.getInt(4) != 0;
-            }
-
-            if (reader.isNull(5)) {
-                cacheInfo.ListingChanged = false;
-            } else {
-                cacheInfo.ListingChanged = reader.getInt(5) != 0;
-            }
-
-            if (reader.isNull(6)) {
-                cacheInfo.Found = false;
-            } else {
-                cacheInfo.Found = reader.getInt(6) != 0;
-            }
-
-            if (reader.isNull(7)) {
-                cacheInfo.CorrectedCoordinates = false;
-            } else {
-                cacheInfo.CorrectedCoordinates = reader.getInt(7) != 0;
-            }
-
-            if (reader.isNull(8)) {
-                cacheInfo.Latitude = 361;
-            } else {
-                cacheInfo.Latitude = reader.getDouble(8);
-            }
-            if (reader.isNull(9)) {
-                cacheInfo.Longitude = 361;
-            } else {
-                cacheInfo.Longitude = reader.getDouble(9);
-            }
-
-            cacheInfo.GpxFilename_Id = reader.getInt(10);
-
-            if (reader.isNull(11)) {
-                cacheInfo.favorite = false;
-            } else {
-                cacheInfo.favorite = reader.getInt(11) != 0;
-            }
-
-            mCacheInfoList.put(reader.getString(0), cacheInfo);
-            reader.moveToNext();
+            c.close();
         }
-        reader.close();
-
     }
 
     /**

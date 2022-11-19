@@ -214,6 +214,7 @@ public class Splash extends Activity {
                 scheme = scheme.toLowerCase();
                 switch (scheme) {
                     case "file":
+                    case "content":
                         // get this if created by the download manager
                         if (uri.getPath() != null) {
                             if (uri.getPath().endsWith(".gpx") || uri.getPath().endsWith(".zip")) {
@@ -263,9 +264,6 @@ public class Splash extends Activity {
                         break;
                     case "geo":
                         LatLon = uri.getSchemeSpecificPart(); // will copy to clipboard
-                        break;
-                    case "content":
-                        // to do
                         break;
                     default:
                         // download.openandromaps.org -> orux-map, backcountrynav-action-map, bikecomputer-map

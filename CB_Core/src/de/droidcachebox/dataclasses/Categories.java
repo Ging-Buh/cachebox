@@ -56,12 +56,14 @@ public class Categories extends MoveableList<Category> {
 
         long Category_ID = 0;
 
-        CoreCursor reader = CBDB.getInstance().rawQuery("Select max(ID) from Category", null);
-        reader.moveToFirst();
-        if (!reader.isAfterLast()) {
-            Category_ID = reader.getLong(0);
+        CoreCursor c = CBDB.getInstance().rawQuery("Select max(ID) from Category", null);
+        if (c != null) {
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                Category_ID = c.getLong(0);
+            }
+            c.close();
         }
-        reader.close();
         result.categoryId = Category_ID;
         result.gpxFileName = filename;
         result.checked = true;

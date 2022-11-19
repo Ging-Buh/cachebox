@@ -10,36 +10,32 @@ public class GCVoteDAO {
     public int getCacheCountToGetVotesFor(String whereClause) {
         int count = 0;
 
-        CoreCursor reader = CBDB.getInstance().rawQuery("select count(GcCode) from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause), null);
-
-        reader.moveToFirst();
-
-        if (!reader.isAfterLast()) {
-            count = reader.getInt(0);
+        CoreCursor c = CBDB.getInstance().rawQuery("select count(GcCode) from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause), null);
+        if (c != null) {
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                count = c.getInt(0);
+            }
+            c.close();
         }
-        reader.close();
-
         return count;
     }
 
     public ArrayList<GCVoteCacheInfo> getGCVotePackage(String whereClause, int packagesize, int offset) {
         ArrayList<GCVoteCacheInfo> caches = new ArrayList<>();
-
-        CoreCursor reader = CBDB.getInstance().rawQuery("select Id, GcCode, VotePending from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + " LIMIT " + offset + "," + packagesize, null);
-
-        reader.moveToFirst();
-
-        while (!reader.isAfterLast()) {
-            GCVoteCacheInfo gcVoteCacheInfo = new GCVoteCacheInfo();
-            gcVoteCacheInfo.setId(reader.getLong(0));
-            gcVoteCacheInfo.setGcCode(reader.getString(1));
-            gcVoteCacheInfo.setVotePending(reader.getInt(2) == 1);
-            caches.add(gcVoteCacheInfo);
-
-            reader.moveToNext();
+        CoreCursor c = CBDB.getInstance().rawQuery("select Id, GcCode, VotePending from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + " LIMIT " + offset + "," + packagesize, null);
+        if (c != null) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                GCVoteCacheInfo gcVoteCacheInfo = new GCVoteCacheInfo();
+                gcVoteCacheInfo.setId(c.getLong(0));
+                gcVoteCacheInfo.setGcCode(c.getString(1));
+                gcVoteCacheInfo.setVotePending(c.getInt(2) == 1);
+                caches.add(gcVoteCacheInfo);
+                c.moveToNext();
+            }
+            c.close();
         }
-        reader.close();
-
         return caches;
     }
 
@@ -73,23 +69,20 @@ public class GCVoteDAO {
      */
     public ArrayList<GCVoteCacheInfo> getPendingGCVotes() {
         ArrayList<GCVoteCacheInfo> caches = new ArrayList<>();
-
-        CoreCursor reader = CBDB.getInstance().rawQuery("select Id, GcCode, Url, Vote from Caches where VotePending=1", null);
-
-        reader.moveToFirst();
-
-        while (!reader.isAfterLast()) {
-            GCVoteCacheInfo info = new GCVoteCacheInfo();
-            info.setId(reader.getLong(0));
-            info.setGcCode(reader.getString(1));
-            info.setUrl(reader.getString(2));
-            info.setVote(reader.getInt(3));
-            caches.add(info);
-
-            reader.moveToNext();
+        CoreCursor c = CBDB.getInstance().rawQuery("select Id, GcCode, Url, Vote from Caches where VotePending=1", null);
+        if (c != null) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                GCVoteCacheInfo info = new GCVoteCacheInfo();
+                info.setId(c.getLong(0));
+                info.setGcCode(c.getString(1));
+                info.setUrl(c.getString(2));
+                info.setVote(c.getInt(3));
+                caches.add(info);
+                c.moveToNext();
+            }
+            c.close();
         }
-        reader.close();
-
         return caches;
     }
 }

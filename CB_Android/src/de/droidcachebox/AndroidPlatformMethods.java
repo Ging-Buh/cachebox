@@ -427,7 +427,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
         // viewmanager must have been initialized
         final Bundle extras = mainActivity.getIntent().getExtras();
         if (extras != null) {
-            // Log.trace(sClass, "prepared Request from splash");
+            Log.debug(sClass, "prepared Request from splash");
             if (ViewManager.that.isInitialized()) {
                 String externalRequestGCCode = extras.getString("GcCode");
                 if (externalRequestGCCode != null) {
@@ -437,6 +437,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                 }
                 String externalRequestGpxPath = extras.getString("GpxPath");
                 if (externalRequestGpxPath != null) {
+                    Log.debug(sClass, "externalRequestGpxPath " + externalRequestGpxPath);
                     mainActivity.getIntent().removeExtra("GpxPath");
                     if (externalRequestGpxPath.endsWith(".map")) {
                         AbstractFile sourceFile = FileFactory.createFile(externalRequestGpxPath);
@@ -453,18 +454,24 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                         importGPXFile(externalRequestGpxPath);
                     }
                 }
+                else {
+                    Log.debug(sClass, "externalRequestGpxPath null");
+                }
+                Log.debug(sClass, "externalRequestGuid start");
                 String externalRequestGuid = extras.getString("Guid");
                 if (externalRequestGuid != null) {
                     Log.debug(sClass, "importCacheByGuid");
                     mainActivity.getIntent().removeExtra("Guid");
                     importCacheByGuid();
                 }
+                Log.debug(sClass, "externalRequestLatLon start");
                 String externalRequestLatLon = extras.getString("LatLon");
                 if (externalRequestLatLon != null) {
                     Log.debug(sClass, "positionLatLon");
                     mainActivity.getIntent().removeExtra("LatLon");
                     positionLatLon(externalRequestLatLon);
                 }
+                Log.debug(sClass, "externalRequestMapDownloadPath start");
                 String externalRequestMapDownloadPath = extras.getString("MapDownloadPath");
                 if (externalRequestMapDownloadPath != null) {
                     Log.debug(sClass, "MapDownload");
@@ -472,12 +479,14 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                     FZKDownload fzkDownload = new FZKDownload();
                     fzkDownload.showImportByUrl(externalRequestMapDownloadPath);
                 }
+                Log.debug(sClass, "externalRequestName start");
                 String externalRequestName = extras.getString("Name");
                 if (externalRequestName != null) {
                     Log.debug(sClass, "importCacheByName");
                     mainActivity.getIntent().removeExtra("Name");
                     importCacheByName();
                 }
+                Log.debug(sClass, "externalRequest end handle");
             }
         }
     }

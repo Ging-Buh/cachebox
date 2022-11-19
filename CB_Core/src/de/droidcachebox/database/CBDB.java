@@ -134,15 +134,15 @@ public class CBDB extends Database_Core {
                 HashMap<Long, String> gpxFilenames = new HashMap<>();
                 HashMap<String, Long> categories = new HashMap<>();
 
-                CoreCursor reader = rawQuery("select ID, GPXFilename from GPXFilenames", null);
-                reader.moveToFirst();
-                while (!reader.isAfterLast()) {
-                    long id = reader.getLong(0);
-                    String gpxFilename = reader.getString(1);
+                CoreCursor c = rawQuery("select ID, GPXFilename from GPXFilenames", null);
+                c.moveToFirst();
+                while (!c.isAfterLast()) {
+                    long id = c.getLong(0);
+                    String gpxFilename = c.getString(1);
                     gpxFilenames.put(id, gpxFilename);
-                    reader.moveToNext();
+                    c.moveToNext();
                 }
-                reader.close();
+                c.close();
                 for (Entry<Long, String> entry : gpxFilenames.entrySet()) {
                     if (!categories.containsKey(entry.getValue())) {
                         // add new Category
@@ -186,12 +186,12 @@ public class CBDB extends Database_Core {
                 // Die Nummerierung der Attribute stimmte nicht mit der von
                 // Groundspeak überein. Bei 16 und 45 wurde jeweils eine
                 // Nummber übersprungen
-                CoreCursor reader = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[]{});
-                reader.moveToFirst();
-                while (!reader.isAfterLast()) {
-                    long id = reader.getLong(0);
-                    long attributesPositive = reader.getLong(1);
-                    long attributesNegative = reader.getLong(2);
+                CoreCursor c = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[]{});
+                c.moveToFirst();
+                while (!c.isAfterLast()) {
+                    long id = c.getLong(0);
+                    long attributesPositive = c.getLong(1);
+                    long attributesNegative = c.getLong(2);
 
                     attributesPositive = convertAttribute(attributesPositive);
                     attributesNegative = convertAttribute(attributesNegative);
@@ -201,9 +201,9 @@ public class CBDB extends Database_Core {
                     val.put("AttributesNegative", attributesNegative);
                     String whereClause = "[Id]=" + id;
                     update("Caches", val, whereClause, null);
-                    reader.moveToNext();
+                    c.moveToNext();
                 }
-                reader.close();
+                c.close();
 
             }
             if (lastDatabaseSchemeVersion < 1020) {

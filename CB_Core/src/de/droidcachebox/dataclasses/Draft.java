@@ -149,16 +149,18 @@ public class Draft implements Serializable {
             return;
         }
         // search FieldNote Id : should be the last entry
-        CoreCursor reader = DraftsDatabase.getInstance()
+        CoreCursor c = DraftsDatabase.getInstance()
                 .rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog, GcId from FieldNotes where GcCode='" + gcCode
                         + "' and type=" + type.gsLogTypeId, null);
-        reader.moveToFirst();
-        while (!reader.isAfterLast()) {
-            Draft fne = new Draft(reader);
-            Id = fne.Id;
-            reader.moveToNext();
+        if (c != null) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                Draft fne = new Draft(c);
+                Id = fne.Id;
+                c.moveToNext();
+            }
+            c.close();
         }
-        reader.close();
         if (Id == -1) {
             if (isTbDraft)
                 Log.err(sClass, "TB-Log not saved: " + TravelBugCode + " in " + gcCode + ".");

@@ -42,15 +42,15 @@ public class CategoryDAO {
         result.pinned = reader.getInt(2) != 0;
 
         // alle GpxFilenames einlesen
-        CoreCursor reader2 = CBDB.getInstance().rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]{String.valueOf(result.categoryId)});
-        reader2.moveToFirst();
-        while (!reader2.isAfterLast()) {
+        CoreCursor c = CBDB.getInstance().rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]{String.valueOf(result.categoryId)});
+        c.moveToFirst();
+        while (!c.isAfterLast()) {
             GpxFilenameDAO gpxFilenameDAO = new GpxFilenameDAO();
-            GpxFilename gpx = gpxFilenameDAO.ReadFromCursor(reader2);
+            GpxFilename gpx = gpxFilenameDAO.ReadFromCursor(c);
             result.add(gpx);
-            reader2.moveToNext();
+            c.moveToNext();
         }
-        reader2.close();
+        c.close();
 
         return result;
     }
@@ -76,15 +76,15 @@ public class CategoryDAO {
         CoreData.categories.beginnUpdate();
         CoreData.categories.clear();
 
-        CoreCursor reader = CBDB.getInstance().rawQuery("select ID, GPXFilename, Pinned from Category", null);
-        if (reader != null) {
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                Category category = readFromCursor(reader);
+        CoreCursor c = CBDB.getInstance().rawQuery("select ID, GPXFilename, Pinned from Category", null);
+        if (c != null) {
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                Category category = readFromCursor(c);
                 CoreData.categories.add(category);
-                reader.moveToNext();
+                c.moveToNext();
             }
-            reader.close();
+            c.close();
         }
         CoreData.categories.sort();
         CoreData.categories.endUpdate();
