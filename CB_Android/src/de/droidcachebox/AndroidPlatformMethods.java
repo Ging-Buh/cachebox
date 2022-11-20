@@ -7,6 +7,7 @@ import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -545,7 +546,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                     intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse(_DirectoryToAccess));
                 }
             }
-            if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
+            if ((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) || (intent.resolveActivity(mainActivity.getPackageManager()) != null)) {
                 if (handlingGetDocumentAccess == null) {
                     Log.debug(sClass, "create resulthandler for Filepicker");
                     handlingGetDocumentAccess = (requestCode, resultCode, resultData) -> {
@@ -569,7 +570,12 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                 }
                 Log.debug(sClass, "Start Filepicker");
                 androidApplication.addAndroidEventListener(handlingGetDocumentAccess);
-                mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT);
+                try {
+                    mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT);
+                } catch (ActivityNotFoundException ex){
+                    Log.debug(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT: " + intent);
+                    getDirectoryAccess(_DirectoryToAccess, stringReturner);
+                }
             } else {
                 Log.debug(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT: " + intent);
                 getDirectoryAccess(_DirectoryToAccess, stringReturner);
