@@ -368,7 +368,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
         try {
             url = url.trim();
             if (url.startsWith("www.")) {
-                url = "http://" + url;
+                url = "https://" + url;
             }
             Uri uri = Uri.parse(url);
             Intent intent = new Intent(ACTION_VIEW);

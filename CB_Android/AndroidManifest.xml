@@ -83,10 +83,10 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data
-                    android:host="*geocaching.com"
+                    android:host="geocaching.com"
                     android:pathPrefix="/seek/cache_details.aspx" />
                 <data
-                    android:host="*geocaching.com"
+                    android:host="geocaching.com"
                     android:pathPrefix="/geocache/GC" />
                 <data
                     android:host="coord.info"
@@ -109,8 +109,8 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
 
-                <data android:host="*mapsforge.org" />
-                <data android:host="*hs-esslingen.de" />
+                <data android:host="download.mapsforge.org" />
+                <data android:host="ftp-stud.hs-esslingen.de" />
                 <data android:pathPattern=".*\\.map" />
                 <!-- if path has more dots: http://stackoverflow.com/q/3400072/44089 -->
                 <data android:pathPattern=".*\\..*\\.map" />
