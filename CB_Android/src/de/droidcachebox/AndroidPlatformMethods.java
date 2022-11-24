@@ -120,17 +120,18 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
     private boolean askForLocationPermission;
 
     AndroidPlatformMethods(Main main) {
+        String defaultBrowserPackageName1 = "android";
         androidApplication = main;
         mainActivity = main;
         mainMain = main;
         OnResumeListeners.getInstance().addListener(this::handleExternalRequest);
         final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"));
-        final ResolveInfo resolveInfo = mainActivity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (resolveInfo != null)
-            defaultBrowserPackageName = resolveInfo.activityInfo.packageName;
-        else
-            defaultBrowserPackageName = "android";
-
+        try {
+            ResolveInfo resolveInfo = mainActivity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            defaultBrowserPackageName1 = resolveInfo.activityInfo.packageName;
+        } catch (Exception ignored) {
+        }
+        defaultBrowserPackageName = defaultBrowserPackageName1;
         IChanged handleAllowLocationServiceConfigChanged = this::changeLocationService;
         Settings.allowLocationService.addSettingChangedListener(handleAllowLocationServiceConfigChanged);
         IChanged handleGpsUpdateTimeConfigChanged = () -> {
@@ -351,19 +352,15 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
     @Override
     public void getApiKey() {
         Intent intent = new Intent().setClass(mainActivity, GcApiLogin.class);
-        if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
-            if (handlingGetApiAuth == null)
-                handlingGetApiAuth = (requestCode, resultCode, data) -> {
-                    androidApplication.removeAndroidEventListener(handlingGetApiAuth);
-                    if (requestCode == REQUEST_GET_APIKEY) {
-                        ShowSettings.getInstance().returnFromFetchingApiKey(); // to view the new setting
-                    }
-                };
-            androidApplication.addAndroidEventListener(handlingGetApiAuth);
-            mainActivity.startActivityForResult(intent, REQUEST_GET_APIKEY);
-        } else {
-            Log.err(sClass, "GcApiLogin class not found");
-        }
+        if (handlingGetApiAuth == null)
+            handlingGetApiAuth = (requestCode, resultCode, data) -> {
+                androidApplication.removeAndroidEventListener(handlingGetApiAuth);
+                if (requestCode == REQUEST_GET_APIKEY) {
+                    ShowSettings.getInstance().returnFromFetchingApiKey(); // to view the new setting
+                }
+            };
+        androidApplication.addAndroidEventListener(handlingGetApiAuth);
+        mainActivity.startActivityForResult(intent, REQUEST_GET_APIKEY);
     }
 
     @Override
@@ -454,8 +451,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                         Log.debug(sClass, "importGPXFile (*.gpx or *.zip)");
                         importGPXFile(externalRequestGpxPath);
                     }
-                }
-                else {
+                } else {
                     Log.debug(sClass, "externalRequestGpxPath null");
                 }
                 Log.debug(sClass, "externalRequestGuid start");
@@ -512,7 +508,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             // DocumentFile documentFile = DocumentFile.fromTreeUri(context, uri);
             // intent.putExtra(EXTRA_INITIAL_URI, documentFile.getUri());
             // intent.putExtra(DocumentsContract.EXTRA_INFO, "please select a dir for " + _DirectoryToAccess);
-            if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
+            if ((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) || (intent.resolveActivity(mainActivity.getPackageManager()) != null)) {
                 if (handlingGetDirectoryAccess == null)
                     handlingGetDirectoryAccess = (requestCode, resultCode, resultData) -> {
                         androidApplication.removeAndroidEventListener(handlingGetDirectoryAccess);
@@ -526,9 +522,14 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                         }
                     };
                 androidApplication.addAndroidEventListener(handlingGetDirectoryAccess);
-                mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT_TREE);
+                try {
+                    mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT_TREE);
+                } catch (ActivityNotFoundException ex) {
+                    androidApplication.removeAndroidEventListener(handlingGetDirectoryAccess);
+                    Log.err(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT_TREE: " + intent);
+                }
             } else {
-                Log.debug(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT_TREE: " + intent);
+                Log.err(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT_TREE: " + intent);
             }
         }
     }
@@ -572,8 +573,9 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                 androidApplication.addAndroidEventListener(handlingGetDocumentAccess);
                 try {
                     mainActivity.startActivityForResult(intent, ACTION_OPEN_DOCUMENT);
-                } catch (ActivityNotFoundException ex){
+                } catch (ActivityNotFoundException ex) {
                     Log.debug(sClass, "PackageManager: No activity found for intent ACTION_OPEN_DOCUMENT: " + intent);
+                    androidApplication.removeAndroidEventListener(handlingGetDocumentAccess);
                     getDirectoryAccess(_DirectoryToAccess, stringReturner);
                 }
             } else {
@@ -685,7 +687,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                 if (externalRequestGCCode != null) {
                     mainActivity.runOnUiThread(() -> {
                         Action.ShowSearchDialog.action.execute();
-                        ((ShowSearchDialog)Action.ShowSearchDialog.action).doSearchOnline(externalRequestGCCode, SearchDialog.SearchMode.GcCode);
+                        ((ShowSearchDialog) Action.ShowSearchDialog.action).doSearchOnline(externalRequestGCCode, SearchDialog.SearchMode.GcCode);
                     });
                 }
             }

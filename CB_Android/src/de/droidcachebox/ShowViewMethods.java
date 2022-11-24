@@ -729,63 +729,59 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             Log.debug(sClass, uri.toString());
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-            if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
-                if (handlingTakePhoto == null) {
-                    handlingTakePhoto = (requestCode, resultCode, data) -> {
-                        androidApplication.removeAndroidEventListener(handlingTakePhoto);
-                        // Intent Result Take Photo
-                        if (requestCode == REQUEST_CAPTURE_IMAGE) {
-                            if (resultCode == Activity.RESULT_OK) {
-                                GL.that.runIfInitial(() -> {
-                                    Log.debug(sClass, "Photo taken");
-                                    try {
-                                        // move the photo from temp to UserImageFolder
-                                        String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
-                                        String destinationName = Settings.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
-                                        if (!sourceName.equals(destinationName)) {
-                                            AbstractFile source = FileFactory.createFile(sourceName);
-                                            AbstractFile destination = FileFactory.createFile(destinationName);
-                                            if (!source.renameTo(destination)) {
-                                                Log.err(sClass, "move from " + sourceName + " to " + destinationName + " failed");
-                                            }
+            if (handlingTakePhoto == null) {
+                handlingTakePhoto = (requestCode, resultCode, data) -> {
+                    androidApplication.removeAndroidEventListener(handlingTakePhoto);
+                    // Intent Result Take Photo
+                    if (requestCode == REQUEST_CAPTURE_IMAGE) {
+                        if (resultCode == Activity.RESULT_OK) {
+                            GL.that.runIfInitial(() -> {
+                                Log.debug(sClass, "Photo taken");
+                                try {
+                                    // move the photo from temp to UserImageFolder
+                                    String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
+                                    String destinationName = Settings.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
+                                    if (!sourceName.equals(destinationName)) {
+                                        AbstractFile source = FileFactory.createFile(sourceName);
+                                        AbstractFile destination = FileFactory.createFile(destinationName);
+                                        if (!source.renameTo(destination)) {
+                                            Log.err(sClass, "move from " + sourceName + " to " + destinationName + " failed");
                                         }
-
-                                        // for the photo to show within spoilers
-                                        if (GlobalCore.isSetSelectedCache()) {
-                                            GlobalCore.getSelectedCache().loadSpoilerRessources();
-                                            ((ShowSpoiler) Action.ShowSpoiler.action).forceReloadSpoiler();
-                                        }
-
-                                        ViewManager.that.reloadSprites(false);
-
-                                        // track annotation
-                                        String TrackFolder = Settings.TrackFolder.getValue();
-                                        String relativPath = FileIO.getRelativePath(Settings.UserImageFolder.getValue(), TrackFolder, "/");
-                                        CBLocation lastLocation = Locator.getInstance().getLastSavedFineLocation();
-                                        if (lastLocation == null) {
-                                            lastLocation = Locator.getInstance().getLocation(CBLocation.ProviderType.any);
-                                            if (lastLocation == null) {
-                                                Log.debug(sClass, "No (GPS)-Location for Trackrecording.");
-                                                return;
-                                            }
-                                        }
-                                        // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
-                                        TrackRecorder.getInstance().annotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, getTrackDateTimeString());
-                                    } catch (Exception e) {
-                                        Log.err(sClass, e.getLocalizedMessage());
                                     }
-                                });
-                            } else {
-                                Log.err(sClass, "Intent Take Photo resultCode: " + resultCode);
-                            }
+
+                                    // for the photo to show within spoilers
+                                    if (GlobalCore.isSetSelectedCache()) {
+                                        GlobalCore.getSelectedCache().loadSpoilerRessources();
+                                        ((ShowSpoiler) Action.ShowSpoiler.action).forceReloadSpoiler();
+                                    }
+
+                                    ViewManager.that.reloadSprites(false);
+
+                                    // track annotation
+                                    String TrackFolder = Settings.TrackFolder.getValue();
+                                    String relativPath = FileIO.getRelativePath(Settings.UserImageFolder.getValue(), TrackFolder, "/");
+                                    CBLocation lastLocation = Locator.getInstance().getLastSavedFineLocation();
+                                    if (lastLocation == null) {
+                                        lastLocation = Locator.getInstance().getLocation(CBLocation.ProviderType.any);
+                                        if (lastLocation == null) {
+                                            Log.debug(sClass, "No (GPS)-Location for Trackrecording.");
+                                            return;
+                                        }
+                                    }
+                                    // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
+                                    TrackRecorder.getInstance().annotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, getTrackDateTimeString());
+                                } catch (Exception e) {
+                                    Log.err(sClass, e.getLocalizedMessage());
+                                }
+                            });
+                        } else {
+                            Log.err(sClass, "Intent Take Photo resultCode: " + resultCode);
                         }
-                    };
-                }
-                androidApplication.addAndroidEventListener(handlingTakePhoto);
-                mainActivity.startActivityForResult(intent, REQUEST_CAPTURE_IMAGE);
-            } else {
-                Log.err(sClass, MediaStore.ACTION_IMAGE_CAPTURE + " not installed.");
+                    }
+                };
             }
+            androidApplication.addAndroidEventListener(handlingTakePhoto);
+            mainActivity.startActivityForResult(intent, REQUEST_CAPTURE_IMAGE);
         } catch (Exception e) {
             Log.err(sClass, e.getLocalizedMessage());
         }
@@ -833,62 +829,58 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
             // intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);
-            if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
-                if (handlingRecordedVideo == null)
-                    handlingRecordedVideo = (requestCode, resultCode, data) -> {
-                        androidApplication.removeAndroidEventListener(handlingRecordedVideo);
-                        // Intent Result Record Video
-                        if (requestCode == REQUEST_CAPTURE_VIDEO) {
-                            if (resultCode == Activity.RESULT_OK) {
-                                GL.that.runIfInitial(() -> {
-                                    Log.debug(sClass, "Video recorded.");
-                                    String ext;
-                                    try {
-                                        // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
-                                        String recordedVideoFilePath = "";
-                                        // first get the tempfile pathAndName (recordedVideoFilePath)
-                                        String[] proj = {MediaStore.Images.Media.DATA}; // want to get Path to the file on disk.
+            if (handlingRecordedVideo == null)
+                handlingRecordedVideo = (requestCode, resultCode, data) -> {
+                    androidApplication.removeAndroidEventListener(handlingRecordedVideo);
+                    // Intent Result Record Video
+                    if (requestCode == REQUEST_CAPTURE_VIDEO) {
+                        if (resultCode == Activity.RESULT_OK) {
+                            GL.that.runIfInitial(() -> {
+                                Log.debug(sClass, "Video recorded.");
+                                String ext;
+                                try {
+                                    // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
+                                    String recordedVideoFilePath = "";
+                                    // first get the tempfile pathAndName (recordedVideoFilePath)
+                                    String[] proj = {MediaStore.Images.Media.DATA}; // want to get Path to the file on disk.
 
-                                        Cursor cursor = mainActivity.getContentResolver().query(videoUri, proj, null, null, null); // result set
-                                        if (cursor != null && cursor.getCount() != 0) {
-                                            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA); // my meaning: if only one element index is 0
-                                            cursor.moveToFirst(); // first row ( here we should have only one row )
-                                            recordedVideoFilePath = cursor.getString(columnIndex);
-                                        }
-                                        if (cursor != null) {
-                                            cursor.close();
-                                        }
-
-                                        if (recordedVideoFilePath.length() > 0) {
-                                            ext = FileIO.getFileExtension(recordedVideoFilePath);
-
-                                            AbstractFile source = FileFactory.createFile(recordedVideoFilePath);
-                                            String destinationName = Settings.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
-                                            AbstractFile destination = FileFactory.createFile(destinationName);
-                                            if (!source.renameTo(destination)) {
-                                                Log.err(sClass, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
-                                            } else {
-                                                Log.debug(sClass, "Video saved at " + destinationName);
-                                                // track annotation
-                                                String TrackFolder = Settings.TrackFolder.getValue();
-                                                String relativPath = FileIO.getRelativePath(Settings.UserImageFolder.getValue(), TrackFolder, "/");
-                                                TrackRecorder.getInstance().annotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
-                                            }
-                                        }
-                                    } catch (Exception e) {
-                                        Log.err(sClass, e.getLocalizedMessage());
+                                    Cursor cursor = mainActivity.getContentResolver().query(videoUri, proj, null, null, null); // result set
+                                    if (cursor != null && cursor.getCount() != 0) {
+                                        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA); // my meaning: if only one element index is 0
+                                        cursor.moveToFirst(); // first row ( here we should have only one row )
+                                        recordedVideoFilePath = cursor.getString(columnIndex);
                                     }
-                                });
-                            } else {
-                                Log.err(sClass, "Intent Record Video resultCode: " + resultCode);
-                            }
+                                    if (cursor != null) {
+                                        cursor.close();
+                                    }
+
+                                    if (recordedVideoFilePath.length() > 0) {
+                                        ext = FileIO.getFileExtension(recordedVideoFilePath);
+
+                                        AbstractFile source = FileFactory.createFile(recordedVideoFilePath);
+                                        String destinationName = Settings.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
+                                        AbstractFile destination = FileFactory.createFile(destinationName);
+                                        if (!source.renameTo(destination)) {
+                                            Log.err(sClass, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
+                                        } else {
+                                            Log.debug(sClass, "Video saved at " + destinationName);
+                                            // track annotation
+                                            String TrackFolder = Settings.TrackFolder.getValue();
+                                            String relativPath = FileIO.getRelativePath(Settings.UserImageFolder.getValue(), TrackFolder, "/");
+                                            TrackRecorder.getInstance().annotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    Log.err(sClass, e.getLocalizedMessage());
+                                }
+                            });
+                        } else {
+                            Log.err(sClass, "Intent Record Video resultCode: " + resultCode);
                         }
-                    };
-                androidApplication.addAndroidEventListener(handlingRecordedVideo);
-                mainActivity.startActivityForResult(intent, REQUEST_CAPTURE_VIDEO);
-            } else {
-                Log.err(sClass, MediaStore.ACTION_VIDEO_CAPTURE + " not installed.");
-            }
+                    }
+                };
+            androidApplication.addAndroidEventListener(handlingRecordedVideo);
+            mainActivity.startActivityForResult(intent, REQUEST_CAPTURE_VIDEO);
         } catch (Exception e) {
             Log.err(sClass, e.toString());
         }
