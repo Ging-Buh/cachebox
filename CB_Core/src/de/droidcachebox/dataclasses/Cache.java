@@ -260,7 +260,9 @@ public class Cache implements Comparable<Cache>, Serializable {
             if (waypoint.waypointType == GeoCacheType.Final) {
                 if (!waypoint.getCoordinate().isValid() || waypoint.getCoordinate().isZero())
                     continue;
-                if (waypoint.isUserWaypoint) return waypoint;
+                // all valid coordinates mark a final as solved
+                // if (waypoint.isUserWaypoint) return waypoint;
+                return waypoint;
             }
         }
         return null;
