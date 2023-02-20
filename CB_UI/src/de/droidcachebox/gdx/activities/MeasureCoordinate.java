@@ -46,7 +46,6 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.PointD;
 import de.droidcachebox.utils.UnitFormatter;
-import de.droidcachebox.utils.log.Log;
 
 public class MeasureCoordinate extends ActivityBase implements PositionChangedEvent {
     private static final String sClass = "MeasureCoordinate";
@@ -103,7 +102,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
     @Override
     public void dispose() {
-        Log.debug(sClass, "disposing");
         if (satBarChart != null)
             satBarChart.dispose();
         satBarChart = null;
