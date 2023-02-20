@@ -388,7 +388,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     }
 
     @Override
-    public void handleCacheSelectionChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache cache, Waypoint selectedWaypoint) {
         GL.that.runOnGL(this::refreshText);
     }
 

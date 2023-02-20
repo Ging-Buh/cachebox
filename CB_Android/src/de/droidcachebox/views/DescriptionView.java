@@ -80,10 +80,10 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Cac
 
     /**
      * @param selectedCache ?
-     * @param waypoint ?
+     * @param selectedWaypoint ?
      */
     @Override
-    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint selectedWaypoint) {
         if (selectedCache == null || mDescriptionViewControl == null)
             return;
         if (aktCacheID != selectedCache.generatedId) {

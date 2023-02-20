@@ -26,7 +26,7 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
             return false;
     }
 
-    public void fire(final Cache selectedCache, final Waypoint waypoint) {
+    public void fire(final Cache selectedCache, final Waypoint selectedWaypoint) {
         if (selectedCache != null) {
             GlobalLocationReceiver.resetApproach();
         }
@@ -44,7 +44,7 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
             for (CacheSelectionChangedListener listener : this) {
                 try {
                     Log.debug("'Do selected Cache change' by ", listener.toString());
-                    listener.handleCacheSelectionChanged(selectedCache, waypoint);
+                    listener.handleCacheSelectionChanged(selectedCache, selectedWaypoint);
                 } catch (Exception ex) {
                     Log.err(listener.toString(), selectedCache == null ? "Geocache = null" : ex.toString(), ex);
                 }
@@ -57,6 +57,6 @@ public class CacheSelectionChangedListeners extends CopyOnWriteArrayList<CacheSe
     }
 
     public interface CacheSelectionChangedListener {
-        void handleCacheSelectionChanged(Cache selectedCache, Waypoint waypoint);
+        void handleCacheSelectionChanged(Cache selectedCache, Waypoint selectedWaypoint);
     }
 }

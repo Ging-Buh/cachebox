@@ -235,7 +235,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
      */
 
     @Override
-    public void handleCacheSelectionChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache cache, Waypoint selectedWaypoint) {
         // view must be refilled with values
         if (GlobalCore.isSetSelectedCache()) {
             Log.debug(sClass, "handle geoCache " + cache.getGeoCacheCode());

@@ -333,16 +333,16 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
             Log.debug(sClass, "switchToGpsMeasure()");
             int updateTime = Settings.gpsUpdateTime.getValue();
             getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime, 0, this);
-        } catch (SecurityException ex) {
-            Log.err(sClass, "switchToGpsMeasure: ", ex);
+        } catch (SecurityException sex) {
+            Log.err(sClass, "switchToGpsMeasure: ", sex);
         }
     }
 
     @Override
     public void switchToGpsDefault() {
-        Log.debug(sClass, "switchtoGpsDefault()");
-        int updateTime = Settings.gpsUpdateTime.getValue();
         try {
+            Log.debug(sClass, "switchtoGpsDefault()");
+            int updateTime = Settings.gpsUpdateTime.getValue();
             getLocationManager().requestLocationUpdates(GPS_PROVIDER, updateTime, 1, this);
         } catch (SecurityException sex) {
             Log.err(sClass, "switchtoGpsDefault: " + sex.getLocalizedMessage());

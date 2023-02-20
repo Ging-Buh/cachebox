@@ -583,11 +583,11 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
     }
 
     @Override
-    public void handleCacheSelectionChanged(Cache cache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache cache, Waypoint selectedWaypoint) {
         if (cache != null) {
             float distance;
-            if (waypoint != null) {
-                distance = waypoint.recalculateAndGetDistance();
+            if (selectedWaypoint != null) {
+                distance = selectedWaypoint.recalculateAndGetDistance();
             } else {
                 distance = cache.recalculateAndGetDistance(CalculationType.FAST, false, Locator.getInstance().getMyPosition());
             }

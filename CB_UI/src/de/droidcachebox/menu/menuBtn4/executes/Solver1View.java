@@ -322,7 +322,7 @@ public class Solver1View extends CB_View_Base implements CacheSelectionChangedLi
     }
 
     @Override
-    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint selectedWaypoint) {
         onShow();
     }
 

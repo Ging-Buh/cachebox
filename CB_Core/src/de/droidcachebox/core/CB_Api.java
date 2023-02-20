@@ -42,7 +42,7 @@ public class CB_Api {
                 url = "https://longri.de/CB_API/index.php?get=url_ACB_Staging";
                 resultKey = "GcAuth_ACB_Staging";
             } else {
-                url = "https://longri.de/CB_API/index.php/?get=url_ACB";
+                url = "https://longri.de/CB_API/index.php?get=url_ACB";
                 resultKey = "GcAuth_ACB";
             }
             Webb httpClient = Webb.create();

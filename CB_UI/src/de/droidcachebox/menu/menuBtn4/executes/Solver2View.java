@@ -205,7 +205,7 @@ public class Solver2View extends V_ListView implements CacheSelectionChangedList
     }
 
     @Override
-    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint waypoint) {
+    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint selectedWaypoint) {
         if (selectedCache == currentCache)
             return; // geoCache did not change
         // Solver save

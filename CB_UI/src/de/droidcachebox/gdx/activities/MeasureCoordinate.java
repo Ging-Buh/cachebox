@@ -46,8 +46,10 @@ import de.droidcachebox.translation.Translation;
 import de.droidcachebox.utils.MathUtils;
 import de.droidcachebox.utils.PointD;
 import de.droidcachebox.utils.UnitFormatter;
+import de.droidcachebox.utils.log.Log;
 
 public class MeasureCoordinate extends ActivityBase implements PositionChangedEvent {
+    private static final String sClass = "MeasureCoordinate";
     private final int projectionZoom = 18;// 18;
     // Erdradius / anzahl Kacheln = Meter pro Kachel
     private final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
@@ -60,7 +62,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     private Sprite drawing = null;
     private Pixmap drawingPixmap = null;
     private Texture drawingTexture = null;
-    private SatBarChart chart;
+    private SatBarChart satBarChart;
     private final ICoordReturnListener mCoordReturnListener;
     private final AtomicBoolean inRepaint = new AtomicBoolean(false);
     private boolean redraw = true;
@@ -80,6 +82,32 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
         iniChart();
 
+    }
+
+    @Override
+    public void onShow() {
+        PositionChangedListeners.addListener(this);
+        if (satBarChart != null) {
+            satBarChart.onShow();
+            satBarChart.setDrawWithAlpha(false);
+            Platform.switchToGpsMeasure();
+        }
+    }
+
+    @Override
+    public void finish() {
+        PositionChangedListeners.removeListener(this);
+        Platform.switchToGpsDefault();
+        super.finish();
+    }
+
+    @Override
+    public void dispose() {
+        Log.debug(sClass, "disposing");
+        if (satBarChart != null)
+            satBarChart.dispose();
+        satBarChart = null;
+        disposeTexture();
     }
 
     private void iniOkCancel() {
@@ -142,18 +170,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
         float h = this.getHeight() - lblDescMeasureCoord.getMaxY() - this.getTopHeight() - margin;
 
         CB_RectF rec = new CB_RectF(leftBorder + margin, lblDescMeasureCoord.getMaxY() + margin, w, h);
-        chart = new SatBarChart(rec, "");
-        this.addChild(chart);
-    }
-
-    @Override
-    public void finish() {
-        if (chart != null)
-            chart.dispose();
-        chart = null;
-        disposeTexture();
-        GL.that.removeRenderView(this);
-        super.finish();
+        satBarChart = new SatBarChart(rec, "");
+        this.addChild(satBarChart);
     }
 
     private void disposeTexture() {
@@ -338,24 +356,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     @Override
     public String getReceiverName() {
         return "MeasureCoordinate";
-    }
-
-    @Override
-    public void onShow() {
-        PositionChangedListeners.addListener(this);
-        if (chart != null) {
-            chart.onShow();
-            chart.setDrawWithAlpha(false);
-            Platform.switchToGpsMeasure();
-        }
-    }
-
-    @Override
-    public void onHide() {
-        PositionChangedListeners.removeListener(this);
-        if (chart != null)
-            chart.onHide();
-        Platform.switchToGpsDefault();
     }
 
     @Override

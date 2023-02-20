@@ -77,7 +77,31 @@ public class WayPointsView extends V_ListView implements CacheSelectionChangedLi
     public void onHide() {
         CacheSelectionChangedListeners.getInstance().remove(this);
         WaypointListChangedEventList.remove(this);
-        ((ShowWayPoints)Action.ShowWayPoints.action).viewIsHiding();
+        ((ShowWayPoints) Action.ShowWayPoints.action).viewIsHiding();
+    }
+
+    @Override
+    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint selectedWaypoint) {
+        try {
+            // view must be refilled with values
+            // cache and currentCache are the same objects so ==, but content has changed, thus setting currentCache to null
+            currentCache = null;
+            setSelectedCache(selectedCache);
+        } catch (Exception ex) {
+            Log.err(sClass, "handleCacheChanged", ex);
+        }
+    }
+
+    @Override
+    public void wayPointListChanged(Cache cache) {
+        try {
+            if (cache != currentCache)
+                return;
+            currentCache = null;
+            setSelectedCache(cache);
+        } catch (Exception ex) {
+            Log.err(sClass, "wayPointListChanged", ex);
+        }
     }
 
     private void setSelectedCache(Cache cache) {
@@ -142,30 +166,6 @@ public class WayPointsView extends V_ListView implements CacheSelectionChangedLi
 
         } catch (Exception ex) {
             Log.err(sClass, "setSelectedCache", ex);
-        }
-    }
-
-    @Override
-    public void handleCacheSelectionChanged(Cache selectedCache, Waypoint waypoint) {
-        try {
-            // view must be refilled with values
-            // cache and currentCache are the same objects so ==, but content has changed, thus setting currentCache to null
-            currentCache = null;
-            setSelectedCache(selectedCache);
-        } catch (Exception ex) {
-            Log.err(sClass, "handleCacheChanged", ex);
-        }
-    }
-
-    @Override
-    public void wayPointListChanged(Cache cache) {
-        try {
-            if (cache != currentCache)
-                return;
-            currentCache = null;
-            setSelectedCache(cache);
-        } catch (Exception ex) {
-            Log.err(sClass, "wayPointListChanged", ex);
         }
     }
 
@@ -234,6 +234,7 @@ public class WayPointsView extends V_ListView implements CacheSelectionChangedLi
 
     private void editWP(Waypoint wp, boolean showCoordinateDialog) {
         EditWaypoint.IReturnListener afterEdit = waypoint -> {
+            Log.debug("after edit waypoint", "some more code");
             if (waypoint != null) {
                 if (createNewWaypoint) {
 
@@ -358,35 +359,24 @@ public class WayPointsView extends V_ListView implements CacheSelectionChangedLi
     }
 
     private void addMeasure() {
-        try {
-            createNewWaypoint = true;
-            new MeasureCoordinate("Projection", returnCoordinate -> {
-                if (returnCoordinate == null)
-                    return;
-                Log.debug(sClass, "Got a coordinate");
-                String newGcCode;
+        new MeasureCoordinate("Projection", returnCoordinate -> {
+            if (returnCoordinate != null) {
                 try {
-                    newGcCode = WaypointDAO.getInstance().createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
-                } catch (Exception e) {
-                    return;
+                    String newGcCode;
+                    try {
+                        newGcCode = WaypointDAO.getInstance().createFreeGcCode(GlobalCore.getSelectedCache().getGeoCacheCode());
+                    } catch (Exception e) {
+                        return;
+                    }
+                    Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Measured", returnCoordinate.getLatitude(), returnCoordinate.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
+                    GlobalCore.getSelectedCache().getWayPoints().add(newWP);
+                    WaypointDAO.getInstance().writeToDatabase(newWP);
+                    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
+                } catch (Exception ex) {
+                    Log.err(sClass, "addMeasure", ex);
                 }
-                Log.debug(sClass, "Got new waypoint Code: " + newGcCode);
-                //Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoordinate.getLatitude(), returnCoordinate.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
-                Waypoint newWP = new Waypoint(newGcCode, GeoCacheType.ReferencePoint, "Measured", returnCoordinate.getLatitude(), returnCoordinate.getLongitude(), GlobalCore.getSelectedCache().generatedId, "", newGcCode);
-                GlobalCore.getSelectedCache().getWayPoints().add(newWP);
-                Log.debug(sClass, "add waypoint to cache done");
-                wayPointListViewAdapter = new WayPointListViewAdapter(GlobalCore.getSelectedCache());
-                setAdapter(wayPointListViewAdapter);
-                Log.debug(sClass, "updated waypoint view");
-                currentWaypoint = newWP;
-                GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
-                Log.debug(sClass, "update global current cache");
-                WaypointDAO.getInstance().writeToDatabase(newWP);
-                Log.debug(sClass, "written waypoint to database");
-            }).show();
-        } catch (Exception ex) {
-            Log.err(sClass, "addMeasure", ex);
-        }
+            }
+        }).show();
     }
 
     public class WayPointListViewAdapter implements Adapter {

@@ -631,10 +631,10 @@ public class CompassView extends CB_View_Base implements CacheSelectionChangedLi
     }
 
     @Override
-    public void handleCacheSelectionChanged(Cache cache, Waypoint waypoint) {
-        if (currentGeoCache != cache || currentWaypoint != waypoint) {
+    public void handleCacheSelectionChanged(Cache cache, Waypoint selectedWaypoint) {
+        if (currentGeoCache != cache || currentWaypoint != selectedWaypoint) {
             currentGeoCache = cache;
-            currentWaypoint = waypoint;
+            currentWaypoint = selectedWaypoint;
             setCache();
         }
     }

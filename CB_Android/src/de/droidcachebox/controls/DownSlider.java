@@ -625,8 +625,8 @@ public final class DownSlider extends View implements CacheSelectionChangedListe
     }
 
     @Override
-    public void handleCacheSelectionChanged(Cache cache, Waypoint waypoint) {
-        setCache_onUI(cache, waypoint);
+    public void handleCacheSelectionChanged(Cache cache, Waypoint selectedWaypoint) {
+        setCache_onUI(cache, selectedWaypoint);
     }
 
     public void setCache_onUI(final Cache cache, final Waypoint waypoint) {

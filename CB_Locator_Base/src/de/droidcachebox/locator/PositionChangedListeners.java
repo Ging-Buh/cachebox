@@ -25,15 +25,18 @@ public class PositionChangedListeners {
                     int o1 = arg1.getPriority().ordinal();
                     return (Integer.compare(o1, o2));
                 });
-
             }
         }
-
     }
 
     public static void removeListener(PositionChangedEvent event) {
         synchronized (list) {
-            list.remove(event);
+            if (list.contains(event)) {
+                list.remove(event);
+            }
+            else {
+                Log.err(sClass, "event can not be removed from list");
+            }
         }
     }
 
