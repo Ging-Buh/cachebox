@@ -203,4 +203,8 @@
         </intent>
     </queries>
 
+    <queries>
+        <package android:name="btools.routingapp" />
+    </queries>
+
 </manifest>
