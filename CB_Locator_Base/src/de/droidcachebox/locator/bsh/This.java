@@ -44,7 +44,6 @@ import java.util.Map;
  * implements event listeners and various other interfaces. This holds a reference to the declaring interpreter for callbacks from outside
  * of bsh.
  */
-@SuppressWarnings("serial")
 public final class This implements java.io.Serializable, Runnable {
     /**
      * The namespace that this This reference wraps.
@@ -67,8 +66,8 @@ public final class This implements java.io.Serializable, Runnable {
         // initCallStack( namespace );
     }
 
-    /**
-     * Get a version of this scripted object implementing the specified interface.
+    /*
+      Get a version of this scripted object implementing the specified interface.
      */
 
     /**
@@ -122,13 +121,12 @@ public final class This implements java.io.Serializable, Runnable {
     @SuppressWarnings("rawtypes")
     public Object getInterface(Class[] ca) {
         if (interfaces == null)
-            interfaces = new HashMap<Integer, Object>();
+            interfaces = new HashMap<>();
 
         // Make a hash of the interface hashcodes in order to cache them
         int hash = 21;
-        for (int i = 0; i < ca.length; i++)
-            hash *= ca[i].hashCode() + 3;
-        Integer hashKey = new Integer(hash);
+        for (Class aClass : ca) hash *= aClass.hashCode() + 3;
+        Integer hashKey = hash;
 
         Object interf = interfaces.get(hashKey);
 
@@ -239,12 +237,12 @@ public final class This implements java.io.Serializable, Runnable {
 
         // a default hashCode()
         if (methodName.equals("hashCode") && args.length == 0)
-            return new Integer(this.hashCode());
+            return this.hashCode();
 
         // a default equals() testing for equality with the This reference
         if (methodName.equals("equals") && args.length == 1) {
             Object obj = args[0];
-            return new Boolean(this == obj);
+            return this == obj;
         }
 
         // a default clone()
@@ -311,7 +309,7 @@ public final class This implements java.io.Serializable, Runnable {
                 // Ease debugging...
                 // XThis.this refers to the enclosing class instance
                 if (Interpreter.DEBUG)
-                    Interpreter.debug("EvalError in scripted interface: " + This.this.toString() + ": " + ee);
+                    Interpreter.debug("EvalError in scripted interface: " + This.this + ": " + ee);
                 throw ee;
             }
         }
@@ -348,9 +346,9 @@ public final class This implements java.io.Serializable, Runnable {
             if (methodName.equals("toString") && toStringMethod == null) {
                 Class[] ints = proxy.getClass().getInterfaces();
                 // XThis.this refers to the enclosing class instance
-                StringBuilder sb = new StringBuilder(This.this.toString() + "\nimplements:");
-                for (int i = 0; i < ints.length; i++)
-                    sb.append(" " + ints[i].getName() + ((ints.length > 1) ? "," : ""));
+                StringBuilder sb = new StringBuilder(This.this + "\nimplements:");
+                for (Class anInt : ints)
+                    sb.append(" ").append(anInt.getName()).append((ints.length > 1) ? "," : "");
                 return sb.toString();
             }
 

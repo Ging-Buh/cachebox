@@ -172,7 +172,9 @@ public class SearchDialog extends PopUpBase {
         this.addChild(mInput);
 
         setLang();
-        switchSearchMode(SearchMode.GcCode);
+        switchSearchMode(SearchMode.Title); // initial search mode selection is by title
+        setFilterBtnState(); // init image of button
+        textBox_TextChanged(); // empty text makes disable(grey) some buttons
 
         mBtnCancel.setClickHandler((v, x, y1, pointer, button) -> {
             close();
@@ -229,7 +231,7 @@ public class SearchDialog extends PopUpBase {
 
     private void setFilterBtnState() {
         if (mTglBtnOnline.getState() == 0) {
-            mBtnFilter.clearImage();
+            mBtnFilter.setImage(new SpriteDrawable(Sprites.getSprite(IconName.filter.name())));
             mBtnFilter.setText(Translation.get("Filter"));
         } else {
             mBtnFilter.setImage(new SpriteDrawable(Sprites.getSprite(IconName.targetDay.name())));

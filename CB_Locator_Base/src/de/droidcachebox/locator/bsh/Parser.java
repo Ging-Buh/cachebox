@@ -2537,7 +2537,7 @@ public class Parser/* @bgen(jjtree) */ implements ParserTreeConstants, ParserCon
 
                         // This really should be Long.decode, but there isn't one. As a result,
                         // hex and octal literals ending in 'l' or 'L' don't work.
-                        jjtn000.value = new Primitive(new Long(literal).longValue());
+                        jjtn000.value = new Primitive(Long.parseLong(literal));
                     } else
                         try {
                             jjtn000.value = new Primitive(Integer.decode(literal).intValue());
@@ -2557,12 +2557,12 @@ public class Parser/* @bgen(jjtree) */ implements ParserTreeConstants, ParserCon
                     ch = literal.charAt(literal.length() - 1);
                     if (ch == 'f' || ch == 'F') {
                         literal = literal.substring(0, literal.length() - 1);
-                        jjtn000.value = new Primitive(new Float(literal).floatValue());
+                        jjtn000.value = new Primitive(Float.parseFloat(literal));
                     } else {
                         if (ch == 'd' || ch == 'D')
                             literal = literal.substring(0, literal.length() - 1);
 
-                        jjtn000.value = new Primitive(new Double(literal).doubleValue());
+                        jjtn000.value = new Primitive(Double.parseDouble(literal));
                     }
                     break;
                 case CHARACTER_LITERAL:
@@ -2574,8 +2574,7 @@ public class Parser/* @bgen(jjtree) */ implements ParserTreeConstants, ParserCon
                         jjtn000.charSetup(x.image.substring(1, x.image.length() - 1));
                     } catch (Exception e) {
                         {
-                            if (true)
-                                throw createParseException("Error parsing character: " + x.image);
+                            throw createParseException("Error parsing character: " + x.image);
                         }
                     }
                     break;

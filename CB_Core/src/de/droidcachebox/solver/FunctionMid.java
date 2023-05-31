@@ -1,5 +1,7 @@
 package de.droidcachebox.solver;
 
+import java.io.Serial;
+
 import de.droidcachebox.translation.Translation;
 
 /**
@@ -7,6 +9,7 @@ import de.droidcachebox.translation.Translation;
  * Mid(String; StartPosition; [CharacterCount])
  */
 public class FunctionMid extends Function {
+    @Serial
     private static final long serialVersionUID = 3727854231542597267L;
 
     FunctionMid(SolverLines solverLines) {
@@ -29,25 +32,28 @@ public class FunctionMid extends Function {
         if ((parameter.length < 2) || (parameter.length > 3)) {
             return Translation.get("solverErrParamCount", "2-3", "$solverFuncMid");
         }
-        String Wert = parameter[0].trim();
+        String sValue = parameter[0].trim();
         int iPos, iCount;
         try {
-            iPos = Integer.valueOf(parameter[1].trim());
+            iPos = Integer.parseInt(parameter[1].trim());
+            if (iPos < 0) iPos = 0; // is an error too
         } catch (Exception ex) {
             return Translation.get("solverErrParamType", "$solverFuncMid", "2", "$Position", "$number", parameter[1]);
         }
         try {
             if (parameter.length == 2)
                 iCount = 1;
-            else
-                iCount = Integer.valueOf(parameter[2].trim());
+            else {
+                iCount = Integer.parseInt(parameter[2].trim());
+                if (iCount < 0) iCount = 1; // is like default one character
+            }
         } catch (Exception ex) {
             return Translation.get("solverErrParamType", "$solverFuncMid", "5", "$count", "$number", parameter[2]);
         }
-        if (iPos == 0 || iPos > Wert.length() || iPos + iCount - 1 > Wert.length()) {
-            return "%" + Translation.get("PosGtLength", "$solverFuncMid", String.valueOf(iPos), Wert);
+        if (iPos == 0 || iPos > sValue.length() || iPos + iCount - 1 > sValue.length()) {
+            return "%" + Translation.get("PosGtLength", "$solverFuncMid", String.valueOf(iPos), sValue);
         }
-        return Wert.substring(iPos - 1, iPos - 1 + iCount);
+        return sValue.substring(iPos - 1, iPos - 1 + iCount);
     }
 
     @Override

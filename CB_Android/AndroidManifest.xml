@@ -82,21 +82,16 @@
 
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data
-                    android:host="geocaching.com"
-                    android:pathPrefix="/seek/cache_details.aspx" />
-                <data
-                    android:host="geocaching.com"
-                    android:pathPrefix="/geocache/GC" />
-                <data
-                    android:host="coord.info"
-                    android:pathPrefix="/GC" />
-                <data
-                    android:host="download.openandromaps.org"
-                    android:pathPrefix="/maps" />
-                <data
-                    android:host="download.freizeitkarte-osm.de"
-                    android:pathPrefix="/android" />
+                <data android:host="geocaching.com"/>
+                <data android:pathPrefix="/seek/cache_details.aspx"/>
+                <data android:host="geocaching.com"/>
+                <data android:pathPrefix="/geocache/GC"/>
+                <data android:host="coord.info"/>
+                <data android:pathPrefix="/GC"/>
+                <data android:host="download.openandromaps.org"/>
+                <data android:pathPrefix="/maps"/>
+                <data android:host="download.freizeitkarte-osm.de"/>
+                <data android:pathPrefix="/android"/>
                 <data android:pathPattern=".*\\.zip" />
             </intent-filter>
 
