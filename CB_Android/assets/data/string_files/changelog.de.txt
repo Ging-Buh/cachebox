@@ -5,6 +5,8 @@
 • Streichungen = -
 • Offen = •
 
+3771(31.Mai 2023): * bugfix Solver-Funktion Mid(), start search with title, show image for filter from search
+
 Version 3770 vom 7. März 2023:
 3769: * make brouter accessible again for devices with Android 11 and newer
 3768: * avoid abort on gps measure coordinate

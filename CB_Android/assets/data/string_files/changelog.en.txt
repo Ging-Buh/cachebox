@@ -5,11 +5,14 @@
 • Deletions = -
 • Unsolved = •
 
-Version 3756 of August 27, 2022:
-* ignore newlines in URI.create
-* add an error message to resolveImages
-* show custom images
-~ prevent selection of nearest cache at first satellite fix.
-+ add a geo: output to share text.
-* update coordinate button after edit
-* correct search online (do async)
+3771(31.Mai 2023): * bugfix Solver-Funktion Mid(), start search with title, show image for filter from search
+
+Version 3770 vom 7. März 2023:
+3769: * make brouter accessible again for devices with Android 11 and newer
+3768: * avoid abort on gps measure coordinate
+3767: * a valid final will always be marked (green)
+3766: * remove wildcards from hostnames in manifest
+3765: * resolveActivity has no valuable info for newer versions of android: update handling
+3762: * handle more dots in pathPattern, * add debug info for handleExternalRequest, * close missing at some CoreCursor usages
+3760: * wait until map ready, first time center track on map, * remove ButtonSprites class, * create getter for normal map, * no error for click non existent torch (flash light)
+... see https://github.com/Ging-Buh/cachebox/commits/master
