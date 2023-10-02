@@ -1,7 +1,5 @@
 package de.droidcachebox.solver;
 
-import java.io.Serial;
-
 import de.droidcachebox.translation.Translation;
 
 /**
@@ -9,7 +7,6 @@ import de.droidcachebox.translation.Translation;
  * Mid(String; StartPosition; [CharacterCount])
  */
 public class FunctionMid extends Function {
-    @Serial
     private static final long serialVersionUID = 3727854231542597267L;
 
     FunctionMid(SolverLines solverLines) {

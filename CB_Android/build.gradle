@@ -53,7 +53,8 @@ dependencies {
 
 
 android {
-    compileSdkVersion 33
+    namespace "de.droidcachebox"
+    compileSdk 33
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -83,7 +84,10 @@ android {
         multiDexEnabled true
     }
 
-    buildToolsVersion '31.0.0'
+    buildFeatures {
+        renderScript true
+        aidl true
+    }
 
 }
 

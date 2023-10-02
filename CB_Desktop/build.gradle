@@ -41,7 +41,7 @@ task run(dependsOn: classes, type: JavaExec) {
 
 
 task launcherJar(type: Jar, dependsOn: classes) {
-    classifier = 'launcher'
+    // classifier = 'launcher'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
     manifest {
