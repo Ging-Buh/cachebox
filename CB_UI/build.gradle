@@ -2,7 +2,6 @@ import java.text.SimpleDateFormat
 
 apply plugin: "java"
 
-sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -26,7 +25,7 @@ dependencies {
     implementation fileTree(dir: '../libs', include: ['sjxp-2.2.jar'])
 
     // https://mvnrepository.com/artifact/org.json/json
-    implementation group: 'org.json', name: 'json', version: '20220320'
+    implementation group: 'org.json', name: 'json', version: '20230618'
 
 
 }
@@ -104,4 +103,7 @@ tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn saveBuildInfo
 }
 
-java.targetCompatibility = JavaVersion.VERSION_1_8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}

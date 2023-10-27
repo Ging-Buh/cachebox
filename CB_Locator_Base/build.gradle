@@ -1,6 +1,5 @@
 apply plugin: 'java-library'
 
-sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -21,6 +20,7 @@ dependencies {
     implementation group: 'net.sf.kxml', name: 'kxml2', version: '2.3.0'
 }
 
-
-sourceCompatibility = "8"
-targetCompatibility = "8"
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}

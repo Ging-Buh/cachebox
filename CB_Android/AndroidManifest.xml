@@ -65,7 +65,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- replace scheme value with http and download (the zipfile) -->
-                <data android:scheme="mf-v3-map" />
                 <data android:scheme="backcountrynav-action-map" />
                 <data android:scheme="bikecomputer-map" />
                 <data android:scheme="mf-v4-map" />

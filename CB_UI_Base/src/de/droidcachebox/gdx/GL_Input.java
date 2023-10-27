@@ -83,6 +83,11 @@ public class GL_Input implements InputProcessor {
     }
 
     @Override
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        return onTouchUpBase(screenX, screenY, pointer, button);
+    }
+
+    @Override
     public boolean keyTyped(char character) {
         // InputProcessor Implementation keyTyped
 

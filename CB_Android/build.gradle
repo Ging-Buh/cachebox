@@ -11,6 +11,18 @@ def static buildTime() {
 }
 
 dependencies {
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
+    implementation 'org.jetbrains:annotations:24.0.1' // 23.0.0
+    implementation 'androidx.activity:activity:1.8.0' // 1.6.1
+    implementation 'androidx.core:core:1.12.0' // 1.9.0
 
     implementation project(path: ':CB_Utils', transitive: false)
     implementation project(path: ':mapsforge', transitive: false)
@@ -30,7 +42,6 @@ dependencies {
 
     //libgdx
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-    implementation 'androidx.activity:activity:1.6.1'
     // natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
@@ -46,15 +57,12 @@ dependencies {
 
 //    // https://mvnrepository.com/artifact/com.github.tony19/logback-android-core
 //    implementation group: 'com.github.tony19', name: 'logback-android-core', version: '1.1.1-6'
-
-    implementation 'org.jetbrains:annotations:23.0.0'
-    implementation 'androidx.core:core:1.9.0'
 }
 
 
 android {
     namespace "de.droidcachebox"
-    compileSdk 33
+    compileSdk 34
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -67,16 +75,11 @@ android {
         }
 
     }
-    packagingOptions {
-        resources {
-            excludes += ['META-INF/robovm/ios/robovm.xml']
-        }
-    }
 
     defaultConfig {
         applicationId "de.droidcachebox"
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 34
         // versionCode = Integer.decode(buildTime())
         // versionName = buildTime()
         setVersionCode(20230307)
@@ -95,7 +98,7 @@ android {
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
 // so they get packed with the APK.
-task copyAndroidNatives {
+tasks.register('copyAndroidNatives') {
     doFirst {
         file("libs/armeabi/").mkdirs()
         file("libs/armeabi-v7a/").mkdirs()

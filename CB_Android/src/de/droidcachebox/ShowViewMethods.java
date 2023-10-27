@@ -108,6 +108,7 @@ public class ShowViewMethods implements Platform.ShowViewMethods {
         gdxConfig.numSamples = 2;
         gdxConfig.useAccelerometer = true;
         gdxConfig.useCompass = true;
+        gdxConfig.useImmersiveMode = false;
 
         inflater = (LayoutInflater) main.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutContent = main.findViewById(R.id.layoutContent);

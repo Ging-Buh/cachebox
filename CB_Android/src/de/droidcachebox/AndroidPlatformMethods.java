@@ -825,10 +825,15 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
 
     void serviceCanBeStarted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            locationServiceIntent = new Intent(androidApplication, CBForeground.class);
-            androidApplication.startForegroundService(locationServiceIntent);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                locationServiceIntent = new Intent(androidApplication, CBForeground.class);
+                androidApplication.startForegroundService(locationServiceIntent);
+            }
+            else {
+                Log.debug(sClass, "FOREGROUND_SERVICE requires SDK_INT < 34 (Android 14)");
+            }
         } else {
-            Log.debug(sClass, "FOREGROUND_SERVICE requires SDK_INT >= 26");
+            Log.debug(sClass, "FOREGROUND_SERVICE requires SDK_INT >= 26 (Android 6)");
         }
     }
 

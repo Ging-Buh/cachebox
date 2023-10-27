@@ -1,6 +1,5 @@
 apply plugin: 'java-library'
 
-sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -16,9 +15,12 @@ dependencies {
     implementation group: 'com.github.tony19', name: 'logback-android-classic', version: '1.1.1-6'
 
     // https://mvnrepository.com/artifact/org.json/json
-    implementation group: 'org.json', name: 'json', version: '20220320'
+    implementation group: 'org.json', name: 'json', version: '20230618'
 
 }
 
-sourceCompatibility = "8"
-targetCompatibility = "8"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
