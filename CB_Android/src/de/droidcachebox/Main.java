@@ -781,4 +781,8 @@ public class Main extends AndroidApplication implements CacheSelectionChangedLis
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        // Do Here what ever you want do on back press;
+    }
 }

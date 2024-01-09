@@ -95,6 +95,10 @@ public class GL_Input implements InputProcessor {
             return GL.that.closeCurrentDialogOrActivity();
         }
 
+        if (character == KeyCodes.KEYCODE_UNKNOWN) {
+            return true;
+        }
+
         if (Character.getType(character) == CONTROL) {
             //check if coursor up/down/left/rigt clicked
             if (Character.getNumericValue(character) == -1) {

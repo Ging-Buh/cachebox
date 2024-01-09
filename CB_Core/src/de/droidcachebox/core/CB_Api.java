@@ -18,11 +18,6 @@ package de.droidcachebox.core;
 
 import static de.droidcachebox.settings.AllSettings.UseTestUrl;
 
-import org.json.JSONObject;
-
-import de.droidcachebox.utils.http.Webb;
-import de.droidcachebox.utils.log.Log;
-
 /**
  * Diese Klasse stellt eine verbindung zu Team-Cachebox.de her und gibt dort hinterlegte Informationen zurück. (GCAuth url ; Versionsnummer)
  *
@@ -36,6 +31,12 @@ public class CB_Api {
      * @return String
      */
     public static String getGcAuthUrl() {
+        if (UseTestUrl.getValue()) {
+            return "https://gc-oauth.longri.de/index?Version=ACB_Staging"; // not tested
+        } else {
+            return "https://gc-oauth.longri.de/index?Version=ACB";
+        }
+        /*
         try {
             String url, resultKey;
             if (UseTestUrl.getValue()) {
@@ -56,5 +57,6 @@ public class CB_Api {
             Log.err("CB_Api", "getGcAuthUrl", ex);
             return "";
         }
+        */
     }
 }

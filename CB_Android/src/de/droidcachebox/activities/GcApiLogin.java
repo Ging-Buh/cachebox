@@ -70,7 +70,7 @@ public class GcApiLogin extends Activity {
         progressDialog = null;
     }
 
-    private void ShowWebsite(String GC_AuthUrl) {
+    private void showWebsite(String GC_AuthUrl) {
         // Initial new VebView Instanz
 
         webView = findViewById(R.id.gal_WebView);
@@ -226,7 +226,7 @@ public class GcApiLogin extends Activity {
         protected void onPostExecute(String GC_AuthUrl) {
             try {
                 Log.debug("Forms GCApiLogin", "Show WebSite " + GC_AuthUrl);
-                ShowWebsite(GC_AuthUrl);
+                showWebsite(GC_AuthUrl);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -811,6 +811,7 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
         if (Settings.allowLocationService.getValue()) {
             if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    // for SDK_INT >= 28
                     final String[] requestedPermissions = new String[]{Manifest.permission.FOREGROUND_SERVICE};
                     ActivityCompat.requestPermissions(mainActivity, requestedPermissions, Main.Request_ServiceOption);
                 } else {
@@ -830,10 +831,12 @@ public class AndroidPlatformMethods implements Platform.PlatformMethods, Locatio
                 androidApplication.startForegroundService(locationServiceIntent);
             }
             else {
-                Log.debug(sClass, "FOREGROUND_SERVICE requires SDK_INT < 34 (Android 14)");
+                locationServiceIntent = new Intent(androidApplication, CBForeground.class);
+                androidApplication.startForegroundService(locationServiceIntent);
+                Log.debug(sClass, "FOREGROUND_SERVICE for SDK_INT >= 34 (Android 14)");
             }
         } else {
-            Log.debug(sClass, "FOREGROUND_SERVICE requires SDK_INT >= 26 (Android 6)");
+            Log.debug(sClass, "FOREGROUND_SERVICE requires SDK_INT >= 26 (Build.VERSION_CODES.O = Android 6)");
         }
     }
 
