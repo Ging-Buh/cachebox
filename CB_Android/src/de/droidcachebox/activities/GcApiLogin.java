@@ -156,8 +156,12 @@ public class GcApiLogin extends Activity {
                 if (progressDialog != null)
                     progressDialog.dismiss();
                 progressDialogIsShown = false;
-
+/*
+                // old code
                 if (url.toLowerCase().contains("oauth_verifier=") && (url.toLowerCase().contains("oauth_token="))) {
+                }
+*/
+                if (url.toLowerCase().contains("state=") && (url.toLowerCase().contains("code="))) {
                     webView.loadUrl("javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
                 } else
                     super.onPageFinished(view, url);
