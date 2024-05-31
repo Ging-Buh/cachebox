@@ -83,6 +83,7 @@ public class GroundspeakAPI {
     public static boolean cacheIsFavoritedByMe;
     private static UserInfos me;
     private static Webb netz;
+    private static String token;
     private static long startTs;
     private static long lastTimeLimitFetched;
     private static int nrOfApiCalls;
@@ -90,9 +91,10 @@ public class GroundspeakAPI {
     private static boolean active = false;
 
     public static Webb getNetz() {
+        token = getAccessTokenFromSettings();
         if (netz == null) {
             netz = Webb.create();
-            netz.setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getOrFetchGroundSpeakAccessToken());
+            netz.setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + token);
             Webb.setReadTimeout(AllSettings.socket_timeout.getValue());
             Webb.setConnectTimeout(AllSettings.connection_timeout.getValue());
             startTs = System.currentTimeMillis();
@@ -115,12 +117,6 @@ public class GroundspeakAPI {
     }
 
     // API 1.0 see https://api.groundspeak.com/documentation and https://api.groundspeak.com/api-docs/index
-
-    public static void setAuthorization() {
-        getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + getOrFetchGroundSpeakAccessToken());
-        me = null;
-        Log.debug(sClass, "Activate AccessToken");
-    }
 
     private static boolean retry(Exception ex) {
         // Alternate: implement own RetryManager for 429
@@ -794,7 +790,6 @@ public class GroundspeakAPI {
         } catch (Exception ex) {
             LastAPIError += ex.getLocalizedMessage();
             LastAPIError += "\n for " + getUrl(1, "trackablelogs");
-            LastAPIError += "\n APIKey: " + getOrFetchGroundSpeakAccessToken();
             LastAPIError += "\n trackingNumber: " + TrackingNummer;
             LastAPIError += "\n trackableCode: " + TBCode;
             LastAPIError += "\n geocacheCode: " + cacheCode;
@@ -898,7 +893,7 @@ public class GroundspeakAPI {
     }
 
     public static String fetchFriends() {
-        if (!isAccessTokenInvalid()) {
+        if (tryRefreshAccessToken()) {
             int skip = 0;
             int take = 50;
             try {
@@ -991,10 +986,6 @@ public class GroundspeakAPI {
             APIError = ERROR;
             LastAPIError = ex.toString() + url.toString();
         }
-    }
-
-    public static boolean isAccessTokenInvalid() {
-        return (fetchMyUserInfos().memberShipType == MemberShipType.Unknown);
     }
 
     public static boolean isPremiumMember() {
@@ -1112,18 +1103,77 @@ public class GroundspeakAPI {
             return "";
     }
 
-    public static boolean hasGroundSpeakAccessToken() {
+    /**
+     *
+     * @return
+     */
+    public static boolean tryRefreshAccessToken() {
+        if (AllSettings.tokenExpiration.getValue() == 0) {
+            // refresh not possible
+            APIError = ERROR;
+            LastAPIError = "Get new API - key by settings";
+            return false;
+        }
+        else {
+            if (isAccessTokenExpired()) {
+                refreshAccessToken();
+                // do immediate return false, if useRefreshToken works in thread (async)
+                // and further action is necessary
+            }
+        }
         return getAccessTokenFromSettings().length() != 0;
     }
 
-    public static String getOrFetchGroundSpeakAccessToken() {
+    public static void refreshAccessToken() {
+        try {
+            JSONObject refreshResponse = Webb.create()
+                    .get(CB_Api.getGcAuthUrl())
+                    .connectTimeout(AllSettings.connection_timeout.getValue())
+                    .readTimeout(AllSettings.socket_timeout.getValue())
+                    .param("rt", AllSettings.refreshToken.getValue())
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            String r_accessToken = refreshResponse.optString("access_token", "");
+            AllSettings.AccessToken.setEncryptedValue(r_accessToken);
+            String r_refreshToken = refreshResponse.optString("refresh_token", "");
+            AllSettings.refreshToken.setValue(r_refreshToken);
+            int r_expires = refreshResponse.optInt("expires", 0);
+            AllSettings.tokenExpiration.setValue(r_expires);
+        } catch (Exception e) {
+            AllSettings.tokenExpiration.setValue(0);
+            AllSettings.refreshToken.setValue("");
+            AllSettings.AccessToken.setEncryptedValue("");
+        }
+    }
+
+    public static boolean isAccessTokenInvalid() {
+        return (isAccessTokenExpired() || getAccessTokenFromSettings().length() == 0);
+    }
+
+    public static String getOrFetchGroundSpeakAccessToken() throws Exception {
         String act = getAccessTokenFromSettings();
+        if (isAccessTokenExpired()) {
+            refreshAccessToken();
+            throw new Exception("expired Token");
+        }
         if (act.length() == 0) {
             Log.err(sClass, "no Access Token");
             // get the AccessToken
             API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.NO);
+            throw new Exception("no Token");
         }
         return act;
+    }
+
+    public static boolean isAccessTokenExpired() {
+        long currentDate = new Date().getTime() / 1000;
+        if (currentDate > AllSettings.tokenExpiration.getValue() ) {
+            APIError = ERROR;
+            LastAPIError = "Token expired";
+            return true;
+        }
+        return false;
     }
 
     public static String getUrl(int version, String command) {

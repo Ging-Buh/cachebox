@@ -66,11 +66,13 @@ public interface AllSettings {
 
     // Login
     SettingEncryptedString GcVotePassword = new SettingEncryptedString("GcVotePassword", Login, NORMAL, "", Global);
+    SettingEncryptedString AccessTokenForTest = new SettingEncryptedString("GcAPIStaging", Login, DEVELOPER, "", Global);
     SettingEncryptedString AccessToken = new SettingEncryptedString("GcAPI", Login, DEVELOPER, "", Global);
+    SettingInt tokenExpiration = new SettingInt("tokenExpiration", Login, DEVELOPER, 0, Global);
+    SettingString refreshToken = new SettingString("refreshToken", Login, DEVELOPER, "", Global);
     SettingBool RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", Login, EXPERT, false, Global);
     SettingString GcLogin = new SettingString("GcLogin", Login, DEVELOPER, "", Global);
     SettingBool UseTestUrl = new SettingBool("StagingAPI", Login, DEVELOPER, false, Global);
-    SettingEncryptedString AccessTokenForTest = new SettingEncryptedString("GcAPIStaging", Login, DEVELOPER, "", Global);
     SettingString OverrideUrl = new SettingString("OverrideUrl", Login, DEVELOPER, "", Global);
 
     // Templates

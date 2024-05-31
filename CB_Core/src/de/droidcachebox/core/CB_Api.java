@@ -32,9 +32,9 @@ public class CB_Api {
      */
     public static String getGcAuthUrl() {
         if (UseTestUrl.getValue()) {
-            return "https://gc-oauth.longri.de/index?Version=s-ACB"; // not tested
+            return "https://gc-oauth.longri.de/index.php?Version=s-ACB"; // not tested
         } else {
-            return "https://gc-oauth.longri.de/index?Version=ACB";
+            return "https://gc-oauth.longri.de/index.php?Version=ACB";
         }
         /*
         try {

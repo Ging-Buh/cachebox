@@ -49,6 +49,7 @@ import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.NumericInputBox;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
+import de.droidcachebox.gdx.graphics.HSV_Color;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
 import de.droidcachebox.locator.CBLocation.ProviderType;
@@ -81,6 +82,11 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     public AboutView() {
         super(ViewManager.leftTab.getContentRec(), sClass);
         registerSkinChangedEvent();
+        if (GroundspeakAPI.isAccessTokenExpired()) {
+            GL.that.postAsync(() -> {
+                GroundspeakAPI.refreshAccessToken();
+            });
+        }
         createControls();
     }
 
@@ -160,7 +166,11 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         descTextView.setWrappedText(VersionString);
         addChild(descTextView);
 
-        cachesFoundLabel = new CB_Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
+        HSV_Color cachesFoundLabelColor = COLOR.getLinkFontColor();
+        if (GroundspeakAPI.isAccessTokenExpired()) {
+            cachesFoundLabelColor = COLOR.getFontColor();
+        }
+        cachesFoundLabel = new CB_Label("", Fonts.getNormal(), cachesFoundLabelColor, WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
         cachesFoundLabel.setWidth(getWidth());
 
         cachesFoundLabel.setClickHandler((view, x, y, pointer, button) -> {

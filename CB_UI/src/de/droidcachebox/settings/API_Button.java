@@ -57,10 +57,10 @@ public class API_Button extends CB_Button {
 
     public void setImage() {
         if (image != null) {
-            if (GroundspeakAPI.hasGroundSpeakAccessToken()) {
-                image.setDrawable(new SpriteDrawable(Sprites.getSprite("chk-icon")));
-            } else {
+            if (GroundspeakAPI.isAccessTokenInvalid()) {
                 image.setDrawable(new SpriteDrawable(Sprites.getSprite("chk-icon-disable")));
+            } else {
+                image.setDrawable(new SpriteDrawable(Sprites.getSprite("chk-icon")));
             }
         }
     }

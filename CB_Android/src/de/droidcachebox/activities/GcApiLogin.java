@@ -1,8 +1,5 @@
 package de.droidcachebox.activities;
 
-import static de.droidcachebox.core.GroundspeakAPI.fetchMyUserInfos;
-import static de.droidcachebox.core.GroundspeakAPI.setAuthorization;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
@@ -242,31 +239,27 @@ public class GcApiLogin extends Activity {
 
         @JavascriptInterface
         public void showHTML(String html) {
-
-            String search = "Access token: ";
-            int pos = html.indexOf(search);
-            if (pos < 0)
-                return;
-            int pos2 = html.indexOf("</span>", pos);
-            if (pos2 < pos)
-                return;
-            // zwischen pos und pos2 sollte ein gültiges AccessToken sein!!!
-            final String accessToken = html.substring(pos + search.length(), pos2);
+            // key depends on longris website
+            final String accessToken = getValue(html, "Access token: ");
+            final String refreshToken = getValue(html, "Refresh token: ");
+            final String expires = getValue(html, "Expires: ");
 
             Thread thread = new Thread() {
                 public void run() {
-                    // store the encrypted AccessToken in the Config file
-                    // wir bekommen den Key schon verschlüsselt, deshalb muss er
-                    // nicht noch einmal verschlüsselt werden!
                     if (Settings.UseTestUrl.getValue()) {
                         Settings.AccessTokenForTest.setEncryptedValue(accessToken);
                     } else {
                         Settings.AccessToken.setEncryptedValue(accessToken);
+                        Settings.refreshToken.setValue(refreshToken);
+                        Integer expire;
+                        try {
+                            expire = Integer.parseInt(expires);
+                        }
+                        catch (Exception ex) {
+                            expire = 0;
+                        }
+                        Settings.tokenExpiration.setValue(expire);
                     }
-                    setAuthorization();
-                    String userNameOfAuthorization = fetchMyUserInfos().username;
-                    Log.debug(sClass, "userNameOfAuthorization: " + userNameOfAuthorization);
-                    Settings.GcLogin.setValue(userNameOfAuthorization);
                     Settings.getInstance().acceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }
@@ -274,6 +267,17 @@ public class GcApiLogin extends Activity {
             runOnUiThread(() -> progressDialog = ProgressDialog.show(GcApiLogin.this, "", "Download Username", true));
 
             thread.start();
+        }
+
+        private String getValue(String html, String key) {
+            int pos = html.indexOf(key);
+            if (pos >= 0) {
+                int pos2 = html.indexOf("</span>", pos);
+                if (pos2 >= pos) {
+                    return html.substring(pos + key.length(), pos2);
+                }
+            }
+            return "";
         }
     }
 }

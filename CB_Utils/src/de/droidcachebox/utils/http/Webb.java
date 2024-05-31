@@ -340,11 +340,12 @@ public class Webb {
         try {
             String uri = request.uri;
             // request.method == Request.Method.GET &&
-            if (!uri.contains("?") &&
-                    request.params != null &&
-                    !request.params.isEmpty()) {
-                uri += "?" + WebbUtils.queryString(request.params);
+            String realParams = "";
+            if (request.params != null && !request.params.isEmpty()) {
+                realParams = WebbUtils.queryString(request.params);
             }
+            uri += uri.contains("?") ? "&" : "?";
+            uri += realParams;
             URL apiUrl = new URL(uri);
             if (proxy != null) {
                 connection = (HttpURLConnection) apiUrl.openConnection(proxy);
