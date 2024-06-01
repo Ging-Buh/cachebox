@@ -85,6 +85,7 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         if (GroundspeakAPI.isAccessTokenExpired()) {
             GL.that.postAsync(() -> {
                 GroundspeakAPI.refreshAccessToken();
+                refreshText();
             });
         }
         createControls();
@@ -180,30 +181,32 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
                         switch (which) {
                             case BTN_LEFT_POSITIVE:
                                 msgBox.close();
-                                AtomicBoolean isCanceled = new AtomicBoolean(false);
-                                new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
-                                    @Override
-                                    public void ready() {
-                                        if (result > -1) {
-                                            String Text = Translation.get("FoundsSetTo", String.valueOf(result));
-                                            new ButtonDialog(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
-                                            Settings.foundOffset.setValue(result);
-                                            Settings.getInstance().acceptChanges();
-                                            AboutView.this.refreshText();
+                                GL.that.postAsync(() -> {
+                                    AtomicBoolean isCanceled = new AtomicBoolean(false);
+                                    new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
+                                        @Override
+                                        public void ready() {
+                                            if (result > -1) {
+                                                String Text = Translation.get("FoundsSetTo", String.valueOf(result));
+                                                new ButtonDialog(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
+                                                Settings.foundOffset.setValue(result);
+                                                Settings.getInstance().acceptChanges();
+                                                AboutView.this.refreshText();
+                                            }
                                         }
-                                    }
 
-                                    @Override
-                                    public void run() {
-                                        result = GroundspeakAPI.forceFetchMyUserInfos().findCount;
-                                    }
+                                        @Override
+                                        public void run() {
+                                            result = GroundspeakAPI.forceFetchMyUserInfos().findCount;
+                                        }
 
-                                    @Override
-                                    public void setIsCanceled() {
-                                        isCanceled.set(true);
-                                    }
+                                        @Override
+                                        public void setIsCanceled() {
+                                            isCanceled.set(true);
+                                        }
 
-                                }).show();
+                                    }).show();
+                                });
                                 break;
                             case BTN_RIGHT_NEGATIVE:
                                 msgBox.close();
@@ -352,6 +355,11 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         if (waypointLabel == null || cachesFoundLabel == null || coordinateLabel == null)
             return;
         try {
+            HSV_Color cachesFoundLabelColor = COLOR.getLinkFontColor();
+            if (GroundspeakAPI.isAccessTokenExpired()) {
+                cachesFoundLabelColor = COLOR.getFontColor();
+            }
+            cachesFoundLabel.setTextColor(cachesFoundLabelColor);
             cachesFoundLabel.setText(Translation.get("caches_found") + " " + Settings.foundOffset.getValue());
 
             Cache selectedCache = GlobalCore.getSelectedCache();

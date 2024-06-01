@@ -1117,16 +1117,16 @@ public class GroundspeakAPI {
         else {
             if (isAccessTokenExpired()) {
                 refreshAccessToken();
-                // do immediate return false, if useRefreshToken works in thread (async)
-                // and further action is necessary
             }
+            return getAccessTokenFromSettings().length() != 0;
         }
-        return getAccessTokenFromSettings().length() != 0;
     }
 
     public static void refreshAccessToken() {
+        JSONObject refreshResponse;
+        Log.debug(sClass, "refreshAccessToken: " + AllSettings.refreshToken.getValue() + " |");
         try {
-            JSONObject refreshResponse = Webb.create()
+            refreshResponse = Webb.create()
                     .get(CB_Api.getGcAuthUrl())
                     .connectTimeout(AllSettings.connection_timeout.getValue())
                     .readTimeout(AllSettings.socket_timeout.getValue())
@@ -1134,13 +1134,24 @@ public class GroundspeakAPI {
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody();
-            String r_accessToken = refreshResponse.optString("access_token", "");
-            AllSettings.AccessToken.setEncryptedValue(r_accessToken);
-            String r_refreshToken = refreshResponse.optString("refresh_token", "");
-            AllSettings.refreshToken.setValue(r_refreshToken);
             int r_expires = refreshResponse.optInt("expires", 0);
-            AllSettings.tokenExpiration.setValue(r_expires);
+            if (r_expires > 0) {
+                String r_accessToken = refreshResponse.optString("access_token", "");
+                AllSettings.AccessToken.setEncryptedValue(r_accessToken);
+                String r_refreshToken = refreshResponse.optString("refresh_token", "");
+                Log.debug(sClass, "refreshAccessToken: " + r_refreshToken + " | got");
+                AllSettings.refreshToken.setValue(r_refreshToken);
+                AllSettings.tokenExpiration.setValue(r_expires);
+            }
+            else {
+                // this json will be returned on error
+                AllSettings.tokenExpiration.setValue(0);
+                AllSettings.refreshToken.setValue("");
+                AllSettings.AccessToken.setEncryptedValue("");
+                Log.err(sClass, "Can not refresh access token");
+            }
         } catch (Exception e) {
+            Log.err(sClass, "refreshAccessToken", e);
             AllSettings.tokenExpiration.setValue(0);
             AllSettings.refreshToken.setValue("");
             AllSettings.AccessToken.setEncryptedValue("");
