@@ -1124,7 +1124,7 @@ public class GroundspeakAPI {
 
     public static void refreshAccessToken() {
         JSONObject refreshResponse;
-        Log.debug(sClass, "refreshAccessToken: " + AllSettings.refreshToken.getValue() + " |");
+        // Log.debug(sClass, "refreshAccessToken: " + AllSettings.refreshToken.getValue() + " |");
         try {
             refreshResponse = Webb.create()
                     .get(CB_Api.getGcAuthUrl())
@@ -1145,16 +1145,20 @@ public class GroundspeakAPI {
             }
             else {
                 // this json will be returned on error
+                /*
                 AllSettings.tokenExpiration.setValue(0);
                 AllSettings.refreshToken.setValue("");
                 AllSettings.AccessToken.setEncryptedValue("");
+                 */
                 Log.err(sClass, "Can not refresh access token");
             }
         } catch (Exception e) {
-            Log.err(sClass, "refreshAccessToken", e);
+            Log.err(sClass, "error on refreshAccessToken: " + e.getMessage());
+            /*
             AllSettings.tokenExpiration.setValue(0);
             AllSettings.refreshToken.setValue("");
             AllSettings.AccessToken.setEncryptedValue("");
+             */
         }
     }
 
