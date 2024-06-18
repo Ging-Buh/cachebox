@@ -1088,6 +1088,20 @@ public class GroundspeakAPI {
         while (true);
     }
 
+    public static boolean isAccessTokenInvalid() {
+        return (isAccessTokenExpired() || getAccessTokenFromSettings().length() == 0);
+    }
+
+    public static boolean isAccessTokenExpired() {
+        long currentDate = new Date().getTime() / 1000;
+        if (currentDate > AllSettings.tokenExpiration.getValue() ) {
+            APIError = ERROR;
+            LastAPIError = "Token expired";
+            return true;
+        }
+        return false;
+    }
+
     public static String getAccessTokenFromSettings() {
         String act;
         if (AllSettings.UseTestUrl.getValue()) {
@@ -1108,87 +1122,74 @@ public class GroundspeakAPI {
      * @return
      */
     public static boolean tryRefreshAccessToken() {
-        if (AllSettings.tokenExpiration.getValue() == 0) {
+        if (isAccessTokenExpired()) {
+            refreshAccessToken();
+        }
+        if (!haveRefreshToken() || AllSettings.AccessToken.getValue().length() == 0) {
             // refresh not possible
             APIError = ERROR;
             LastAPIError = "Get new API - key by settings";
             return false;
         }
-        else {
-            if (isAccessTokenExpired()) {
-                refreshAccessToken();
+        return true;
+    }
+
+    private static void refreshAccessToken() {
+        if (haveRefreshToken()) {
+            JSONObject refreshResponse;
+            Log.debug(sClass, "refreshAccessToken: " + AllSettings.refreshToken.getValue() + " |");
+            try {
+                refreshResponse = Webb.create()
+                        .get(CB_Api.getGcAuthUrl())
+                        .connectTimeout(AllSettings.connection_timeout.getValue())
+                        .readTimeout(AllSettings.socket_timeout.getValue())
+                        .param("rt", AllSettings.refreshToken.getValue())
+                        .ensureSuccess()
+                        .asJsonObject()
+                        .getBody();
+                int r_expires = refreshResponse.optInt("expires", 0);
+                if (r_expires > 0) {
+                    String r_accessToken = refreshResponse.optString("access_token", "");
+                    AllSettings.AccessToken.setEncryptedValue(r_accessToken);
+                    String r_refreshToken = refreshResponse.optString("refresh_token", "");
+                    Log.debug(sClass, "refreshAccessToken: " + r_refreshToken + " | got");
+                    AllSettings.refreshToken.setValue(r_refreshToken);
+                    AllSettings.tokenExpiration.setValue(r_expires);
+                }
+                else {
+                    // this json will be returned on error
+                    AllSettings.refreshToken.setValue("");
+                    String message = refreshResponse.optString("message", "");
+                    Log.err(sClass, "Can not refresh access token: " + message);
+                }
+            } catch (Exception e) {
+                if (e instanceof WebbException) {
+                    WebbException we = (WebbException) e;
+                    Response<?> re = we.getResponse();
+                    if (re != null) {
+                        int APIError = re.getStatusCode();
+                        // if (APIError >= 300 && APIError < 400) {}
+                        Log.err(sClass,"Webb error on refreshAccessToken: " + APIError);
+                        AllSettings.refreshToken.setValue("");
+                    }
+                    else {
+                        String msg = e.getMessage();
+                        Log.err(sClass, "WebbException on refreshAccessToken: " + msg);
+                        if (!msg.contains("UnknownHost")) {
+                            AllSettings.refreshToken.setValue("");
+                        }
+                        // else you can try again (?temporary no internet access)
+                    }
+                } else {
+                    Log.err(sClass, "error on refreshAccessToken: " + e.getMessage());
+                    AllSettings.refreshToken.setValue("");
+                }
             }
-            return getAccessTokenFromSettings().length() != 0;
         }
     }
 
-    public static void refreshAccessToken() {
-        JSONObject refreshResponse;
-        // Log.debug(sClass, "refreshAccessToken: " + AllSettings.refreshToken.getValue() + " |");
-        try {
-            refreshResponse = Webb.create()
-                    .get(CB_Api.getGcAuthUrl())
-                    .connectTimeout(AllSettings.connection_timeout.getValue())
-                    .readTimeout(AllSettings.socket_timeout.getValue())
-                    .param("rt", AllSettings.refreshToken.getValue())
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
-            int r_expires = refreshResponse.optInt("expires", 0);
-            if (r_expires > 0) {
-                String r_accessToken = refreshResponse.optString("access_token", "");
-                AllSettings.AccessToken.setEncryptedValue(r_accessToken);
-                String r_refreshToken = refreshResponse.optString("refresh_token", "");
-                Log.debug(sClass, "refreshAccessToken: " + r_refreshToken + " | got");
-                AllSettings.refreshToken.setValue(r_refreshToken);
-                AllSettings.tokenExpiration.setValue(r_expires);
-            }
-            else {
-                // this json will be returned on error
-                /*
-                AllSettings.tokenExpiration.setValue(0);
-                AllSettings.refreshToken.setValue("");
-                AllSettings.AccessToken.setEncryptedValue("");
-                 */
-                Log.err(sClass, "Can not refresh access token");
-            }
-        } catch (Exception e) {
-            Log.err(sClass, "error on refreshAccessToken: " + e.getMessage());
-            /*
-            AllSettings.tokenExpiration.setValue(0);
-            AllSettings.refreshToken.setValue("");
-            AllSettings.AccessToken.setEncryptedValue("");
-             */
-        }
-    }
-
-    public static boolean isAccessTokenInvalid() {
-        return (isAccessTokenExpired() || getAccessTokenFromSettings().length() == 0);
-    }
-
-    public static String getOrFetchGroundSpeakAccessToken() throws Exception {
-        String act = getAccessTokenFromSettings();
-        if (isAccessTokenExpired()) {
-            refreshAccessToken();
-            throw new Exception("expired Token");
-        }
-        if (act.length() == 0) {
-            Log.err(sClass, "no Access Token");
-            // get the AccessToken
-            API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.NO);
-            throw new Exception("no Token");
-        }
-        return act;
-    }
-
-    public static boolean isAccessTokenExpired() {
-        long currentDate = new Date().getTime() / 1000;
-        if (currentDate > AllSettings.tokenExpiration.getValue() ) {
-            APIError = ERROR;
-            LastAPIError = "Token expired";
-            return true;
-        }
-        return false;
+    public static boolean haveRefreshToken() {
+        return AllSettings.refreshToken.getValue().length() > 0;
     }
 
     public static String getUrl(int version, String command) {

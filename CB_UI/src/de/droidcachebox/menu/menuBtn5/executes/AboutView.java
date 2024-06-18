@@ -82,12 +82,10 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
     public AboutView() {
         super(ViewManager.leftTab.getContentRec(), sClass);
         registerSkinChangedEvent();
-        if (GroundspeakAPI.isAccessTokenExpired()) {
-            GL.that.postAsync(() -> {
-                GroundspeakAPI.refreshAccessToken();
-                refreshText();
-            });
-        }
+        GL.that.postAsync(() -> {
+            GroundspeakAPI.tryRefreshAccessToken();
+            refreshText();
+        });
         createControls();
     }
 
@@ -355,9 +353,9 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         if (waypointLabel == null || cachesFoundLabel == null || coordinateLabel == null)
             return;
         try {
-            HSV_Color cachesFoundLabelColor = COLOR.getLinkFontColor();
-            if (GroundspeakAPI.isAccessTokenExpired()) {
-                cachesFoundLabelColor = COLOR.getFontColor();
+            HSV_Color cachesFoundLabelColor = COLOR.getFontColor();
+            if (GroundspeakAPI.haveRefreshToken()) {
+                cachesFoundLabelColor = COLOR.getLinkFontColor();
             }
             cachesFoundLabel.setTextColor(cachesFoundLabelColor);
             cachesFoundLabel.setText(Translation.get("caches_found") + " " + Settings.foundOffset.getValue());
