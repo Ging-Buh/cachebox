@@ -18,12 +18,16 @@ package org.mapsforge.map.awt.graphics;
 
 import org.mapsforge.core.graphics.Bitmap;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import javax.imageio.ImageIO;
 
 public class AwtBitmap implements Bitmap {
     BufferedImage bufferedImage;

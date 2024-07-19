@@ -15,37 +15,20 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.util.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 class KeyMatcher implements AttributeMatcher {
-    private final List<String> keys;
+
+    private final int[] keys;
 
     KeyMatcher(List<String> keys) {
-        this.keys = keys;
+        this.keys = Utils.convertListString(keys);
     }
 
     @Override
-    public boolean isCoveredBy(AttributeMatcher attributeMatcher) {
-        if (attributeMatcher == this) {
-            return true;
-        }
-
-        List<Tag> tags = new ArrayList<Tag>(this.keys.size());
-        for (int i = 0, n = this.keys.size(); i < n; ++i) {
-            tags.add(new Tag(this.keys.get(i), null));
-        }
-        return attributeMatcher.matches(tags);
-    }
-
-    @Override
-    public boolean matches(List<Tag> tags) {
-        for (int i = 0, n = tags.size(); i < n; ++i) {
-            if (this.keys.contains(tags.get(i).key)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean matches(Tag tag) {
+        return Utils.contains(keys, tag.keyCode);
     }
 }

@@ -25,14 +25,30 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
-import org.mapsforge.core.graphics.*;
+
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.ResourceBitmap;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
@@ -106,6 +122,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     /**
      * return the byte usage per pixel of a bitmap based on its configuration.
      */
+    @SuppressWarnings("deprecation")
     public static int getBytesPerPixel(Config config) {
         if (config == Config.ARGB_8888) {
             return 4;

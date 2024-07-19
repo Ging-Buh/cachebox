@@ -19,6 +19,7 @@ import org.mapsforge.core.model.Tag;
 import java.util.List;
 
 class PositiveRule extends Rule {
+
     final AttributeMatcher keyMatcher;
     final AttributeMatcher valueMatcher;
 
@@ -31,14 +32,28 @@ class PositiveRule extends Rule {
 
     @Override
     boolean matchesNode(List<Tag> tags, byte zoomLevel) {
-        return this.zoomMin <= zoomLevel && this.zoomMax >= zoomLevel && this.elementMatcher.matches(Element.NODE)
-                && this.keyMatcher.matches(tags) && this.valueMatcher.matches(tags);
+        return this.zoomMin <= zoomLevel
+                && this.zoomMax >= zoomLevel
+                && this.elementMatcher.matches(Element.NODE)
+                && matchesAnyTag(tags);
     }
 
     @Override
     boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed) {
-        return this.zoomMin <= zoomLevel && this.zoomMax >= zoomLevel && this.elementMatcher.matches(Element.WAY)
-                && this.closedMatcher.matches(closed) && this.keyMatcher.matches(tags)
-                && this.valueMatcher.matches(tags);
+        return this.zoomMin <= zoomLevel
+                && this.zoomMax >= zoomLevel
+                && this.elementMatcher.matches(Element.WAY)
+                && this.closedMatcher.matches(closed)
+                && matchesAnyTag(tags);
+    }
+
+    private boolean matchesAnyTag(List<Tag> tags) {
+        for (int i = 0, n = tags.size(); i < n; i++) {
+            Tag tag = tags.get(i);
+            if (keyMatcher.matches(tag) && valueMatcher.matches(tag)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

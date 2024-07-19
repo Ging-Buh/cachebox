@@ -18,6 +18,7 @@ package org.mapsforge.map.android.rendertheme;
 
 import android.content.res.AssetManager;
 import android.text.TextUtils;
+
 import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;

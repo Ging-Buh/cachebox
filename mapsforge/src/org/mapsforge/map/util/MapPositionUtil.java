@@ -16,7 +16,11 @@
  */
 package org.mapsforge.map.util;
 
-import org.mapsforge.core.model.*;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 
 public final class MapPositionUtil {

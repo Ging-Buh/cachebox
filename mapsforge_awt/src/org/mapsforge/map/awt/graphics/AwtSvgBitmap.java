@@ -18,9 +18,10 @@ package org.mapsforge.map.awt.graphics;
 import com.kitfox.svg.SVGCache;
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.app.beans.SVGIcon;
+
 import org.mapsforge.core.graphics.GraphicUtils;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;

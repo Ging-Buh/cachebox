@@ -20,6 +20,7 @@ package org.mapsforge.map.android.graphics;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Pair;
+
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.ResourceBitmap;
 

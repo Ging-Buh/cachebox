@@ -19,7 +19,11 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.WorkingSetCache;
 import org.mapsforge.map.util.LayerUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A LabelStore where the data is stored per tile.

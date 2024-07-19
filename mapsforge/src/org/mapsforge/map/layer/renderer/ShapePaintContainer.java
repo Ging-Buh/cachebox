@@ -14,20 +14,23 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import org.mapsforge.core.graphics.Curve;
 import org.mapsforge.core.graphics.Paint;
 
 public class ShapePaintContainer {
     final float dy;
     final Paint paint;
     final ShapeContainer shapeContainer;
+    final Curve curveStyle;
 
     public ShapePaintContainer(ShapeContainer shapeContainer, Paint paint) {
-        this(shapeContainer, paint, 0f);
+        this(shapeContainer, paint, 0f, Curve.NO);
     }
 
-    public ShapePaintContainer(ShapeContainer shapeContainer, Paint paint, float dy) {
+    public ShapePaintContainer(ShapeContainer shapeContainer, Paint paint, float dy, Curve curveStyle) {
         this.shapeContainer = shapeContainer;
         this.paint = paint;
         this.dy = dy;
+        this.curveStyle = curveStyle;
     }
 }

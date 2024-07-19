@@ -16,7 +16,11 @@
  */
 package org.mapsforge.map.layer.debug;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;

@@ -21,12 +21,17 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+
 import org.mapsforge.core.graphics.Bitmap;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.SoftReference;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 

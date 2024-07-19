@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 devemux86
+ * Copyright 2017-2022 devemux86
  * Copyright 2019 Matthew Egeler
  * Copyright 2020 Lukas Bai
  *
@@ -26,11 +26,6 @@ public final class Parameters {
      * If true will use anti-aliasing in rendering.
      */
     public static boolean ANTI_ALIASING = true;
-
-    /**
-     * If true the <code>FrameBufferHA3</code> will be used instead of default <code>FrameBufferHA2}</code>.
-     */
-    public static boolean FRAME_BUFFER_HA3 = true;
 
     /**
      * Process layer scroll events.
@@ -67,6 +62,11 @@ public final class Parameters {
      * Symbol scaling mode.
      */
     public static SymbolScaling SYMBOL_SCALING = SymbolScaling.POI;
+
+    /**
+     * Validate coordinates.
+     */
+    public static boolean VALIDATE_COORDINATES = true;
 
     private Parameters() {
         throw new IllegalStateException();

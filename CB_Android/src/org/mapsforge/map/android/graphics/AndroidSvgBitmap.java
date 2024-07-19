@@ -22,7 +22,9 @@ import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.RectF;
 import android.util.Pair;
+
 import com.caverock.androidsvg.SVG;
+
 import org.mapsforge.core.graphics.GraphicUtils;
 
 import java.io.IOException;

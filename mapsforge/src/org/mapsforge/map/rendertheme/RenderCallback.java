@@ -15,9 +15,12 @@
 package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Curve;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.SymbolOrientation;
+import org.mapsforge.core.graphics.TextOrientation;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
@@ -101,7 +104,7 @@ public interface RenderCallback {
      * @param dy            the offset of the way.
      * @param level
      */
-    void renderWay(final RenderContext renderContext, Paint stroke, float dy, int level, PolylineContainer way);
+    void renderWay(final RenderContext renderContext, Paint stroke, float dy, Curve curveStyle, int level, PolylineContainer way);
 
     /**
      * Renders a way with the given symbol along the way path.
@@ -114,7 +117,9 @@ public interface RenderCallback {
      * @param repeatGap     distance between repetitions.
      * @param repeatStart
      */
-    void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Rectangle boundary, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way);
+    void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol,
+                         float dy, Rectangle boundary, boolean repeat, float repeatGap, float repeatStart,
+                         SymbolOrientation symbolOrientation, PolylineContainer way);
 
     /**
      * Renders a way with the given text along the way path.
@@ -127,5 +132,5 @@ public interface RenderCallback {
      */
     void renderWayText(final RenderContext renderContext, Display display, int priority, String text,
                        float dy, Paint fill, Paint stroke,
-                       boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way);
+                       boolean repeat, float repeatGap, float repeatStart, TextOrientation textOrientation, PolylineContainer way);
 }

@@ -16,12 +16,24 @@
  */
 package org.mapsforge.map.awt.graphics;
 
+import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.Stroke;
+import java.awt.TexturePaint;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.text.AttributedCharacterIterator;

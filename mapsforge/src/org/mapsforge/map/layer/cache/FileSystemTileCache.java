@@ -25,7 +25,12 @@ import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Observer;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

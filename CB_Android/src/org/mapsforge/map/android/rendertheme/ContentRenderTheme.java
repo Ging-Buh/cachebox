@@ -17,6 +17,7 @@ package org.mapsforge.map.android.rendertheme;
 
 import android.content.ContentResolver;
 import android.net.Uri;
+
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;

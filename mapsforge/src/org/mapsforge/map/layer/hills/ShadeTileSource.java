@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 usrusr
+ * Copyright 2017-2022 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,7 +16,6 @@ package org.mapsforge.map.layer.hills;
 
 import org.mapsforge.core.graphics.HillshadingBitmap;
 
-import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -38,5 +37,4 @@ public interface ShadeTileSource {
 
     void setShadingAlgorithm(ShadingAlgorithm algorithm);
 
-    void setDemFolder(File demFolder);
 }

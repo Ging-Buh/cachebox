@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2019 devemux86
+ * Copyright 2014-2022 devemux86
  * Copyright 2015 Andreas Schildbach
  * Copyright 2018 mikes222
  * Copyright 2020 Lukas Bai
@@ -25,13 +25,18 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.view.*;
+import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.view.ViewGroup;
+
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls;
 import org.mapsforge.map.android.input.TouchGestureHandler;
@@ -49,7 +54,10 @@ import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
-import org.mapsforge.map.view.*;
+import org.mapsforge.map.view.FpsCounter;
+import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.FrameBufferHA3;
+import org.mapsforge.map.view.InputListener;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -111,7 +119,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     private GestureDetector gestureDetectorExternal;
     private final List<InputListener> inputListeners = new CopyOnWriteArrayList<>();
     private final LayerManager layerManager;
-    private final Handler layoutHandler = new Handler();
+    private final Handler layoutHandler = new Handler(Looper.myLooper());
     private MapScaleBar mapScaleBar;
     private final MapViewProjection mapViewProjection;
     private final MapZoomControls mapZoomControls;
@@ -138,11 +146,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
 
-        if (Parameters.FRAME_BUFFER_HA3) {
-            this.frameBuffer = new FrameBufferHA3(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        } else {
-            this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        }
+        this.frameBuffer = new FrameBufferHA3(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
 
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
@@ -293,19 +297,22 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
     @Override
     public void onChange() {
-        // Request layout for child views (besides zoom controls)
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            if (!child.equals(this.mapZoomControls)) {
-                layoutHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        requestLayout();
-                    }
-                });
-                break;
+        try {
+            // Request layout for child views (besides zoom controls)
+            int count = getChildCount();
+            for (int i = 0; i < count; i++) {
+                View child = getChildAt(i);
+                if (!child.equals(this.mapZoomControls)) {
+                    layoutHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            requestLayout();
+                        }
+                    });
+                    break;
+                }
             }
+        } catch (Exception ignored) {
         }
     }
 
@@ -359,56 +366,59 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
             this.mapZoomControls.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
         }
 
-        // Child views (besides zoom controls)
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            if (child.equals(this.mapZoomControls)) {
-                continue;
-            }
-            if (child.getVisibility() != View.GONE && checkLayoutParams(child.getLayoutParams())) {
-                MapView.LayoutParams params = (MapView.LayoutParams) child.getLayoutParams();
-                int childWidth = child.getMeasuredWidth();
-                int childHeight = child.getMeasuredHeight();
-                Point point = mapViewProjection.toPixels(params.latLong);
-                if (point != null) {
-                    int childLeft = getPaddingLeft() + (int) Math.round(point.x);
-                    int childTop = getPaddingTop() + (int) Math.round(point.y);
-                    switch (params.alignment) {
-                        case TOP_LEFT:
-                            break;
-                        case TOP_CENTER:
-                            childLeft -= childWidth / 2;
-                            break;
-                        case TOP_RIGHT:
-                            childLeft -= childWidth;
-                            break;
-                        case CENTER_LEFT:
-                            childTop -= childHeight / 2;
-                            break;
-                        case CENTER:
-                            childLeft -= childWidth / 2;
-                            childTop -= childHeight / 2;
-                            break;
-                        case CENTER_RIGHT:
-                            childLeft -= childWidth;
-                            childTop -= childHeight / 2;
-                            break;
-                        case BOTTOM_LEFT:
-                            childTop -= childHeight;
-                            break;
-                        case BOTTOM_CENTER:
-                            childLeft -= childWidth / 2;
-                            childTop -= childHeight;
-                            break;
-                        case BOTTOM_RIGHT:
-                            childLeft -= childWidth;
-                            childTop -= childHeight;
-                            break;
+        try {
+            // Child views (besides zoom controls)
+            int count = getChildCount();
+            for (int i = 0; i < count; i++) {
+                View child = getChildAt(i);
+                if (child.equals(this.mapZoomControls)) {
+                    continue;
+                }
+                if (child.getVisibility() != View.GONE && checkLayoutParams(child.getLayoutParams())) {
+                    MapView.LayoutParams params = (MapView.LayoutParams) child.getLayoutParams();
+                    int childWidth = child.getMeasuredWidth();
+                    int childHeight = child.getMeasuredHeight();
+                    Point point = mapViewProjection.toPixels(params.latLong);
+                    if (point != null) {
+                        int childLeft = getPaddingLeft() + (int) Math.round(point.x);
+                        int childTop = getPaddingTop() + (int) Math.round(point.y);
+                        switch (params.alignment) {
+                            case TOP_LEFT:
+                                break;
+                            case TOP_CENTER:
+                                childLeft -= childWidth / 2;
+                                break;
+                            case TOP_RIGHT:
+                                childLeft -= childWidth;
+                                break;
+                            case CENTER_LEFT:
+                                childTop -= childHeight / 2;
+                                break;
+                            case CENTER:
+                                childLeft -= childWidth / 2;
+                                childTop -= childHeight / 2;
+                                break;
+                            case CENTER_RIGHT:
+                                childLeft -= childWidth;
+                                childTop -= childHeight / 2;
+                                break;
+                            case BOTTOM_LEFT:
+                                childTop -= childHeight;
+                                break;
+                            case BOTTOM_CENTER:
+                                childLeft -= childWidth / 2;
+                                childTop -= childHeight;
+                                break;
+                            case BOTTOM_RIGHT:
+                                childLeft -= childWidth;
+                                childTop -= childHeight;
+                                break;
+                        }
+                        child.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
                     }
-                    child.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
                 }
             }
+        } catch (Exception ignored) {
         }
     }
 

@@ -21,18 +21,35 @@
 package org.mapsforge.map.awt.graphics;
 
 import com.kitfox.svg.SVGCache;
+
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.GraphicContext;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.ResourceBitmap;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
 

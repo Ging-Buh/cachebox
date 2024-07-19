@@ -18,13 +18,23 @@
 package org.mapsforge.map.android.graphics;
 
 import android.annotation.TargetApi;
+import android.graphics.BitmapShader;
+import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
-import android.graphics.*;
+import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
+import android.graphics.Typeface;
 import android.os.Build;
+
+import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.Parameters;
 

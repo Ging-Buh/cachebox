@@ -18,6 +18,7 @@ package org.mapsforge.map.android.graphics;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import org.mapsforge.core.util.IOUtils;
 
 import java.io.FileInputStream;

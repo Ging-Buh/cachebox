@@ -15,6 +15,7 @@
 package org.mapsforge.map.android.util;
 
 import android.content.SharedPreferences;
+
 import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class AndroidPreferences implements PreferencesFacade {

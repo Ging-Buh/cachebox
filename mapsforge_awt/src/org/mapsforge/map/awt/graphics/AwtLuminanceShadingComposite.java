@@ -14,7 +14,10 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Composite;
+import java.awt.CompositeContext;
+import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;

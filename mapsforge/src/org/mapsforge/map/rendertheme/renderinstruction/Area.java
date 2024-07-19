@@ -17,7 +17,12 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
@@ -104,7 +109,7 @@ public class Area extends RenderInstruction {
             } else if (SYMBOL_WIDTH.equals(name)) {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
     }

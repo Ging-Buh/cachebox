@@ -19,9 +19,10 @@ import org.mapsforge.core.model.Tag;
 import java.util.List;
 
 class NegativeRule extends Rule {
-    private final AttributeMatcher attributeMatcher;
 
-    NegativeRule(RuleBuilder ruleBuilder, AttributeMatcher attributeMatcher) {
+    final NegativeMatcher attributeMatcher;
+
+    NegativeRule(RuleBuilder ruleBuilder, NegativeMatcher attributeMatcher) {
         super(ruleBuilder);
 
         this.attributeMatcher = attributeMatcher;
@@ -29,13 +30,32 @@ class NegativeRule extends Rule {
 
     @Override
     boolean matchesNode(List<Tag> tags, byte zoomLevel) {
-        return this.zoomMin <= zoomLevel && this.zoomMax >= zoomLevel && this.elementMatcher.matches(Element.NODE)
-                && this.attributeMatcher.matches(tags);
+        return this.zoomMin <= zoomLevel
+                && this.zoomMax >= zoomLevel
+                && this.elementMatcher.matches(Element.NODE)
+                && matchesTags(tags);
     }
 
     @Override
     boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed) {
-        return this.zoomMin <= zoomLevel && this.zoomMax >= zoomLevel && this.elementMatcher.matches(Element.WAY)
-                && this.closedMatcher.matches(closed) && this.attributeMatcher.matches(tags);
+        return this.zoomMin <= zoomLevel
+                && this.zoomMax >= zoomLevel
+                && this.elementMatcher.matches(Element.WAY)
+                && this.closedMatcher.matches(closed)
+                && matchesTags(tags);
+    }
+
+    private boolean matchesTags(List<Tag> tags) {
+        if (attributeMatcher.keyListDoesNotContainKeys(tags)) {
+            return true;
+        }
+
+        // check tags
+        for (int i = 0, n = tags.size(); i < n; i++) {
+            if (attributeMatcher.matches(tags.get(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

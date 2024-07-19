@@ -20,11 +20,12 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.view.MapView;
 import org.mapsforge.map.layer.Layer;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+
+import javax.swing.SwingUtilities;
 
 public class MouseEventListener extends MouseAdapter {
     private final MapView mapView;

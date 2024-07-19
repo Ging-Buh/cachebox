@@ -15,7 +15,13 @@
  */
 package org.mapsforge.map.view;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.GraphicContext;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.model.DisplayModel;
 
 import java.util.concurrent.TimeUnit;

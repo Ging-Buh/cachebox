@@ -17,7 +17,11 @@
  */
 package org.mapsforge.core.mapelements;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 

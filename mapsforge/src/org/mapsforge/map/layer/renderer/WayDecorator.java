@@ -19,10 +19,16 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.SymbolOrientation;
+import org.mapsforge.core.graphics.TextOrientation;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.mapelements.WayTextContainer;
-import org.mapsforge.core.model.*;
+import org.mapsforge.core.model.LineSegment;
+import org.mapsforge.core.model.LineString;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Tile;
 
 import java.util.List;
 
@@ -30,9 +36,10 @@ final class WayDecorator {
 
     private static final double MAX_LABEL_CORNER_ANGLE = 45;
 
+    @SuppressWarnings("DuplicateExpressions")
     static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, Rectangle boundary,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
-                             boolean rotate, Point[][] coordinates,
+                             SymbolOrientation symbolOrientation, Point[][] coordinates,
                              List<MapElementContainer> currentItems) {
         int skipPixels = (int) repeatStart;
 
@@ -48,62 +55,76 @@ final class WayDecorator {
         double previousY = c[0].y;
 
         // draw the symbolContainer on each way segment
-        float segmentLengthRemaining;
-        float segmentSkipPercentage;
-        float theta = 0;
-
-
         for (int i = 1; i < c.length; ++i) {
             // get the current way point coordinates
             double currentX = c[i].x;
             double currentY = c[i].y;
 
+            // compute rotation along the segment
+            float theta = 0.0f;
+            switch (symbolOrientation) {
+                case AUTO:
+                    if (currentX <= previousX) {
+                        theta = (float) Math.atan2(previousY - currentY, previousX - currentX);
+                    } else {
+                        theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
+                    }
+                    break;
+                case AUTO_DOWN:
+                    if (currentX <= previousX) {
+                        theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
+                    } else {
+                        theta = (float) Math.atan2(previousY - currentY, previousX - currentX);
+                    }
+                    break;
+                case RIGHT:
+                    // we always need to rotate "right"
+                    theta = (float) Math.atan2(previousY - currentY, previousX - currentX);
+                    break;
+                case LEFT:
+                    // we always need to rotate "left"
+                    theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
+                    break;
+                case UP:
+                    theta = 0;
+                    break;
+                case DOWN:
+                    theta = (float) Math.PI;
+                    break;
+            }
+
             // calculate the length of the current segment (Euclidian distance)
             double diffX = currentX - previousX;
             double diffY = currentY - previousY;
             double segmentLengthInPixel = Math.sqrt(diffX * diffX + diffY * diffY);
-            segmentLengthRemaining = (float) segmentLengthInPixel;
 
-            while (segmentLengthRemaining - skipPixels > repeatStart) {
-                // calculate the percentage of the current segment to skip
-                segmentSkipPercentage = skipPixels / segmentLengthRemaining;
+            // calculate changes in coordinates per single pixel
+            double diffXpx = diffX / segmentLengthInPixel;
+            double diffYpx = diffY / segmentLengthInPixel;
 
-                // move the previous point forward towards the current point
-                previousX += diffX * segmentSkipPercentage;
-                previousY += diffY * segmentSkipPercentage;
-                if (rotate) {
-                    // if we do not rotate theta will be 0, which is correct
-                    theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
-                }
-
-                Point point = new Point(previousX, previousY);
-
+            // draw symbols till at least 75% of the last symbol will be correctly placed on the segment
+            int segmentOffset = skipPixels;
+            while (segmentOffset + (symbolBitmap.getWidth() * 0.75) < segmentLengthInPixel) {
+                // compute coordinate for symbol
+                double cooX = previousX + segmentOffset * diffXpx;
+                double cooY = previousY + segmentOffset * diffYpx;
+                Point point = new Point(cooX, cooY);
                 currentItems.add(new SymbolContainer(point, display, priority, boundary, symbolBitmap, theta));
 
-                // check if the symbolContainer should only be rendered once
+                // increment offset by the gap and the width of drawn image
+                segmentOffset += symbolBitmap.getWidth() + repeatGap;
                 if (!repeatSymbol) {
                     return;
                 }
-
-                // recalculate the distances
-                diffX = currentX - previousX;
-                diffY = currentY - previousY;
-
-                // recalculate the remaining length of the current segment
-                segmentLengthRemaining -= skipPixels;
-
-                // set the amount of pixels to skip before repeating the symbolContainer
-                skipPixels = (int) repeatGap;
             }
 
-            skipPixels -= segmentLengthRemaining;
-            if (skipPixels < repeatStart) {
-                skipPixels = (int) repeatStart;
-            }
-
-            // set the previous way point coordinates for the next loop
+            // prepare for the next segment
             previousX = currentX;
             previousY = currentY;
+            skipPixels = (int) (segmentOffset - segmentLengthInPixel);
+            if (skipPixels < 0) {
+                skipPixels = 0;
+            }
         }
     }
 
@@ -123,7 +144,7 @@ final class WayDecorator {
      */
     static void renderText(GraphicFactory graphicFactory, Tile upperLeft, Tile lowerRight, String text, Display display, int priority, float dy,
                            Paint fill, Paint stroke,
-                           boolean repeat, float repeatGap, float repeatStart, boolean rotate, Point[][] coordinates,
+                           boolean repeat, float repeatGap, float repeatStart, TextOrientation textOrientation, Point[][] coordinates,
                            List<MapElementContainer> currentLabels) {
         if (coordinates.length == 0) {
             return;
@@ -165,7 +186,7 @@ final class WayDecorator {
             if (tooSharp)
                 continue;
 
-            currentLabels.add(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight));
+            currentLabels.add(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight, textOrientation));
         }
     }
 

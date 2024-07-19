@@ -16,7 +16,14 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Curve;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Join;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -51,6 +58,7 @@ public class Line extends RenderInstruction {
     private float[] strokeDasharray;
     private final Map<Byte, Paint> strokes;
     private float strokeWidth;
+    private Curve curve;
 
     public Line(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                 XmlPullParser pullParser, int level, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
@@ -66,6 +74,7 @@ public class Line extends RenderInstruction {
         this.stroke.setStrokeJoin(Join.ROUND);
         this.strokes = new HashMap<>();
         this.dyScaled = new HashMap<>();
+        this.curve = Curve.NO;
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
     }
@@ -85,6 +94,8 @@ public class Line extends RenderInstruction {
                 this.src = value;
             } else if (CAT.equals(name)) {
                 this.category = value;
+            } else if (CURVE.equals(name)) {
+                curve = Curve.fromString(value);
             } else if (DY.equals(name)) {
                 this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (SCALE.equals(name)) {
@@ -112,7 +123,7 @@ public class Line extends RenderInstruction {
             } else if (SYMBOL_WIDTH.equals(name)) {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
     }
@@ -161,7 +172,7 @@ public class Line extends RenderInstruction {
         if (dyScale == null) {
             dyScale = this.dy;
         }
-        renderCallback.renderWay(renderContext, strokePaint, dyScale, this.level, way);
+        renderCallback.renderWay(renderContext, strokePaint, dyScale, curve, this.level, way);
     }
 
     @Override

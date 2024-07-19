@@ -14,7 +14,17 @@
  */
 package org.mapsforge.map.android.rotation;
 
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.DrawFilter;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Picture;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Region;
 
 public class SmoothCanvas extends Canvas {
 
@@ -46,11 +56,13 @@ public class SmoothCanvas extends Canvas {
         return this.delegate.save();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int saveLayer(RectF bounds, Paint paint, int saveFlags) {
         return this.delegate.saveLayer(bounds, paint, saveFlags);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int saveLayer(float left, float top, float right, float bottom,
                          Paint paint, int saveFlags) {
@@ -58,11 +70,13 @@ public class SmoothCanvas extends Canvas {
                 saveFlags);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int saveLayerAlpha(RectF bounds, int alpha, int saveFlags) {
         return this.delegate.saveLayerAlpha(bounds, alpha, saveFlags);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int saveLayerAlpha(float left, float top, float right, float bottom,
                               int alpha, int saveFlags) {
@@ -121,11 +135,13 @@ public class SmoothCanvas extends Canvas {
         this.delegate.getMatrix(ctm);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean clipRect(RectF rect, Region.Op op) {
         return this.delegate.clipRect(rect, op);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean clipRect(Rect rect, Region.Op op) {
         return this.delegate.clipRect(rect, op);
@@ -141,6 +157,7 @@ public class SmoothCanvas extends Canvas {
         return this.delegate.clipRect(rect);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean clipRect(float left, float top, float right, float bottom,
                             Region.Op op) {
@@ -157,6 +174,7 @@ public class SmoothCanvas extends Canvas {
         return this.delegate.clipRect(left, top, right, bottom);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean clipPath(Path path, Region.Op op) {
         return this.delegate.clipPath(path, op);
@@ -177,16 +195,19 @@ public class SmoothCanvas extends Canvas {
         this.delegate.setDrawFilter(filter);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean quickReject(RectF rect, EdgeType type) {
         return this.delegate.quickReject(rect, type);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean quickReject(Path path, EdgeType type) {
         return this.delegate.quickReject(path, type);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean quickReject(float left, float top, float right,
                                float bottom, EdgeType type) {

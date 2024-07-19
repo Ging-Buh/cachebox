@@ -20,6 +20,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.TextTransform;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.datastore.PointOfInterest;
@@ -31,6 +32,7 @@ import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 import org.mapsforge.map.rendertheme.XmlUtils;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * A RenderInstruction is a basic graphical primitive to draw a map.
@@ -39,6 +41,7 @@ public abstract class RenderInstruction {
     static final String ALIGN_CENTER = "align-center";
     static final String ALL = "all";
     static final String CAT = "cat";
+    static final String CURVE = "curve";
     static final String DISPLAY = "display";
     static final String DY = "dy";
     static final String FILL = "fill";
@@ -55,6 +58,8 @@ public abstract class RenderInstruction {
     static final String REPEAT = "repeat";
     static final String REPEAT_GAP = "repeat-gap";
     static final String REPEAT_START = "repeat-start";
+    // Use "orientation" parameters instead.
+    @Deprecated
     static final String ROTATE = "rotate";
     static final String SCALE = "scale";
     static final String SCALE_RADIUS = "scale-radius";
@@ -66,9 +71,13 @@ public abstract class RenderInstruction {
     static final String STROKE_WIDTH = "stroke-width";
     static final String SYMBOL_HEIGHT = "symbol-height";
     static final String SYMBOL_ID = "symbol-id";
+    static final String SYMBOL_ORIENTATION = "symbol-orientation";
     static final String SYMBOL_PERCENT = "symbol-percent";
     static final String SYMBOL_SCALING = "symbol-scaling";
     static final String SYMBOL_WIDTH = "symbol-width";
+    static final String TEXT_ORIENTATION = "text-orientation";
+    static final String TEXT_TRANSFORM = "text-transform";
+    static final String TEXT_WRAP_WIDTH = "text-wrap-width";
 
     enum Scale {
         ALL,
@@ -172,4 +181,22 @@ public abstract class RenderInstruction {
      * @param scaleFactor the factor by which the text size should be scaled.
      */
     public abstract void scaleTextSize(float scaleFactor, byte zoomLevel);
+
+    /**
+     * Transform text before render based on the selected text transformation.
+     */
+    protected String transformText(String text, TextTransform transformation) {
+        if (text.length() == 0) {
+            return text;
+        }
+        if (transformation == TextTransform.UPPERCASE) {
+            return text.toUpperCase(Locale.ROOT);
+        } else if (transformation == TextTransform.LOWERCASE) {
+            return text.toLowerCase(Locale.ROOT);
+        } else if (transformation == TextTransform.CAPITALIZE) {
+            return text.substring(0, 1).toUpperCase(Locale.ROOT) + text.substring(1);
+        } else {
+            return text;
+        }
+    }
 }

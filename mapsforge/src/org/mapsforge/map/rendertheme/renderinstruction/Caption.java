@@ -17,7 +17,16 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.TextTransform;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
@@ -48,13 +57,14 @@ public class Caption extends RenderInstruction {
     private final Map<Byte, Paint> fills;
     private float fontSize;
     private final float gap;
-    private final int maxTextWidth;
+    private int maxTextWidth;
     private Position position;
     private int priority;
     private final Paint stroke;
     private final Map<Byte, Paint> strokes;
     private String symbolId;
     private TextKey textKey;
+    private TextTransform textTransform;
 
     public Caption(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                    XmlPullParser pullParser, Map<String, Symbol> symbols) throws XmlPullParserException {
@@ -70,10 +80,11 @@ public class Caption extends RenderInstruction {
         this.strokes = new HashMap<>();
         this.dyScaled = new HashMap<>();
 
-
         this.display = Display.IFSPACE;
 
         this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
+        this.textTransform = TextTransform.NONE;
+        this.maxTextWidth = displayModel.getMaxTextWidth();
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
 
@@ -114,10 +125,6 @@ public class Caption extends RenderInstruction {
             default:
                 throw new IllegalArgumentException("Position invalid");
         }
-
-
-        this.maxTextWidth = displayModel.getMaxTextWidth();
-
     }
 
     private float computeHorizontalOffset() {
@@ -184,8 +191,17 @@ public class Caption extends RenderInstruction {
                 this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
             } else if (SYMBOL_ID.equals(name)) {
                 this.symbolId = value;
+            } else if (TEXT_TRANSFORM.equals(name)) {
+                this.textTransform = TextTransform.fromString(value);
+            } else if (TEXT_WRAP_WIDTH .equals(name)) {
+                int maxWidth = (int) (XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor());
+                if (maxWidth == 0) {
+                    maxTextWidth = Integer.MAX_VALUE;
+                } else {
+                    maxTextWidth = maxWidth;
+                }
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
 
@@ -234,7 +250,8 @@ public class Caption extends RenderInstruction {
             verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
         }
 
-        renderCallback.renderPointOfInterestCaption(renderContext, this.display, this.priority, caption, horizontalOffset, verticalOffset,
+        renderCallback.renderPointOfInterestCaption(renderContext, this.display, this.priority,
+                transformText(caption, textTransform), horizontalOffset, verticalOffset,
                 getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, poi);
     }
 
@@ -260,7 +277,8 @@ public class Caption extends RenderInstruction {
             verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
         }
 
-        renderCallback.renderAreaCaption(renderContext, this.display, this.priority, caption, horizontalOffset, verticalOffset,
+        renderCallback.renderAreaCaption(renderContext, this.display, this.priority,
+                transformText(caption, textTransform), horizontalOffset, verticalOffset,
                 getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, way);
     }
 

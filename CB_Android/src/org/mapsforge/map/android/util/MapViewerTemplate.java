@@ -19,6 +19,7 @@ package org.mapsforge.map.android.util;
 
 import android.app.Activity;
 import android.os.Bundle;
+
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -172,7 +173,7 @@ public abstract class MapViewerTemplate extends Activity {
             Byte startZoomLevel = mapFile.startZoomLevel();
             if (startZoomLevel == null) {
                 // it is actually possible to have no start zoom level in the file
-                startZoomLevel = new Byte((byte) 12);
+                startZoomLevel = (byte) 12;
             }
             return new MapPosition(mapFile.startPosition(), startZoomLevel);
         } else {
@@ -182,12 +183,12 @@ public abstract class MapViewerTemplate extends Activity {
 
     /**
      * Provides the directory of the map file, by default the Android external storage
-     * directory: /sdcard/Android/data/org.mapsforge.samples.android/files/
+     * directory: /Android/media/org.mapsforge.samples.android/
      *
      * @return
      */
     protected File getMapFileDirectory() {
-        return getExternalFilesDir(null);
+        return getExternalMediaDirs()[0];
     }
 
     /**

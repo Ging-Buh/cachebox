@@ -16,6 +16,7 @@
 package org.mapsforge.map.android.graphics;
 
 import android.graphics.Path.FillType;
+
 import org.mapsforge.core.graphics.FillRule;
 import org.mapsforge.core.graphics.Path;
 
@@ -56,6 +57,11 @@ class AndroidPath implements Path {
     @Override
     public void moveTo(float x, float y) {
         this.path.moveTo(x, y);
+    }
+
+    @Override
+    public void quadTo(float x1, float y1, float x2, float y2) {
+        this.path.quadTo(x1, y1, x2, y2);
     }
 
     @Override

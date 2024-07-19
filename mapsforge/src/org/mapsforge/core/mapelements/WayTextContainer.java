@@ -17,7 +17,15 @@
  */
 package org.mapsforge.core.mapelements;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.GraphicUtils;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.TextOrientation;
 import org.mapsforge.core.model.LineSegment;
 import org.mapsforge.core.model.LineString;
 import org.mapsforge.core.model.Point;
@@ -28,8 +36,9 @@ public class WayTextContainer extends MapElementContainer {
     private final Paint paintFront;
     private final Paint paintBack;
     private final String text;
+    private final TextOrientation textOrientation;
 
-    public WayTextContainer(GraphicFactory graphicFactory, LineString lineString, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight) {
+    public WayTextContainer(GraphicFactory graphicFactory, LineString lineString, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight, TextOrientation textOrientation) {
         super(lineString.segments.get(0).start, display, priority);
         this.graphicFactory = graphicFactory;
         this.lineString = lineString;
@@ -43,6 +52,7 @@ public class WayTextContainer extends MapElementContainer {
         // we also need to make the container larger by textHeight as otherwise the end points do
         // not correctly reflect the size of the text on screen
         this.boundaryAbsolute = lineString.getBounds().enlarge(textHeight / 2d, textHeight / 2d, textHeight / 2d, textHeight / 2d);
+        this.textOrientation = textOrientation;
     }
 
     @Override
@@ -70,11 +80,26 @@ public class WayTextContainer extends MapElementContainer {
     }
 
     private Path generatePath(Point origin) {
+        // compute rotation so text isn't upside down
         LineSegment firstSegment = this.lineString.segments.get(0);
-        // So text isn't upside down
-        boolean doInvert = firstSegment.end.x <= firstSegment.start.x;
-        Path path = this.graphicFactory.createPath();
+        boolean doInvert;
+        switch (textOrientation) {
+            case AUTO_DOWN:
+                doInvert = firstSegment.end.x > firstSegment.start.x;
+                break;
+            case RIGHT:
+                doInvert = false;
+                break;
+            case LEFT:
+                doInvert = true;
+                break;
+            default: // AUTO
+                doInvert = firstSegment.end.x <= firstSegment.start.x;
+                break;
+        }
 
+        // draw text based on the orientation requirement
+        Path path = this.graphicFactory.createPath();
         if (!doInvert) {
             Point start = firstSegment.start.offset(-origin.x, -origin.y);
             path.moveTo((float) start.x, (float) start.y);
