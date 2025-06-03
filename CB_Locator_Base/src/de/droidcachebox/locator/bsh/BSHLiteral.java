@@ -50,7 +50,7 @@ public final class BSHLiteral extends SimpleNode {
     @Override
     public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
         if (value == null)
-            throw new InterpreterError("Null in bsh literal: " + value);
+            throw new InterpreterError("Null in bsh literal: null");
 
         return value;
     }
@@ -99,7 +99,7 @@ public final class BSHLiteral extends SimpleNode {
                 ch = getEscapeChar(ch);
         }
 
-        value = new Primitive(new Character(ch).charValue());
+        value = new Primitive(Character.valueOf(ch).charValue());
     }
 
     void stringSetup(String str) {

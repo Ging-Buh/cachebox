@@ -1,10 +1,10 @@
 package de.droidcachebox.utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+//import java.util.Collections;
+//import java.util.Comparator;
 
-public class FileList extends ArrayList<AbstractFile> implements Comparator<AbstractFile> {
+public class FileList extends ArrayList<AbstractFile> { //} implements Comparator<AbstractFile> {
     private static final long serialVersionUID = 2454564654L;
 
     public FileList(String path, String extension) {
@@ -25,12 +25,12 @@ public class FileList extends ArrayList<AbstractFile> implements Comparator<Abst
                 }
             }
         }
-        Collections.sort(this, this);
+        //Collections.sort(this, this);
     }
 
-    @Override
-    public int compare(AbstractFile object1, AbstractFile object2) {
-        return Long.compare(object1.lastModified(), object2.lastModified());
-    }
+//    @Override
+//    public int compare(AbstractFile object1, AbstractFile object2) {
+//        return Long.compare(object1.lastModified(), object2.lastModified());
+//    }
 
 }
