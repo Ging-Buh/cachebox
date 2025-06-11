@@ -224,6 +224,10 @@ public class Translation {
                 mMissingStringList.add(notFound);
             }
             return retString;
+        } else {
+            if (params != null && params.length > 0) {
+                retString = replaceParams(retString, params);
+            }
         }
         return retString;
     }
