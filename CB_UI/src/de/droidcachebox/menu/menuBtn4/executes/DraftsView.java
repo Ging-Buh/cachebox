@@ -389,14 +389,16 @@ public class DraftsView extends V_ListView {
             writer.write(bom);
 
             for (Draft draft : tmpDrafts) {
-                SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-                String sDate = datFormat.format(draft.timestamp) + "T";
-                datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
-                datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-                sDate += datFormat.format(draft.timestamp) + "Z";
-                String log = draft.gcCode + "," + sDate + "," + draft.type.toString() + ",\"" + draft.comment + "\"\n";
-                writer.write((log + "\n").getBytes(StandardCharsets.UTF_8));
+                if (!draft.isUploaded) {
+                    SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    String sDate = datFormat.format(draft.timestamp) + "T";
+                    datFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                    datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    sDate += datFormat.format(draft.timestamp) + "Z";
+                    String log = draft.gcCode + "," + sDate + "," + draft.type.toString() + ",\"" + draft.comment + "\"\n";
+                    writer.write((log + "\n").getBytes(StandardCharsets.UTF_8));
+                }
             }
             writer.flush();
             writer.close();
@@ -477,6 +479,7 @@ public class DraftsView extends V_ListView {
             }
             cm.addMenuItem("uploadAsDraft", UploadDrafts.action.getIcon(), () -> uploadDraftOrLog(currentDraft, false));
             cm.addMenuItem("uploadAsLog", UploadDrafts.action.getIcon(), () -> uploadDraftOrLog(currentDraft, true));
+            cm.addMenuItem("setUploaded", null, () -> setDraftUploaded(currentDraft));
             Sprite icon;
             if (currentDraft.isTbDraft) {
                 // Sprite from url ?  draft.TbIconUrl
@@ -497,6 +500,15 @@ public class DraftsView extends V_ListView {
                 editDraft.setDraft(currentDraft, DraftsView.this::afterEdit, false);
             }
             editDraft.show();
+        }
+        private void setDraftUploaded(final Draft draft) {
+            if (!draft.isUploaded) {
+                draft.isUploaded = true;
+            } else {
+                draft.isUploaded = false;
+            }
+            draft.updateDatabase();
+            createGeoCacheVisits();
         }
 
         private void uploadLogImage() {

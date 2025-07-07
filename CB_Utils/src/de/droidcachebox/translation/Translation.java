@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.FileFactory;
@@ -35,8 +36,8 @@ public class Translation {
     public static Translation that;
     public final Array<MissingTranslation> mMissingStringList;
     private final String mWorkPath;
-    private Array<Translations> translations;
-    private Array<Translations> references;
+    private Properties translations;
+    private Properties references;
     private String mLangID;
 
     /**
@@ -154,8 +155,8 @@ public class Translation {
         LanguageChanged.fire();
     }
 
-    private Array<Translations> readFile(String filePath, boolean asTranslation) {
-        Array<Translations> result = new Array<>();
+    private Properties readFile(String filePath, boolean asTranslation) {
+        Properties result = new Properties();
         FileHandle file = FileFactory.getInternalFileHandle(filePath);
 
         String text = file.readString("UTF-8");
@@ -195,18 +196,27 @@ public class Translation {
             }
             replacedRead = replacedRead.replace("\\\"", "\"");
             if (asTranslation) {
-                result.add(new Translations(readID, replacedRead));
+                result.put(readID, replacedRead);
             } else {
                 if (getTranslation(readID).startsWith("$ID: "))
-                    result.add(new Translations(readID, replacedRead));
+                    result.put(readID, replacedRead);
             }
         }
         return result;
     }
 
     private String getTranslation(String StringId, String... params) {
-        String retString = getTranslation(StringId.hashCode(), params);
-        if (retString.length() == 0) {
+        String retString = new String();
+        if (translations != null && translations.containsKey(StringId)) {
+            retString = translations.getProperty(StringId);
+        }
+        if (retString.isEmpty() && references != null && references.containsKey(StringId)) {
+            retString = references.getProperty(StringId);
+        }
+        if (retString.isEmpty()) {
+            retString = getTranslation(StringId.hashCode(), params);
+        }
+        if (retString.isEmpty()) {
             retString = "$ID: " + StringId;// "No translation found";
 
             MissingTranslation notFound = new MissingTranslation(StringId, "??");
@@ -214,34 +224,16 @@ public class Translation {
                 mMissingStringList.add(notFound);
             }
             return retString;
+        } else {
+            if (params != null && params.length > 0) {
+                retString = replaceParams(retString, params);
+            }
         }
         return retString;
     }
 
     private String getTranslation(int Id, String... params) {
         String retString = "";
-
-        if (translations != null) {
-            for (int i = 0, n = translations.size; i < n; i++) {
-                Translations tmp = translations.get(i);
-                if (tmp.getIdString() == Id) {
-                    retString = tmp.getTranslation();
-                    break;
-                }
-            }
-        }
-
-        if (references != null) {
-            if (retString.length() == 0) {
-                for (int i = 0, n = references.size; i < n; i++) {
-                    Translations tmp = references.get(i);
-                    if (tmp.getIdString() == Id) {
-                        retString = tmp.getTranslation();
-                        break;
-                    }
-                }
-            }
-        }
 
         if (retString.length() == 0) {
             if (translations == null || references == null)

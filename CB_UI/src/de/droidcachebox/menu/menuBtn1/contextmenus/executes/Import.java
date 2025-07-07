@@ -182,7 +182,8 @@ public class Import extends ActivityBase {
                     PQ_LINE_ACTIVE = false;
                 }
             } else {
-                new ButtonDialog(Translation.get("Desc_ImportPQsFromGeocachingCom"), Translation.get("apiKeyInvalid"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
+                if (Settings.ImportPQsFromGeocachingCom.getValue())
+                    new ButtonDialog(Translation.get("Desc_ImportPQsFromGeocachingCom"), Translation.get("apiKeyInvalid"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
             }
         }
         Log.debug(sClass, "is Premium = " + PQ_LINE_ACTIVE);

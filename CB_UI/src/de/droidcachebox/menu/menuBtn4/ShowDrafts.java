@@ -5,9 +5,13 @@ import static de.droidcachebox.menu.Action.UploadLogs;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import org.mapsforge.map.scalebar.DistanceUnitAdapter;
+
 import de.droidcachebox.AbstractShowAction;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.dataclasses.Cache;
+import de.droidcachebox.dataclasses.Draft;
+import de.droidcachebox.dataclasses.Drafts;
 import de.droidcachebox.dataclasses.GeoCacheType;
 import de.droidcachebox.dataclasses.LogType;
 import de.droidcachebox.gdx.CB_View_Base;
@@ -91,6 +95,8 @@ public class ShowDrafts extends AbstractShowAction {
         // independent from cache-selection
         cm.addMenuItem("uploadDrafts", UploadDrafts.action.getIcon(), () -> UploadDrafts.action.execute());
         cm.addMenuItem("directLog", UploadLogs.action.getIcon(), () -> UploadLogs.action.execute());
+        cm.addMenuItem("setAllDraftsUploaded", null, this::setAllDraftsUploaded);
+        cm.addMenuItem("setAllDraftsNotUploaded", null, this::setAllDraftsNotUploaded);
         cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
 
         // extensions for owner
@@ -120,6 +126,37 @@ public class ShowDrafts extends AbstractShowAction {
         draftsView.deleteAllDrafts();
     }
 
+    private void setAllDraftsUploaded() {
+        if (draftsView != null && !draftsView.isDisposed()) {
+            Drafts drafts = new Drafts();
+            drafts.loadDrafts(Drafts.LoadingType.CanUpload);
+
+            for (Draft draft : drafts) {
+                if (!draft.isUploaded){
+                    draft.isUploaded = true;
+                    draft.updateDatabase();
+                }
+            }
+            draftsView.notifyDataSetChanged();
+            draftsView.createGeoCacheVisits();
+        }
+    }
+
+    private void setAllDraftsNotUploaded() {
+        if (draftsView != null && !draftsView.isDisposed()) {
+            Drafts drafts = new Drafts();
+            drafts.loadDrafts(Drafts.LoadingType.Loadall);
+
+            for (Draft draft : drafts) {
+                if (draft.isUploaded){
+                    draft.isUploaded = false;
+                    draft.updateDatabase();
+                }
+            }
+            draftsView.notifyDataSetChanged();
+            draftsView.createGeoCacheVisits();
+        }
+    }
     /*
        for QuickDraft
      */
