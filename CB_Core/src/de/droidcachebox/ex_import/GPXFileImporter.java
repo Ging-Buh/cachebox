@@ -1276,16 +1276,18 @@ public class GPXFileImporter {
         if (values.containsKey("cache_short_description")) {
             cache.setShortDescription(values.get("cache_short_description").trim());
 
-            if (values.containsKey("cache_short_description_html") && values.get("cache_short_description_html").equalsIgnoreCase("False")) {
-                cache.setShortDescription(cache.getShortDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+            if (values.containsKey("cache_short_description_html") && values.get("cache_short_description_html") != null) {
+                if (values.get("cache_short_description_html").equalsIgnoreCase("False"))
+                    cache.setShortDescription(cache.getShortDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
             }
         }
 
         if (values.containsKey("cache_long_description")) {
             cache.setLongDescription(values.get("cache_long_description").trim());
 
-            if (values.containsKey("cache_long_description_html") && values.get("cache_long_description_html").equalsIgnoreCase("False")) {
-                cache.setLongDescription(cache.getLongDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+            if (values.containsKey("cache_long_description_html") && values.get("cache_long_description_html") != null) {
+                if (values.get("cache_long_description_html").equalsIgnoreCase("False"))
+                    cache.setLongDescription(cache.getLongDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
             }
         }
 
