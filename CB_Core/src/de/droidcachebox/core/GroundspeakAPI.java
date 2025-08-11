@@ -25,10 +25,12 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.Writer;
@@ -61,11 +63,15 @@ import de.droidcachebox.ex_import.DescriptionImageGrabber;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.locator.map.Descriptor;
 import de.droidcachebox.settings.AllSettings;
+import de.droidcachebox.settings.Config_Core;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.AbstractFile;
 import de.droidcachebox.utils.CB_List;
 import de.droidcachebox.utils.DLong;
+import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.FileIO;
 import de.droidcachebox.utils.TestCancel;
+import de.droidcachebox.utils.http.Download;
 import de.droidcachebox.utils.http.Request;
 import de.droidcachebox.utils.http.Response;
 import de.droidcachebox.utils.http.Webb;
@@ -317,80 +323,124 @@ public class GroundspeakAPI {
     public static ArrayList<GeoCacheRelated> updateGeoCaches(Query query, ArrayList<Cache> caches) {
         // fetch/update geocaches consumes a lite or full cache
         ArrayList<GeoCacheRelated> fetchResults = new ArrayList<>();
-        try {
-
-            ArrayList<String> fields = query.getFields();
-            boolean onlyLiteFields = query.containsOnlyLiteFields(fields);
-            int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 50, but not in what time, and with 10 Full I got out of memory
-            if (onlyLiteFields) {
-                fetchMyCacheLimits();
-                if (me.remainingLite < me.remaining) {
-                    onlyLiteFields = false;
-                }
-            }
-
-            // just to simplify splitting into blocks of max 50 caches
-            Cache[] arrayOfCaches = new Cache[caches.size()];
-            caches.toArray(arrayOfCaches);
-
-            int skip = 0;
-            int take = Math.min(query.maxToFetch, maxCachesPerHttpCall);
-
-            do {
-                // preparing the next block of max 50 caches to update
-                Map<String, Cache> mapOfCaches = new HashMap<>();
-                StringBuilder CacheCodes = new StringBuilder();
-                int took = 0;
-                for (int i = skip; i < Math.min(skip + take, arrayOfCaches.length); i++) {
-                    Cache cache = arrayOfCaches[i];
-                    if (cache.getGeoCacheCode().toLowerCase().startsWith("gc")) {
-                        mapOfCaches.put(cache.getGeoCacheCode(), cache);
-                        CacheCodes.append(",").append(cache.getGeoCacheCode());
-                        took++;
-                    }
-                }
-                if (took == 0) return fetchResults; // no gc in the block
-                skip = skip + take;
-
-                boolean doRetry;
-                do {
-                    doRetry = false;
-                    try {
-                        Response<JSONArray> r = query.putQuery(getNetz()
-                                .get(getUrl(1, "geocaches"))
-                                .param("referenceCodes", CacheCodes.substring(1))
-                                .param("lite", onlyLiteFields)
-                                .ensureSuccess())
-                                .asJsonArray();
-
-                        retryCount = 0;
-
-                        fetchResults.addAll(getGeoCacheRelateds(r.getBody(), fields, mapOfCaches));
-
-                    } catch (Exception ex) {
-                        doRetry = retry(ex);
-                        if (!doRetry) {
-                            if (APIError == 404) {
-                                // one bad GCCode (not starting with GC) causes Error 404: will hopefully be changed in an update after 11.26.2018
-                                // a not existing GCCode seems to be ignored, what is ok
-                                Log.err(sClass, "searchGeoCaches - skipped block cause: " + LastAPIError);
-                            } else {
-                                fetchMyCacheLimits();
-                                return fetchResults;
+        if (isAccessTokenInvalid()) {
+            if (!caches.isEmpty()) {
+                //Cache cache = caches.get(0);
+                for (Cache cache : caches) {
+                    Download dl = new Download(null, null);
+                    String destFileName = AllSettings.UserImageFolder.getValue() + "/temp.html";
+                    if (dl.download(cache.getUrl(), destFileName)) {
+                        // Parse temp.html
+                        // - search for alert-info
+                        // - if not found: cache is available
+                        // - if found: disabledMessage or archivedMessage? -> set unavailable or archived
+                        BufferedReader br;
+                        String strLine;
+                        boolean isAvailable = true;
+                        boolean isArchived = false;
+                        AbstractFile fileToLoad = FileFactory.createFile(destFileName);
+                        try {
+                            br = new BufferedReader(new InputStreamReader(fileToLoad.getFileInputStream()));
+                            while ((strLine = br.readLine()) != null && isAvailable) {
+                                if (strLine.contains("alert-info")) {
+                                    isAvailable = false;
+                                    if (strLine.contains("archivedMessage")) {
+                                        isArchived = true;
+                                    }
+                                }
                             }
+                        } catch (IOException e1) {
+                            Log.err(sClass, e1.getLocalizedMessage(), e1);
+                        }
+                        cache.setAvailable(isAvailable);
+                        cache.setArchived(isArchived);
+                        ArrayList<LogEntry> logs = new ArrayList<>();
+                        ArrayList<ImageEntry> images = new ArrayList<>();
+                        fetchResults.add(new GeoCacheRelated(cache, logs, images));
+                        try {
+                            fileToLoad.delete();
+                        } catch (IOException e) {
+                            Log.err(sClass, e.getLocalizedMessage(), e);
                         }
                     }
                 }
-                while (doRetry);
-            } while (skip < arrayOfCaches.length);
+            }
+        } else {
+            try {
 
-        } catch (Exception e) {
-            APIError = ERROR;
-            LastAPIError = e.getLocalizedMessage();
-            Log.err(sClass, "updateGeoCaches", e);
-            return fetchResults;
+                ArrayList<String> fields = query.getFields();
+                boolean onlyLiteFields = query.containsOnlyLiteFields(fields);
+                int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 50, but not in what time, and with 10 Full I got out of memory
+                if (onlyLiteFields) {
+                    fetchMyCacheLimits();
+                    if (me.remainingLite < me.remaining) {
+                        onlyLiteFields = false;
+                    }
+                }
+
+                // just to simplify splitting into blocks of max 50 caches
+                Cache[] arrayOfCaches = new Cache[caches.size()];
+                caches.toArray(arrayOfCaches);
+
+                int skip = 0;
+                int take = Math.min(query.maxToFetch, maxCachesPerHttpCall);
+
+                do {
+                    // preparing the next block of max 50 caches to update
+                    Map<String, Cache> mapOfCaches = new HashMap<>();
+                    StringBuilder CacheCodes = new StringBuilder();
+                    int took = 0;
+                    for (int i = skip; i < Math.min(skip + take, arrayOfCaches.length); i++) {
+                        Cache cache = arrayOfCaches[i];
+                        if (cache.getGeoCacheCode().toLowerCase().startsWith("gc")) {
+                            mapOfCaches.put(cache.getGeoCacheCode(), cache);
+                            CacheCodes.append(",").append(cache.getGeoCacheCode());
+                            took++;
+                        }
+                    }
+                    if (took == 0) return fetchResults; // no gc in the block
+                    skip = skip + take;
+
+                    boolean doRetry;
+                    do {
+                        doRetry = false;
+                        try {
+                            Response<JSONArray> r = query.putQuery(getNetz()
+                                            .get(getUrl(1, "geocaches"))
+                                            .param("referenceCodes", CacheCodes.substring(1))
+                                            .param("lite", onlyLiteFields)
+                                            .ensureSuccess())
+                                    .asJsonArray();
+
+                            retryCount = 0;
+
+                            fetchResults.addAll(getGeoCacheRelateds(r.getBody(), fields, mapOfCaches));
+
+                        } catch (Exception ex) {
+                            doRetry = retry(ex);
+                            if (!doRetry) {
+                                if (APIError == 404) {
+                                    // one bad GCCode (not starting with GC) causes Error 404: will hopefully be changed in an update after 11.26.2018
+                                    // a not existing GCCode seems to be ignored, what is ok
+                                    Log.err(sClass, "searchGeoCaches - skipped block cause: " + LastAPIError);
+                                } else {
+                                    fetchMyCacheLimits();
+                                    return fetchResults;
+                                }
+                            }
+                        }
+                    }
+                    while (doRetry);
+                } while (skip < arrayOfCaches.length);
+
+            } catch (Exception e) {
+                APIError = ERROR;
+                LastAPIError = e.getLocalizedMessage();
+                Log.err(sClass, "updateGeoCaches", e);
+                return fetchResults;
+            }
+            fetchMyCacheLimits();
         }
-        fetchMyCacheLimits();
         return fetchResults;
     }
 

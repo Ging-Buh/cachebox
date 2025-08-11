@@ -3,6 +3,7 @@ package de.droidcachebox.menu.menuBtn1.contextmenus;
 import static de.droidcachebox.Platform.callUrl;
 import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
 import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.core.GroundspeakAPI.updateGeoCache;
 import static de.droidcachebox.menu.Action.ShowDescription;
 import static de.droidcachebox.menu.Action.ShowDrafts;
@@ -77,8 +78,12 @@ public class CacheContextMenu {
                 theMenu.addMoreMenu(ShowDrafts.action.getContextMenu(), Translation.get("DraftsContextMenuTitle"), Translation.get("DraftsContextMenuTitle"));
         }
         if (selectedCacheIsSet) {
-            if (selectedCacheIsGC)
-                theMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), this::reloadSelectedCache);
+            if (selectedCacheIsGC) {
+                if (isAccessTokenInvalid())
+                    theMenu.addMenuItem("ReloadCache", null, this::reloadSelectedCache);
+                else
+                    theMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), this::reloadSelectedCache);
+            }
             theMenu.addMenuItem("Open_Cache_Link", Sprites.getSprite("big" + geoCache.getGeoCacheType().name()), () -> callUrl(geoCache.getUrl()));
             theMenu.addCheckableMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), geoCache.isFavorite(), this::toggleAsFavorite);
             theMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(geoCache));
@@ -135,7 +140,12 @@ public class CacheContextMenu {
     public void reloadSelectedCache() {
         if (GlobalCore.isSetSelectedCache()) {
             AtomicBoolean isCanceled = new AtomicBoolean(false);
-            new CancelWaitDialog(Translation.get("ReloadCacheAPI"), new DownloadAnimation(), new RunAndReady() {
+            String strWait;
+            if (isAccessTokenInvalid())
+                strWait = Translation.get("ReloadCache");
+            else
+                strWait = Translation.get("ReloadCacheAPI");
+            new CancelWaitDialog(strWait, new DownloadAnimation(), new RunAndReady() {
                 @Override
                 public void ready() {
 
