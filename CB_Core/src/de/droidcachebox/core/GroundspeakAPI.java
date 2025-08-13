@@ -348,6 +348,11 @@ public class GroundspeakAPI {
                                         isArchived = true;
                                     }
                                 }
+                                // Premium cache contains no alert-info.
+                                // Only the icon is disabled if it is disabled or archived
+                                if (strLine.contains("/app/ui-icons/sprites/cache-types.svg#icon") && strLine.contains("disabled")) {
+                                    isAvailable = false;
+                                }
                             }
                         } catch (IOException e1) {
                             Log.err(sClass, e1.getLocalizedMessage(), e1);
