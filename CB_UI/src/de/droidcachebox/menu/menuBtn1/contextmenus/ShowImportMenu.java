@@ -1,5 +1,7 @@
 package de.droidcachebox.menu.menuBtn1.contextmenus;
 
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.droidcachebox.AbstractShowAction;
@@ -59,7 +61,10 @@ public class ShowImportMenu extends AbstractShowAction {
     @Override
     public Menu getContextMenu() {
         Menu icm = new Menu("ImportMenuTitle");
-        icm.addMenuItem("chkState", null, () -> GL.that.postAsync(() -> new UpdateCachesState().execute()));
+        if (isAccessTokenInvalid())
+            icm.addMenuItem("chkState", null, () -> GL.that.postAsync(() -> new UpdateCachesState().execute()));
+        else
+            icm.addMenuItem("chkState", Sprites.getSprite(IconName.dayGcLiveIcon.name()), () -> GL.that.postAsync(() -> new UpdateCachesState().execute()));
         icm.addMenuItem("moreImport", null, () -> GL.that.postAsync(() -> new Import().show()));
         icm.addMenuItem("importCachesOverPosition", null, () -> new ImportGCPosition().show());
         icm.addMenuItem("API_IMPORT_NAME_OWNER_CODE", null, SearchOverNameOwnerGcCode::showInstance);
