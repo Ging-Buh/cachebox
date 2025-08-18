@@ -341,11 +341,13 @@ public class GroundspeakAPI {
                         AbstractFile fileToLoad = FileFactory.createFile(destFileName);
                         try {
                             br = new BufferedReader(new InputStreamReader(fileToLoad.getFileInputStream()));
-                            while ((strLine = br.readLine()) != null && isAvailable) {
+                            while ((strLine = br.readLine()) != null && isAvailable && !isArchived) {
                                 if (strLine.contains("alert-info")) {
-                                    isAvailable = false;
                                     if (strLine.contains("archivedMessage")) {
                                         isArchived = true;
+                                    }
+                                    else {
+                                        isAvailable = false;
                                     }
                                 }
                                 // Premium cache contains no alert-info.
