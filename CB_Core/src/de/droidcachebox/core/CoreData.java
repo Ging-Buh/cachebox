@@ -13,4 +13,5 @@ public class CoreData {
 
     public static String cacheHistory = "";
 
+    public static String cachesDistFiltered = "";
 }
