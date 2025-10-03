@@ -111,6 +111,20 @@ public class ShowGeoCaches extends AbstractShowAction {
                 }
             }
         });
+        cm.addMenuItem("ResortListWithDistance", Sprites.getSprite(IconName.sortIcon.name()), () -> {
+            if (!CBDB.cacheList.resortAtWork) {
+                synchronized (CBDB.cacheList) {
+                    Log.debug("ShowCacheList", "sort CacheList by Menu ResortList 5km");
+                    FilterInstances.getLastFilter().isDistance = true;
+                    CacheWithWP nearestCacheWp = CBDB.cacheList.resort(Locator.getInstance().getValidPosition(GlobalCore.getSelectedCache().getCoordinate()), 5000.);
+                    if (nearestCacheWp != null && nearestCacheWp.getCache() != null) {
+                        GlobalCore.setSelectedWaypoint(nearestCacheWp.getCache(), nearestCacheWp.getWaypoint());
+                        GlobalCore.setNearestCache(nearestCacheWp.getCache());
+                    }
+                    setSelectedCacheVisible();
+                }
+            }
+        });
         mi = cm.addMenuItem("setOrResetFilter", "", Sprites.getSprite(IconName.filter.name()), (v, x, y, pointer, button) -> {
             cm.close();
             boolean checked = ((MenuItem) v).isChecked();

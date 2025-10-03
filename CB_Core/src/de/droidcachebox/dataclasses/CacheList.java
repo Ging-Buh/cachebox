@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import de.droidcachebox.core.CacheListChangedListeners;
+import de.droidcachebox.core.CoreData;
 import de.droidcachebox.database.CacheWithWP;
 import de.droidcachebox.locator.Coordinate;
 import de.droidcachebox.utils.MathUtils.CalculationType;
@@ -50,8 +51,13 @@ public class CacheList extends MoveableList<Cache> {
     }
 
     public CacheWithWP resort(Coordinate fromPos) {
+        return resort(fromPos, -1.);
+    }
+
+    public CacheWithWP resort(Coordinate fromPos, double distance) {
 
         resortAtWork = true;
+        CoreData.cachesDistFiltered = "";
         // check fromPos
         if (fromPos == null || (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)) {
             Log.debug("sort CacheList", "no sort: reference pos is zero.");
@@ -60,9 +66,28 @@ public class CacheList extends MoveableList<Cache> {
         }
         Log.debug("sort CacheList", "" + fromPos);
         // Alle Distanzen aktualisieren
+        CacheList removeables = new CacheList();
         for (int i = 0, n = size(); i < n; i++) {
-            get(i).recalculateAndGetDistance(CalculationType.FAST, true, fromPos);
+            //get(i).recalculateAndGetDistance(CalculationType.FAST, true, fromPos);
+            Cache current = get(i);
+            float dist = current.recalculateAndGetDistance(CalculationType.FAST, true, fromPos);
+            if (distance != -1. && dist > distance) {
+                removeables.add(current);
+            } else {
+                if (CoreData.cachesDistFiltered.isEmpty()) {
+                    CoreData.cachesDistFiltered = current.getGeoCacheCode();
+                } else {
+                    CoreData.cachesDistFiltered += "," + current.getGeoCacheCode();
+                }
+            }
         }
+
+        // Are there caches to remove from list?
+        if (!removeables.isEmpty()) {
+            remove(removeables);
+            fire();
+        }
+
         // sortieren
         sort();
         // Nächsten Cache auswählen

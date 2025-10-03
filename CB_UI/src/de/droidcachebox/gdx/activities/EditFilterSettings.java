@@ -150,9 +150,10 @@ public class EditFilterSettings extends ActivityBase {
                     // wont save History at the Moment
                     // Marker must be removed, else isFiltered is shown
                     // wont change the LastFilter
-                    if (filter.isHistory) {
+                    if (filter.isHistory || filter.isDistance) {
                         FilterProperties tmp = new FilterProperties(filter.toString());
                         tmp.isHistory = false;
+                        tmp.isDistance = false;
                         Settings.lastFilter.setValue(tmp.toString());
                     } else {
                         Settings.lastFilter.setValue(filter.toString());
@@ -268,9 +269,10 @@ public class EditFilterSettings extends ActivityBase {
                 // wont save History
                 // Marker must be removed, else isFiltered is shown
                 // wont change the LastFilter
-                if (FilterInstances.getLastFilter().isHistory) {
+                if (FilterInstances.getLastFilter().isHistory || FilterInstances.getLastFilter().isDistance) {
                     FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
                     tmp.isHistory = false;
+                    tmp.isDistance = false;
                     Settings.lastFilter.setValue(tmp.toString());
                 } else {
                     Settings.lastFilter.setValue(FilterInstances.getLastFilter().toString());

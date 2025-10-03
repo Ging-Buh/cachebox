@@ -36,6 +36,8 @@ public class FilterProperties {
     // json.getBoolean("isHistory"); // only remember, that last filter was this
     // the GCCodes are not saved in db but taken from CoreData.cacheHistory
     public boolean isHistory;
+    // The caches are filtered by distance and stored in CoreData.cachesDistFiltered
+    public boolean isDistance;
     // json.getString("types")
     // was a boolean for each geoCachetype in CacheTypes.caches() !!! no waypoints
     // now only the ordinals of a cacheType of  CacheTypes.caches() separated by ,
@@ -117,6 +119,7 @@ public class FilterProperties {
                     userDefinedSQL = json.optString("UserDefinedSQL", "");
                     if (userDefinedSQL.length() == 0) {
                         isHistory = json.optBoolean("isHistory", false);
+                        isDistance = json.optBoolean("isDistance", false);
                         String caches = json.optString("caches", "");
                         String[] parts = caches.split(SEPARATOR);
                         for (int cnt = 0; cnt < (parts.length); cnt++) {
@@ -258,6 +261,7 @@ public class FilterProperties {
      */
     private void initCreation() {
         isHistory = false;
+        isDistance = false;
         userDefinedSQL = "";
         finds = 0;
         notAvailable = 0;
@@ -469,6 +473,8 @@ public class FilterProperties {
             } else {
                 if (isHistory)
                     json.put("isHistory", true);
+                if (isDistance)
+                    json.put("isDistance", true);
                 // add Cache properties
                 json.put("caches", finds + SEPARATOR
                         + notAvailable + SEPARATOR
@@ -563,9 +569,11 @@ public class FilterProperties {
      * @return sql query string
      */
     public String getSqlWhere(String userName) {
-        if (isHistory) {
+        if (isHistory || isDistance) {
             ArrayList<String> orParts = new ArrayList<>();
-            String[] gcCodes = CoreData.cacheHistory.split(",");
+            String[] gcCodes = isHistory ?
+                    CoreData.cacheHistory.split(",") :
+                    CoreData.cachesDistFiltered.split(",");
             for (String gcCode : gcCodes) {
                 if (gcCode.length() > 0) {
                     if (!orParts.contains(gcCode))
@@ -794,6 +802,7 @@ public class FilterProperties {
             }
         }
 
+        if (isDistance != filter.isDistance) return false;
         return isHistory == filter.isHistory;
     }
 

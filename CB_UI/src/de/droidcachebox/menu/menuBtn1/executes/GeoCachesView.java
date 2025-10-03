@@ -227,7 +227,7 @@ public class GeoCachesView extends CB_View_Base implements CacheListChangedListe
             } catch (Exception ignored) {
             }
         }
-
+        ViewManager.that.filterSetChanged();
         geoCacheListView.chkSlideBack();
     }
     /*
