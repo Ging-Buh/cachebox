@@ -683,8 +683,8 @@ public class EditFilterSettings extends ActivityBase {
         private FilterSetListViewItem maxDifficulty;
         private FilterSetListViewItem minContainerSize;
         private FilterSetListViewItem maxContainerSize;
-        private FilterSetListViewItem minRating;
-        private FilterSetListViewItem maxRating;
+        //private FilterSetListViewItem minRating;
+        //private FilterSetListViewItem maxRating;
         private FilterSetListViewItem minFavPoints;
         private FilterSetListViewItem maxFavPoints;
         private int index = 0;
@@ -717,8 +717,8 @@ public class EditFilterSettings extends ActivityBase {
             filter.setMaxTerrain(maxTerrain.getValue());
             filter.setMinContainerSize(minContainerSize.getValue());
             filter.setMaxContainerSize(maxContainerSize.getValue());
-            filter.setMinRating(minRating.getValue());
-            filter.setMaxRating(maxRating.getValue());
+            //filter.setMinRating(minRating.getValue());
+            //filter.setMaxRating(maxRating.getValue());
             filter.setMinFavPoints(minFavPoints.getValue());
             filter.setMaxFavPoints(maxFavPoints.getValue());
 
@@ -754,8 +754,8 @@ public class EditFilterSettings extends ActivityBase {
             maxDifficulty.setValue(props.getMaxDifficulty());
             minContainerSize.setValue(props.getMinContainerSize());
             maxContainerSize.setValue(props.getMaxContainerSize());
-            minRating.setValue(props.getMinRating());
-            maxRating.setValue(props.getMaxRating());
+            //minRating.setValue(props.getMinRating());
+            //maxRating.setValue(props.getMaxRating());
             minFavPoints.setValue(props.getMinFavPoints());
             maxFavPoints.setValue(props.getMaxFavPoints());
 
@@ -794,15 +794,16 @@ public class EditFilterSettings extends ActivityBase {
             hasCorrectedCoordinates = general.addChild(addItem(Sprites.getSprite("hasCorrectedCoordinates"), Translation.get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
 
             // add D/T
-            FilterSetListViewItem dt = addTitleItem("D / T" + "\n" + "GC-Vote");
+            //FilterSetListViewItem dt = addTitleItem("D / T" + "\n" + "GC-Vote");
+            FilterSetListViewItem dt = addTitleItem("D / T");
             minDifficulty = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("minDifficulty"), 1, 5, 1, 0.5f));
             maxDifficulty = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("maxDifficulty"), 1, 5, 5, 0.5f));
             minTerrain = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("minTerrain"), 1, 5, 1, 0.5f));
             maxTerrain = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("maxTerrain"), 1, 5, 5, 0.5f));
             minContainerSize = dt.addChild(addNumericItem(Sprites.SizesIcons.toArray(), Translation.get("minContainerSize"), 0, 4, 0, 1));
             maxContainerSize = dt.addChild(addNumericItem(Sprites.SizesIcons.toArray(), Translation.get("maxContainerSize"), 0, 4, 4, 1));
-            minRating = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("minRating"), 0, 5, 0, 0.5f));
-            maxRating = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("maxRating"), 0, 5, 5, 0.5f));
+            //minRating = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("minRating"), 0, 5, 0, 0.5f));
+            //maxRating = dt.addChild(addNumericItem(Sprites.Stars.toArray(), Translation.get("maxRating"), 0, 5, 5, 0.5f));
             minFavPoints = dt.addChild(addIntegerItem(Sprites.getSprite(Sprites.IconName.FavPoi), Translation.get("minFavPoints")));
             maxFavPoints = dt.addChild(addIntegerItem(Sprites.getSprite(Sprites.IconName.FavPoi), Translation.get("maxFavPoints")));
 

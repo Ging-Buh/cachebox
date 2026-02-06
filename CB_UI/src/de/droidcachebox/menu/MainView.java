@@ -15,6 +15,7 @@
  */
 package de.droidcachebox.menu;
 
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.settings.AllSettings.DatabaseName;
 import static de.droidcachebox.settings.Config_Core.br;
 
@@ -168,6 +169,8 @@ public class MainView extends MainViewBase {
 
         Image GC_Logo = new Image(rec_GC_Logo, "GC_Logo", false);
         GC_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("gc_live")));
+        if (isAccessTokenInvalid())
+            GC_Logo.setInvisible();
 
         Image mapsforge_Logo = new Image(rec_Mapsforge_Logo, "Mapsforge_Logo", false);
         mapsforge_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("mapsforge_logo")));

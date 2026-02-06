@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.menu.menuBtn2.executes;
 
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.KeyboardFocusChangedEventList;
@@ -115,7 +117,7 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
     @Override
     public void keyboardFocusChanged(EditTextField editTextField) {
         btnUpload.setText(Translation.get("Upload"));
-        btnUpload.enable();
+        btnUpload.setEnable(!isAccessTokenInvalid());
         if (editTextField == note) {
             note.setHeight(getHalfHeight());
             note.setY(getHalfHeight());
@@ -149,7 +151,7 @@ public class NotesView extends CB_View_Base implements CacheSelectionChangedList
             note.setText(notesText);
             note.showFromLineNo(0);
             btnUpload.setText(Translation.get("Upload"));
-            btnUpload.enable();
+            btnUpload.setEnable(!isAccessTokenInvalid());
         }
     }
 

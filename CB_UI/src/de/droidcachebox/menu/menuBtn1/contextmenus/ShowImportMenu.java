@@ -66,9 +66,12 @@ public class ShowImportMenu extends AbstractShowAction {
         else
             icm.addMenuItem("chkState", Sprites.getSprite(IconName.dayGcLiveIcon.name()), () -> GL.that.postAsync(() -> new UpdateCachesState().execute()));
         icm.addMenuItem("moreImport", null, () -> GL.that.postAsync(() -> new Import().show()));
-        icm.addMenuItem("importCachesOverPosition", null, () -> new ImportGCPosition().show());
-        icm.addMenuItem("API_IMPORT_NAME_OWNER_CODE", null, SearchOverNameOwnerGcCode::showInstance);
-        icm.addMenuItem("GCVoteRatings", null, () -> new Import(MI_IMPORT_GCV).show());
+        if (!isAccessTokenInvalid()) {
+            icm.addMenuItem("importCachesOverPosition", Sprites.getSprite(IconName.dayGcLiveIcon.name()), () -> new ImportGCPosition().show());
+            icm.addMenuItem("API_IMPORT_NAME_OWNER_CODE", Sprites.getSprite(IconName.dayGcLiveIcon.name()), SearchOverNameOwnerGcCode::showInstance);
+        }
+        // Use CacheVote instead?
+        // icm.addMenuItem("GCVoteRatings", null, () -> new Import(MI_IMPORT_GCV).show());
         icm.addMenuItem("GSAKMenuImport", null, () -> new Import_GSAK().show());
         icm.addDivider();
         icm.addMenuItem("GPX_EXPORT", null, () -> new ExportGPX().exportGPX());

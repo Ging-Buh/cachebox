@@ -1,5 +1,7 @@
 package de.droidcachebox.menu.menuBtn1;
 
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.Date;
@@ -59,8 +61,10 @@ public class ShowTrackableList extends AbstractShowAction {
     public Menu getContextMenu() {
         if (trackableListView == null) return null;
         final Menu cm = new Menu("TrackableListViewContextMenuTitle");
-        cm.addMenuItem("SearchTB", Sprites.getSprite(IconName.lupe.name()), trackableListView::searchTB);
-        cm.addMenuItem("RefreshInventory", null, trackableListView::refreshTbList);
+        if (!isAccessTokenInvalid()) {
+            cm.addMenuItem("SearchTB", Sprites.getSprite(IconName.lupe.name()), trackableListView::searchTB);
+            cm.addMenuItem("RefreshInventory", null, trackableListView::refreshTbList);
+        }
         cm.addMenuItem("all_note", "", Sprites.getSprite(IconName.TBNOTE.name()), (v, x, y, pointer, button) -> {
             cm.close();
             trackableListView.logTBs(((MenuItem) v).getTitle(), LogType.note.gsLogTypeId, TemplateFormatter.replaceTemplate(Settings.AddNoteTemplate.getValue(), new Date()));

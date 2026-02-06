@@ -18,6 +18,7 @@ package de.droidcachebox.gdx.controls.popups;
 import static de.droidcachebox.core.GroundspeakAPI.GeoCacheRelated;
 import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCache;
 import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCaches;
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.core.GroundspeakAPI.isPremiumMember;
 import static de.droidcachebox.core.GroundspeakAPI.searchGeoCaches;
 import static de.droidcachebox.menu.Action.ShowMap;
@@ -156,6 +157,7 @@ public class SearchDialog extends PopUpBase {
         y = mInput.getMaxY() + margin;
 
         mTglBtnOnline.setPos(margin, y);
+        mTglBtnOnline.setEnable(!isAccessTokenInvalid());
         mTglBtnTitle.setPos(mTglBtnOnline.getMaxX() + margin + margin, y);
         mTglBtnGc.setPos(mTglBtnTitle.getMaxX() + margin, y);
         mTglBtnOwner.setPos(mTglBtnGc.getMaxX() + margin, y);

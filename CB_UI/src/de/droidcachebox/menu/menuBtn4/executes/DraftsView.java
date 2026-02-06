@@ -16,6 +16,7 @@
 package de.droidcachebox.menu.menuBtn4.executes;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_RIGHT_NEGATIVE;
 import static de.droidcachebox.menu.Action.UploadDrafts;
@@ -477,8 +478,10 @@ public class DraftsView extends V_ListView {
                     cm.addMenuItem("BrowseLog", null, () -> Platform.callUrl("https://coord.info/" + currentDraft.gcLogReference));
                 }
             }
-            cm.addMenuItem("uploadAsDraft", UploadDrafts.action.getIcon(), () -> uploadDraftOrLog(currentDraft, false));
-            cm.addMenuItem("uploadAsLog", UploadDrafts.action.getIcon(), () -> uploadDraftOrLog(currentDraft, true));
+            if (!isAccessTokenInvalid()) {
+                cm.addMenuItem("uploadAsDraft", UploadDrafts.action.getIcon(), () -> uploadDraftOrLog(currentDraft, false));
+                cm.addMenuItem("uploadAsLog", UploadDrafts.action.getIcon(), () -> uploadDraftOrLog(currentDraft, true));
+            }
             cm.addMenuItem("setUploaded", null, () -> setDraftUploaded(currentDraft));
             Sprite icon;
             if (currentDraft.isTbDraft) {

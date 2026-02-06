@@ -17,6 +17,7 @@
 package de.droidcachebox.menu.menuBtn3.executes;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.gdx.Sprites.Arrows;
 import static de.droidcachebox.gdx.Sprites.IconName;
 import static de.droidcachebox.gdx.Sprites.ListBack;
@@ -994,7 +995,7 @@ public class MapView extends MapViewBase implements CacheSelectionChangedListene
         }
         btnMapState.setPos(getMapIntWidth() - margin - btnMapState.getWidth(), getMapIntHeight() - margin - btnMapState.getHeight());
 
-        if (Settings.disableLiveMap.getValue()) {
+        if (Settings.disableLiveMap.getValue() || isAccessTokenInvalid()) {
             liveButton.setInvisible();
         } else {
             liveButton.setVisible();

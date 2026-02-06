@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.menu.menuBtn5.executes;
 
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -78,12 +80,15 @@ public class CreditsView extends CB_View_Base {
         list.add(new Person("Stonefinger", Job.designer));
         list.add(new Person("KoiMuggele", Job.designer));
 
-        list.add(new Person("Groundspeak API", Job.service, Sprites.getSprite("api-Logo-vCOMP2")));
+        if (!isAccessTokenInvalid()) {
+            list.add(new Person("Groundspeak API", Job.service, Sprites.getSprite("api-Logo-vCOMP2")));
+        }
 
         list.add(new Person("", Job.library, Sprites.getSprite("libgdx")));// Name at Logo image Mario Zechner
         list.add(new Person("Mapsforge", Job.library, Sprites.getSprite("mapsforge_logo")));
         list.add(new Person("OpenStreetMap", Job.service, Sprites.getSprite("osm_logo")));
 
+        list.add(new Person("krabbie", Job.developer));
         list.add(new Person("arbor95", Job.developer));
         list.add(new Person("Longri", Job.developer));
         list.add(new Person("Ging-Buh", Job.developer));

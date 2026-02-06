@@ -1,5 +1,6 @@
 package de.droidcachebox.menu.menuBtn4;
 
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.menu.Action.UploadDrafts;
 import static de.droidcachebox.menu.Action.UploadLogs;
 
@@ -93,8 +94,10 @@ public class ShowDrafts extends AbstractShowAction {
         cm.addDivider();
 
         // independent from cache-selection
-        cm.addMenuItem("uploadDrafts", UploadDrafts.action.getIcon(), () -> UploadDrafts.action.execute());
-        cm.addMenuItem("directLog", UploadLogs.action.getIcon(), () -> UploadLogs.action.execute());
+        if (!isAccessTokenInvalid()) {
+            cm.addMenuItem("uploadDrafts", UploadDrafts.action.getIcon(), () -> UploadDrafts.action.execute());
+            cm.addMenuItem("directLog", UploadLogs.action.getIcon(), () -> UploadLogs.action.execute());
+        }
         cm.addMenuItem("setAllDraftsUploaded", null, this::setAllDraftsUploaded);
         cm.addMenuItem("setAllDraftsNotUploaded", null, this::setAllDraftsNotUploaded);
         cm.addMenuItem("DeleteAllDrafts", Sprites.getSprite(IconName.DELETE.name()), this::deleteAllDrafts);
