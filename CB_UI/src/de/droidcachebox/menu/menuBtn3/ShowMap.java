@@ -16,6 +16,7 @@
 
 package de.droidcachebox.menu.menuBtn3;
 
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_MIDDLE_NEUTRAL;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_RIGHT_NEGATIVE;
@@ -324,12 +325,15 @@ public class ShowMap extends AbstractShowAction {
 
     private void showMapViewLayerMenu() {
         OptionMenu mapElements = new OptionMenu("MapViewLayerMenuTitle");
-        mapElements.addCheckableMenuItem("ShowLiveMap", !Settings.disableLiveMap.getValue(), () -> toggleSetting(Settings.disableLiveMap));
+        if (!isAccessTokenInvalid())
+            mapElements.addCheckableMenuItem("ShowLiveMap", !Settings.disableLiveMap.getValue(), () -> toggleSetting(Settings.disableLiveMap));
+        if (!Settings.disableLiveMap.getValue()) Settings.disableLiveMap.setValue(true);
         mapElements.addCheckableMenuItem("ShowAtOriginalPosition", Settings.showAtOriginalPosition.getValue(), () -> toggleSettingWithReload(Settings.showAtOriginalPosition));
         mapElements.addCheckableMenuItem("HideFinds", Settings.hideMyFinds.getValue(), () -> toggleSettingWithReload(Settings.hideMyFinds));
         mapElements.addCheckableMenuItem("MapShowInfoBar", Settings.showInfo.getValue(), () -> toggleSetting(Settings.showInfo));
         mapElements.addCheckableMenuItem("ShowAllWaypoints", Settings.showAllWaypoints.getValue(), () -> toggleSetting(Settings.showAllWaypoints));
-        mapElements.addCheckableMenuItem("ShowRatings", Settings.showRating.getValue(), () -> toggleSetting(Settings.showRating));
+        //mapElements.addCheckableMenuItem("ShowRatings", Settings.showRating.getValue(), () -> toggleSetting(Settings.showRating));
+        if (Settings.showRating.getValue()) Settings.showRating.setValue(false);
         mapElements.addCheckableMenuItem("ShowDT", Settings.showDifficultyTerrain.getValue(), () -> toggleSetting(Settings.showDifficultyTerrain));
         mapElements.addCheckableMenuItem("ShowTitle", Settings.showTitles.getValue(), () -> toggleSetting(Settings.showTitles));
         mapElements.addCheckableMenuItem("ShowDirectLine", Settings.showDirectLine.getValue(), () -> toggleSetting(Settings.showDirectLine));

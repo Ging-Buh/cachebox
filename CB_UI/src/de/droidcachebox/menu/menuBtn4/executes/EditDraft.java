@@ -15,6 +15,7 @@
  */
 package de.droidcachebox.menu.menuBtn4.executes;
 
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.gdx.controls.FilterSetListViewItem.NUMERIC_ITEM;
 
 import android.text.InputType;
@@ -149,10 +150,13 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         super("EditDraft");
         btnOK = new CB_Button(Translation.get("ok"));
         btnLog = new CB_Button(Translation.get("GCLog"));
+        btnLog.setEnable(!isAccessTokenInvalid());
         btnDraft = new CB_Button(Translation.get("GCDraft"));
+        btnDraft.setEnable(!isAccessTokenInvalid());
         btnCancel = new CB_Button(Translation.get("cancel"));
         giveFavoritePoint = new CB_CheckBox(); //favoritePoints
         enableGiveFavoritePoint = new CB_Button(Translation.get("enableGiveFavoritePoint"));
+        enableGiveFavoritePoint.setEnable(!isAccessTokenInvalid());
         etComment = new EditTextField(this, "").setWrapType(WrapType.WRAPPED);
         tvDate = new EditTextField(this, "");
         tvTime = new EditTextField(this, "");

@@ -17,6 +17,7 @@ package de.droidcachebox.menu.menuBtn5.executes;
 
 import static de.droidcachebox.Platform.callUrl;
 import static de.droidcachebox.Platform.hideForDialog;
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_LEFT_POSITIVE;
 import static de.droidcachebox.gdx.controls.dialogs.ButtonDialog.BTN_RIGHT_NEGATIVE;
 import static de.droidcachebox.settings.Config_Core.br;
@@ -110,7 +111,9 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         if (Settings.newInstall.getValue()) {
             Settings.newInstall.setValue(false);
             String langId = Settings.Sel_LanguagePath.getValue().substring(Settings.languagePath.getValue().length()).substring(1, 3);
-            String Welcome = Translation.that.getTextFile("welcome", langId) + Translation.that.getTextFile("changelog", langId);
+            String Welcome = Translation.that.getTextFile("welcome", langId);
+            if (!isAccessTokenInvalid()) Welcome += Translation.that.getTextFile("welcome_api", langId);
+            Welcome += Translation.that.getTextFile("changelog", langId);
             ButtonDialog bd = new ButtonDialog(Welcome, Translation.get("welcome"), MsgBoxButton.OK, MsgBoxIcon.Information);
             bd.setButtonClickHandler((btnNumber, data) -> true);
             bd.show();
@@ -173,64 +176,83 @@ public class AboutView extends CB_View_Base implements CacheSelectionChangedList
         cachesFoundLabel.setWidth(getWidth());
 
         cachesFoundLabel.setClickHandler((view, x, y, pointer, button) -> {
-            ButtonDialog msgBox = new ButtonDialog(Translation.get("LoadFinds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live);
-            msgBox.setButtonClickHandler(
-                    (which, data) -> {
-                        switch (which) {
-                            case BTN_LEFT_POSITIVE:
-                                msgBox.close();
-                                GL.that.postAsync(() -> {
-                                    AtomicBoolean isCanceled = new AtomicBoolean(false);
-                                    new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
-                                        @Override
-                                        public void ready() {
-                                            if (result > -1) {
-                                                String Text = Translation.get("FoundsSetTo", String.valueOf(result));
-                                                new ButtonDialog(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
-                                                Settings.foundOffset.setValue(result);
-                                                Settings.getInstance().acceptChanges();
-                                                AboutView.this.refreshText();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void run() {
-                                            result = GroundspeakAPI.forceFetchMyUserInfos().findCount;
-                                        }
-
-                                        @Override
-                                        public void setIsCanceled() {
-                                            isCanceled.set(true);
-                                        }
-
-                                    }).show();
-                                });
-                                break;
-                            case BTN_RIGHT_NEGATIVE:
-                                msgBox.close();
-                                GL.that.runOnGL(() -> {
-                                    NumericInputBox numericInputBox = new NumericInputBox(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"));
-                                    numericInputBox.initIntInput(Settings.foundOffset.getValue(),
-                                            new NumericInputBox.IReturnValueListener() {
-                                                @Override
-                                                public void returnValue(int value) {
-                                                    Settings.foundOffset.setValue(value);
+            if (!isAccessTokenInvalid()) {
+                ButtonDialog msgBox = new ButtonDialog(Translation.get("LoadFinds"), Translation.get("AdjustFinds"), MsgBoxButton.YesNo, MsgBoxIcon.GC_Live);
+                msgBox.setButtonClickHandler(
+                        (which, data) -> {
+                            switch (which) {
+                                case BTN_LEFT_POSITIVE:
+                                    msgBox.close();
+                                    GL.that.postAsync(() -> {
+                                        AtomicBoolean isCanceled = new AtomicBoolean(false);
+                                        new CancelWaitDialog(Translation.get("LoadFinds"), new DownloadAnimation(), new RunAndReady() {
+                                            @Override
+                                            public void ready() {
+                                                if (result > -1) {
+                                                    String Text = Translation.get("FoundsSetTo", String.valueOf(result));
+                                                    new ButtonDialog(Text, Translation.get("AdjustFinds"), MsgBoxButton.OK, MsgBoxIcon.GC_Live).show();
+                                                    Settings.foundOffset.setValue(result);
                                                     Settings.getInstance().acceptChanges();
                                                     AboutView.this.refreshText();
                                                 }
+                                            }
 
-                                                @Override
-                                                public void cancelClicked() {
-                                                }
-                                            });
-                                    numericInputBox.show();
-                                });
+                                            @Override
+                                            public void run() {
+                                                result = GroundspeakAPI.forceFetchMyUserInfos().findCount;
+                                            }
 
-                                break;
-                        }
-                        return true;
-                    });
-            msgBox.show();
+                                            @Override
+                                            public void setIsCanceled() {
+                                                isCanceled.set(true);
+                                            }
+
+                                        }).show();
+                                    });
+                                    break;
+                                case BTN_RIGHT_NEGATIVE:
+                                    msgBox.close();
+                                    GL.that.runOnGL(() -> {
+                                        NumericInputBox numericInputBox = new NumericInputBox(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"));
+                                        numericInputBox.initIntInput(Settings.foundOffset.getValue(),
+                                                new NumericInputBox.IReturnValueListener() {
+                                                    @Override
+                                                    public void returnValue(int value) {
+                                                        Settings.foundOffset.setValue(value);
+                                                        Settings.getInstance().acceptChanges();
+                                                        AboutView.this.refreshText();
+                                                    }
+
+                                                    @Override
+                                                    public void cancelClicked() {
+                                                    }
+                                                });
+                                        numericInputBox.show();
+                                    });
+
+                                    break;
+                            }
+                            return true;
+                        });
+                msgBox.show();
+            }
+            else {
+                NumericInputBox numericInputBox = new NumericInputBox(Translation.get("TelMeFounds"), Translation.get("AdjustFinds"));
+                numericInputBox.initIntInput(Settings.foundOffset.getValue(),
+                        new NumericInputBox.IReturnValueListener() {
+                            @Override
+                            public void returnValue(int value) {
+                                Settings.foundOffset.setValue(value);
+                                Settings.getInstance().acceptChanges();
+                                AboutView.this.refreshText();
+                            }
+
+                            @Override
+                            public void cancelClicked() {
+                            }
+                        });
+                numericInputBox.show();
+            }
             return true;
         });
 

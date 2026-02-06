@@ -15,6 +15,8 @@
  */
 package de.droidcachebox.menu.menuBtn2.executes;
 
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
+
 import de.droidcachebox.CacheSelectionChangedListeners;
 import de.droidcachebox.GlobalCore;
 import de.droidcachebox.WaypointListChangedEvent;
@@ -182,17 +184,19 @@ public class WayPointsView extends V_ListView implements CacheSelectionChangedLi
             cm.addMenuItem("Projection", null, this::addProjection);
             cm.addMenuItem("FromGps", null, this::addMeasure);
             if (currentCache.hasCorrectedCoordinates() || (currentWaypoint != null && currentWaypoint.isCorrectedFinal())) {
-                cm.addMenuItem("UploadCorrectedCoordinates", null, () -> GL.that.postAsync(() -> {
-                    if (currentCache.hasCorrectedCoordinates())
-                        GroundspeakAPI.uploadCorrectedCoordinates(currentCache.getGeoCacheCode(), currentCache.getCoordinate());
-                    else if (currentWaypoint.isCorrectedFinal())
-                        GroundspeakAPI.uploadCorrectedCoordinates(currentCache.getGeoCacheCode(), currentWaypoint.getCoordinate());
-                    if (GroundspeakAPI.APIError == 0) {
-                        new ButtonDialog(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
-                    } else {
-                        new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
-                    }
-                }));
+                if (!isAccessTokenInvalid()) {
+                    cm.addMenuItem("UploadCorrectedCoordinates", null, () -> GL.that.postAsync(() -> {
+                        if (currentCache.hasCorrectedCoordinates())
+                            GroundspeakAPI.uploadCorrectedCoordinates(currentCache.getGeoCacheCode(), currentCache.getCoordinate());
+                        else if (currentWaypoint.isCorrectedFinal())
+                            GroundspeakAPI.uploadCorrectedCoordinates(currentCache.getGeoCacheCode(), currentWaypoint.getCoordinate());
+                        if (GroundspeakAPI.APIError == 0) {
+                            new ButtonDialog(Translation.get("ok"), Translation.get("UploadCorrectedCoordinates"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
+                        } else {
+                            new ButtonDialog(GroundspeakAPI.LastAPIError, Translation.get("UploadCorrectedCoordinates"), MsgBoxButton.OK, MsgBoxIcon.Information).show();
+                        }
+                    }));
+                }
             }
         } catch (Exception ex) {
             Log.err(sClass, "getContextMenu", ex);

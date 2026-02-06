@@ -2,6 +2,7 @@ package de.droidcachebox.menu.menuBtn2;
 
 import static de.droidcachebox.core.GroundspeakAPI.OK;
 import static de.droidcachebox.core.GroundspeakAPI.fetchGeoCacheLogs;
+import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 import static de.droidcachebox.menu.Action.ShowSpoiler;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -85,26 +86,33 @@ public class ShowLogs extends AbstractShowAction {
 
     private Menu createContextMenu() {
         Menu contextMenu = new Menu("LogListViewContextMenuTitle");
-        contextMenu.addMenuItem("ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()), () -> loadLogs(true));
+        if (!isAccessTokenInvalid()) {
+            contextMenu.addMenuItem("ReloadLogs", Sprites.getSprite(IconName.downloadLogs.name()), () -> loadLogs(true));
+        }
         if (Settings.friends.getValue().length() > 0) {
-            contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
+            if (!isAccessTokenInvalid()) {
+                contextMenu.addMenuItem("LoadLogsOfFriends", Sprites.getSprite(IconName.downloadFriendsLogs.name()), () -> loadLogs(false));
+            }
             contextMenu.addCheckableMenuItem("FilterLogsOfFriends", Sprites.getSprite(IconName.friendsLogs.name()), GlobalCore.filterLogsOfFriends, () -> {
                 GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
                 resetRenderInitDone();
             });
         }
-        contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
 
-        contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()),
-                () -> ((ShowSpoiler) ShowSpoiler.action).importSpoiler(true, isCanceled -> {
-                    // do after import
-                    if (!isCanceled) {
-                        if (GlobalCore.isSetSelectedCache()) {
-                            GlobalCore.getSelectedCache().loadSpoilerRessources();
-                            ((ShowSpoiler) Action.ShowSpoiler.action).forceReloadSpoiler();
+        if (!isAccessTokenInvalid()) {
+            contextMenu.addMenuItem("ImportFriends", Sprites.getSprite(Sprites.IconName.friends.name()), this::getFriends);
+
+            contextMenu.addMenuItem("LoadLogImages", Sprites.getSprite(IconName.downloadLogImages.name()),
+                    () -> ((ShowSpoiler) ShowSpoiler.action).importSpoiler(true, isCanceled -> {
+                        // do after import
+                        if (!isCanceled) {
+                            if (GlobalCore.isSetSelectedCache()) {
+                                GlobalCore.getSelectedCache().loadSpoilerRessources();
+                                ((ShowSpoiler) Action.ShowSpoiler.action).forceReloadSpoiler();
+                            }
                         }
-                    }
-                }));
+                    }));
+        }
         return contextMenu;
     }
 

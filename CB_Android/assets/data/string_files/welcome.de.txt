@@ -12,5 +12,3 @@ Oder du besuchst uns in dem von uns benutzten Forum http://www.geoclub.de/viewfo
 
 Bediene Cachebox niemals am Lenkrad!
 
-Unterstützt durch die Geocaching-API
-Ermöglicht durch die Unterstützung von Geocaching Premium Memberships, bietet das API-Programm Entwicklern von Drittanbietern die Möglichkeit, mit Geocaching HQ an einer vollständigen Suite integrierter Produkte und Dienstleistungen für die Community zusammenzuarbeiten. API-Entwickleranwendungen arbeiten mit den Kerndiensten von geocaching.com zusammen und bieten der Geocaching-Community zusätzliche Funktionen.

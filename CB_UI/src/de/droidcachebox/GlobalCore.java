@@ -55,7 +55,7 @@ import de.droidcachebox.utils.FileFactory;
 import de.droidcachebox.utils.log.Log;
 
 public class GlobalCore implements SolverCacheInterface {
-    public static final String aboutMsg1 = "Team Cachebox (2011-2022)" + br;
+    public static final String aboutMsg1 = "Team Cachebox (2011-2026)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
     public static final String aboutMsg = aboutMsg1 + teamLink + aboutMsg2;
