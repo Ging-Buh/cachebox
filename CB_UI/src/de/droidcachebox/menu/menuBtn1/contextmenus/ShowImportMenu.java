@@ -1,5 +1,6 @@
 package de.droidcachebox.menu.menuBtn1.contextmenus;
 
+import static de.droidcachebox.Platform.callUrl;
 import static de.droidcachebox.core.GroundspeakAPI.isAccessTokenInvalid;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -10,6 +11,7 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.menuBtn1.contextmenus.executes.ExportGPX;
 import de.droidcachebox.menu.menuBtn1.contextmenus.executes.Import;
 import de.droidcachebox.menu.menuBtn1.contextmenus.executes.ImportGCPosition;
@@ -66,6 +68,8 @@ public class ShowImportMenu extends AbstractShowAction {
         else
             icm.addMenuItem("chkState", Sprites.getSprite(IconName.dayGcLiveIcon.name()), () -> GL.that.postAsync(() -> new UpdateCachesState().execute()));
         icm.addMenuItem("moreImport", null, () -> GL.that.postAsync(() -> new Import().show()));
+        icm.addMenuItem("Open_Cache_Map", Sprites.getSprite(IconName.map.name()), () -> callUrl("http://www.geocaching.com/map/#?ll="+ Locator.getInstance().getLatitude()+","+Locator.getInstance().getLongitude()+"&z=14"));
+        icm.addMenuItem("Download_Lab2Gpx", null, () -> GL.that.postAsync(() -> CacheContextMenu.getInstance().loadLabCaches(false)));
         if (!isAccessTokenInvalid()) {
             icm.addMenuItem("importCachesOverPosition", Sprites.getSprite(IconName.dayGcLiveIcon.name()), () -> new ImportGCPosition().show());
             icm.addMenuItem("API_IMPORT_NAME_OWNER_CODE", Sprites.getSprite(IconName.dayGcLiveIcon.name()), SearchOverNameOwnerGcCode::showInstance);

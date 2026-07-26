@@ -14,6 +14,8 @@ import static de.droidcachebox.menu.Action.ShowSolver2;
 import static de.droidcachebox.menu.Action.ShowSpoiler;
 import static de.droidcachebox.menu.Action.ShowTrackableList;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,6 +30,8 @@ import de.droidcachebox.database.WaypointDAO;
 import de.droidcachebox.dataclasses.Cache;
 import de.droidcachebox.dataclasses.GeoCacheType;
 import de.droidcachebox.dataclasses.Waypoint;
+import de.droidcachebox.ex_import.ImportProgress;
+import de.droidcachebox.ex_import.Importer;
 import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.Sprites;
 import de.droidcachebox.gdx.Sprites.IconName;
@@ -40,13 +44,20 @@ import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
 import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.RunAndReady;
 import de.droidcachebox.gdx.main.Menu;
+import de.droidcachebox.locator.Locator;
 import de.droidcachebox.menu.Action;
 import de.droidcachebox.menu.menuBtn1.ShowGeoCaches;
 import de.droidcachebox.menu.menuBtn2.ShowDescription;
 import de.droidcachebox.menu.menuBtn2.ShowSpoiler;
 import de.droidcachebox.menu.menuBtn2.StartExternalDescription;
+import de.droidcachebox.settings.AllSettings;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
+import de.droidcachebox.utils.AbstractFile;
+import de.droidcachebox.utils.FileFactory;
+import de.droidcachebox.utils.http.Request;
+import de.droidcachebox.utils.http.Response;
+import de.droidcachebox.utils.http.Webb;
 import de.droidcachebox.utils.log.Log;
 
 public class CacheContextMenu {
@@ -85,11 +96,15 @@ public class CacheContextMenu {
                     theMenu.addMenuItem("ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()), this::reloadSelectedCache);
             }
             theMenu.addMenuItem("Open_Cache_Link", Sprites.getSprite("big" + geoCache.getGeoCacheType().name()), () -> callUrl(geoCache.getUrl()));
+            theMenu.addMenuItem("Open_Cache_Logbook", Sprites.getSprite(IconName.listIcon.name()), () -> callUrl("http://www.geocaching.com/seek/geocache_logs.aspx?code="+geoCache.getGeoCacheCode()));
+            theMenu.addMenuItem("Open_Cache_Map", Sprites.getSprite(IconName.map.name()), () -> callUrl("http://www.geocaching.com/map/#?ll="+geoCache.getCoordinate().latitude+","+geoCache.getCoordinate().longitude+"&z=14"));
+            theMenu.addMenuItem("Download_Lab2Gpx", null, this::loadLabCaches);
             theMenu.addCheckableMenuItem("Favorite", Sprites.getSprite(IconName.favorit.name()), geoCache.isFavorite(), this::toggleAsFavorite);
             theMenu.addMenuItem("MI_EDIT_CACHE", Sprites.getSprite(IconName.noteIcon.name()), () -> new EditCache().update(geoCache));
             if (selectedCacheIsGC) {
                 theMenu.addMenuItem("contactOwner", Sprites.getSprite("bigLetterbox"), () -> new ContactOwner().execute());
-                theMenu.addMenuItem("GroundSpeakLists", null, () -> new ListsAtGroundSpeak().execute());
+                if (!isAccessTokenInvalid())
+                    theMenu.addMenuItem("GroundSpeakLists", null, () -> new ListsAtGroundSpeak().execute());
             }
             if (!Settings.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()))
                 theMenu.addCheckableMenuItem("rememberGeoCache", Settings.rememberedGeoCache.getValue().equals(geoCache.getGeoCacheCode()), this::rememberGeoCache);
@@ -114,6 +129,92 @@ public class CacheContextMenu {
         }
         //}
         return theMenu;
+    }
+
+    private void loadLabCaches() {
+        loadLabCaches(true);
+    }
+    public void loadLabCaches(boolean waypoint) {
+        if (true) { //GlobalCore.isSetSelectedCache()) {
+            AtomicBoolean isCanceled = new AtomicBoolean(false);
+            String strWait;
+            strWait = Translation.get("Download_Lab2Gpx");
+            new CancelWaitDialog(strWait, new DownloadAnimation(), new RunAndReady() {
+                @Override
+                public void ready() {
+
+                }
+
+                @Override
+                public void run() {
+                    String GCCode = "";
+                    if (GlobalCore.getSelectedCache() != null) GCCode = GlobalCore.getSelectedCache().getGeoCacheCode();
+                    Webb webConn = Webb.create();
+                    webConn.setDefaultHeader("Content-Type", "application/json");
+                    //webConn.
+                    Request labGpx = webConn.post("https://api.lab2gpx.gcutils.de/download");
+                    // geoCache.getCoordinate().latitude+","+geoCache.getCoordinate().longitude
+                    String userGUID = "null";
+                    if (!AllSettings.GcVotePassword.getValue().isEmpty())
+                        userGUID = "\"" + AllSettings.GcVotePassword.getValue() + "\"";
+                    double latitude = 0.0, longitude = 0.0;
+                    if (waypoint) {
+                        latitude = geoCache.getCoordinate().latitude;
+                        longitude = geoCache.getCoordinate().longitude;
+                    } else {
+                        latitude = Locator.getInstance().getLatitude();
+                        longitude = Locator.getInstance().getLongitude();
+                    }
+                    labGpx.body("{\"version\": 2,\"locale\": \"de\",\"radius\": 15,\"coordinates\":{\"lat\": "+latitude+",\"lon\": "+longitude+"},\"limit\": 300,\"cacheType\": \"Lab Cache\",\"linear\": \"default\",\"prefix\": \"LC\",\"stageSeparator\": true,\"customCodeTemplate\": null,\"userGuid\": "+userGUID+",\"completionStatuses\": [\"1\",\"2\"],\"includeQuestion\": true,\"includeWaypointDescription\": true,\"includeCacheDescription\": true,\"excludeOwner\": null,\"excludeNames\": null,\"excludeUuids\": null,  \"quirksL4Ctype\": false,\"outputFormat\": \"gpxwpt\"}");
+                    Response<String> labAsStr = labGpx.asString();
+                    if (labAsStr.isSuccess()) {
+                        String local = AllSettings.UserImageFolder.getValue() + "/lab2gpx.gpx";;
+                        AbstractFile localFile = FileFactory.createFile(local);
+                        BufferedOutputStream outStream = null;
+                        try {
+                            outStream = new BufferedOutputStream(localFile.getFileOutputStream());
+                            outStream.write(labAsStr.getBody().getBytes());
+                            outStream.close();
+                        } catch (IOException ex) {
+                            Log.err(sClass, "loadLabCaches", ex);
+                        }
+
+                        CBDB.getInstance().beginTransaction();
+                        try {
+                            Importer importer = new Importer();
+                            importer.importGpx(local,
+                                    new ImportProgress((message, progressMessage, progress) -> {
+                                    }), isCanceled::get);
+                        } catch (Exception ignored) {
+                        }
+                        CBDB.getInstance().setTransactionSuccessful();
+                        CBDB.getInstance().endTransaction();
+                        try {
+                            localFile.delete();
+                        } catch (IOException ex) {
+                            Log.err(sClass, "loadLabCaches", ex);
+                        }
+                        // Reload result from DB
+                        synchronized (CBDB.cacheList) {
+                            CachesDAO cachesDAO = new CachesDAO();
+                            String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Settings.GcLogin.getValue());
+                            cachesDAO.readCacheList(sqlWhere, false, false, Settings.showAllWaypoints.getValue());
+                            if (!GCCode.isEmpty())
+                                GlobalCore.setSelectedCache(CBDB.cacheList.getCacheByGcCodeFromCacheList(GCCode));
+                            CacheListChangedListeners.getInstance().fire("reloadSelectedCache");
+                        }
+                    }
+                }
+
+                @Override
+                public void setIsCanceled() {
+                    isCanceled.set(true);
+                }
+
+            }).show();
+        } else {
+            new ButtonDialog(Translation.get("NoCacheSelect"), Translation.get("Error"), MsgBoxButton.OK, MsgBoxIcon.Error).show();
+        }
     }
 
     private void rememberGeoCache() {

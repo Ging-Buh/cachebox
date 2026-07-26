@@ -162,10 +162,11 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         tvTime = new EditTextField(this, "");
         tvFinds = new CB_Label("");
         title = new CB_Label("");
-        if (Settings.GcVotePassword.getEncryptedValue().length() > 0) {
-            FilterSetListViewItem.FilterSetEntry gcVoteSelection = new FilterSetListViewItem.FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), NUMERIC_ITEM, 0, 5, 0, 0.5f);
-            gcVoteItem = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f), 0, gcVoteSelection);
-        } else gcVoteItem = null;
+        //if (Settings.GcVotePassword.getEncryptedValue().length() > 0) {
+        //    FilterSetListViewItem.FilterSetEntry gcVoteSelection = new FilterSetListViewItem.FilterSetEntry(Translation.get("maxRating"), Sprites.Stars.toArray(), NUMERIC_ITEM, 0, 5, 0, 0.5f);
+        //    gcVoteItem = new FilterSetListViewItem(new CB_RectF(0, 0, innerWidth, UiSizes.getInstance().getButtonHeight() * 1.1f), 0, gcVoteSelection);
+        //} else
+        gcVoteItem = null;
         // == setDraft
         isNewDraft = _isNewDraft;
         afterEditHandler = _afterEditHandler;
@@ -227,7 +228,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
             }
         }
         if (Settings.GcVotePassword.getEncryptedValue().length() > 0) {
-            if (!currentDraft.isTbDraft) {
+            if (!currentDraft.isTbDraft && gcVoteItem != null) {
                 gcVoteItem.setValue(currentDraft.gc_Vote / 100.0);
                 scrollBoxContent.addLast(gcVoteItem);
             }
@@ -315,7 +316,7 @@ public class EditDraft extends ActivityBase implements KeyboardFocusChangedEvent
         //
         title.setText(currentDraft.isTbDraft ? currentDraft.TbName : currentDraft.CacheName);
         if (Settings.GcVotePassword.getEncryptedValue().length() > 0) {
-            if (!currentDraft.isTbDraft) {
+            if (!currentDraft.isTbDraft && gcVoteItem != null) {
                 gcVoteItem.setValue(currentDraft.gc_Vote / 100.0);
             }
         }
