@@ -403,8 +403,8 @@ public class Import extends ActivityBase {
     }
 
     private void createGcVoteLine() {
-        if (Settings.GcVotePassword.getValue().length() == 0)
-            GCV_LINE_ACTIVE = false;
+        //if (Settings.GcVotePassword.getValue().length() == 0)
+        GCV_LINE_ACTIVE = false;
         checkBoxGcVote = new CB_CheckBox();
         checkBoxGcVote.setX(innerLeft);
         checkBoxGcVote.setY(checkBoxImportGPX.getY() - margin - checkBoxImportGPX.getHeight());
