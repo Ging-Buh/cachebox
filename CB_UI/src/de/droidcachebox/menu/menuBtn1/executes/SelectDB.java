@@ -17,8 +17,10 @@ package de.droidcachebox.menu.menuBtn1.executes;
 
 import static de.droidcachebox.settings.AllSettings.DatabaseName;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -38,6 +40,8 @@ import de.droidcachebox.gdx.GL;
 import de.droidcachebox.gdx.controls.CB_Button;
 import de.droidcachebox.gdx.controls.CB_Label;
 import de.droidcachebox.gdx.controls.dialogs.ButtonDialog;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxButton;
+import de.droidcachebox.gdx.controls.dialogs.MsgBoxIcon;
 import de.droidcachebox.gdx.controls.dialogs.NewDB_InputBox;
 import de.droidcachebox.gdx.controls.list.Adapter;
 import de.droidcachebox.gdx.controls.list.ListViewItemBackground;
@@ -47,6 +51,8 @@ import de.droidcachebox.gdx.controls.list.V_ListView;
 import de.droidcachebox.gdx.main.Menu;
 import de.droidcachebox.gdx.math.CB_RectF;
 import de.droidcachebox.gdx.math.UiSizes;
+import de.droidcachebox.menu.menuBtn1.contextmenus.executes.CopyDBin;
+import de.droidcachebox.menu.menuBtn1.contextmenus.executes.CopyDBout;
 import de.droidcachebox.menu.menuBtn5.ShowQuit;
 import de.droidcachebox.settings.Settings;
 import de.droidcachebox.translation.Translation;
@@ -73,6 +79,9 @@ public class SelectDB extends ActivityBase {
     private CB_Button btnSelect;
     private CB_Button btnCancel;
     private CB_Button btnAutostart;
+    private CB_Button btnDelete;
+    private CB_Button btnCopyInto;
+    private CB_Button btnCopyOut;
     private V_ListView lvDBSelection;
     private Scrollbar scrollbar;
     private AbstractFile currentDBFile = null;
@@ -104,11 +113,17 @@ public class SelectDB extends ActivityBase {
 
         float btWidth = innerWidth / 3;
 
-        btnNew = new CB_Button(new CB_RectF(leftBorder, getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bNew");
-        btnSelect = new CB_Button(new CB_RectF(btnNew.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bSelect");
-        btnCancel = new CB_Button(new CB_RectF(btnSelect.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bCancel");
+        btnDelete = new CB_Button(new CB_RectF(leftBorder, getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bDelete");
+        btnCopyInto = new CB_Button(new CB_RectF(btnDelete.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bCopyInto");
+        btnCopyOut = new CB_Button(new CB_RectF(btnCopyInto.getMaxX(), getBottomHeight(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bCopyInto");
+        btnNew = new CB_Button(new CB_RectF(leftBorder, btnDelete.getMaxY(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bNew");
+        btnSelect = new CB_Button(new CB_RectF(btnNew.getMaxX(), btnDelete.getMaxY(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bSelect");
+        btnCancel = new CB_Button(new CB_RectF(btnSelect.getMaxX(), btnDelete.getMaxY(), btWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bCancel");
         btnAutostart = new CB_Button(new CB_RectF(leftBorder, btnNew.getMaxY(), innerWidth, UiSizes.getInstance().getButtonHeight()), "selectDB.bAutostart");
 
+        addChild(btnDelete);
+        addChild(btnCopyInto);
+        addChild(btnCopyOut);
         addChild(btnSelect);
         addChild(btnNew);
         addChild(btnCancel);
@@ -203,6 +218,64 @@ public class SelectDB extends ActivityBase {
             return true;
         });
 
+        // Delete Button
+        btnDelete.setClickHandler((v, x, y, pointer, button) -> {
+            stopTimer();
+            if (currentDBFile == null) {
+                GL.that.toast("Please select Database!");
+                return false;
+            } else if (currentDBFile.getName().equalsIgnoreCase(currentDBFileName)) {
+                GL.that.toast("Please select other Database!");
+                return false;
+            } else {
+                boolean dbIsNotEmpty = Platform.getCacheCountInDB(currentDBFile.getAbsolutePath()) != 0;
+                String dbMessage = " " + currentDBFile.getName();
+                if (dbIsNotEmpty) {
+                    dbMessage = " (not empty) " + currentDBFile.getName();
+                }
+                ButtonDialog bd = new ButtonDialog(Translation.get("sure")+dbMessage, Translation.get("question"), MsgBoxButton.OKCancel, MsgBoxIcon.Question);
+                bd.setButtonClickHandler((which, data) -> {
+                    if (which == ButtonDialog.BTN_LEFT_POSITIVE) {
+                        try {
+                            FileList journalFiles = new FileList(GlobalCore.workPath, "db3-journal", true);
+                            String dbNameJournal = currentDBFile.getName() + "-journal";
+                            currentDBFile.delete();
+                            for (AbstractFile journal : journalFiles) {
+                                if (Objects.equals(journal.getName(), dbNameJournal)) {
+                                    journal.delete();
+                                    break;
+                                }
+                            }
+                        } catch (IOException e) {
+                            GL.that.toast(e.toString());
+                            //throw new RuntimeException(e);
+                        }
+                        dbFiles.remove(currentDBFile);
+                        currentDBFile = null;
+                        lvDBSelection.notifyDataSetChanged();
+                        //lvDBSelection.setSelection(0);//lvDBSelection.getSelectedIndex()+1);
+                    }
+                    return true;
+                });
+                bd.show();
+                return true;
+            }
+        });
+
+        // Copy out Button
+        btnCopyOut.setClickHandler((v, x, y, pointer, button) -> {
+            stopTimer();
+            new CopyDBout(currentDBFile).copyDBout();
+            return true;
+        });
+
+        // Copy in Button
+        btnCopyInto.setClickHandler((v, x, y, pointer, button) -> {
+            stopTimer();
+            new CopyDBin(currentDBFileName, dbFiles, lvDBSelection).copyDBin();
+            return true;
+        });
+
         // Cancel Button
         btnCancel.setClickHandler((v, x, y, pointer, button) -> {
             stopTimer();
@@ -225,6 +298,10 @@ public class SelectDB extends ActivityBase {
         btnNew.setText(Translation.get("NewDB"));
         btnSelect.setText(Translation.get("confirm"));
         btnCancel.setText(Translation.get("cancel"));
+        btnDelete.setText(Translation.get("deleteDB"));
+        btnCopyInto.setText(Translation.get("copyDBinto"));
+        btnCopyOut.setText(Translation.get("copyDBout"));
+
         autoStartTime = Settings.MultiDBAutoStartTime.getValue();
         autoStartCounter = 0;
         if (autoStartTime > 0) {
@@ -232,7 +309,8 @@ public class SelectDB extends ActivityBase {
             btnAutostart.setText(autoStartCounter + " " + Translation.get("confirm"));
             if ((autoStartTime > 0) && (currentDBFile != null)) {
                 updateTimer = new Timer();
-                updateTimer.scheduleAtFixedRate(new TimerTask() {
+                // scheduleAtFixedRate
+                updateTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
                         if (autoStartCounter == 0) {
@@ -424,24 +502,42 @@ public class SelectDB extends ActivityBase {
     @Override
     public void dispose() {
 
-        if (btnNew != null)
+        if (btnNew != null) {
             btnNew.dispose();
-        btnNew = null;
-        if (btnSelect != null)
+            btnNew = null;
+        }
+        if (btnSelect != null) {
             btnSelect.dispose();
-        btnSelect = null;
-        if (btnCancel != null)
+            btnSelect = null;
+        }
+        if (btnCancel != null) {
             btnCancel.dispose();
-        btnCancel = null;
-        if (btnAutostart != null)
+            btnCancel = null;
+        }
+        if (btnAutostart != null) {
             btnAutostart.dispose();
-        btnAutostart = null;
-        if (lvDBSelection != null)
+            btnAutostart = null;
+        }
+        if (btnDelete != null) {
+            btnDelete.dispose();
+            btnDelete = null;
+        }
+        if (btnCopyInto != null) {
+            btnCopyInto.dispose();
+            btnCopyInto = null;
+        }
+        if (btnCopyOut != null) {
+            btnCopyOut.dispose();
+            btnCopyOut = null;
+        }
+        if (lvDBSelection != null) {
             lvDBSelection.dispose();
-        lvDBSelection = null;
-        if (scrollbar != null)
+            lvDBSelection = null;
+        }
+        if (scrollbar != null) {
             scrollbar.dispose();
-        scrollbar = null;
+            scrollbar = null;
+        }
 
         dbItemAdapter = null;
         currentDBFile = null;
