@@ -35,6 +35,8 @@ public class FunctionCategories extends TreeMap<String, Functions> {
         functions.add(new FunctionCrossbearing(solverLines));
         functions.add(new FunctionBearing(solverLines));
         functions.add(new FunctionDistance(solverLines));
+        functions.add(new FunctionReverseWherIgo(solverLines));
+        functions.add(new FunctionAddLatLon(solverLines));
         this.put(functions.Name, functions);
 
     }
